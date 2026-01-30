@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>R#BD — Accueil</title>
+    <link rel="stylesheet" href="./web/css/main.css" />
+    <script src="./web/js/header-loader.js"></script>
+</head>
+
+<body>
+    <!-- Header chargé dynamiquement -->
+
+    <main class="guide-main">
+        <section class="card">
+            <div class="card-header">
+                <h2>Bienvenue dans R#BD</h2>
+                <p class="muted">Base de données centralisée pour les templates et configurations R#SPACE</p>
+            </div>
+            <div class="divider"></div>
+            <div>
+                <h3 style="margin-top: 0;">📋 Templates disponibles</h3>
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 16px;">
+
+                    <!-- Card Templates RU -->
+                    <a href="./web/pages/templates-ru.html" style="text-decoration: none;">
+                        <div class="card"
+                            style="border: 2px solid var(--accent); cursor: pointer; transition: transform 0.2s;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                <div
+                                    style="width: 48px; height: 48px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                                    🧪
+                                </div>
+                                <div>
+                                    <h3 style="margin: 0; color: var(--accent);">Templates RU</h3>
+                                    <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--muted);">Recette Usine
+                                    </p>
+                                </div>
+                            </div>
+                            <p style="margin: 0; font-size: 14px; color: var(--muted);">
+                                Gérez les templates de tests pour les recettes usine IEC 61850
+                            </p>
+                        </div>
+                    </a>
+
+                    <!-- Card Templates Visite (à venir) -->
+                    <div class="card" style="border: 2px solid var(--border); opacity: 0.6; cursor: not-allowed;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                            <div
+                                style="width: 48px; height: 48px; background: var(--muted); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                                📝
+                            </div>
+                            <div>
+                                <h3 style="margin: 0; color: var(--muted);">Templates Visite</h3>
+                                <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--muted);">À venir</p>
+                            </div>
+                        </div>
+                        <p style="margin: 0; font-size: 14px; color: var(--muted);">
+                            Templates de checklist pour les visites de site
+                        </p>
+                    </div>
+
+                    <!-- Card Templates CVS (à venir) -->
+                    <div class="card" style="border: 2px solid var(--border); opacity: 0.6; cursor: not-allowed;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                            <div
+                                style="width: 48px; height: 48px; background: var(--muted); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                                ✅
+                            </div>
+                            <div>
+                                <h3 style="margin: 0; color: var(--muted);">Templates CVS</h3>
+                                <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--muted);">À venir</p>
+                            </div>
+                        </div>
+                        <p style="margin: 0; font-size: 14px; color: var(--muted);">
+                            Templates pour Contrôle Validation Site
+                        </p>
+                    </div>
+
+                    <!-- Card Templates MVS (à venir) -->
+                    <div class="card" style="border: 2px solid var(--border); opacity: 0.6; cursor: not-allowed;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                            <div
+                                style="width: 48px; height: 48px; background: var(--muted); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                                🔄
+                            </div>
+                            <div>
+                                <h3 style="margin: 0; color: var(--muted);">Templates MVS</h3>
+                                <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--muted);">À venir</p>
+                            </div>
+                        </div>
+                        <p style="margin: 0; font-size: 14px; color: var(--muted);">
+                            Templates pour Montée Version Système
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <h2>ℹ️ À propos</h2>
+            </div>
+            <div class="divider"></div>
+            <p style="margin: 0; line-height: 1.6;">
+                R#BD centralise la gestion des templates pour toutes les applications R#SPACE.
+                Les templates sont stockés localement et peuvent être créés, modifiés et exportés
+                directement depuis l'interface web.
+            </p>
+            <p style="margin: 16px 0 0 0; line-height: 1.6; color: var(--muted); font-size: 14px;">
+                <strong>Mode actuel :</strong> Application statique HTML/CSS/JS (pas de serveur Python requis)
+            </p>
+        </section>
+    </main>
+
+    <script>
+        loadHeader({ activePage: 'home', title: 'R#BD — Base de données' });
+    </script>
+</body>
+
+</html>

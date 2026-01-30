@@ -1,0 +1,919 @@
+{
+  "name": "Réception/MST Site",
+  "description": "Réception et Mise en Service sur site",
+  "icon": "HOME_REPAIR_SERVICE",
+  "color": "TEAL",
+  "created_at": "2025-12-18T00:39:27.425810",
+  "updated_at": "2025-12-18T13:36:24.349035",
+  "version": "1.0",
+  "categories": [
+    {
+      "id": "cat_2",
+      "name": "Inspection visuel",
+      "description": "",
+      "icon": "VISIBILITY",
+      "expanded": true,
+      "steps": [
+        {
+          "name": "Etiquettage des armoires",
+          "description": "Vérification de la cohérence entre l'étiquettage des armoires et la schémathèque ",
+          "criteres_controle": [
+            {
+              "texte": "FO",
+              "type_resultat": "Texte",
+              "photo_requise": false
+            },
+            {
+              "texte": "FDP",
+              "type_resultat": "Texte",
+              "photo_requise": false
+            },
+            {
+              "texte": "Caisson FDP",
+              "type_resultat": "Texte",
+              "photo_requise": false
+            },
+            {
+              "texte": "TG/CBO",
+              "type_resultat": "Texte",
+              "photo_requise": false
+            },
+            {
+              "texte": "Ligne 1",
+              "type_resultat": "Texte",
+              "photo_requise": false
+            },
+            {
+              "texte": "Ligne 2",
+              "type_resultat": "Texte",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Obligatoire",
+          "duree_estimee": "10min",
+          "outils": "",
+          "modele_cr": "Les nommenclatures sont conformes",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Mise à la terre ",
+          "description": "Vérification de l'ensemble des mise à la terre",
+          "criteres_controle": [
+            {
+              "texte": "Serrage Terre armoire",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Longueur Terre armoire",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Serrage Terre IEDs",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Longueur Terre IEDs",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Obligatoire",
+          "duree_estimee": "30min",
+          "outils": "",
+          "modele_cr": "L'ensemble des terres sont ",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Etiquettage des equipements",
+          "description": "Vérification de la présence d'étiquette sur la face avant et arrière de chaque équipement et sur les torches associés",
+          "criteres_controle": [
+            {
+              "texte": "Face avant",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Face arrière",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Torches",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Obligatoire",
+          "duree_estimee": "45min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Vérification câblage LPRO",
+          "description": "Visuel des LPRO pour chaque armoire",
+          "criteres_controle": [
+            {
+              "texte": "Attâche de câbles",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Terre",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Boucle ",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Bornier non contraint",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Obligatoire",
+          "duree_estimee": "15min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Vérification soudures optiques/passage de fibres",
+          "description": "",
+          "criteres_controle": [
+            {
+              "texte": "Terre éclateurs",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Passage des gaines",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Pigtails enroulés ",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Jarrietières sans contraintes",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Obligatoire",
+          "duree_estimee": "30min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Schémas Electrique/FO",
+          "description": "Vérification de la présence des schémas avec les armoires",
+          "criteres_controle": [
+            {
+              "texte": "Présence de 3 pochettes",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "LPRO",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "SCH",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "CONT",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "RFO",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Obligatoire",
+          "duree_estimee": "10min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        }
+      ]
+    },
+    {
+      "id": "cat_0",
+      "name": "Analogiques",
+      "description": "",
+      "expanded": true,
+      "steps": [
+        {
+          "name": "Vérifications Alimentation FDP",
+          "description": "",
+          "criteres_controle": [
+            {
+              "texte": "GC",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "TC",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "T",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Obligatoire",
+          "duree_estimee": "15min",
+          "outils": "Multimètre",
+          "modele_cr": "Alimentation au bornier BAC OK",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Vérifications Alimentation TG",
+          "description": "",
+          "criteres_controle": [
+            {
+              "texte": "GC",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "TC",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "S",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "SR",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Obligatoire",
+          "duree_estimee": "15min",
+          "outils": "Multimètre",
+          "modele_cr": "Alimentation au bornier BAC OK",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Vérifications Alimentation Ligne 1",
+          "description": "",
+          "criteres_controle": [
+            {
+              "texte": "P1",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "P2",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "T13",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Obligatoire",
+          "duree_estimee": "10min",
+          "outils": "Multimètre",
+          "modele_cr": "Alimentation au bornier BAC OK",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Vérifications Alimentation Ligne 2",
+          "description": "",
+          "criteres_controle": [
+            {
+              "texte": "P1",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "P2",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "T13",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Obligatoire",
+          "duree_estimee": "10min",
+          "outils": "Multimètre",
+          "modele_cr": "Alimentation au bornier BAC OK",
+          "pieces_jointes": []
+        }
+      ],
+      "icon": "ELECTRICAL_SERVICES"
+    },
+    {
+      "id": "cat_3",
+      "name": "MES Equipements",
+      "description": "",
+      "icon": "CABLE",
+      "expanded": true,
+      "steps": [
+        {
+          "name": "Alimentation chaque MCB Switches",
+          "description": "A réaliser sur chaque MCB des switches",
+          "criteres_controle": [
+            {
+              "texte": "LED verte MCB",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Verouiller Manoeuvre (led clignotante)",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Dévérouiller",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Fermeture MCB",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Equipement alimenté",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Obligatoire",
+          "duree_estimee": "30min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Vérification FO entre switches",
+          "description": "Vérifier que chaque switches communiquent selon le schéma réseau",
+          "criteres_controle": [
+            {
+              "texte": "SWCA => SWT*A",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "SWCB => SWT*B",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Obligatoire",
+          "duree_estimee": "30min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Alimentation de l'horloge",
+          "description": "",
+          "criteres_controle": [
+            {
+              "texte": "LED verte MCB",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Verouiller Manoeuvre (led clignotante)",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Dévérouiller",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Equipement alimenté",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Fermeture MCB",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Antenne correctement raccordé",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "3FO + 1RJ45",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Obligatoire",
+          "duree_estimee": "30min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Alimentation Onduleur + PC LOCAUX",
+          "description": "",
+          "criteres_controle": [
+            {
+              "texte": "Onduleur alimenté",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Prises secourues avec détrompeur",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "PC LOCAL A démarre automatiquement",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "PC LOCAL B démarre automatiquement",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Obligatoire",
+          "duree_estimee": "10min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Alimentation chaque MCB Hyperviseurs",
+          "description": "A réaliser sur chaque MCB Hyperviseurs",
+          "criteres_controle": [
+            {
+              "texte": "LED verte MCB",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Verouiller Manoeuvre (led clignotante)",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Dévérouiller",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Fermeture MCB",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Equipement alimenté",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Hyperviseur démarre automatiquement",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Obligatoire",
+          "duree_estimee": "30min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Alimentation MCB SCU3TG",
+          "description": "SCU MCB",
+          "criteres_controle": [
+            {
+              "texte": "LED verte MCB",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Verouiller Manoeuvre (led clignotante)",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Dévérouiller",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Fermeture MCB",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Equipement alimenté",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Recommandé",
+          "duree_estimee": "5min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Connexion au PO",
+          "description": "",
+          "criteres_controle": [
+            {
+              "texte": "Connexion au PC",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Ouvrir VM PCPROD",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Démarrer Firefox",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Se Connecter Au PO",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Recommandé",
+          "duree_estimee": "5min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Alimentation IED TG",
+          "description": "A l'aide du PO et des MCB alimenter les IED de la TG",
+          "criteres_controle": [
+            {
+              "texte": "MCB fermé",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "IED connecté au PO",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "IED présent sur la vue système site",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Vérification fibre LAN B",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Vérification fibre LAN A",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Recommandé",
+          "duree_estimee": "15min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Alimentation IED CBO",
+          "description": "A l'aide du PO et des MCB alimenter les IED de la TG",
+          "criteres_controle": [
+            {
+              "texte": "MCB fermé",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "IED connecté au PO",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "IED présent sur la vue système site",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Vérification fibre LAN B",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Vérification fibre LAN A",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Recommandé",
+          "duree_estimee": "15min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Alimentation MCB SCU1 L1",
+          "description": "SCU MCB",
+          "criteres_controle": [
+            {
+              "texte": "LED verte MCB",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Verouiller Manoeuvre (led clignotante)",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Dévérouiller",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Fermeture MCB",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Equipement alimenté",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Recommandé",
+          "duree_estimee": "5min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Alimentation IED L1",
+          "description": "A l'aide du PO et des MCB alimenter les IED de la L1 ",
+          "criteres_controle": [
+            {
+              "texte": "MCB fermé",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "IED connecté au PO",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "IED présent sur la vue système site",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Vérification fibre LAN B",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Vérification fibre LAN A",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Recommandé",
+          "duree_estimee": "15min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Alimentation MCB SCU1 L2",
+          "description": "SCU MCB",
+          "criteres_controle": [
+            {
+              "texte": "LED verte MCB",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Verouiller Manoeuvre (led clignotante)",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Dévérouiller",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Fermeture MCB",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Equipement alimenté",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Recommandé",
+          "duree_estimee": "5min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Alimentation IED L2",
+          "description": "A l'aide du PO et des MCB alimenter les IED de la L2",
+          "criteres_controle": [
+            {
+              "texte": "MCB fermé",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "IED connecté au PO",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "IED présent sur la vue système site",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Vérification fibre LAN B",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Vérification fibre LAN A",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Recommandé",
+          "duree_estimee": "15min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        }
+      ]
+    },
+    {
+      "id": "cat_1",
+      "name": "Réseau ",
+      "description": "",
+      "expanded": true,
+      "steps": [
+        {
+          "name": "Vérification Lan Production",
+          "description": "Vérifier chaque port visuellement sur la face avant des switches à l'aide du schéma réseau",
+          "criteres_controle": [
+            {
+              "texte": "SWCA",
+              "type_resultat": "Case",
+              "photo_requise": false
+            },
+            {
+              "texte": "SWCB",
+              "type_resultat": "Case",
+              "photo_requise": false
+            },
+            {
+              "texte": "SWT*A",
+              "type_resultat": "Case",
+              "photo_requise": false
+            },
+            {
+              "texte": "SWT*B",
+              "type_resultat": "Case",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Recommandé",
+          "duree_estimee": "20min",
+          "outils": "",
+          "modele_cr": "Tous les ports des switches sont allumés et connectés",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Vérification Lan Administration",
+          "description": "Vérifier chaque port visuellement sur la face avant des switches à l'aide du schéma réseau",
+          "criteres_controle": [
+            {
+              "texte": "SWRSAF1",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "SWRSADMINC",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "SWRSADMINT*",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Recommandé",
+          "duree_estimee": "20min",
+          "outils": "",
+          "modele_cr": "Tous les ports des switches sont allumés et connectés",
+          "pieces_jointes": []
+        },
+        {
+          "name": "Vérification Synchronisation",
+          "description": "",
+          "criteres_controle": [
+            {
+              "texte": "Vue sy,chronisation PO",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "IEDs en global",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            },
+            {
+              "texte": "Tous les IEDs ont la même horloge",
+              "type_resultat": "OK/NOK",
+              "photo_requise": false
+            }
+          ],
+          "type_resultat": "OK/NOK",
+          "criticite": "Recommandé",
+          "duree_estimee": "5min",
+          "outils": "",
+          "modele_cr": "",
+          "pieces_jointes": []
+        }
+      ],
+      "icon": "NETWORK_CHECK"
+    }
+  ]
+}

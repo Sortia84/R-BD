@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>R#BD — Éditeur de test</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/templates.css" />
+    <link rel="stylesheet" href="../css/editor.css" />
+    <script src="../js/header-loader.js"></script>
+</head>
+
+<body>
+    <!-- Header chargé dynamiquement -->
+
+    <main class="guide-main">
+        <section class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2>Éditeur de test</h2>
+                    <p class="muted">Créez ou modifiez un test RU/MVS/CVS</p>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-secondary" onclick="window.history.back()">
+                        ← Retour
+                    </button>
+                    <button class="btn btn-primary" onclick="saveTest()">
+                        💾 Sauvegarder
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Identification -->
+        <section class="card">
+            <div class="card-header">
+                <h3 style="margin: 0;">Identification du test</h3>
+            </div>
+            <div class="divider"></div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>ID (auto)</label>
+                    <input type="text" id="test-id" class="form-input" placeholder="Auto: RU-XXXXXX" readonly>
+                    <div class="field-hint">Généré automatiquement (ID aléatoire)</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Nom du test</label>
+                    <input type="text" id="test-name" class="form-input" placeholder="Nom du test">
+                </div>
+
+                <div class="form-group">
+                    <label>IED</label>
+                    <select id="test-ied" class="form-input">
+                        <option value="">Sélectionner un IED</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>LD</label>
+                    <select id="test-ld" class="form-input">
+                        <option value="">Sélectionner un LD</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>LN</label>
+                    <select id="test-ln" class="form-input">
+                        <option value="">Sélectionner un LN</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>LNinst</label>
+                    <select id="test-lninst" class="form-input">
+                        <option value="">Sélectionner LNinst</option>
+                    </select>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Section Description / Préconditions / Éléments liés (compact) -->
+        <section class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0;">Description, préconditions & éléments liés</h3>
+            </div>
+            <div class="divider"></div>
+
+            <div class="compact-row">
+                <!-- Description -->
+                <div class="compact-col">
+                    <label class="form-label">Description</label>
+                    <textarea id="test-description" class="form-input description-input" rows="6"
+                        placeholder="Description détaillée du test"></textarea>
+                </div>
+
+                <!-- Préconditions -->
+                <div class="compact-col">
+                    <label class="form-label">Préconditions</label>
+                    <div class="compact-actions">
+                        <button class="btn-icon-add" onclick="addPrecondition()">
+                            ➕ Précondition
+                        </button>
+                    </div>
+                    <div id="preconditions-container" class="compact-list">
+                        <p class="text-muted precondition-empty" id="no-preconditions">Aucune précondition</p>
+                    </div>
+                </div>
+
+                <!-- Éléments liés -->
+                <div class="compact-col">
+                    <label class="form-label">Éléments liés</label>
+                    <div class="linked-tests-zone compact-links">
+                        <div class="compact-links-row">
+                            <div class="file-upload-zone compact-upload"
+                                onclick="document.getElementById('file-input').click()">
+                                <div class="compact-upload-content">
+                                    <span class="compact-upload-icon">📁</span>
+                                    <span>Fichier</span>
+                                </div>
+                            </div>
+                            <button class="btn-link-test" onclick="linkTestRU()">➕ RU</button>
+                            <button class="btn-link-test" onclick="linkTestMVS()">➕ MVS</button>
+                            <button class="btn-link-test" onclick="linkTestCVS()">➕ CVS</button>
+                        </div>
+                        <input type="file" id="file-input" multiple style="display: none;"
+                            onchange="handleFileUpload(event)">
+                        <div id="files-list" class="compact-list"></div>
+                        <div id="tests-ru-list" class="compact-list"></div>
+                        <div id="tests-mvs-list" class="compact-list"></div>
+                        <div id="tests-cvs-list" class="compact-list"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Étapes du test -->
+        <section class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0;">Étapes du test</h3>
+                <button class="btn-icon-add" onclick="addStep()">
+                    ➕ Étape
+                </button>
+            </div>
+            <div class="divider"></div>
+
+            <div id="steps-container">
+                <!-- Étapes ajoutées dynamiquement -->
+                <p class="text-muted" id="no-steps">Aucune étape. Cliquez sur "➕ Étape" pour en ajouter.</p>
+            </div>
+        </section>
+
+        <!-- Section Chronogramme -->
+        <section class="card">
+            <div class="card-header">
+                <h3 style="margin: 0;">Chronogramme</h3>
+                <p class="muted" style="margin: 4px 0 0 0;">Généré automatiquement à partir des étapes</p>
+            </div>
+            <div class="divider"></div>
+
+            <div id="chronogram-container"
+                style="min-height: 200px; background: #f8f9fa; border-radius: 8px; padding: 20px; text-align: center; color: var(--muted);">
+                <p style="margin: 0;">Le chronogramme sera généré automatiquement dès que vous ajouterez des étapes</p>
+            </div>
+        </section>
+
+        <!-- Section Informations -->
+        <section class="card">
+            <div class="card-header">
+                <h3 style="margin: 0;">Informations complémentaires</h3>
+            </div>
+            <div class="divider"></div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+                <!-- CDE -->
+                <div>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <label class="form-label">📊 Informations CDE</label>
+                        <button class="btn-icon-small" onclick="addCDE()">➕</button>
+                    </div>
+                    <div id="cde-container">
+                        <p class="text-muted-small">Aucun CDE ajouté</p>
+                    </div>
+                </div>
+
+                <!-- Alarmes -->
+                <div>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <label class="form-label">⚠️ Alarmes</label>
+                        <button class="btn-icon-small" onclick="addAlarme()">➕</button>
+                    </div>
+                    <div id="alarmes-container">
+                        <p class="text-muted-small">Aucune alarme ajoutée</p>
+                    </div>
+                </div>
+
+                <!-- Informations TCD -->
+                <div>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <label class="form-label">ℹ️ Informations TCD</label>
+                        <button class="btn-icon-small" onclick="addTCD()">➕</button>
+                    </div>
+                    <div id="tcd-container">
+                        <p class="text-muted-small">Aucune information TCD</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Boutons de sauvegarde -->
+        <section class="card" style="display: flex; justify-content: space-between; align-items: center;">
+            <button class="btn btn-secondary" onclick="window.history.back()">
+                ← Annuler
+            </button>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-secondary" onclick="previewTest()">
+                    👁️ Prévisualiser
+                </button>
+                <button class="btn btn-primary" onclick="saveTest()">
+                    💾 Sauvegarder le test
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/test-editor.js"></script>
+    <script>
+        loadHeader({
+            activePage: 'templates-ru',
+            title: 'R#BD — Éditeur de test'
+        });
+
+        // Initialiser l'éditeur
+        document.addEventListener('DOMContentLoaded', () => {
+            initEditor();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>R#BD — Templates RU</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/templates.css" />
+    <script src="../js/header-loader.js"></script>
+</head>
+
+<body>
+    <!-- Header chargé dynamiquement -->
+
+    <main class="guide-main">
+        <section class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2>Tests Recette Usine</h2>
+                    <p class="muted">Gérez les tests pour les recettes usine R#SPACE</p>
+                </div>
+                <button class="btn btn-primary" onclick="createNewTest()">
+                    ➕ Nouveau test
+                </button>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <h3 style="margin: 0 0 8px 0;">📋 Liste des tests</h3>
+                <p class="muted" style="margin: 0;">Cliquez sur un test pour l'éditer</p>
+            </div>
+            <div class="divider"></div>
+
+            <div id="templates-list" class="templates-grid">
+                <!-- Généré dynamiquement par JavaScript -->
+                <div style="text-align: center; padding: 40px; color: var(--muted);">
+                    <p style="font-size: 48px; margin: 0;">📦</p>
+                    <p style="margin: 16px 0 0 0;">Aucun test disponible</p>
+                    <p style="margin: 8px 0 0 0; font-size: 14px;">Cliquez sur "Nouveau test" pour commencer</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <h3 style="margin: 0 0 8px 0;">💡 Guide rapide</h3>
+            </div>
+            <div class="divider"></div>
+            <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+                <li><strong>Créer un test :</strong> Définissez les étapes et conditions à effectuer</li>
+                <li><strong>Wildcards :</strong> Utilisez <code>*</code> pour matcher plusieurs LN (ex:
+                    <code>PDIS*</code> → PDIS1, PDIS2...)
+                </li>
+                <li><strong>Export :</strong> Téléchargez vos templates en JSON pour les partager</li>
+                <li><strong>Import :</strong> Chargez des templates existants depuis votre ordinateur</li>
+            </ul>
+        </section>
+    </main>
+
+    <script src="../js/template-manager.js"></script>
+    <script src="../js/templates-ru.js"></script>
+    <script>
+        loadHeader({
+            activePage: 'templates-ru',
+            title: 'R#BD — Templates RU',
+            subtitle: 'Recette Usine'
+        });
+
+        // Charger les templates au chargement de la page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTemplatesList();
+        });
+    </script>
+</body>
+
+</html>

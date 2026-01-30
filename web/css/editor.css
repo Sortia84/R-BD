@@ -1,0 +1,536 @@
+/* editor.css - Styles pour l'éditeur de tests */
+
+/* Grille de formulaire */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.field-hint {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text);
+    display: block;
+    margin-bottom: 8px;
+}
+
+.form-input,
+.form-select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--card);
+    color: var(--text);
+    transition: border-color 0.2s;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0, 167, 222, 0.1);
+}
+
+textarea.form-input {
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+}
+
+.description-input {
+    min-height: 140px;
+}
+
+/* Boutons icônes */
+.btn-icon-add {
+    border: none;
+    background: var(--accent);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-icon-add:hover {
+    background: var(--accent-dark);
+}
+
+.btn-icon-small {
+    border: none;
+    background: var(--accent);
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.btn-icon-small:hover {
+    background: var(--accent-dark);
+}
+
+/* Préconditions */
+.precondition-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+    background: var(--bg);
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.precondition-item input {
+    flex: 1;
+}
+
+.precondition-item select {
+    width: 120px;
+}
+
+.empty-action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 0;
+}
+
+.btn-remove {
+    border: none;
+    background: var(--danger);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-remove:hover {
+    background: #b91c1c;
+}
+
+/* Zone d'upload de fichiers */
+.file-upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--card);
+}
+
+.file-upload-zone:hover {
+    border-color: var(--accent);
+    background: rgba(0, 167, 222, 0.05);
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--bg);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.file-item-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.file-item-size {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* Tests liés */
+.linked-tests-zone {
+    min-height: 100px;
+}
+
+.btn-link-test {
+    width: 100%;
+    border: 2px dashed var(--border);
+    background: transparent;
+    color: var(--accent);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-link-test:hover {
+    border-color: var(--accent);
+    background: rgba(0, 167, 222, 0.05);
+}
+
+.linked-test-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(0, 167, 222, 0.1);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+/* Étapes du test */
+.step-item {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border-left: 4px solid var(--accent);
+}
+
+.step-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.step-number {
+    background: var(--accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.step-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-move {
+    border: none;
+    background: var(--muted);
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-move:hover {
+    background: var(--text);
+}
+
+.step-fields {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr 1.4fr;
+    gap: 12px;
+}
+
+.inline-hidden {
+    display: none;
+}
+
+.step-inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.step-inline .form-input {
+    min-width: 80px;
+}
+
+/* Informations complémentaires (CDE, Alarmes, TCD) */
+.info-item {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 8px;
+    background: var(--bg);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.info-item input {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.info-item select {
+    width: 100px;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+/* Textes helpers */
+.text-muted {
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+    padding: 20px;
+}
+
+.text-muted-small {
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+    padding: 12px;
+    font-style: italic;
+}
+
+/* Checkbox custom */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.checkbox-group label {
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .step-fields {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Compact row section */
+.compact-row {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1.2fr;
+    gap: 16px;
+    align-items: start;
+}
+
+.compact-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.compact-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.compact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.compact-upload {
+    padding: 10px;
+}
+
+.compact-upload-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.compact-upload-icon {
+    font-size: 18px;
+}
+
+.compact-links .btn-link-test {
+    padding: 10px;
+    font-size: 12px;
+    width: 92px;
+    max-width: 92px;
+    height: 38px;
+}
+
+.compact-links-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.compact-links-row .file-upload-zone {
+    width: 92px;
+    max-width: 92px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.compact-links-row .compact-upload {
+    padding: 6px;
+}
+
+.chronogram {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chrono-body {
+    display: grid;
+    grid-template-columns: 32px 1fr 28px;
+    gap: 12px;
+    align-items: stretch;
+}
+
+.chrono-yaxis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-weight: 600;
+    color: var(--muted);
+    height: 60px;
+    padding: 4px 0;
+}
+
+.chrono-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.chrono-track {
+    display: flex;
+    align-items: stretch;
+    height: 60px;
+    background: #eef2f7;
+    border-radius: 8px;
+    padding: 4px 6px;
+    position: relative;
+}
+
+.chrono-track::before,
+.chrono-track::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    height: 1px;
+    background: #b6c2d1;
+}
+
+.chrono-track::before {
+    top: 10px;
+}
+
+.chrono-track::after {
+    bottom: 10px;
+}
+
+.chrono-segment {
+    position: relative;
+    height: 100%;
+}
+
+.chrono-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 4px;
+    opacity: 0.85;
+}
+
+.chrono-line.top {
+    top: 10px;
+}
+
+.chrono-line.bottom {
+    bottom: 10px;
+}
+
+.chrono-separator {
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: #94a3b8;
+    opacity: 0.9;
+}
+
+.chrono-xaxis {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.chrono-label {
+    text-align: center;
+}
+
+.chrono-total {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--muted);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+}
