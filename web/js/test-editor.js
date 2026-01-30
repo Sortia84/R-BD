@@ -82,14 +82,10 @@ function setupTypeSelector() {
 
 function refreshTypeLabels() {
     const title = document.getElementById('editor-title');
-    const subtitle = document.getElementById('editor-subtitle');
-    const prefix = TYPE_PREFIX[selectedType] || 'RU';
     if (title) {
-        title.textContent = `Éditeur de test ${prefix}`;
+        title.textContent = 'Éditeur de test';
     }
-    if (subtitle) {
-        subtitle.textContent = `Créez ou modifiez un test ${prefix}`;
-    }
+
 }
 
 /**
