@@ -41,6 +41,91 @@ class TemplateManager {
     }
 
     /**
+     * Vérifie si une valeur correspond à un pattern avec wildcard (*, ?)
+     */
+    matchPattern(value, pattern) {
+        if (!pattern || pattern === '*') {
+            return true;
+        }
+
+        const safeValue = String(value || '');
+        const patterns = this.expandPatternList(pattern);
+
+        if (!patterns.length) {
+            return true;
+        }
+
+        const includes = patterns.filter(item => !item.exclude);
+        const excludes = patterns.filter(item => item.exclude);
+
+        if (excludes.some(item => this.matchSinglePattern(safeValue, item.pattern))) {
+            return false;
+        }
+
+        if (includes.length === 0) {
+            return true;
+        }
+
+        return includes.some(item => this.matchSinglePattern(safeValue, item.pattern));
+    }
+
+    expandPatternList(pattern) {
+        const raw = String(pattern)
+            .split(/[,;\s]+/)
+            .map(item => item.trim())
+            .filter(Boolean);
+
+        return raw.flatMap(item => {
+            const exclude = item.startsWith('!') || item.startsWith('-');
+            const cleaned = exclude ? item.slice(1) : item;
+            const expanded = this.expandRangePattern(cleaned);
+            return expanded.map(entry => ({ pattern: entry, exclude }));
+        });
+    }
+
+    expandRangePattern(pattern) {
+        const match = pattern.match(/^(.*?)(\d+)-(\d+)(.*?)$/i);
+        if (!match) {
+            return [pattern];
+        }
+
+        const [, prefix, start, end, suffix] = match;
+        const startNum = Number(start);
+        const endNum = Number(end);
+
+        if (Number.isNaN(startNum) || Number.isNaN(endNum)) {
+            return [pattern];
+        }
+
+        const range = [];
+        const step = startNum <= endNum ? 1 : -1;
+        for (let i = startNum; step > 0 ? i <= endNum : i >= endNum; i += step) {
+            range.push(`${prefix}${i}${suffix}`);
+        }
+        return range;
+    }
+
+    matchSinglePattern(value, pattern) {
+        if (!pattern || pattern === '*') {
+            return true;
+        }
+        const escaped = String(pattern).replace(/[.+^${}()|[\]\\]/g, '\\$&');
+        const regexPattern = `^${escaped.replace(/\*/g, '.*').replace(/\?/g, '.')}$`;
+        const regex = new RegExp(regexPattern, 'i');
+        return regex.test(String(value || ''));
+    }
+
+    /**
+     * Vérifie un match IED/LD/LN/LNinst avec wildcards
+     */
+    matchHierarchy({ ied, ld, ln, lninst }, { iedPattern, ldPattern, lnPattern, lninstPattern }) {
+        return this.matchPattern(ied, iedPattern)
+            && this.matchPattern(ld, ldPattern)
+            && this.matchPattern(ln, lnPattern)
+            && this.matchPattern(lninst, lninstPattern);
+    }
+
+    /**
      * Charge un template spécifique
      */
     getTemplate(templateId) {

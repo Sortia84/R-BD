@@ -22,14 +22,22 @@ let currentTest = {
 let stepCounter = 1;
 let isEditing = false;
 
-const TESTS_KEY = 'tests_ru';
+const TYPE_PREFIX = {
+    ru: 'RU',
+    mvs: 'MVS',
+    cvs: 'CVS'
+};
 
-function getSavedTests() {
-    return JSON.parse(localStorage.getItem(TESTS_KEY) || '[]');
+const queryParams = new URLSearchParams(window.location.search);
+let selectedType = (queryParams.get('type') || 'ru').toLowerCase();
+let originalType = selectedType;
+
+function getSavedTests(type = selectedType) {
+    return JSON.parse(localStorage.getItem(`tests_${type}`) || '[]');
 }
 
-function setSavedTests(tests) {
-    localStorage.setItem(TESTS_KEY, JSON.stringify(tests));
+function setSavedTests(type, tests) {
+    localStorage.setItem(`tests_${type}`, JSON.stringify(tests));
 }
 
 /**
@@ -37,9 +45,11 @@ function setSavedTests(tests) {
  */
 function initEditor() {
     // Charger les IEDs depuis le SCD si disponible
-    loadIEDsFromSCD();
+    loadReferenceLists();
 
+    setupTypeSelector();
     ensureRandomId();
+    refreshTypeLabels();
 
     // Si on édite un test existant, charger ses données
     const testId = new URLSearchParams(window.location.search).get('id');
@@ -48,22 +58,80 @@ function initEditor() {
     }
 }
 
+function setupTypeSelector() {
+    const typeSelect = document.getElementById('test-type');
+    if (!typeSelect) {
+        return;
+    }
+
+    typeSelect.value = selectedType;
+    typeSelect.addEventListener('change', (event) => {
+        const newType = (event.target.value || 'ru').toLowerCase();
+        if (newType === selectedType) {
+            return;
+        }
+        selectedType = newType;
+        currentTest.type = selectedType;
+        if (!isEditing) {
+            currentTest.id = '';
+            ensureRandomId();
+        }
+        refreshTypeLabels();
+    });
+}
+
+function refreshTypeLabels() {
+    const title = document.getElementById('editor-title');
+    const subtitle = document.getElementById('editor-subtitle');
+    const prefix = TYPE_PREFIX[selectedType] || 'RU';
+    if (title) {
+        title.textContent = `Éditeur de test ${prefix}`;
+    }
+    if (subtitle) {
+        subtitle.textContent = `Créez ou modifiez un test ${prefix}`;
+    }
+}
+
 /**
  * Charge les IEDs depuis l'analyse SCD
  */
-function loadIEDsFromSCD() {
-    // TODO: Charger depuis R#GUIDE ou fichier SCD
+async function loadReferenceLists() {
     const iedSelect = document.getElementById('test-ied');
+    const ldSelect = document.getElementById('test-ld');
+    const lnSelect = document.getElementById('test-ln');
+    const lninstSelect = document.getElementById('test-lninst');
 
-    // Exemple de données (à remplacer par vraies données)
-    const ieds = ['IED_PROT', 'IED_AUTO', 'IED_MESURE'];
+    await Promise.all([
+        loadList('/data/ied/liste_ied.json', iedSelect),
+        loadList('/data/ld/liste_ld.json', ldSelect),
+        loadList('/data/ln/liste_ln.json', lnSelect),
+        loadList('/data/ln/liste_ln.json', lninstSelect)
+    ]);
+}
 
-    ieds.forEach(ied => {
-        const option = document.createElement('option');
-        option.value = ied;
-        option.textContent = ied;
-        iedSelect.appendChild(option);
-    });
+async function loadList(url, selectElement) {
+    if (!selectElement) {
+        return;
+    }
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            return;
+        }
+        const items = await response.json();
+        if (!Array.isArray(items)) {
+            return;
+        }
+        items.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item;
+            option.textContent = item;
+            selectElement.appendChild(option);
+        });
+    } catch (error) {
+        console.warn(`Impossible de charger ${url}`, error);
+    }
 }
 
 /**
@@ -75,7 +143,8 @@ function ensureRandomId() {
     }
 
     if (!currentTest.id) {
-        const uniqueId = makeUniqueId(`RU-${generateRandomId()}`);
+        const prefix = TYPE_PREFIX[selectedType] || 'RU';
+        const uniqueId = makeUniqueId(`${prefix}-${generateRandomId()}`, selectedType);
         currentTest.id = uniqueId;
     }
 
@@ -89,8 +158,8 @@ function generateRandomId() {
     return Math.random().toString(36).slice(2, 8).toUpperCase();
 }
 
-function makeUniqueId(baseId) {
-    const tests = getSavedTests();
+function makeUniqueId(baseId, type = selectedType) {
+    const tests = getSavedTests(type);
     if (!tests.find(t => t.id === baseId)) {
         return baseId;
     }
@@ -108,7 +177,7 @@ function makeUniqueId(baseId) {
  * Charge un test existant
  */
 function loadTest(testId) {
-    const tests = getSavedTests();
+    const tests = getSavedTests(selectedType);
     const test = tests.find(t => t.id === testId);
     if (!test) {
         alert('❌ Test introuvable');
@@ -116,9 +185,17 @@ function loadTest(testId) {
     }
 
     isEditing = true;
+    selectedType = (test.type || selectedType).toLowerCase();
+    originalType = selectedType;
+    const typeSelect = document.getElementById('test-type');
+    if (typeSelect) {
+        typeSelect.value = selectedType;
+    }
+
     currentTest = {
         ...currentTest,
         ...test,
+        type: selectedType,
         preconditions: test.preconditions || [],
         files: test.files || [],
         linked_tests_ru: test.linked_tests_ru || [],
@@ -137,6 +214,8 @@ function loadTest(testId) {
     document.getElementById('test-ln').value = currentTest.ln || '';
     document.getElementById('test-lninst').value = currentTest.lninst || '';
     document.getElementById('test-description').value = currentTest.description || '';
+
+    refreshTypeLabels();
 
     renderPreconditions();
     renderFiles();
@@ -919,6 +998,7 @@ function previewTest() {
  */
 function collectFormData() {
     currentTest.id = document.getElementById('test-id').value;
+    currentTest.type = (document.getElementById('test-type')?.value || selectedType).toLowerCase();
     currentTest.name = document.getElementById('test-name').value;
     currentTest.ied = document.getElementById('test-ied').value;
     currentTest.ld = document.getElementById('test-ld').value;
@@ -931,8 +1011,12 @@ function collectFormData() {
  * Sauvegarde le test
  */
 function saveTest() {
+    const selectedValue = (document.getElementById('test-type')?.value || selectedType).toLowerCase();
+    selectedType = selectedValue;
+
     if (!currentTest.id) {
-        const uniqueId = makeUniqueId(`RU-${generateRandomId()}`);
+        const prefix = TYPE_PREFIX[selectedType] || 'RU';
+        const uniqueId = makeUniqueId(`${prefix}-${generateRandomId()}`, selectedType);
         currentTest.id = uniqueId;
         const idInput = document.getElementById('test-id');
         if (idInput) {
@@ -941,6 +1025,7 @@ function saveTest() {
     }
 
     collectFormData();
+    currentTest.type = selectedType;
 
     // Validation
     if (!currentTest.id || !currentTest.name) {
@@ -949,7 +1034,7 @@ function saveTest() {
     }
 
     // Sauvegarder dans localStorage
-    const tests = getSavedTests();
+    const tests = getSavedTests(selectedType);
     const existingIndex = tests.findIndex(t => t.id === currentTest.id);
 
     if (existingIndex >= 0) {
@@ -958,8 +1043,16 @@ function saveTest() {
         tests.push(currentTest);
     }
 
-    setSavedTests(tests);
+    setSavedTests(selectedType, tests);
+
+    if (originalType && originalType !== selectedType) {
+        const previousTests = getSavedTests(originalType);
+        const updatedPrevious = previousTests.filter(t => t.id !== currentTest.id);
+        setSavedTests(originalType, updatedPrevious);
+        originalType = selectedType;
+    }
 
     alert('✅ Test sauvegardé avec succès !');
-    window.location.href = './templates-ru.html';
+    const targetPage = './templates-essais.html';
+    window.location.href = targetPage;
 }

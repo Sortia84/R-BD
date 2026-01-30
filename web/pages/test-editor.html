@@ -18,8 +18,8 @@
         <section class="card">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <h2>Éditeur de test</h2>
-                    <p class="muted">Créez ou modifiez un test RU/MVS/CVS</p>
+                    <h2 id="editor-title">Éditeur de test</h2>
+                    <p class="muted" id="editor-subtitle">Créez ou modifiez un test RU/MVS/CVS</p>
                 </div>
                 <div style="display: flex; gap: 12px;">
                     <button class="btn btn-secondary" onclick="window.history.back()">
@@ -44,6 +44,16 @@
                     <label>ID (auto)</label>
                     <input type="text" id="test-id" class="form-input" placeholder="Auto: RU-XXXXXX" readonly>
                     <div class="field-hint">Généré automatiquement (ID aléatoire)</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Type d'essai</label>
+                    <select id="test-type" class="form-input">
+                        <option value="ru">RU</option>
+                        <option value="cvs">CVS</option>
+                        <option value="mvs">MVS</option>
+                    </select>
+                    <div class="field-hint">Définit la catégorie du test</div>
                 </div>
 
                 <div class="form-group">
@@ -232,7 +242,7 @@
     <script src="../js/test-editor.js"></script>
     <script>
         loadHeader({
-            activePage: 'templates-ru',
+            activePage: 'templates-essais',
             title: 'R#BD — Éditeur de test'
         });
 

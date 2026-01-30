@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>R#BD — Template Essais</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/templates.css" />
+    <script src="../js/header-loader.js"></script>
+</head>
+
+<body>
+    <!-- Header chargé dynamiquement -->
+
+    <main class="guide-main">
+        <section class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 id="tests-title">Template Essais</h2>
+                    <p class="muted" id="tests-subtitle">Centralisez vos essais RU / CVS / MVS dans une seule vue</p>
+                </div>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <select id="create-type" class="filter-select">
+                        <option value="ru">RU</option>
+                        <option value="cvs">CVS</option>
+                        <option value="mvs">MVS</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="createNewTest()">
+                        ➕ Nouveau test
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <h3 style="margin: 0 0 8px 0;">🔎 Filtres</h3>
+                <p class="muted" style="margin: 0;">Affinez la liste par type, IED, LD ou LN</p>
+            </div>
+            <div class="divider"></div>
+
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <label for="filter-type">Type d'essai</label>
+                    <select id="filter-type" class="filter-select">
+                        <option value="all">Tous</option>
+                        <option value="ru">RU</option>
+                        <option value="cvs">CVS</option>
+                        <option value="mvs">MVS</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-ied">IED</label>
+                    <select id="filter-ied" class="filter-select">
+                        <option value="">Tous</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-ld">LD</label>
+                    <select id="filter-ld" class="filter-select">
+                        <option value="">Tous</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-ln">LN</label>
+                    <select id="filter-ln" class="filter-select">
+                        <option value="">Tous</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-secondary" onclick="resetFilters()">Réinitialiser</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <h3 style="margin: 0 0 8px 0;">📋 Liste des essais</h3>
+                <p class="muted" style="margin: 0;">Cliquez sur un essai pour l'éditer</p>
+            </div>
+            <div class="divider"></div>
+
+            <div id="templates-list" class="templates-grid">
+                <div style="text-align: center; padding: 40px; color: var(--muted);">
+                    <p style="font-size: 48px; margin: 0;">📦</p>
+                    <p style="margin: 16px 0 0 0;">Aucun essai disponible</p>
+                    <p style="margin: 8px 0 0 0; font-size: 14px;">Cliquez sur "Nouveau test" pour commencer</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="../js/template-manager.js"></script>
+    <script src="../js/templates-essais.js"></script>
+    <script>
+        loadHeader({
+            activePage: 'templates-essais',
+            title: 'R#BD — Template Essais'
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTemplatesPage();
+        });
+    </script>
+</body>
+
+</html>

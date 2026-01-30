@@ -22,10 +22,10 @@
             <div>
                 <h3 style="margin-top: 0;">📋 Templates disponibles</h3>
                 <div
-                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 16px;">
+                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-top: 16px;">
 
-                    <!-- Card Templates RU -->
-                    <a href="./web/pages/templates-ru.html" style="text-decoration: none;">
+                    <!-- Card Template Essais -->
+                    <a href="./web/pages/templates-essais.html" style="text-decoration: none;">
                         <div class="card"
                             style="border: 2px solid var(--accent); cursor: pointer; transition: transform 0.2s;">
                             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
@@ -34,14 +34,31 @@
                                     🧪
                                 </div>
                                 <div>
-                                    <h3 style="margin: 0; color: var(--accent);">Templates RU</h3>
-                                    <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--muted);">Recette Usine
+                                    <h3 style="margin: 0; color: var(--accent);">Template Essais</h3>
+                                    <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--muted);">RU / CVS / MVS
                                     </p>
                                 </div>
                             </div>
-                            <p style="margin: 0; font-size: 14px; color: var(--muted);">
-                                Gérez les templates de tests pour les recettes usine IEC 61850
+                            <p style="margin: 0 0 10px 0; font-size: 14px; color: var(--muted);">
+                                Centralisez les essais Recette Usine, CVS et MVS
                             </p>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <span id="stat-total-tests"
+                                    style="background: #e8f2ff; color: #2563eb; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;">0
+                                    tests</span>
+                                <span id="stat-total-steps"
+                                    style="background: #eef2f7; color: var(--muted); padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;">0
+                                    étapes</span>
+                                <span id="stat-ru-tests"
+                                    style="background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;">RU:
+                                    0</span>
+                                <span id="stat-cvs-tests"
+                                    style="background: #f0f9ff; color: #0369a1; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;">CVS:
+                                    0</span>
+                                <span id="stat-mvs-tests"
+                                    style="background: #eef2ff; color: #4338ca; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;">MVS:
+                                    0</span>
+                            </div>
                         </div>
                     </a>
 
@@ -53,46 +70,12 @@
                                 📝
                             </div>
                             <div>
-                                <h3 style="margin: 0; color: var(--muted);">Templates Visite</h3>
+                                <h3 style="margin: 0; color: var(--muted);">Tests Visite</h3>
                                 <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--muted);">À venir</p>
                             </div>
                         </div>
                         <p style="margin: 0; font-size: 14px; color: var(--muted);">
-                            Templates de checklist pour les visites de site
-                        </p>
-                    </div>
-
-                    <!-- Card Templates CVS (à venir) -->
-                    <div class="card" style="border: 2px solid var(--border); opacity: 0.6; cursor: not-allowed;">
-                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                            <div
-                                style="width: 48px; height: 48px; background: var(--muted); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
-                                ✅
-                            </div>
-                            <div>
-                                <h3 style="margin: 0; color: var(--muted);">Templates CVS</h3>
-                                <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--muted);">À venir</p>
-                            </div>
-                        </div>
-                        <p style="margin: 0; font-size: 14px; color: var(--muted);">
-                            Templates pour Contrôle Validation Site
-                        </p>
-                    </div>
-
-                    <!-- Card Templates MVS (à venir) -->
-                    <div class="card" style="border: 2px solid var(--border); opacity: 0.6; cursor: not-allowed;">
-                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                            <div
-                                style="width: 48px; height: 48px; background: var(--muted); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
-                                🔄
-                            </div>
-                            <div>
-                                <h3 style="margin: 0; color: var(--muted);">Templates MVS</h3>
-                                <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--muted);">À venir</p>
-                            </div>
-                        </div>
-                        <p style="margin: 0; font-size: 14px; color: var(--muted);">
-                            Templates pour Montée Version Système
+                            Tests de checklist pour les visites de site
                         </p>
                     </div>
 
@@ -102,22 +85,63 @@
 
         <section class="card">
             <div class="card-header">
-                <h2>ℹ️ À propos</h2>
+                <h2>💡 Guide rapide</h2>
             </div>
             <div class="divider"></div>
-            <p style="margin: 0; line-height: 1.6;">
-                R#BD centralise la gestion des templates pour toutes les applications R#SPACE.
-                Les templates sont stockés localement et peuvent être créés, modifiés et exportés
-                directement depuis l'interface web.
-            </p>
-            <p style="margin: 16px 0 0 0; line-height: 1.6; color: var(--muted); font-size: 14px;">
-                <strong>Mode actuel :</strong> Application statique HTML/CSS/JS (pas de serveur Python requis)
-            </p>
+            <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+                <li><strong>Créer un test :</strong> Définissez les étapes et conditions à effectuer</li>
+                <li><strong>Wildcards :</strong> Utilisez <code>*</code> ou <code>?</code> pour matcher IED/LD/LN (ex:
+                    <code>IED*</code>, <code>LD1*</code>, <code>PDIS*</code> → PDIS1, PDIS2...)
+                </li>
+                <li><strong>Plages :</strong> <code>IED1-2</code> = IED1 ou IED2 (exclut le reste).</li>
+                <li><strong>Exclusions :</strong> préfixez par <code>!</code> pour exclure (ex:
+                    <code>*BCU*, !*CBO*BCU*</code>).
+                </li>
+                </li>
+                <li><strong>Export :</strong> Téléchargez vos templates en JSON pour les partager</li>
+                <li><strong>Import :</strong> Chargez des templates existants depuis votre ordinateur</li>
+            </ul>
         </section>
     </main>
 
     <script>
         loadHeader({ activePage: 'home', title: 'R#BD — Base de données' });
+
+        const STAT_CONFIG = [
+            { key: 'tests_ru', testsId: 'stat-ru-tests', label: 'RU' },
+            { key: 'tests_cvs', testsId: 'stat-cvs-tests', label: 'CVS' },
+            { key: 'tests_mvs', testsId: 'stat-mvs-tests', label: 'MVS' }
+        ];
+
+        function countSteps(tests) {
+            return tests.reduce((sum, test) => sum + (test.steps ? test.steps.length : 0), 0);
+        }
+
+        function updateStats() {
+            let totalTests = 0;
+            let totalSteps = 0;
+
+            STAT_CONFIG.forEach(({ key, testsId, label }) => {
+                const tests = JSON.parse(localStorage.getItem(key) || '[]');
+                totalTests += tests.length;
+                totalSteps += countSteps(tests);
+                const testsEl = document.getElementById(testsId);
+                if (testsEl) {
+                    testsEl.textContent = `${label}: ${tests.length}`;
+                }
+            });
+
+            const totalTestsEl = document.getElementById('stat-total-tests');
+            const totalStepsEl = document.getElementById('stat-total-steps');
+            if (totalTestsEl) {
+                totalTestsEl.textContent = `${totalTests} test${totalTests > 1 ? 's' : ''}`;
+            }
+            if (totalStepsEl) {
+                totalStepsEl.textContent = `${totalSteps} étape${totalSteps > 1 ? 's' : ''}`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', updateStats);
     </script>
 </body>
 
