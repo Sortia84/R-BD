@@ -54,10 +54,10 @@ async def get_manufacturers() -> list[str]:
     return parser.get_manufacturers()
 
 
-@router.get("/details/{ied_type}/{manufacturer}/{version}")
-async def get_icd_details(ied_type: str, manufacturer: str, version: str) -> dict[str, Any]:
-    """Retourne les détails complets d'un ICD depuis son fichier JSON dédié."""
-    details = parser.get_icd_details(ied_type, manufacturer, version)
+@router.get("/details/{icd_id}")
+async def get_icd_details(icd_id: str) -> dict[str, Any]:
+    """Retourne les détails complets d'un ICD par son icd_id."""
+    details = parser.get_icd_details_by_id(icd_id)
     if not details:
         raise HTTPException(status_code=404, detail="ICD non trouvé")
     return details
@@ -134,24 +134,24 @@ async def parse_existing_files() -> dict[str, Any]:
     }
 
 
-@router.delete("/{ied_type}/{manufacturer}/{version}")
-async def delete_icd(ied_type: str, manufacturer: str, version: str) -> dict[str, Any]:
-    """Supprime un ICD (fichier JSON + entrée index)."""
-    deleted = parser.delete_icd(ied_type, manufacturer, version)
+@router.delete("/{icd_id}")
+async def delete_icd(icd_id: str) -> dict[str, Any]:
+    """Supprime un ICD par son icd_id (fichier JSON + entrée index)."""
+    deleted = parser.delete_icd(icd_id)
     if not deleted:
         raise HTTPException(status_code=404, detail="ICD non trouvé")
 
-    return {"success": True, "deleted": f"{ied_type}/{manufacturer}/{version}"}
+    return {"success": True, "deleted": icd_id}
 
 
-@router.post("/reanalyze/{ied_type}/{manufacturer}/{version}")
-async def reanalyze_icd(ied_type: str, manufacturer: str, version: str) -> dict[str, Any]:
+@router.post("/reanalyze/{icd_id}")
+async def reanalyze_icd(icd_id: str) -> dict[str, Any]:
     """
     Relance l'analyse d'un ICD existant à partir du fichier source.
     Recherche le fichier original dans uploads/ICD.
     """
     # Chercher le fichier source correspondant
-    details = parser.get_icd_details(ied_type, manufacturer, version)
+    details = parser.get_icd_details_by_id(icd_id)
     if not details:
         raise HTTPException(status_code=404, detail="ICD non trouvé")
 
@@ -238,27 +238,47 @@ async def get_pattern_icds(pattern_id: str) -> dict[str, Any]:
 
 class LinkRequest(BaseModel):
     """Requête de liaison ICD-Pattern."""
-    icd_path: str
+    icd_path: str | None = None
+    icd_id: str | None = None
 
 
 @router.post("/patterns/{pattern_id}/link")
 async def link_icd_to_pattern(pattern_id: str, request: LinkRequest) -> dict[str, Any]:
     """Lie un ICD à un pattern IED."""
-    success = pattern_manager.link_icd_to_pattern(pattern_id, request.icd_path)
+    # Utiliser icd_id en priorité, sinon icd_path pour rétrocompatibilité
+    ref = request.icd_id or request.icd_path
+    if not ref:
+        raise HTTPException(status_code=400, detail="icd_id ou icd_path requis")
+
+    success = pattern_manager.link_icd_to_pattern(pattern_id, ref)
     if not success:
         raise HTTPException(status_code=404, detail="Pattern non trouvé")
 
-    return {"success": True, "pattern_id": pattern_id, "icd_path": request.icd_path}
+    return {"success": True, "pattern_id": pattern_id, "icd_ref": ref}
 
 
 @router.post("/patterns/{pattern_id}/unlink")
 async def unlink_icd_from_pattern(pattern_id: str, request: LinkRequest) -> dict[str, Any]:
     """Supprime la liaison entre un ICD et un pattern IED."""
-    success = pattern_manager.unlink_icd_from_pattern(pattern_id, request.icd_path)
-    if not success:
-        raise HTTPException(status_code=404, detail="Pattern ou liaison non trouvé")
+    # Utiliser icd_id en priorité, sinon icd_path
+    ref = request.icd_id or request.icd_path
+    if not ref:
+        raise HTTPException(status_code=400, detail="icd_id ou icd_path requis")
 
-    return {"success": True, "pattern_id": pattern_id, "icd_path": request.icd_path, "unlinked": True}
+    print(f"🔓 UNLINK: pattern_id={pattern_id}, ref={ref}")
+
+    # Récupérer le pattern pour debug
+    pattern = pattern_manager.get_pattern_by_id(pattern_id)
+    if pattern:
+        print(f"   Pattern trouvé: {pattern.get('id')}, icd_refs: {pattern.get('icd_refs', [])}")
+    else:
+        print(f"   ❌ Pattern '{pattern_id}' non trouvé!")
+
+    success = pattern_manager.unlink_icd_from_pattern(pattern_id, ref)
+    if not success:
+        raise HTTPException(status_code=404, detail=f"Pattern '{pattern_id}' non trouvé ou ref '{ref}' non lié")
+
+    return {"success": True, "pattern_id": pattern_id, "icd_ref": ref, "unlinked": True}
 
 
 @router.get("/match/{ied_name}")

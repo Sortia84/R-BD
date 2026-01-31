@@ -59,10 +59,12 @@ class ICDParser:
         desc = ied_node.get("desc") or ied_node.get("configVersion") or "Version inconnue"
         ied_name = ied_node.get("name", "IED")
 
-        # Extraire COMPAS-IEDType
+        # Attribut type de l'IED (ex: ARKENS-SV2320-GGAAAAGAG-88D) - unique par modèle
+        ied_type_attr = ied_node.get("type", "UNKNOWN")
+
+        # Extraire COMPAS-IEDType pour la catégorie (SCU-ORG, BCU, etc.)
         compas_type = self._extract_compas_type(ied_node)
-        fallback_type = ied_node.get("type", "UNKNOWN")
-        ied_type = compas_type or fallback_type
+        ied_type = compas_type or ied_type_attr
 
         # Extraire LDevices et LN
         ldevices = self._extract_ldevices(ied_node)
@@ -71,8 +73,9 @@ class ICDParser:
         ln_count = sum(len(ld.get("lns", [])) for ld in ldevices)
 
         return {
-            "icd_id": self._build_icd_id(ied_type, manufacturer),
+            "icd_id": self._build_icd_id(ied_type_attr),
             "ied_type": ied_type,
+            "ied_type_attr": ied_type_attr,  # Nouveau: garder le type original pour référence
             "manufacturer": manufacturer,
             "version": desc,
             "filename": filename,
@@ -126,19 +129,26 @@ class ICDParser:
 
         return ldevices
 
-    def _build_icd_id(self, ied_type: str, manufacturer: str) -> str:
-        """Construit un identifiant ICD unique."""
-        def sanitize(value: str) -> str:
-            return re.sub(r"[^A-Z0-9]+", "_", value.upper().strip()).strip("_") or "UNKNOWN"
+    def _build_icd_id(self, ied_type_attr: str) -> str:
+        """Construit un identifiant ICD unique basé sur l'attribut type de l'IED.
 
-        return f"ICD_{sanitize(ied_type)}_{sanitize(manufacturer)}"
+        L'attribut type (ex: ARKENS-SV2320-GGAAAAGAG-88D) est unique par modèle
+        d'équipement et permet de différencier les ICD même si type/manufacturer/version
+        sont identiques.
+        """
+        # Sanitize pour créer un ID valide
+        sanitized = re.sub(r"[^A-Z0-9]+", "_", ied_type_attr.upper().strip()).strip("_")
+        return f"ICD_{sanitized}" if sanitized else "ICD_UNKNOWN"
 
-    def _get_icd_path(self, ied_type: str, manufacturer: str, version: str) -> Path:
-        """Retourne le chemin du fichier JSON pour un ICD spécifique."""
-        type_dir = sanitize_path(ied_type)
-        manu_dir = sanitize_path(manufacturer)
-        version_file = sanitize_path(version) + ".json"
-        return self.icd_dir / type_dir / manu_dir / version_file
+    def _get_icd_path(self, filename: str) -> Path:
+        """Retourne le chemin du fichier JSON basé sur le filename (unique).
+
+        Structure: data/icd/{filename_sanitized}.json
+        """
+        # Utiliser le stem du filename (sans extension) comme base
+        base_name = Path(filename).stem
+        sanitized = sanitize_path(base_name) + ".json"
+        return self.icd_dir / sanitized
 
     # --- Gestion de l'index global ---
 
@@ -164,15 +174,15 @@ class ICDParser:
 
     def save_icd_file(self, entry: dict[str, Any]) -> Path:
         """Sauvegarde un ICD dans son fichier JSON dédié."""
-        icd_path = self._get_icd_path(entry["ied_type"], entry["manufacturer"], entry["version"])
+        icd_path = self._get_icd_path(entry["filename"])
         icd_path.parent.mkdir(parents=True, exist_ok=True)
         with open(icd_path, "w", encoding="utf-8") as f:
             json.dump(entry, f, indent=2, ensure_ascii=False)
         return icd_path
 
-    def load_icd_file(self, ied_type: str, manufacturer: str, version: str) -> dict[str, Any] | None:
-        """Charge un fichier ICD spécifique."""
-        icd_path = self._get_icd_path(ied_type, manufacturer, version)
+    def load_icd_file(self, filename: str) -> dict[str, Any] | None:
+        """Charge un fichier ICD spécifique par son filename."""
+        icd_path = self._get_icd_path(filename)
         if not icd_path.exists():
             return None
         try:
@@ -193,6 +203,7 @@ class ICDParser:
         index_entry = {
             "icd_id": entry["icd_id"],
             "ied_type": entry["ied_type"],
+            "ied_type_attr": entry.get("ied_type_attr", ""),  # Attribut type original de l'IED
             "manufacturer": entry["manufacturer"],
             "version": entry["version"],
             "filename": entry["filename"],
@@ -202,12 +213,10 @@ class ICDParser:
             "imported_at": entry["imported_at"]
         }
 
-        # Chercher si existe déjà (même type/manufacturer/version)
+        # Chercher si existe déjà (même icd_id = même filename)
         existing_idx = next(
             (i for i, x in enumerate(index["icd_list"])
-             if x["ied_type"] == entry["ied_type"]
-             and x["manufacturer"] == entry["manufacturer"]
-             and x["version"] == entry["version"]),
+             if x["icd_id"] == entry["icd_id"]),
             None
         )
 
@@ -234,9 +243,17 @@ class ICDParser:
         index = self.load_index()
         return index.get("icd_list", [])
 
-    def get_icd_details(self, ied_type: str, manufacturer: str, version: str) -> dict[str, Any] | None:
+    def get_icd_details(self, filename: str) -> dict[str, Any] | None:
         """Charge les détails complets d'un ICD depuis son fichier."""
-        return self.load_icd_file(ied_type, manufacturer, version)
+        return self.load_icd_file(filename)
+
+    def get_icd_details_by_id(self, icd_id: str) -> dict[str, Any] | None:
+        """Charge les détails d'un ICD par son icd_id (cherche dans l'index puis charge)."""
+        catalog = self.get_catalog()
+        entry = next((x for x in catalog if x["icd_id"] == icd_id), None)
+        if entry:
+            return self.load_icd_file(entry["filename"])
+        return None
 
     def get_ied_types(self) -> list[str]:
         """Retourne la liste des types d'IED dans le catalogue."""
@@ -248,21 +265,23 @@ class ICDParser:
         catalog = self.get_catalog()
         return sorted(set(entry["manufacturer"] for entry in catalog))
 
-    def delete_icd(self, ied_type: str, manufacturer: str, version: str) -> bool:
-        """Supprime un ICD (fichier + entrée dans l'index)."""
-        icd_path = self._get_icd_path(ied_type, manufacturer, version)
+    def delete_icd(self, icd_id: str) -> bool:
+        """Supprime un ICD par son icd_id (fichier + entrée dans l'index)."""
+        # Trouver l'entrée dans l'index
+        index = self.load_index()
+        entry = next((x for x in index["icd_list"] if x["icd_id"] == icd_id), None)
+
+        if not entry:
+            return False
 
         # Supprimer le fichier
+        icd_path = self._get_icd_path(entry["filename"])
         if icd_path.exists():
             icd_path.unlink()
 
         # Supprimer de l'index
-        index = self.load_index()
         original_count = len(index["icd_list"])
-        index["icd_list"] = [
-            x for x in index["icd_list"]
-            if not (x["ied_type"] == ied_type and x["manufacturer"] == manufacturer and x["version"] == version)
-        ]
+        index["icd_list"] = [x for x in index["icd_list"] if x["icd_id"] != icd_id]
 
         if len(index["icd_list"]) < original_count:
             self.save_index(index)

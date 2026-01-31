@@ -1,0 +1,817 @@
+{
+  "icd_id": "ICD_ARKENS_SV1120_GGGG_6A5",
+  "ied_type": "SCU-MCB",
+  "ied_type_attr": "ARKENS-SV1120-GGGG-6A5",
+  "manufacturer": "SCLE SFE",
+  "version": "2.1h",
+  "filename": "b8f2700c_ARKENS-SV1120-GGGG-6A5_SCU-MCB_2.1h-1.icd",
+  "imported_at": "2026-01-31T21:44:57.583069Z",
+  "ieds": [
+    {
+      "name": "TEMPLATE",
+      "lds": [
+        {
+          "name": "LDBALIS",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDITFUA",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "ISAF",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "ISAF",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "ISAF",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "ISAF",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "ISAF",
+              "lninst": "5"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "PTOC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "PTOC",
+              "lninst": "11"
+            },
+            {
+              "ln_class": "PTOC",
+              "lninst": "12"
+            },
+            {
+              "ln_class": "PTOC",
+              "lninst": "13"
+            },
+            {
+              "ln_class": "PTOC",
+              "lninst": "14"
+            },
+            {
+              "ln_class": "PTOC",
+              "lninst": "15"
+            },
+            {
+              "ln_class": "PTOC",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "PTOC",
+              "lninst": "21"
+            },
+            {
+              "ln_class": "PTOC",
+              "lninst": "22"
+            },
+            {
+              "ln_class": "PTOC",
+              "lninst": "23"
+            },
+            {
+              "ln_class": "PTOC",
+              "lninst": "24"
+            },
+            {
+              "ln_class": "PTOC",
+              "lninst": "25"
+            },
+            {
+              "ln_class": "PTOC",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "PTOC",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "PTOC",
+              "lninst": "5"
+            },
+            {
+              "ln_class": "SBAT",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "SBAT",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "SBAT",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "SBAT",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "SBAT",
+              "lninst": "5"
+            },
+            {
+              "ln_class": "SBAT",
+              "lninst": "6"
+            },
+            {
+              "ln_class": "SIML",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "SIML",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "SIML",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "SIML",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "10"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "11"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "12"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "13"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "14"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "15"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "16"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "17"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "18"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "19"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "20"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "21"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "22"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "23"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "24"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "25"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "26"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "27"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "28"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "29"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "30"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "31"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "32"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "33"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "34"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "35"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "36"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "37"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "38"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "39"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "40"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "41"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "42"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "43"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "44"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "5"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "5"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "6"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "6"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "7"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "8"
+            },
+            {
+              "ln_class": "XCBR",
+              "lninst": "9"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "10"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "11"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "12"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "13"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "14"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "15"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "16"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "17"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "18"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "19"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "20"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "21"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "22"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "23"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "24"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "25"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "26"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "27"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "28"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "29"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "30"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "31"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "32"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "33"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "34"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "35"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "36"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "37"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "38"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "39"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "40"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "41"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "42"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "43"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "44"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "5"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "6"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "7"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "8"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "9"
+            },
+            {
+              "ln_class": "XSWI",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "10"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "11"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "12"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "13"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "14"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "15"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "16"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "17"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "18"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "19"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "20"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "21"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "22"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "23"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "24"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "25"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "26"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "27"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "28"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "29"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "30"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "5"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "6"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "7"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "8"
+            },
+            {
+              "ln_class": "ZAXN",
+              "lninst": "9"
+            },
+            {
+              "ln_class": "ZBAT",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "ZBAT",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "ZBAT",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "ZBAT",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "ZBAT",
+              "lninst": "5"
+            },
+            {
+              "ln_class": "ZBAT",
+              "lninst": "6"
+            },
+            {
+              "ln_class": "ZBAT",
+              "lninst": "7"
+            },
+            {
+              "ln_class": "ZBTC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "ZBTC",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "ZBTC",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "ZBTC",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "ZBTC",
+              "lninst": "5"
+            },
+            {
+              "ln_class": "ZBTC",
+              "lninst": "6"
+            },
+            {
+              "ln_class": "ZCON",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "ZGEN",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "ZGEN",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "ZGEN",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "ZGEN",
+              "lninst": "4"
+            }
+          ]
+        },
+        {
+          "name": "LDSUIED",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LCCH",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "LCCH",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LGOS",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "LPCP",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "LPCP",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPCP",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "LPDO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "LPDO",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPDO",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "LPDO",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LPLE",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "LPLE",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPLE",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "LSET",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTMS",
+              "lninst": "0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "ld_count": 3,
+  "ln_count": 196
+}

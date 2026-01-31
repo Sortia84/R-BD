@@ -14,10 +14,58 @@ async function initIedIcdPage() {
         loadIedPatterns(),
         loadIcdCatalog()
     ]);
-    setupIcdUpload();
+    setupIcdUploadWithAutoLink();
     renderIedCards();
     renderOrphanIcds();
     updateStats();
+    initOrphanPanel();
+}
+
+// Gestion du panneau flottant orphelins
+function initOrphanPanel() {
+    const panel = document.getElementById('orphan-panel');
+    const main = document.querySelector('.guide-main');
+    if (!panel || !main) return;
+
+    // Restaurer l'état depuis localStorage
+    const isCollapsed = localStorage.getItem('orphanPanelCollapsed') === 'true';
+    if (isCollapsed) {
+        panel.classList.add('collapsed');
+        main.classList.add('panel-collapsed');
+    }
+}
+
+function toggleOrphanPanel() {
+    const panel = document.getElementById('orphan-panel');
+    const main = document.querySelector('.guide-main');
+    if (!panel || !main) return;
+
+    panel.classList.toggle('collapsed');
+    main.classList.toggle('panel-collapsed');
+
+    // Sauvegarder l'état
+    localStorage.setItem('orphanPanelCollapsed', panel.classList.contains('collapsed'));
+}
+
+function updateOrphanPanelVisibility() {
+    const panel = document.getElementById('orphan-panel');
+    const main = document.querySelector('.guide-main');
+    const orphans = getOrphanIcds();
+
+    if (!panel || !main) return;
+
+    if (orphans.length === 0) {
+        panel.classList.add('hidden');
+        main.classList.add('panel-hidden');
+        main.classList.remove('panel-collapsed');
+    } else {
+        panel.classList.remove('hidden');
+        main.classList.remove('panel-hidden');
+    }
+
+    // Mettre à jour le compteur
+    const countEl = document.getElementById('orphan-count');
+    if (countEl) countEl.textContent = orphans.length;
 }
 
 async function loadIedPatterns() {
@@ -87,7 +135,72 @@ function setupIcdUpload() {
 }
 
 function triggerIcdUpload() {
+    pendingPatternForUpload = null;
     document.getElementById('icd-upload')?.click();
+}
+
+// Variable pour stocker le pattern cible lors d'un import direct
+let pendingPatternForUpload = null;
+
+function triggerIcdUploadForPattern(patternId) {
+    pendingPatternForUpload = patternId;
+    document.getElementById('icd-upload')?.click();
+}
+
+// Modifier setupIcdUpload pour gérer l'association automatique
+function setupIcdUploadWithAutoLink() {
+    const input = document.getElementById('icd-upload');
+    if (!input) return;
+
+    input.addEventListener('change', async (event) => {
+        const files = Array.from(event.target.files || []);
+        if (!files.length) return;
+
+        const targetPattern = pendingPatternForUpload;
+        pendingPatternForUpload = null;
+
+        let successCount = 0;
+        const errors = [];
+        const uploadedIcds = [];
+
+        for (const file of files) {
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                const response = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
+                if (!response.ok) throw new Error((await response.json()).detail || 'Erreur');
+                const result = await response.json();
+                successCount += result.entries.length;
+
+                // Collecter les ICD uploadés pour l'association
+                if (result.entries) {
+                    uploadedIcds.push(...result.entries);
+                }
+            } catch (error) {
+                errors.push(`${file.name}: ${error.message}`);
+            }
+        }
+
+        // Si un pattern cible était défini, associer automatiquement
+        if (targetPattern && uploadedIcds.length > 0) {
+            for (const icd of uploadedIcds) {
+                // Utiliser icd_id (basé sur type IED) pour l'association
+                await linkIcdToPattern(icd.icd_id, targetPattern);
+            }
+        }
+
+        await loadIcdCatalog();
+        await loadIedPatterns();
+        renderIedCards();
+        renderOrphanIcds();
+        updateStats();
+        input.value = '';
+
+        let msg = `✅ ${successCount} ICD importé(s)`;
+        if (targetPattern) msg += ` et associé(s) à ${targetPattern}`;
+        if (errors.length) msg += `\n❌ Erreurs:\n${errors.join('\n')}`;
+        showToast(msg);
+    });
 }
 
 // ============================================================
@@ -121,7 +234,7 @@ function getFilteredPatterns() {
     const linkedValue = linkedFilter?.value || '';
 
     // Ne garder que les patterns SANS parent (les parents ou patterns autonomes)
-    return iedPatterns.filter(p => {
+    const filtered = iedPatterns.filter(p => {
         // Exclure les enfants (ils seront affichés dans la carte du parent)
         if (p.parent) return false;
 
@@ -140,6 +253,11 @@ function getFilteredPatterns() {
 
         return matchSearch && matchLinked;
     });
+
+    // Tri alphabétique par display_name
+    return filtered.sort((a, b) =>
+        a.display_name.localeCompare(b.display_name, 'fr', { sensitivity: 'base' })
+    );
 }
 
 function buildIedCard(pattern) {
@@ -169,7 +287,11 @@ function buildIedCard(pattern) {
     const statusClass = totalIcds > 0 ? 'has-icd' : 'no-icd-status';
 
     return `
-        <div class="ied-card ${statusClass}" data-pattern-id="${pattern.id}">
+        <div class="ied-card ${statusClass}"
+             data-pattern-id="${pattern.id}"
+             ondragover="handleDragOver(event)"
+             ondragleave="handleDragLeave(event)"
+             ondrop="handleDrop(event)">
             <div class="ied-card-header">
                 <div class="ied-icon">📦</div>
                 <div class="ied-info">
@@ -189,9 +311,14 @@ function buildIedCard(pattern) {
             <div class="ied-icds-list">
                 <div class="icds-header">
                     <span class="label">ICD associés</span>
-                    <button class="btn btn-small btn-add" onclick="showAssignIcdModal('${pattern.id}')">
-                        + Associer
-                    </button>
+                    <div class="icds-actions">
+                        <button class="btn btn-small btn-secondary" onclick="triggerIcdUploadForPattern('${pattern.id}')" title="Importer un ICD directement lié">
+                            📥 Importer
+                        </button>
+                        <button class="btn btn-small btn-add" onclick="showAssignIcdModal('${pattern.id}')">
+                            + Associer
+                        </button>
+                    </div>
                 </div>
                 ${icdsHtml}
             </div>
@@ -200,21 +327,25 @@ function buildIedCard(pattern) {
 }
 
 function buildIcdItem(icd, currentPattern) {
-    const icdPath = icd.path || `${icd.ied_type}/${icd.manufacturer}`;
+    // Utiliser icd_id comme identifiant unique
+    const icdId = icd.icd_id;
+    const encodedId = encodeURIComponent(icdId);
+    // Afficher ied_type_attr s'il existe (type unique), sinon ied_type
+    const displayType = icd.ied_type_attr || icd.ied_type;
 
     return `
-        <div class="icd-item" data-icd-path="${escapeHtml(icdPath)}">
+        <div class="icd-item" data-icd-id="${escapeHtml(icdId)}">
             <div class="icd-item-info">
-                <strong>${escapeHtml(icd.ied_type)} / ${escapeHtml(icd.manufacturer)}</strong>
+                <strong>${escapeHtml(displayType)}</strong>
                 <div class="icd-item-meta">
-                    ${escapeHtml(icd.version)} • ${icd.ld_count || 0} LD • ${icd.ln_count || 0} LN
+                    ${escapeHtml(icd.manufacturer)} • ${escapeHtml(icd.version)} • ${icd.ld_count || 0} LD • ${icd.ln_count || 0} LN
                 </div>
             </div>
             <div class="icd-item-actions">
-                <button class="btn-icon" onclick="showMoveIcdModal('${escapeHtml(icdPath)}', '${currentPattern.id}')" title="Changer d'équipement">
+                <button class="btn-icon" onclick="showMoveIcdModal(decodeURIComponent('${encodedId}'), '${currentPattern.id}')" title="Changer d'équipement">
                     ↔️
                 </button>
-                <button class="btn-icon btn-danger" onclick="unlinkIcd('${currentPattern.id}', '${escapeHtml(icdPath)}')" title="Dissocier">
+                <button class="btn-icon btn-danger" onclick="unlinkIcd('${currentPattern.id}', decodeURIComponent('${encodedId}'))" title="Dissocier">
                     ✕
                 </button>
             </div>
@@ -231,8 +362,8 @@ function getIcdsForPattern(pattern) {
     if (!refs.length) return [];
 
     return icdCatalog.filter(icd => {
-        const icdPath = `${icd.ied_type}/${icd.manufacturer}`;
-        return refs.some(ref => icdPath.includes(ref) || ref.includes(icdPath));
+        // Matcher uniquement par icd_id
+        return refs.includes(icd.icd_id);
     });
 }
 
@@ -267,48 +398,150 @@ function getIcdsForPatternWithVariants(pattern) {
 
 function getOrphanIcds() {
     // ICD qui ne sont liés à aucun pattern
-    const allLinkedPaths = new Set();
+    const allLinkedRefs = new Set();
     iedPatterns.forEach(p => {
-        (p.icd_refs || []).forEach(ref => allLinkedPaths.add(ref));
+        (p.icd_refs || []).forEach(ref => allLinkedRefs.add(ref));
     });
 
     return icdCatalog.filter(icd => {
-        const icdPath = `${icd.ied_type}/${icd.manufacturer}`;
-        return ![...allLinkedPaths].some(ref => icdPath.includes(ref) || ref.includes(icdPath));
+        // Vérifier uniquement par icd_id
+        return !allLinkedRefs.has(icd.icd_id);
     });
 }
 
 // ============================================================
-// Rendu des ICD orphelins
+// Rendu des ICD orphelins (cartes draggables dans panneau flottant)
 // ============================================================
 
 function renderOrphanIcds() {
-    const section = document.getElementById('orphan-section');
     const container = document.getElementById('orphan-icds');
-    if (!section || !container) return;
+    if (!container) return;
 
     const orphans = getOrphanIcds();
 
+    // Mettre à jour la visibilité du panneau
+    updateOrphanPanelVisibility();
+
     if (!orphans.length) {
-        section.style.display = 'none';
+        container.innerHTML = '<p class="muted" style="text-align:center; font-size:12px;">Aucun ICD orphelin 🎉</p>';
         return;
     }
 
-    section.style.display = 'block';
+    // Tri alphabétique par type IED puis manufacturer
+    orphans.sort((a, b) => {
+        const typeCompare = a.ied_type.localeCompare(b.ied_type, 'fr', { sensitivity: 'base' });
+        if (typeCompare !== 0) return typeCompare;
+        return a.manufacturer.localeCompare(b.manufacturer, 'fr', { sensitivity: 'base' });
+    });
+
     container.innerHTML = orphans.map(icd => {
-        const icdPath = `${icd.ied_type}/${icd.manufacturer}`;
+        const icdId = icd.icd_id;
         return `
-            <div class="orphan-icd-item">
-                <div class="orphan-info">
-                    <strong>📄 ${escapeHtml(icd.ied_type)} / ${escapeHtml(icd.manufacturer)}</strong>
-                    <span class="muted">${escapeHtml(icd.version)}</span>
+            <div class="orphan-icd-card"
+                 draggable="true"
+                 data-icd-id="${escapeHtml(icdId)}"
+                 ondragstart="handleDragStart(event)"
+                 ondragend="handleDragEnd(event)">
+                <div class="orphan-card-icon">📄</div>
+                <div class="orphan-card-info">
+                    <div class="orphan-card-type">${escapeHtml(icd.ied_type)}</div>
+                    <div class="orphan-card-manufacturer">${escapeHtml(icd.manufacturer)}</div>
+                    <div class="orphan-card-version">${escapeHtml(icd.version)}</div>
                 </div>
-                <button class="btn btn-small btn-primary" onclick="showAssignOrphanModal('${escapeHtml(icdPath)}')">
-                    Assigner à un IED
-                </button>
+                <div class="orphan-card-hint">⋮⋮</div>
             </div>
         `;
     }).join('');
+}
+
+// ============================================================
+// Drag & Drop
+// ============================================================
+
+let draggedIcdId = null;
+
+function handleDragStart(event) {
+    draggedIcdId = event.target.dataset.icdId;
+    event.target.classList.add('dragging');
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', draggedIcdId);
+
+    // Activer les zones de drop sur les cartes IED
+    document.querySelectorAll('.ied-card').forEach(card => {
+        card.classList.add('drop-target');
+    });
+}
+
+function handleDragEnd(event) {
+    event.target.classList.remove('dragging');
+    draggedIcdId = null;
+
+    // Désactiver les zones de drop
+    document.querySelectorAll('.ied-card').forEach(card => {
+        card.classList.remove('drop-target', 'drag-over');
+    });
+}
+
+function handleDragOver(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    event.currentTarget.classList.add('drag-over');
+}
+
+function handleDragLeave(event) {
+    event.currentTarget.classList.remove('drag-over');
+}
+
+async function handleDrop(event) {
+    event.preventDefault();
+    event.currentTarget.classList.remove('drag-over');
+
+    const icdId = event.dataTransfer.getData('text/plain');
+    const patternId = event.currentTarget.dataset.patternId;
+
+    if (!icdId || !patternId) return;
+
+    // Assigner l'ICD au pattern
+    await linkIcdToPattern(icdId, patternId);
+}
+
+async function linkIcdToPattern(icdId, patternId) {
+    try {
+        const response = await fetch(`/api/icd/patterns/${patternId}/link`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ icd_id: icdId })
+        });
+
+        if (response.ok) {
+            await loadIedPatterns();
+            renderIedCards();
+            renderOrphanIcds();
+            updateStats();
+            showToast(`✅ ICD associé à ${patternId}`);
+        } else {
+            const err = await response.json();
+            showToast(`❌ Erreur: ${err.detail || 'Échec'}`, 'error');
+        }
+    } catch (error) {
+        showToast(`❌ Erreur: ${error.message}`, 'error');
+    }
+}
+
+function showToast(message, type = 'success') {
+    const existing = document.querySelector('.toast-notification');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }
 
 // ============================================================
@@ -342,14 +575,15 @@ async function showAssignIcdModal(patternId) {
     const currentRefs = pattern?.icd_refs || [];
 
     const icdOptions = allIcds.map(icd => {
-        const icdPath = `${icd.ied_type}/${icd.manufacturer}`;
-        const isLinked = currentRefs.some(ref => icdPath.includes(ref) || ref.includes(icdPath));
-        const isOrphan = orphans.some(o => `${o.ied_type}/${o.manufacturer}` === icdPath);
+        const isLinked = currentRefs.includes(icd.icd_id);
+        const isOrphan = orphans.some(o => o.icd_id === icd.icd_id);
+        // Afficher ied_type_attr s'il existe, sinon ied_type
+        const displayType = icd.ied_type_attr || icd.ied_type;
 
         return `
             <label class="icd-option ${isLinked ? 'already-linked' : ''} ${isOrphan ? 'orphan' : ''}">
-                <input type="checkbox" value="${escapeHtml(icdPath)}" ${isLinked ? 'checked' : ''}>
-                <span class="icd-option-name">${escapeHtml(icd.ied_type)} / ${escapeHtml(icd.manufacturer)}</span>
+                <input type="checkbox" value="${escapeHtml(icd.icd_id)}" ${isLinked ? 'checked' : ''}>
+                <span class="icd-option-name">${escapeHtml(displayType)}</span>
                 <span class="icd-option-version">${escapeHtml(icd.version)}</span>
                 ${isOrphan ? '<span class="badge-orphan">Non assigné</span>' : ''}
             </label>
@@ -380,8 +614,11 @@ async function showAssignIcdModal(patternId) {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
 
-async function showMoveIcdModal(icdPath, currentPatternId) {
+async function showMoveIcdModal(icdId, currentPatternId) {
     const currentPattern = iedPatterns.find(p => p.id === currentPatternId);
+    const icd = icdCatalog.find(i => i.icd_id === icdId);
+    const displayType = icd?.ied_type_attr || icd?.ied_type || icdId;
+    const displayName = icd ? `${displayType} (${icd.version})` : icdId;
 
     // Exclure les variants (patterns avec parent) - ils partagent le même ICD que leur parent
     const patternOptions = iedPatterns
@@ -397,7 +634,7 @@ async function showMoveIcdModal(icdPath, currentPatternId) {
                     <button class="btn-close" onclick="closeModal()">✕</button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>ICD:</strong> ${escapeHtml(icdPath)}</p>
+                    <p><strong>ICD:</strong> ${escapeHtml(displayName)}</p>
                     <p><strong>Actuellement:</strong> ${escapeHtml(currentPattern?.display_name || currentPatternId)}</p>
                     <div class="form-group">
                         <label>Nouvel équipement :</label>
@@ -409,7 +646,7 @@ async function showMoveIcdModal(icdPath, currentPatternId) {
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
-                    <button class="btn btn-primary" onclick="moveIcd('${escapeHtml(icdPath)}', '${currentPatternId}')">Déplacer</button>
+                    <button class="btn btn-primary" onclick="moveIcd('${encodeURIComponent(icdId)}', '${currentPatternId}')">Déplacer</button>
                 </div>
             </div>
         </div>
@@ -418,12 +655,18 @@ async function showMoveIcdModal(icdPath, currentPatternId) {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
 
-async function showAssignOrphanModal(icdPath) {
+async function showAssignOrphanModal(icdId) {
+    const icd = icdCatalog.find(i => i.icd_id === icdId);
+    const displayType = icd?.ied_type_attr || icd?.ied_type || icdId;
+    const displayName = icd ? `${displayType} (${icd.version})` : icdId;
+
     // Exclure les variants (patterns avec parent) - ils partagent le même ICD que leur parent
     const patternOptions = iedPatterns
         .filter(p => !p.parent)
         .map(p => `<option value="${p.id}">${escapeHtml(p.display_name)} (${escapeHtml(p.pattern)})</option>`)
         .join('');
+
+    const encodedId = encodeURIComponent(icdId);
 
     const modalHtml = `
         <div class="modal-overlay" id="assign-orphan-modal" onclick="closeModal(event)">
@@ -433,7 +676,7 @@ async function showAssignOrphanModal(icdPath) {
                     <button class="btn-close" onclick="closeModal()">✕</button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>ICD:</strong> ${escapeHtml(icdPath)}</p>
+                    <p><strong>ICD:</strong> ${escapeHtml(displayName)}</p>
                     <div class="form-group">
                         <label>Équipement cible :</label>
                         <select id="target-pattern-select" class="filter-select">
@@ -444,7 +687,7 @@ async function showAssignOrphanModal(icdPath) {
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
-                    <button class="btn btn-primary" onclick="assignOrphan('${escapeHtml(icdPath)}')">Assigner</button>
+                    <button class="btn btn-primary" onclick="assignOrphan(decodeURIComponent('${encodedId}'))">Assigner</button>
                 </div>
             </div>
         </div>
@@ -471,13 +714,13 @@ async function saveAssignments(patternId) {
     const currentRefs = new Set(pattern?.icd_refs || []);
 
     for (const cb of checkboxes) {
-        const icdPath = cb.value;
-        const wasLinked = [...currentRefs].some(ref => icdPath.includes(ref) || ref.includes(icdPath));
+        const icdId = cb.value;  // Maintenant c'est icd_id
+        const wasLinked = currentRefs.has(icdId);
 
         if (cb.checked && !wasLinked) {
-            await linkIcd(patternId, icdPath);
+            await linkIcd(patternId, icdId);
         } else if (!cb.checked && wasLinked) {
-            await unlinkIcdApi(patternId, icdPath);
+            await unlinkIcdApi(patternId, icdId);
         }
     }
 
@@ -488,7 +731,8 @@ async function saveAssignments(patternId) {
     closeModal();
 }
 
-async function moveIcd(icdPath, currentPatternId) {
+async function moveIcd(encodedIcdId, currentPatternId) {
+    const icdId = decodeURIComponent(encodedIcdId);
     const newPatternId = document.getElementById('new-pattern-select')?.value;
     if (!newPatternId) {
         alert('Veuillez sélectionner un équipement');
@@ -496,26 +740,26 @@ async function moveIcd(icdPath, currentPatternId) {
     }
 
     // Délier de l'ancien
-    await unlinkIcdApi(currentPatternId, icdPath);
+    await unlinkIcdApi(currentPatternId, icdId);
     // Lier au nouveau
-    await linkIcd(newPatternId, icdPath);
+    await linkIcd(newPatternId, icdId);
 
     await loadIedPatterns();
     renderIedCards();
     renderOrphanIcds();
     updateStats();
     closeModal();
-    console.log(`↔️ ICD déplacé: ${icdPath} → ${newPatternId}`);
+    console.log(`↔️ ICD déplacé: ${icdId} → ${newPatternId}`);
 }
 
-async function assignOrphan(icdPath) {
+async function assignOrphan(icdId) {
     const patternId = document.getElementById('target-pattern-select')?.value;
     if (!patternId) {
         alert('Veuillez sélectionner un équipement');
         return;
     }
 
-    await linkIcd(patternId, icdPath);
+    await linkIcd(patternId, icdId);
 
     await loadIedPatterns();
     renderIedCards();
@@ -524,36 +768,41 @@ async function assignOrphan(icdPath) {
     closeModal();
 }
 
-async function linkIcd(patternId, icdPath) {
+async function linkIcd(patternId, icdId) {
     try {
         await fetch(`${API_BASE}/patterns/${patternId}/link`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ icd_path: icdPath })
+            body: JSON.stringify({ icd_id: icdId })
         });
-        console.log(`🔗 Lié: ${patternId} → ${icdPath}`);
+        console.log(`🔗 Lié: ${patternId} → ${icdId}`);
     } catch (e) {
         console.error('Erreur liaison:', e);
     }
 }
 
-async function unlinkIcd(patternId, icdPath) {
+async function unlinkIcd(patternId, icdId) {
     if (!confirm(`Dissocier cet ICD de "${patternId}" ?`)) return;
-    await unlinkIcdApi(patternId, icdPath);
+    await unlinkIcdApi(patternId, icdId);
     await loadIedPatterns();
     renderIedCards();
     renderOrphanIcds();
     updateStats();
 }
 
-async function unlinkIcdApi(patternId, icdPath) {
+async function unlinkIcdApi(patternId, icdId) {
     try {
-        await fetch(`${API_BASE}/patterns/${patternId}/unlink`, {
+        console.log(`🔓 Envoi unlink: patternId=${patternId}, icdId=${icdId}`);
+        const response = await fetch(`${API_BASE}/patterns/${patternId}/unlink`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ icd_path: icdPath })
+            body: JSON.stringify({ icd_id: icdId })
         });
-        console.log(`🔓 Délié: ${patternId} ↛ ${icdPath}`);
+        const result = await response.json();
+        console.log(`🔓 Réponse unlink:`, result);
+        if (!response.ok) {
+            console.error('❌ Erreur unlink:', result);
+        }
     } catch (e) {
         console.error('Erreur déliaison:', e);
     }

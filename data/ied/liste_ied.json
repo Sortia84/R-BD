@@ -8,10 +8,10 @@
             "exclusions": [
                 "*CBO*BCU*"
             ],
-            "display_name": "BCU (tous)",
+            "display_name": "BCU Ligne",
             "description": "Bay Control Unit",
             "icd_refs": [
-                "BCU/Efacec"
+                "ICD_PROTECTION"
             ],
             "variants": []
         },
@@ -21,17 +21,21 @@
             "exclusions": [],
             "display_name": "BPU",
             "description": "Bay Protection Unit",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_PROTECTION"
+            ],
             "variants": []
         },
         {
             "id": "SCU",
             "pattern": "*SCU*",
-            "exclusions": [],
-            "display_name": "SCU (tous)",
+            "exclusions": [
+                "*TGSCU*"
+            ],
+            "display_name": "SCU Ligne",
             "description": "Station Control Unit",
             "icd_refs": [
-                "SCU-ORG/SCLE SFE"
+                "ICD_ARKENS_SV1120_HGAAA_EB5"
             ],
             "variants": [
                 "*SCU1",
@@ -44,9 +48,7 @@
             "exclusions": [],
             "display_name": "SCU1",
             "description": "Station Control Unit 1",
-            "icd_refs": [
-                "SCU-ORG/SCLE SFE"
-            ],
+            "icd_refs": [],
             "parent": "SCU"
         },
         {
@@ -55,9 +57,7 @@
             "exclusions": [],
             "display_name": "SCU2",
             "description": "Station Control Unit 2",
-            "icd_refs": [
-                "SCU-ORG/SCLE SFE"
-            ],
+            "icd_refs": [],
             "parent": "SCU"
         },
         {
@@ -96,7 +96,9 @@
             "exclusions": [],
             "display_name": "CBO BCU1",
             "description": "CBO Bay Control Unit 1",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_PROTECTION"
+            ],
             "variants": []
         },
         {
@@ -105,7 +107,9 @@
             "exclusions": [],
             "display_name": "CBO SCU1",
             "description": "CBO Station Control Unit 1",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_ARKENS_SV2320_GGAAAAGAG_88D"
+            ],
             "variants": []
         },
         {
@@ -123,7 +127,9 @@
             "exclusions": [],
             "display_name": "TGSCU (tous)",
             "description": "TG Station Control Unit",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_ARKENS_SV2320_GGGAAAAGA_08C"
+            ],
             "variants": [
                 "*TGSCU1-2",
                 "*TGSCU1",
@@ -167,7 +173,9 @@
             "exclusions": [],
             "display_name": "TGSCU3",
             "description": "TG SCU 3",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_ARKENS_SV1120_GGGG_6A5"
+            ],
             "variants": []
         },
         {
@@ -257,8 +265,35 @@
             "id": "TGGW1",
             "pattern": "*TGGW1",
             "exclusions": [],
-            "display_name": "TGGW1",
-            "description": "TG Gateway 1",
+            "display_name": "TCD",
+            "description": "Téléconduite",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "TGTG",
+            "pattern": "*TGTG*",
+            "exclusions": [],
+            "display_name": "TG",
+            "description": "Tranche Générale",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "FPPO1",
+            "pattern": "*FPPO*",
+            "exclusions": [],
+            "display_name": "PO",
+            "description": "Poste Opérateur",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "TGASLD",
+            "pattern": "*TGASLD*",
+            "exclusions": [],
+            "display_name": "ASLD",
+            "description": "Automate supervision ADD",
             "icd_refs": [],
             "variants": []
         },

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>R#BD — Gestion ICD</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/templates.css" />
+    <link rel="stylesheet" href="../css/icd.css" />
+    <script src="../js/header-loader.js"></script>
+</head>
+
+<body>
+    <!-- Header chargé dynamiquement -->
+
+    <main class="guide-main">
+        <section class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2>Gestion des ICD 61850</h2>
+                    <p class="muted">Importez, classez et sélectionnez les versions ICD par type d’IED et constructeur
+                    </p>
+                </div>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <button class="btn btn-primary" onclick="triggerIcdUpload()">
+                        ➕ Importer un ICD
+                    </button>
+                    <button class="btn" onclick="reanalyzeAll()" title="Relancer toutes les analyses">
+                        🔄 Tout ré-analyser
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportIcdCatalog()">
+                        ⬇️ Exporter JSON
+                    </button>
+                </div>
+            </div>
+            <input id="icd-upload" type="file" accept=".icd,.xml" multiple hidden />
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <h3 style="margin: 0 0 8px 0;">🔎 Filtres</h3>
+                <p class="muted" style="margin: 0;">Filtrez par type d’IED et constructeur</p>
+            </div>
+            <div class="divider"></div>
+
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <label for="filter-ied-type">Type d’IED</label>
+                    <select id="filter-ied-type" class="filter-select">
+                        <option value="">Tous</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-manufacturer">Constructeur</label>
+                    <select id="filter-manufacturer" class="filter-select">
+                        <option value="">Tous</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-secondary" onclick="resetIcdFilters()">Réinitialiser</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <h3 style="margin: 0 0 8px 0;">📦 Bibliothèque ICD</h3>
+                <p class="muted" style="margin: 0;">Chaque carte regroupe un type d’IED, un constructeur et ses versions
+                </p>
+            </div>
+            <div class="divider"></div>
+
+            <div id="icd-cards" class="templates-grid">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📂</div>
+                    <p>Aucun ICD importé</p>
+                    <p class="muted">Cliquez sur “Importer un ICD” pour commencer</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/icd-manager.js"></script>
+    <script>
+        loadHeader({
+            activePage: 'icd',
+            title: 'R#BD — Gestion ICD'
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initIcdPage();
+        });
+    </script>
+</body>
+
+</html>
