@@ -3,8 +3,8 @@
   "ied_type": "SCU-MCB",
   "manufacturer": "SCLE SFE",
   "version": "2.1h",
-  "filename": "24faee89_ARKENS-SV1120-GGGG-6A5_SCU-MCB_2.1h-1.icd",
-  "imported_at": "2026-01-31T18:30:55.564818Z",
+  "filename": "ARKENS-SV1120-GGGG-6A5_SCU-MCB_2.1h-1.icd",
+  "imported_at": "2026-01-31T19:40:19.532598Z",
   "ieds": [
     {
       "name": "TEMPLATE",

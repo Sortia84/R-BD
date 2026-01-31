@@ -1,0 +1,43 @@
+{
+  "icd_id": "ICD_OND_RTE",
+  "ied_type": "OND",
+  "manufacturer": "RTE",
+  "version": "VDF",
+  "filename": "SCL_VirtualOND_20240822.icd",
+  "imported_at": "2026-01-31T19:40:21.430870Z",
+  "ieds": [
+    {
+      "name": "VirtualOND",
+      "lds": [
+        {
+          "name": "LDIT",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDSUIED",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "ld_count": 2,
+  "ln_count": 4
+}

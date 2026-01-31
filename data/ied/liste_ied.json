@@ -44,7 +44,9 @@
             "exclusions": [],
             "display_name": "SCU1",
             "description": "Station Control Unit 1",
-            "icd_refs": [],
+            "icd_refs": [
+                "SCU-ORG/SCLE SFE"
+            ],
             "parent": "SCU"
         },
         {
@@ -53,7 +55,9 @@
             "exclusions": [],
             "display_name": "SCU2",
             "description": "Station Control Unit 2",
-            "icd_refs": [],
+            "icd_refs": [
+                "SCU-ORG/SCLE SFE"
+            ],
             "parent": "SCU"
         },
         {
@@ -123,8 +127,7 @@
             "variants": [
                 "*TGSCU1-2",
                 "*TGSCU1",
-                "*TGSCU2",
-                "*TGSCU3"
+                "*TGSCU2"
             ]
         },
         {
@@ -165,7 +168,7 @@
             "display_name": "TGSCU3",
             "description": "TG SCU 3",
             "icd_refs": [],
-            "parent": "TGSCU"
+            "variants": []
         },
         {
             "id": "FPAUTP",

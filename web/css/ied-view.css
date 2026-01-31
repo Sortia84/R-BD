@@ -1,0 +1,387 @@
+/* ied-view.css - Styles pour la vue centrée IED */
+
+/* Grille des cartes IED */
+.ied-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 20px;
+}
+
+/* Carte IED */
+.ied-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 16px;
+    border-left: 5px solid var(--border);
+    transition: all 0.2s;
+}
+
+.ied-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.ied-card.has-icd {
+    border-left-color: #22c55e;
+}
+
+.ied-card.no-icd-status {
+    border-left-color: #f59e0b;
+    opacity: 0.85;
+}
+
+.ied-card.child-card {
+    margin-left: 20px;
+    border-left-style: dashed;
+}
+
+/* Header de la carte */
+.ied-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.ied-icon {
+    font-size: 28px;
+}
+
+.ied-info {
+    flex: 1;
+}
+
+.ied-info h3 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+}
+
+.pattern-code {
+    background: var(--bg);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--accent);
+}
+
+.ied-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.badge-count {
+    background: #22c55e;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    min-width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.badge-empty {
+    background: var(--border);
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 14px;
+    min-width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Description */
+.ied-description {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0 0 8px 0;
+}
+
+/* Variants */
+.ied-variants {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.ied-variants .label {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.variant-tag {
+    background: var(--bg);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: monospace;
+    color: var(--text);
+}
+
+/* Section des variants (enfants) */
+.ied-variants-section {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin: 8px 0;
+    border-left: 3px solid var(--accent);
+}
+
+.ied-variants-section::before {
+    content: '↳ Variants';
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.variant-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--border);
+}
+
+.variant-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.variant-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.variant-pattern {
+    background: var(--card);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--accent);
+}
+
+/* Liste des ICD */
+.ied-icds-list {
+    margin-top: 12px;
+}
+
+.icds-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.icds-header .label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.btn-add {
+    background: var(--accent);
+    color: white;
+    font-size: 12px;
+    padding: 4px 10px;
+}
+
+.btn-add:hover {
+    opacity: 0.9;
+}
+
+/* Item ICD dans la carte */
+.icd-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: var(--bg);
+    border-radius: 8px;
+    margin-bottom: 6px;
+}
+
+.icd-item:last-child {
+    margin-bottom: 0;
+}
+
+.icd-item-info {
+    flex: 1;
+}
+
+.icd-item-info strong {
+    font-size: 13px;
+    display: block;
+}
+
+.icd-item-meta {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.icd-item-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.no-icd {
+    text-align: center;
+    padding: 16px;
+    background: var(--bg);
+    border-radius: 8px;
+}
+
+/* Section ICD orphelins */
+.orphan-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.orphan-icd-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: rgba(245, 158, 11, 0.1);
+    border-left: 3px solid #f59e0b;
+    border-radius: 8px;
+}
+
+.orphan-info {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Stats summary */
+.stats-summary {
+    display: flex;
+    gap: 16px;
+}
+
+.stat-item {
+    background: var(--bg);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.stat-item.warning {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+/* Modal ICD options */
+.icd-options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 350px;
+    overflow-y: auto;
+    margin-top: 12px;
+}
+
+.icd-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.icd-option:hover {
+    background: var(--border);
+}
+
+.icd-option.already-linked {
+    background: rgba(34, 197, 94, 0.1);
+    border-left: 3px solid #22c55e;
+}
+
+.icd-option.orphan {
+    border-left: 3px solid #f59e0b;
+}
+
+.icd-option input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+}
+
+.icd-option-name {
+    flex: 1;
+    font-weight: 600;
+}
+
+.icd-option-version {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.badge-orphan {
+    background: #f59e0b;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* Modal small */
+.modal-small {
+    max-width: 400px;
+}
+
+.form-group {
+    margin-top: 12px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--muted);
+}
+
+.form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 14px;
+}
+
+/* Filter input */
+.filter-input {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 14px;
+    width: 200px;
+}
+
+.filter-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}

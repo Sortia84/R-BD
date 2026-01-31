@@ -1,0 +1,336 @@
+{
+  "icd_id": "ICD_GRPR_RTE_AUPOS",
+  "ied_type": "GRPR",
+  "manufacturer": "RTE-AUPOS",
+  "version": "1.2.0",
+  "filename": "ICD_GRPR.icd",
+  "imported_at": "2026-01-31T19:40:21.194290Z",
+  "ieds": [
+    {
+      "name": "TEMPLATE",
+      "lds": [
+        {
+          "name": "LDGRPR1",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDGRPR10",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDGRPR2",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDGRPR3",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDGRPR4",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDGRPR5",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDGRPR6",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDGRPR7",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDGRPR8",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDGRPR9",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDSUIED",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "LPCP",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "LGOS",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "LSET",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "ld_count": 11,
+  "ln_count": 66
+}

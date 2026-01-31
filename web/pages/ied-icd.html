@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>R#BD — Gestion IED / ICD</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/templates.css" />
+    <link rel="stylesheet" href="../css/icd.css" />
+    <link rel="stylesheet" href="../css/ied-view.css" />
+    <script src="../js/header-loader.js"></script>
+</head>
+
+<body>
+    <!-- Header chargé dynamiquement -->
+
+    <main class="guide-main">
+        <section class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2>Gestion IED / ICD</h2>
+                    <p class="muted">Associez les fichiers ICD analysés à vos équipements (patterns IED)</p>
+                </div>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <button class="btn btn-primary" onclick="triggerIcdUpload()">
+                        ➕ Importer un ICD
+                    </button>
+                    <button class="btn" onclick="reanalyzeAll()" title="Relancer toutes les analyses">
+                        🔄 Tout ré-analyser
+                    </button>
+                </div>
+            </div>
+            <input id="icd-upload" type="file" accept=".icd,.xml" multiple hidden />
+        </section>
+
+        <!-- ICD non assignés -->
+        <section class="card" id="orphan-section" style="display: none;">
+            <div class="card-header">
+                <h3 style="margin: 0 0 8px 0;">⚠️ ICD non assignés</h3>
+                <p class="muted" style="margin: 0;">Ces ICD n'ont pas encore été associés à un équipement</p>
+            </div>
+            <div class="divider"></div>
+            <div id="orphan-icds" class="orphan-list"></div>
+        </section>
+
+        <!-- Filtres -->
+        <section class="card">
+            <div class="card-header">
+                <h3 style="margin: 0 0 8px 0;">🔎 Filtres</h3>
+            </div>
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <label for="filter-search">Recherche</label>
+                    <input type="text" id="filter-search" class="filter-input" placeholder="Nom, pattern..."
+                        oninput="renderIedCards()">
+                </div>
+                <div class="filter-group">
+                    <label for="filter-linked">Statut</label>
+                    <select id="filter-linked" class="filter-select" onchange="renderIedCards()">
+                        <option value="">Tous</option>
+                        <option value="linked">Avec ICD</option>
+                        <option value="unlinked">Sans ICD</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-secondary" onclick="resetFilters()">Réinitialiser</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Liste des IED -->
+        <section class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin: 0 0 8px 0;">📦 Équipements IED</h3>
+                    <p class="muted" style="margin: 0;">Chaque carte représente un type d'équipement et ses ICD associés
+                    </p>
+                </div>
+                <div class="stats-summary" id="stats-summary"></div>
+            </div>
+            <div class="divider"></div>
+
+            <div id="ied-cards" class="ied-grid">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📂</div>
+                    <p>Chargement...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/ied-icd-manager.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', initIedIcdPage);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,511 @@
+{
+  "icd_id": "ICD_TG_RTE_AUPOS",
+  "ied_type": "TG",
+  "manufacturer": "RTE-AUPOS",
+  "version": "1.2.0",
+  "filename": "ICD_TG.icd",
+  "imported_at": "2026-01-31T19:40:21.276024Z",
+  "ieds": [
+    {
+      "name": "TEMPLATE",
+      "lds": [
+        {
+          "name": "LDCMDMULTAMU",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDEPS",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "RDRE",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "RDRE",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "RDRE",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "RDRE",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDMODEXPF1",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "IHMI",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDMODEXPF2",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "IHMI",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDMODEXPS",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "LSET",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDSONKLAX",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "CALH",
+              "lninst": "77"
+            },
+            {
+              "ln_class": "CALH",
+              "lninst": "76"
+            },
+            {
+              "ln_class": "CALH",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "CALH",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "CALH",
+              "lninst": "6"
+            },
+            {
+              "ln_class": "CALH",
+              "lninst": "5"
+            },
+            {
+              "ln_class": "LSET",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "CALH",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "CALH",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDSUIED",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "LPCP",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "LGOS",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "LSET",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDSUIT",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "LSET",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            }
+          ]
+        },
+        {
+          "name": "LDTGINFRA",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "FXOT",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LSET",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "SFIR",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "CALH",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDTGSEC",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "ISAF",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "ISAF",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "ISAF",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "LSET",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "CALH",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "CALH",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "CALH",
+              "lninst": "6"
+            },
+            {
+              "ln_class": "CALH",
+              "lninst": "5"
+            },
+            {
+              "ln_class": "CALH",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "CALH",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "ld_count": 10,
+  "ln_count": 111
+}

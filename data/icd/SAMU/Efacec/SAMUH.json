@@ -1,0 +1,272 @@
+{
+  "icd_id": "ICD_SAMU_EFACEC",
+  "ied_type": "SAMU",
+  "manufacturer": "Efacec",
+  "version": "SAMUH",
+  "filename": "SAMU-CBO Variante 5-H-V11.6.4Rev1-11September24.icd",
+  "imported_at": "2026-01-31T19:40:21.333680Z",
+  "ieds": [
+    {
+      "name": "TEMPLATE",
+      "lds": [
+        {
+          "name": "LDSUIED",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GAPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LSET",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LCCH",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "LCCH",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPCP",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "LPCP",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LPCP",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "LTMS",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LPDI",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "LGOS",
+              "lninst": "1"
+            }
+          ]
+        },
+        {
+          "name": "LDTM1",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "13"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "13"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "14"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "14"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "15"
+            },
+            {
+              "ln_class": "XSWI",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "12"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "12"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "12"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "11"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "15"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "15"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "16"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "16"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "16"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "13"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "11"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "14"
+            },
+            {
+              "ln_class": "LSYN",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "11"
+            },
+            {
+              "ln_class": "LSET",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDTM2",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "13"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "13"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "14"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "14"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "15"
+            },
+            {
+              "ln_class": "XSWI",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "12"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "12"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "12"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "11"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "15"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "15"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "16"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "16"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "16"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "13"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "11"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "14"
+            },
+            {
+              "ln_class": "LSYN",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "TVTR",
+              "lninst": "11"
+            },
+            {
+              "ln_class": "LSET",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "XCMD",
+              "lninst": "0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "ld_count": 3,
+  "ln_count": 60
+}

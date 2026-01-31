@@ -1,207 +1,99 @@
 {
-  "icd_id": "ICD_ASLD_RTE_AUPOS",
-  "ied_type": "ASLD",
+  "icd_id": "ICD_TOPO_RTE_AUPOS",
+  "ied_type": "TOPO",
   "manufacturer": "RTE-AUPOS",
-  "version": "1.1.0",
-  "filename": "ICD_ASLD.icd",
-  "imported_at": "2026-01-31T19:40:20.815642Z",
+  "version": "1.2.0",
+  "filename": "ICD_TOPO.icd",
+  "imported_at": "2026-01-31T19:40:21.308845Z",
   "ieds": [
     {
       "name": "TEMPLATE",
       "lds": [
         {
-          "name": "LDASLD",
+          "name": "LDATB",
           "lns": [
             {
               "ln_class": "LLN0",
               "lninst": ""
             },
             {
-              "ln_class": "RBRF",
+              "ln_class": "LTED",
               "lninst": "0"
             },
             {
-              "ln_class": "PTRC",
+              "ln_class": "LTED",
               "lninst": "0"
             },
             {
-              "ln_class": "PTRC",
+              "ln_class": "LTED",
               "lninst": "0"
             },
             {
-              "ln_class": "GAPC",
+              "ln_class": "LTED",
+              "lninst": "101"
+            },
+            {
+              "ln_class": "LTED",
               "lninst": "0"
             },
             {
-              "ln_class": "RBRF",
+              "ln_class": "LTED",
+              "lninst": "106"
+            },
+            {
+              "ln_class": "LTED",
               "lninst": "0"
             },
             {
-              "ln_class": "GAPC",
+              "ln_class": "LTED",
               "lninst": "0"
             },
             {
-              "ln_class": "RBRF",
+              "ln_class": "LTED",
               "lninst": "0"
             },
             {
-              "ln_class": "PTRC",
+              "ln_class": "LTED",
               "lninst": "0"
             },
             {
-              "ln_class": "GAPC",
+              "ln_class": "LTED",
               "lninst": "0"
             },
             {
-              "ln_class": "RBRF",
+              "ln_class": "LTED",
               "lninst": "0"
             },
             {
-              "ln_class": "PTRC",
+              "ln_class": "LTED",
               "lninst": "0"
             },
             {
-              "ln_class": "RBRF",
+              "ln_class": "LTED",
+              "lninst": "102"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "103"
+            },
+            {
+              "ln_class": "LSET",
               "lninst": "0"
             },
             {
-              "ln_class": "GAPC",
+              "ln_class": "LTED",
+              "lninst": "104"
+            },
+            {
+              "ln_class": "LTED",
               "lninst": "0"
             },
             {
-              "ln_class": "RBRF",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "PTRC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "GAPC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "RBRF",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "RBRF",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "PTRC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "GAPC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "RBRF",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "PTRC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "GAPC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "RBRF",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "GAPC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "RBRF",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "GAPC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "RBRF",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "PTRC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "PTRC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "GAPC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "RBRF",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "PTRC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "GAPC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "PTRC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "PTRC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "GAPC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "PTRC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "RBRF",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "PTRC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "RBRF",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "PTRC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "RBRF",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "PTRC",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "PTRC",
-              "lninst": "0"
+              "ln_class": "LTED",
+              "lninst": "105"
             },
             {
               "ln_class": "LPHD",
-              "lninst": "0"
-            },
-            {
-              "ln_class": "RBRF",
               "lninst": "0"
             }
           ]
@@ -218,16 +110,121 @@
               "lninst": "1"
             },
             {
-              "ln_class": "GAPC",
-              "lninst": "0"
+              "ln_class": "LGOS",
+              "lninst": "1"
             },
             {
               "ln_class": "LSET",
               "lninst": "0"
             },
             {
-              "ln_class": "LGOS",
-              "lninst": "1"
+              "ln_class": "GAPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDTOPO",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "105"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "104"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "103"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "106"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "101"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LTED",
+              "lninst": "102"
             },
             {
               "ln_class": "LPHD",
@@ -238,6 +235,6 @@
       ]
     }
   ],
-  "ld_count": 2,
-  "ln_count": 54
+  "ld_count": 3,
+  "ln_count": 52
 }

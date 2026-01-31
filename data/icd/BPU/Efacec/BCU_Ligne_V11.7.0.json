@@ -3,8 +3,8 @@
   "ied_type": "BPU",
   "manufacturer": "Efacec",
   "version": "BCU Ligne V11.7.0",
-  "filename": "655632dd_BPU-Ligne-V11.7.9-19March25.icd",
-  "imported_at": "2026-01-31T18:24:43.601700Z",
+  "filename": "BPU-Ligne-V11.7.9-19March25.icd",
+  "imported_at": "2026-01-31T19:40:20.438526Z",
   "ieds": [
     {
       "name": "TEMPLATE",
