@@ -1,28 +1,281 @@
-[
-    "*BCU*, !*CBO*BCU*",
-    "*BCU*",
-    "*BPU*",
-    "*SCU*",
-    "*SCU1",
-    "*SCU2",
-    "*PIU*",
-    "*PIU1",
-    "*PIU2",
-    "*CBO*BCU1",
-    "*CBO*SCU1",
-    "*CBO*PIU1",
-    "*TGSCU1-2",
-    "*TGSCU3",
-    "*FPAUTP*",
-    "*HYPER*",
-    "*ICT*",
-    "*OND*",
-    "*SWC*",
-    "*SWT*",
-    "*SYNC*",
-    "*GRP*",
-    "*GRPR*",
-    "*TGGW1",
-    "*TGTOP*",
-    "*TAC*"
-]
+{
+    "version": "2.0",
+    "description": "Liste des équipements IED avec patterns de nommage et liaisons ICD",
+    "ied_patterns": [
+        {
+            "id": "BCU",
+            "pattern": "*BCU*",
+            "exclusions": [
+                "*CBO*BCU*"
+            ],
+            "display_name": "BCU (tous)",
+            "description": "Bay Control Unit",
+            "icd_refs": [
+                "BCU/Efacec"
+            ],
+            "variants": []
+        },
+        {
+            "id": "BPU",
+            "pattern": "*BPU*",
+            "exclusions": [],
+            "display_name": "BPU",
+            "description": "Bay Protection Unit",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "SCU",
+            "pattern": "*SCU*",
+            "exclusions": [],
+            "display_name": "SCU (tous)",
+            "description": "Station Control Unit",
+            "icd_refs": [
+                "SCU-ORG/SCLE SFE"
+            ],
+            "variants": [
+                "*SCU1",
+                "*SCU2"
+            ]
+        },
+        {
+            "id": "SCU1",
+            "pattern": "*SCU1",
+            "exclusions": [],
+            "display_name": "SCU1",
+            "description": "Station Control Unit 1",
+            "icd_refs": [],
+            "parent": "SCU"
+        },
+        {
+            "id": "SCU2",
+            "pattern": "*SCU2",
+            "exclusions": [],
+            "display_name": "SCU2",
+            "description": "Station Control Unit 2",
+            "icd_refs": [],
+            "parent": "SCU"
+        },
+        {
+            "id": "PIU",
+            "pattern": "*PIU*",
+            "exclusions": [],
+            "display_name": "PIU (tous)",
+            "description": "Process Interface Unit",
+            "icd_refs": [],
+            "variants": [
+                "*PIU1",
+                "*PIU2"
+            ]
+        },
+        {
+            "id": "PIU1",
+            "pattern": "*PIU1",
+            "exclusions": [],
+            "display_name": "PIU1",
+            "description": "Process Interface Unit 1",
+            "icd_refs": [],
+            "parent": "PIU"
+        },
+        {
+            "id": "PIU2",
+            "pattern": "*PIU2",
+            "exclusions": [],
+            "display_name": "PIU2",
+            "description": "Process Interface Unit 2",
+            "icd_refs": [],
+            "parent": "PIU"
+        },
+        {
+            "id": "CBO_BCU1",
+            "pattern": "*CBO*BCU1",
+            "exclusions": [],
+            "display_name": "CBO BCU1",
+            "description": "CBO Bay Control Unit 1",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "CBO_SCU1",
+            "pattern": "*CBO*SCU1",
+            "exclusions": [],
+            "display_name": "CBO SCU1",
+            "description": "CBO Station Control Unit 1",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "CBO_PIU1",
+            "pattern": "*CBO*PIU1",
+            "exclusions": [],
+            "display_name": "CBO PIU1",
+            "description": "CBO Process Interface Unit 1",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "TGSCU",
+            "pattern": "*TGSCU*",
+            "exclusions": [],
+            "display_name": "TGSCU (tous)",
+            "description": "TG Station Control Unit",
+            "icd_refs": [],
+            "variants": [
+                "*TGSCU1-2",
+                "*TGSCU1",
+                "*TGSCU2",
+                "*TGSCU3"
+            ]
+        },
+        {
+            "id": "TGSCU1-2",
+            "pattern": "*TGSCU1-2",
+            "exclusions": [],
+            "display_name": "TGSCU1-2",
+            "description": "TG SCU 1 et 2 (les deux)",
+            "icd_refs": [],
+            "parent": "TGSCU"
+        },
+        {
+            "id": "TGSCU1",
+            "pattern": "*TGSCU1",
+            "exclusions": [
+                "*TGSCU1-2"
+            ],
+            "display_name": "TGSCU1 seul",
+            "description": "TG SCU 1 uniquement",
+            "icd_refs": [],
+            "parent": "TGSCU"
+        },
+        {
+            "id": "TGSCU2",
+            "pattern": "*TGSCU2",
+            "exclusions": [
+                "*TGSCU1-2"
+            ],
+            "display_name": "TGSCU2 seul",
+            "description": "TG SCU 2 uniquement",
+            "icd_refs": [],
+            "parent": "TGSCU"
+        },
+        {
+            "id": "TGSCU3",
+            "pattern": "*TGSCU3",
+            "exclusions": [],
+            "display_name": "TGSCU3",
+            "description": "TG SCU 3",
+            "icd_refs": [],
+            "parent": "TGSCU"
+        },
+        {
+            "id": "FPAUTP",
+            "pattern": "*FPAUTP*",
+            "exclusions": [],
+            "display_name": "FPAUTP",
+            "description": "FPA UTP",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "HYPER",
+            "pattern": "*HYPER*",
+            "exclusions": [],
+            "display_name": "HYPER",
+            "description": "Hyperviseur",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "ICT",
+            "pattern": "*ICT*",
+            "exclusions": [],
+            "display_name": "ICT",
+            "description": "ICT",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "OND",
+            "pattern": "*OND*",
+            "exclusions": [],
+            "display_name": "OND",
+            "description": "Onduleur",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "SWC",
+            "pattern": "*SWC*",
+            "exclusions": [],
+            "display_name": "SWC",
+            "description": "Switch C",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "SWT",
+            "pattern": "*SWT*",
+            "exclusions": [],
+            "display_name": "SWT",
+            "description": "Switch T",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "SYNC",
+            "pattern": "*SYNC*",
+            "exclusions": [],
+            "display_name": "SYNC",
+            "description": "Synchronisateur",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "GRP",
+            "pattern": "*GRP*",
+            "exclusions": [
+                "*GRPR*"
+            ],
+            "display_name": "GRP",
+            "description": "Groupe",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "GRPR",
+            "pattern": "*GRPR*",
+            "exclusions": [],
+            "display_name": "GRPR",
+            "description": "Groupe R",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "TGGW1",
+            "pattern": "*TGGW1",
+            "exclusions": [],
+            "display_name": "TGGW1",
+            "description": "TG Gateway 1",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "TGTOP",
+            "pattern": "*TGTOP*",
+            "exclusions": [],
+            "display_name": "TGTOP",
+            "description": "TG TOP",
+            "icd_refs": [],
+            "variants": []
+        },
+        {
+            "id": "TAC",
+            "pattern": "*TAC*",
+            "exclusions": [],
+            "display_name": "TAC",
+            "description": "TAC",
+            "icd_refs": [],
+            "variants": []
+        }
+    ]
+}

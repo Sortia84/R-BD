@@ -1,0 +1,1696 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<SCL xmlns="http://www.iec.ch/61850/2003/SCL" xmlns:IEC_60870_5_104="http://www.iec.ch/61850-80-1/2007/IEC_60870-5-104" xmlns:compas="https://www.lfenergy.org/compas/extension/v1" xmlns:eTr-IEC61850-90-2="http://www.iec.ch/61850-90-2/2015/SCL" xmlns:rte="http://www.rte-france.com" version="2007" revision="B" release="4">
+    <Private type="COMPAS-SclFileType">
+        <compas:SclFileType xmlns:compas="https://www.lfenergy.org/projects/compas/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">ICD</compas:SclFileType>
+    </Private>
+    <Header id="0121fbf5-0c56-4f89-9884-aff8392a4f40" version="02.01.04" revision="A" toolID="RTE GEN TOOL">
+        <History>
+            <Hitem version="2.1.4" revision="A" when="20250320" who="RTE" what="Prise en compte version 2.1.4 pour acquit SG et ano IHM"/>
+            <Hitem version="2.1.3" revision="A" when="20250220" who="RTE" what="Prise en compte version 2.1.3 pour IHM Web"/>
+            <Hitem version="2.1.2" revision="D" when="20250220" who="RTE" what="modification LPHD0.PhyNam.swRev en conduite_ppr-0.8.1"/>
+            <Hitem version="2.1.2" revision="C" when="20250220" who="RTE" what="Modifications LLN0.NamPlt.swRev et LPHD0.PhyNam.swRev"/>
+            <Hitem version="2.1.2" revision="B" when="20250220" who="RTE" what="Suppression mode Test BehaviourModeKind"/>
+            <Hitem version="2.1.2" revision="A" when="20250220" who="INEO" what="Première génération ICD GW v2"/>
+        </History>
+    </Header>
+    <Communication>
+        <SubNetwork type="IP" name="RSPACE_ADMIN_NETWORK">
+            <ConnectedAP iedName="VirtualGW" apName="ADMIN_AP" redProt="none">
+                <Address>
+                    <P type="SyslogIP">Adresse IP du serveur Syslog</P>
+                    <P type="SyslogProt">udp;tcp;tcp/tls</P>
+                    <P type="SyslogCat">Valeur du code de la catégorie des messages</P>
+                    <P type="SyslogMaxSev">Gravité (severity) maximale jusqu’à laquelle un log est envoyé none, 0, 1, 2, 3, 4, 5, 6, </P>
+                    <P type="IP-DATAREPOSITORY">0.0.0.0</P>
+                    <P type="SnmpUserName">Nom d utilisateur pour la connexion</P>
+                    <P type="SnmpAuthProt">none;hmac-128-sha-224;hmac-192-sha-256;hmac-256-sha-384;hmac-384-sha-512</P>
+                    <P type="SnmpAuthKey">Password cle pour l'authentification</P>
+                    <P type="SnmpPrivProt">none;aes-cfb-128;aes-cfb-192;aes-cfb-256</P>
+                    <P type="SnmpPrivKey">Password cle pour la confidentialite</P>
+                    <P type="SnmpIP">Adresse IP du serveur SNMP</P>
+                    <P type="IP-GATEWAY">0.0.0.0</P>
+                    <P type="IP">0.0.0.0</P>
+                    <P type="IP-SUBNET">0.0.0.0</P>
+                </Address>
+            </ConnectedAP>
+            <ConnectedAP iedName="VirtualGW" apName="NTP_AP" redProt="none">
+                <Address>
+                    <P type="IP">0.0.0.0</P>
+                </Address>
+            </ConnectedAP>
+        </SubNetwork>
+        <SubNetwork type="8-MMS" name="RSPACE_PROCESS_NETWORK">
+            <ConnectedAP iedName="VirtualGW" apName="PROCESS_AP" redProt="prp">
+                <Address>
+                    <P type="IP-SUBNET">0.0.0.0</P>
+                    <P type="IP-GATEWAY">0.0.0.0</P>
+                    <P type="IP">0.0.0.0</P>
+                    <P type="OSI-PSEL">00000001</P>
+                    <P type="OSI-SSEL">0001</P>
+                    <P type="OSI-TSEL">0001</P>
+                    <P type="OSI-AP-Title">1,3,9999,24</P>
+                    <P type="OSI-AE-Qualifier">24</P>
+                    <P type="MMS-VLANID">300</P>
+                    <P type="MMS-PRIORITY">3</P>
+                    <P type="PTP-VLANID">400</P>
+                    <P type="PTP-PRIORITY">4</P>
+                </Address>
+            </ConnectedAP>
+        </SubNetwork>
+    </Communication>
+    <IED name="VirtualGW" type="GW" manufacturer="RTE" configVersion="1.5.2" originalSclVersion="2007" originalSclRevision="B" originalSclRelease="4">
+        <Private type="COMPAS-IEDType">GW</Private>
+        
+        <Services nameLength="64">
+            <ConfLNs fixPrefix="true" fixLnInst="true"/>
+            <ClientServices noIctBinding="false"/>
+            <ConfLdName/>
+            <ValueHandling setToRO="true"/>
+        </Services>
+        <AccessPoint name="PROCESS_AP">
+            <Server>
+                <Authentication none="true" certificate="false"/>
+                <LDevice inst="LDGW" ldName="VirtualGWLDGW" desc="Gateway">
+                    <Private type="RTE-ProjectStage">Phase 1_1A</Private>
+                    <Private type="RTE-LDMaxInst"/>
+                    <LN0 lnClass="LLN0" inst="" lnType="RTE_68D1C318297077101A6D17A209A257DE_LLN0_V1.0.0">
+                        <DOI name="Beh">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Ldevice current status</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>on</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="Health">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Health status of the function </Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="Loc">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Indication _Site in local_remote_ this signal is the feedback of the command sent from the LDSUIHM _this allows the supervision of the gateway</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>false</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="LocSta">
+                            <DAI name="ctlModel" valKind="RO" valImport="true">
+                                <Val>status-only</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Indication _Site in local_remote_ this signal is the feedback of the command sent from the LDSUIHM _this allows the supervision of the gateway</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>false</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="Mod">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Activation_deactivation command</Val>
+                            </DAI>
+                            <DAI name="ctlModel" valKind="RO" valImport="true">
+                                <Val>status-only</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>on</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="NamPlt">
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Private type="RTE-LD-ChangeLog">
+                                    <rte:Hitem version="0.1" revision="A1" when="20230720" who="INEO" what="Donnée dynamique"/>
+                                </Private>
+                                <Val>02.01.04</Val>
+                            </DAI>
+                            <DAI name="configRev" valKind="RO" valImport="false">
+                                <Private type="RTE-LD-Model-ChangeLog">
+                                    <rte:Hitem version="01.00.00" revision="A1" when="20201201" who="RTE" what="Initiale version"/>
+                                    <rte:Hitem version="01.00.01" revision="A1" when="20220330" who="GD YL  GD" what="Modification d'un commentaire suite renommage LDPO en LDSUIHM Rajout TS FCS manquantes (réunion du 22/03/2021) Ajout de DO générique pour la modélisation word et avoir des libellés ISA ou param génériques Passage des instances des DO.inst de 0 à 1 pour les DO multi-instanciables Modification du RTE-IEDType en GW pour assurer la cohérence avec le LDSUIED  Ajout et renseignement des colonnes *.carac&quot; dans les onglets LN et DO"/>
+                                    <rte:Hitem version="01.00.02" revision="A1" when="20230213" who="JEL" what="Mapping des ISA DF.FC.TC, DF.FC.TS, DF.FC.TVC et DF.FC.TM au LLN0.Health"/>
+                                    <rte:Hitem version="01.00.03" revision="A1" when="20230703" who="JEL" what="Suppression des LPCPx Les ports de la GW sont portés par le LDSUIED"/>
+                                    <rte:Hitem version="01.00.04" revision="A1" when="20230707" who="JEL" what="Pour les LCCH.RedPortRef et PortRef, passage en RO et valImport false"/>
+                                </Private>
+                                <Val>01.00.04</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Indicates the software version of the gateway</Val>
+                            </DAI>
+                            <DAI name="paramRev">
+                                <Val>10</Val>
+                            </DAI>
+                            <DAI name="valRev">
+                                <Val>10</Val>
+                            </DAI>
+                            <DAI name="vendor">
+                                <Val>RTE</Val>
+                            </DAI>
+                            <DAI name="ldNs">
+                                <Val>IEC 61850-7-4:2007B</Val>
+                            </DAI>
+                        </DOI>
+                    </LN0>
+                    <LN lnClass="LCCH" inst="4" lnType="RTE_6E9EE4715544D94BA5D7B19DFD284AC9_LCCH_V1.0.0" desc="">
+                        <DOI name="ChLiv">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>State of the telecommunication link A to remote center 4Contributes to ISA PRT CD </Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="OutOv">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Indicates a buffer overflow for the link to center 4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PortRef">
+                            <DAI name="intAddr" valKind="RO" valImport="false">
+                                <Val>none</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Link with physical port indicated by LPCP for telecommunication link A</Val>
+                            </DAI>
+                            <DAI name="setSrcRef" valKind="RO" valImport="false"/>
+                        </DOI>
+                        <DOI name="RedChLiv">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>State of the telecommunication link B to remote center 4Contributes to ISA PRT CD </Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RedPortRef">
+                            <DAI name="intAddr" valKind="RO" valImport="false">
+                                <Val>none</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Link with physical port indicated by LPCP for telecommunication link B</Val>
+                            </DAI>
+                            <DAI name="setSrcRef" valKind="RO" valImport="false"/>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LCCH" inst="3" lnType="RTE_6E9EE4715544D94BA5D7B19DFD284AC9_LCCH_V1.0.0" desc="">
+                        <DOI name="ChLiv">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>State of the telecommunication link A to remote center 3Contributes to ISA PRT CC </Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="OutOv">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Indicates a buffer overflow for the link to center 3</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PortRef">
+                            <DAI name="intAddr" valKind="RO" valImport="false">
+                                <Val>none</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Link with physical port indicated by LPCP for telecommunication link A</Val>
+                            </DAI>
+                            <DAI name="setSrcRef" valKind="RO" valImport="false"/>
+                        </DOI>
+                        <DOI name="RedChLiv">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>State of the telecommunication link B to remote center 3Contributes to ISA PRT CC </Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RedPortRef">
+                            <DAI name="intAddr" valKind="RO" valImport="false">
+                                <Val>none</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Link with physical port indicated by LPCP for telecommunication link B</Val>
+                            </DAI>
+                            <DAI name="setSrcRef" valKind="RO" valImport="false"/>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LCCH" inst="2" lnType="RTE_6E9EE4715544D94BA5D7B19DFD284AC9_LCCH_V1.0.0" desc="">
+                        <DOI name="ChLiv">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>State of the telecommunication link A to remote center 2Contributes to ISA PRT CB </Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="OutOv">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Indicates a buffer overflow for the link to center 2</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PortRef">
+                            <DAI name="intAddr" valKind="RO" valImport="false">
+                                <Val>none</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Link with physical port indicated by LPCP for telecommunication link A</Val>
+                            </DAI>
+                            <DAI name="setSrcRef" valKind="RO" valImport="false"/>
+                        </DOI>
+                        <DOI name="RedChLiv">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>State of the telecommunication link B to remote center 2Contributes to ISA PRT CB </Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RedPortRef">
+                            <DAI name="intAddr" valKind="RO" valImport="false">
+                                <Val>none</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Link with physical port indicated by LPCP for telecommunication link B</Val>
+                            </DAI>
+                            <DAI name="setSrcRef" valKind="RO" valImport="false"/>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LCCH" inst="1" lnType="RTE_6E9EE4715544D94BA5D7B19DFD284AC9_LCCH_V1.0.0" desc="">
+                        <DOI name="ChLiv">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>State of the telecommunication link A to remote center 1Contributes to ISA PRT CA </Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="OutOv">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Indicates a buffer overflow for the link to center 1</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PortRef">
+                            <DAI name="intAddr" valKind="RO" valImport="false">
+                                <Val>none</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Link with physical port indicated by LPCP for telecommunication link A</Val>
+                            </DAI>
+                            <DAI name="setSrcRef" valKind="RO" valImport="false"/>
+                        </DOI>
+                        <DOI name="RedChLiv">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>State of the telecommunication link B to remote center 1Contributes to ISA PRT CA </Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RedPortRef">
+                            <DAI name="intAddr" valKind="RO" valImport="false">
+                                <Val>none</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Link with physical port indicated by LPCP for telecommunication link B</Val>
+                            </DAI>
+                            <DAI name="setSrcRef" valKind="RO" valImport="false"/>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="ITCI" inst="3" lnType="RTE_E3A088B27D204BFE41D944DBE026573D_ITCI_V1.0.0" desc="">
+                        <DOI name="EEName">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Name of the center 3</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="ITCI" inst="4" lnType="RTE_E3A088B27D204BFE41D944DBE026573D_ITCI_V1.0.0" desc="">
+                        <DOI name="EEName">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Name of the center 4</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="ITCI" inst="2" lnType="RTE_E3A088B27D204BFE41D944DBE026573D_ITCI_V1.0.0" desc="">
+                        <DOI name="EEName">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Name of the center 2</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="ITCI" inst="1" lnType="RTE_E3A088B27D204BFE41D944DBE026573D_ITCI_V1.0.0" desc="">
+                        <DOI name="EEName">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Name of the center 1</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="GAPC" inst="0" lnType="RTE_AAC41797AD6EE78EC05A89E7104F4255_GAPC_V1.0.0" desc="">
+                        <DOI name="Ind1">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Dummy signal aiming at the supervision of the link from remote centers The signal has a regular activity generated in the gateway </Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LPHD" inst="0" lnType="RTE_32E66DA9B8848C38D4A584784B375AAE_LPHD_V1.0.0" desc="">
+                        <DOI name="PhyHealth">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Mandatory because LD root</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PhyNam">
+                            <DAI name="serNum" valKind="RO" valImport="false">
+                                <Val>SEAPATH</Val>
+                            </DAI>
+                            <DAI name="model" valKind="RO" valImport="false">
+                                <Val>GW</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>IED Passerelle</Val>
+                            </DAI>
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>RTE</Val>
+                            </DAI>
+                            <DAI name="hwRev" valKind="RO" valImport="false">
+                                <Val>debian</Val>
+                            </DAI>
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Val>conduite_ppr-0.8.2</Val>
+                            </DAI>
+                            <DAI name="location" valKind="RO" valImport="true">
+                                <Val>None</Val>
+                            </DAI>
+                            <DAI name="name" valKind="RO" valImport="true">
+                                <Val>None</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="Proxy">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Mandatory because LD root</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>false</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                </LDevice>
+                <LDevice inst="LDSUIED" ldName="VirtualGWLDSUIED" desc="IED Monitoring Function">
+                    <Private type="RTE-ProjectStage">Phase 1_1A</Private>
+                    <Private type="RTE-LDMaxInst">1</Private>
+                    <LN0 lnClass="LLN0" inst="" lnType="RTE_F016E2CA81E068DF158D07BF45EC49F9_LLN0_V1.0.0">
+                        <DOI name="Beh">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Ldevice current status</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>on</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="Health">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Health of the LDSUIED function</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="Mod">
+                            <DAI name="operTimeout" valKind="RO" valImport="true">
+                                <Val>1000</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Activation_deactivation command</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>on</Val>
+                            </DAI>
+                            <DAI name="ctlModel" valKind="RO" valImport="true">
+                                <Val>status-only</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="NamPlt">
+                            <DAI name="paramRev">
+                                <Val>10</Val>
+                            </DAI>
+                            <DAI name="valRev">
+                                <Val>10</Val>
+                            </DAI>
+                            <DAI name="vendor">
+                                <Val>RTE</Val>
+                            </DAI>
+                            <DAI name="ldNs">
+                                <Val>IEC61850-7-4:2007B</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Version configuration</Val>
+                            </DAI>
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Private type="RTE-LD-ChangeLog">
+                                    <rte:Hitem version="0.1" revision="A1" when="20230720" who="INEO" what="Donnée dynamique"/>
+                                </Private>
+                                <Val>02.01.04</Val>
+                            </DAI>
+                            <DAI name="configRev" valKind="RO" valImport="false">
+                                <Private type="RTE-LD-Model-ChangeLog">
+                                    <rte:Hitem version="01.07.00" revision="A1" when="20220926  20230123" who="FF  GD" what="Suppression parenthèse &quot;d&quot; Reference of the associated terminal (may be shared with several ConnRef) car ajout espace dans retraitement des parenthese par FME Mise à 0 des DAI des BDA offDur du pulsconfig. Correction d du TmSrcSet qui avait un . en fin qui après postraitement devenait un espace Idem TmAcc, TmChSt, ChLiv, RedChLiv et ChLivTms FIgeage valeur à non latched pour DO LatMod + valImport à true pour les fournisseurs qui le gèrent FIgeage valeur à 5, stepsize à 1, min à 1 et max à 10 pour DO DebTmms + valImport à true pour les fournisseurs qui le gèrent SUppression des parenthèses dans les &quot;d&quot; Reprise des d de LPCP qui possédait des traits d'union et un point à la fin qui devenait un espace après postraitement  Mise à jour des libellés génériques des paramètres pour modélisation word Ajout du RTE-IEDtype BPU sur les memes objets que le BCU Modification des Mandatory but not used pour les DO du LPCP1,Suppression parenthèse &quot;d&quot; Reference of the associated terminal (may be shared with several ConnRef) car ajout espace dans retraitement des parenthese par FME Mise à 0 des DAI des BDA offDur du pulsconfig. Correction d du TmSrcSet qui avait un . en fin qui après postraitement devenait un espace Idem TmAcc, TmChSt, ChLiv, RedChLiv et ChLivTms FIgeage valeur à non latched pour DO LatMod + valImport à true pour les fournisseurs qui le gèrent FIgeage valeur à 5, stepsize à 1, min à 1 et max à 10 pour DO DebTmms + valImport à true pour les fournisseurs qui le gèrent SUppression des parenthèses dans les &quot;d&quot; Reprise des d de LPCP qui possédait des traits d'union et un point à la fin qui devenait un espace après postraitement  Mise à jour des libellés génériques des paramètres pour modélisation word Ajout du RTE-IEDtype BPU sur les memes objets que le BCU Modification des Mandatory but not used pour les DO du LPCP1,Suppression parenthèse &quot;d&quot; Reference of the associated terminal (may be shared with several ConnRef) car ajout espace dans retraitement des parenthese par FME Mise à 0 des DAI des BDA offDur du pulsconfig. Correction d du TmSrcSet qui avait un . en fin qui après postraitement devenait un espace Idem TmAcc, TmChSt, ChLiv, RedChLiv et ChLivTms FIgeage valeur à non latched pour DO LatMod + valImport à true pour les fournisseurs qui le gèrent FIgeage valeur à 5, stepsize à 1, min à 1 et max à 10 pour DO DebTmms + valImport à true pour les fournisseurs qui le gèrent SUppression des parenthèses dans les &quot;d&quot; Reprise des d de LPCP qui possédait des traits d'union et un point à la fin qui devenait un espace après postraitement  Mise à jour des libellés génériques des paramètres pour modélisation word Ajout du RTE-IEDtype BPU sur les memes objets que le BCU Modification des Mandatory but not used pour les DO du LPCP1,Suppression parenthèse &quot;d&quot; Reference of the associated terminal (may be shared with several ConnRef) car ajout espace dans retraitement des parenthese par FME Mise à 0 des DAI des BDA offDur du pulsconfig. Correction d du TmSrcSet qui avait un . en fin qui après postraitement devenait un espace Idem TmAcc, TmChSt, ChLiv, RedChLiv et ChLivTms FIgeage valeur à non latched pour DO LatMod + valImport à true pour les fournisseurs qui le gèrent FIgeage valeur à 5, stepsize à 1, min à 1 et max à 10 pour DO DebTmms + valImport à true pour les fournisseurs qui le gèrent SUppression des parenthèses dans les &quot;d&quot; Reprise des d de LPCP qui possédait des traits d'union et un point à la fin qui devenait un espace après postraitement  Mise à jour des libellés génériques des paramètres pour modélisation word Ajout du RTE-IEDtype BPU sur les memes objets que le BCU Modification des Mandatory but not used pour les DO du LPCP1,Suppression parenthèse &quot;d&quot; Reference of the associated terminal (may be shared with several ConnRef) car ajout espace dans retraitement des parenthese par FME Mise à 0 des DAI des BDA offDur du pulsconfig. Correction d du TmSrcSet qui avait un . en fin qui après postraitement devenait un espace Idem TmAcc, TmChSt, ChLiv, RedChLiv et ChLivTms FIgeage valeur à non latched pour DO LatMod + valImport à true pour les fournisseurs qui le gèrent FIgeage valeur à 5, stepsize à 1, min à 1 et max à 10 pour DO DebTmms + valImport à true pour les fournisseurs qui le gèrent SUppression des parenthèses dans les &quot;d&quot; Reprise des d de LPCP qui possédait des traits d'union et un point à la fin qui devenait un espace après postraitement  Mise à jour des libellés génériques des paramètres pour modélisation word Ajout du RTE-IEDtype BPU sur les memes objets que le BCU Modification des Mandatory but not used pour les DO du LPCP1,Suppression parenthèse &quot;d&quot; Reference of the associated terminal (may be shared with several ConnRef) car ajout espace dans retraitement des parenthese par FME Mise à 0 des DAI des BDA offDur du pulsconfig. Correction d du TmSrcSet qui avait un . en fin qui après postraitement devenait un espace Idem TmAcc, TmChSt, ChLiv, RedChLiv et ChLivTms FIgeage valeur à non latched pour DO LatMod + valImport à true pour les fournisseurs qui le gèrent FIgeage valeur à 5, stepsize à 1, min à 1 et max à 10 pour DO DebTmms + valImport à true pour les fournisseurs qui le gèrent SUppression des parenthèses dans les &quot;d&quot; Reprise des d de LPCP qui possédait des traits d'union et un point à la fin qui devenait un espace après postraitement  Mise à jour des libellés génériques des paramètres pour modélisation word Ajout du RTE-IEDtype BPU sur les memes objets que le BCU Modification des Mandatory but not used pour les DO du LPCP1,Suppression parenthèse &quot;d&quot; Reference of the associated terminal (may be shared with several ConnRef) car ajout espace dans retraitement des parenthese par FME Mise à 0 des DAI des BDA offDur du pulsconfig. Correction d du TmSrcSet qui avait un . en fin qui après postraitement devenait un espace Idem TmAcc, TmChSt, ChLiv, RedChLiv et ChLivTms FIgeage valeur à non latched pour DO LatMod + valImport à true pour les fournisseurs qui le gèrent FIgeage valeur à 5, stepsize à 1, min à 1 et max à 10 pour DO DebTmms + valImport à true pour les fournisseurs qui le gèrent SUppression des parenthèses dans les &quot;d&quot; Reprise des d de LPCP qui possédait des traits d'union et un point à la fin qui devenait un espace après postraitement  Mise à jour des libellés génériques des paramètres pour modélisation word Ajout du RTE-IEDtype BPU sur les memes objets que le BCU Modification des Mandatory but not used pour les DO du LPCP1,Suppression parenthèse &quot;d&quot; Reference of the associated terminal (may be shared with several ConnRef) car ajout espace dans retraitement des parenthese par FME Mise à 0 des DAI des BDA offDur du pulsconfig. Correction d du TmSrcSet qui avait un . en fin qui après postraitement devenait un espace Idem TmAcc, TmChSt, ChLiv, RedChLiv et ChLivTms FIgeage valeur à non latched pour DO LatMod + valImport à true pour les fournisseurs qui le gèrent FIgeage valeur à 5, stepsize à 1, min à 1 et max à 10 pour DO DebTmms + valImport à true pour les fournisseurs qui le gèrent SUppression des parenthèses dans les &quot;d&quot; Reprise des d de LPCP qui possédait des traits d'union et un point à la fin qui devenait un espace après postraitement  Mise à jour des libellés génériques des paramètres pour modélisation word Ajout du RTE-IEDtype BPU sur les memes objets que le BCU Modification des Mandatory but not used pour les DO du LPCP1,Suppression parenthèse &quot;d&quot; Reference of the associated terminal (may be shared with several ConnRef) car ajout espace dans retraitement des parenthese par FME Mise à 0 des DAI des BDA offDur du pulsconfig. Correction d du TmSrcSet qui avait un . en fin qui après postraitement devenait un espace Idem TmAcc, TmChSt, ChLiv, RedChLiv et ChLivTms FIgeage valeur à non latched pour DO LatMod + valImport à true pour les fournisseurs qui le gèrent FIgeage valeur à 5, stepsize à 1, min à 1 et max à 10 pour DO DebTmms + valImport à true pour les fournisseurs qui le gèrent SUppression des parenthèses dans les &quot;d&quot; Reprise des d de LPCP qui possédait des traits d'union et un point à la fin qui devenait un espace après postraitement  Mise à jour des libellés génériques des paramètres pour modélisation word Ajout du RTE-IEDtype BPU sur les memes objets que le BCU Modification des Mandatory but not used pour les DO du LPCP1,Suppression parenthèse &quot;d&quot; Reference of the associated terminal (may be shared with several ConnRef) car ajout espace dans retraitement des parenthese par FME Mise à 0 des DAI des BDA offDur du pulsconfig. Correction d du TmSrcSet qui avait un . en fin qui après postraitement devenait un espace Idem TmAcc, TmChSt, ChLiv, RedChLiv et ChLivTms FIgeage valeur à non latched pour DO LatMod + valImport à true pour les fournisseurs qui le gèrent FIgeage valeur à 5, stepsize à 1, min à 1 et max à 10 pour DO DebTmms + valImport à true pour les fournisseurs qui le gèrent SUppression des parenthèses dans les &quot;d&quot; Reprise des d de LPCP qui possédait des traits d'union et un point à la fin qui devenait un espace après postraitement  Mise à jour des libellés génériques des paramètres pour modélisation word Ajout du RTE-IEDtype BPU sur les memes objets que le BCU Modification des Mandatory but not used pour les DO du LPCP1,Suppression parenthèse &quot;d&quot; Reference of the associated terminal (may be shared with several ConnRef) car ajout espace dans retraitement des parenthese par FME Mise à 0 des DAI des BDA offDur du pulsconfig. Correction d du TmSrcSet qui avait un . en fin qui après postraitement devenait un espace Idem TmAcc, TmChSt, ChLiv, RedChLiv et ChLivTms FIgeage valeur à non latched pour DO LatMod + valImport à true pour les fournisseurs qui le gèrent FIgeage valeur à 5, stepsize à 1, min à 1 et max à 10 pour DO DebTmms + valImport à true pour les fournisseurs qui le gèrent SUppression des parenthèses dans les &quot;d&quot; Reprise des d de LPCP qui possédait des traits d'union et un point à la fin qui devenait un espace après postraitement  Mise à jour des libellés génériques des paramètres pour modélisation word Ajout du RTE-IEDtype BPU sur les memes objets que le BCU Modification des Mandatory but not used pour les DO du LPCP1,Suppression parenthèse &quot;d&quot; Reference of the associated terminal (may be shared with several ConnRef) car ajout espace dans retraitement des parenthese par FME Mise à 0 des DAI des BDA offDur du pulsconfig. Correction d du TmSrcSet qui avait un . en fin qui après postraitement devenait un espace Idem TmAcc, TmChSt, ChLiv, RedChLiv et ChLivTms FIgeage valeur à non latched pour DO LatMod + valImport à true pour les fournisseurs qui le gèrent FIgeage valeur à 5, stepsize à 1, min à 1 et max à 10 pour DO DebTmms + valImport à true pour les fournisseurs qui le gèrent SUppression des parenthèses dans les &quot;d&quot; Reprise des d de LPCP qui possédait des traits d'union et un point à la fin qui devenait un espace après postraitement  Mise à jour des libellés génériques des paramètres pour modélisation word Ajout du RTE-IEDtype BPU sur les memes objets que le BCU Modification des Mandatory but not used pour les DO du LPCP1,Suppression parenthèse &quot;d&quot; Reference of the associated terminal (may be shared with several ConnRef) car ajout espace dans retraitement des parenthese par FME Mise à 0 des DAI des BDA offDur du pulsconfig. Correction d du TmSrcSet qui avait un . en fin qui après postraitement devenait un espace Idem TmAcc, TmChSt, ChLiv, RedChLiv et ChLivTms FIgeage valeur à non latched pour DO LatMod + valImport à true pour les fournisseurs qui le gèrent FIgeage valeur à 5, stepsize à 1, min à 1 et max à 10 pour DO DebTmms + valImport à true pour les fournisseurs qui le gèrent SUppression des parenthèses dans les &quot;d&quot; Reprise des d de LPCP qui possédait des traits d'union et un point à la fin qui devenait un espace après postraitement  Mise à jour des libellés génériques des paramètres pour modélisation word Ajout du RTE-IEDtype BPU sur les memes objets que le BCU Modification des Mandatory but not used pour les DO du LPCP1"/>
+                                    <rte:Hitem version="01.00.01" revision="A1" when="20201201" who="RTE" what="Suppression du LPDI0 car les paramètres sont utilisés dans chaque LPDIx,Suppression du LPDI0 car les paramètres sont utilisés dans chaque LPDIx,Suppression du LPDI0 car les paramètres sont utilisés dans chaque LPDIx,Suppression du LPDI0 car les paramètres sont utilisés dans chaque LPDIx,Suppression du LPDI0 car les paramètres sont utilisés dans chaque LPDIx,Suppression du LPDI0 car les paramètres sont utilisés dans chaque LPDIx,Suppression du LPDI0 car les paramètres sont utilisés dans chaque LPDIx,Suppression du LPDI0 car les paramètres sont utilisés dans chaque LPDIx,Suppression du LPDI0 car les paramètres sont utilisés dans chaque LPDIx,Suppression du LPDI0 car les paramètres sont utilisés dans chaque LPDIx,Suppression du LPDI0 car les paramètres sont utilisés dans chaque LPDIx,Suppression du LPDI0 car les paramètres sont utilisés dans chaque LPDIx,Suppression du LPDI0 car les paramètres sont utilisés dans chaque LPDIx"/>
+                                    <rte:Hitem version="01.00.00" revision="A1" when="20201201" who="RTE" what="Initiale version,Initiale version,Initiale version,Initiale version,Initiale version,Initiale version,Initiale version,Initiale version,Initiale version,Initiale version,Initiale version,Initiale version,Initiale version"/>
+                                    <rte:Hitem version="01.01.00" revision="A1" when="20211122" who="FF TaM DF" what="Passage de plusieurs DO en phase 2. Intégration du tableau de la synthèse des DO utilisés en phase 1. Revue complete,Passage de plusieurs DO en phase 2. Intégration du tableau de la synthèse des DO utilisés en phase 1. Revue complete,Passage de plusieurs DO en phase 2. Intégration du tableau de la synthèse des DO utilisés en phase 1. Revue complete,Passage de plusieurs DO en phase 2. Intégration du tableau de la synthèse des DO utilisés en phase 1. Revue complete,Passage de plusieurs DO en phase 2. Intégration du tableau de la synthèse des DO utilisés en phase 1. Revue complete,Passage de plusieurs DO en phase 2. Intégration du tableau de la synthèse des DO utilisés en phase 1. Revue complete,Passage de plusieurs DO en phase 2. Intégration du tableau de la synthèse des DO utilisés en phase 1. Revue complete,Passage de plusieurs DO en phase 2. Intégration du tableau de la synthèse des DO utilisés en phase 1. Revue complete,Passage de plusieurs DO en phase 2. Intégration du tableau de la synthèse des DO utilisés en phase 1. Revue complete,Passage de plusieurs DO en phase 2. Intégration du tableau de la synthèse des DO utilisés en phase 1. Revue complete,Passage de plusieurs DO en phase 2. Intégration du tableau de la synthèse des DO utilisés en phase 1. Revue complete,Passage de plusieurs DO en phase 2. Intégration du tableau de la synthèse des DO utilisés en phase 1. Revue complete,Passage de plusieurs DO en phase 2. Intégration du tableau de la synthèse des DO utilisés en phase 1. Revue complete"/>
+                                    <rte:Hitem version="01.01.01" revision="A1" when="20220401" who="JEL  GD" what="Ajout de GRP;TG;TOPO aux type d'IED dans l'onglet LD  Ajout et renseignement des colonnes *.carac&quot; dans les onglets LN et DO,Ajout de GRP;TG;TOPO aux type d'IED dans l'onglet LD  Ajout et renseignement des colonnes *.carac&quot; dans les onglets LN et DO,Ajout de GRP;TG;TOPO aux type d'IED dans l'onglet LD  Ajout et renseignement des colonnes *.carac&quot; dans les onglets LN et DO,Ajout de GRP;TG;TOPO aux type d'IED dans l'onglet LD  Ajout et renseignement des colonnes *.carac&quot; dans les onglets LN et DO,Ajout de GRP;TG;TOPO aux type d'IED dans l'onglet LD  Ajout et renseignement des colonnes *.carac&quot; dans les onglets LN et DO,Ajout de GRP;TG;TOPO aux type d'IED dans l'onglet LD  Ajout et renseignement des colonnes *.carac&quot; dans les onglets LN et DO,Ajout de GRP;TG;TOPO aux type d'IED dans l'onglet LD  Ajout et renseignement des colonnes *.carac&quot; dans les onglets LN et DO,Ajout de GRP;TG;TOPO aux type d'IED dans l'onglet LD  Ajout et renseignement des colonnes *.carac&quot; dans les onglets LN et DO,Ajout de GRP;TG;TOPO aux type d'IED dans l'onglet LD  Ajout et renseignement des colonnes *.carac&quot; dans les onglets LN et DO,Ajout de GRP;TG;TOPO aux type d'IED dans l'onglet LD  Ajout et renseignement des colonnes *.carac&quot; dans les onglets LN et DO,Ajout de GRP;TG;TOPO aux type d'IED dans l'onglet LD  Ajout et renseignement des colonnes *.carac&quot; dans les onglets LN et DO,Ajout de GRP;TG;TOPO aux type d'IED dans l'onglet LD  Ajout et renseignement des colonnes *.carac&quot; dans les onglets LN et DO,Ajout de GRP;TG;TOPO aux type d'IED dans l'onglet LD  Ajout et renseignement des colonnes *.carac&quot; dans les onglets LN et DO"/>
+                                    <rte:Hitem version="01.02.00" revision="A1" when="20220408" who="JEL" what="Ajout des type d'IED SCU-MCB, SCU-TG et SCU-ORG,Ajout des type d'IED SCU-MCB, SCU-TG et SCU-ORG,Ajout des type d'IED SCU-MCB, SCU-TG et SCU-ORG,Ajout des type d'IED SCU-MCB, SCU-TG et SCU-ORG,Ajout des type d'IED SCU-MCB, SCU-TG et SCU-ORG,Ajout des type d'IED SCU-MCB, SCU-TG et SCU-ORG,Ajout des type d'IED SCU-MCB, SCU-TG et SCU-ORG,Ajout des type d'IED SCU-MCB, SCU-TG et SCU-ORG,Ajout des type d'IED SCU-MCB, SCU-TG et SCU-ORG,Ajout des type d'IED SCU-MCB, SCU-TG et SCU-ORG,Ajout des type d'IED SCU-MCB, SCU-TG et SCU-ORG,Ajout des type d'IED SCU-MCB, SCU-TG et SCU-ORG,Ajout des type d'IED SCU-MCB, SCU-TG et SCU-ORG"/>
+                                    <rte:Hitem version="01.03.00" revision="A1" when="20220520" who="GD JAL JEL" what="Ajout du DO.variant pour les DO de type **G qui ne sont pas renseignés hors ORG ISA MAIN Suppression du LPAI pour la SAMU et ajout pour les SCU-xxx Passage ChLivTms et ChatterTms en s et non ms côté 61850 car Tms=&gt; s et Tmms =&gt; ms,Ajout du DO.variant pour les DO de type **G qui ne sont pas renseignés hors ORG ISA MAIN Suppression du LPAI pour la SAMU et ajout pour les SCU-xxx Passage ChLivTms et ChatterTms en s et non ms côté 61850 car Tms=&gt; s et Tmms =&gt; ms,Ajout du DO.variant pour les DO de type **G qui ne sont pas renseignés hors ORG ISA MAIN Suppression du LPAI pour la SAMU et ajout pour les SCU-xxx Passage ChLivTms et ChatterTms en s et non ms côté 61850 car Tms=&gt; s et Tmms =&gt; ms,Ajout du DO.variant pour les DO de type **G qui ne sont pas renseignés hors ORG ISA MAIN Suppression du LPAI pour la SAMU et ajout pour les SCU-xxx Passage ChLivTms et ChatterTms en s et non ms côté 61850 car Tms=&gt; s et Tmms =&gt; ms,Ajout du DO.variant pour les DO de type **G qui ne sont pas renseignés hors ORG ISA MAIN Suppression du LPAI pour la SAMU et ajout pour les SCU-xxx Passage ChLivTms et ChatterTms en s et non ms côté 61850 car Tms=&gt; s et Tmms =&gt; ms,Ajout du DO.variant pour les DO de type **G qui ne sont pas renseignés hors ORG ISA MAIN Suppression du LPAI pour la SAMU et ajout pour les SCU-xxx Passage ChLivTms et ChatterTms en s et non ms côté 61850 car Tms=&gt; s et Tmms =&gt; ms,Ajout du DO.variant pour les DO de type **G qui ne sont pas renseignés hors ORG ISA MAIN Suppression du LPAI pour la SAMU et ajout pour les SCU-xxx Passage ChLivTms et ChatterTms en s et non ms côté 61850 car Tms=&gt; s et Tmms =&gt; ms,Ajout du DO.variant pour les DO de type **G qui ne sont pas renseignés hors ORG ISA MAIN Suppression du LPAI pour la SAMU et ajout pour les SCU-xxx Passage ChLivTms et ChatterTms en s et non ms côté 61850 car Tms=&gt; s et Tmms =&gt; ms,Ajout du DO.variant pour les DO de type **G qui ne sont pas renseignés hors ORG ISA MAIN Suppression du LPAI pour la SAMU et ajout pour les SCU-xxx Passage ChLivTms et ChatterTms en s et non ms côté 61850 car Tms=&gt; s et Tmms =&gt; ms,Ajout du DO.variant pour les DO de type **G qui ne sont pas renseignés hors ORG ISA MAIN Suppression du LPAI pour la SAMU et ajout pour les SCU-xxx Passage ChLivTms et ChatterTms en s et non ms côté 61850 car Tms=&gt; s et Tmms =&gt; ms,Ajout du DO.variant pour les DO de type **G qui ne sont pas renseignés hors ORG ISA MAIN Suppression du LPAI pour la SAMU et ajout pour les SCU-xxx Passage ChLivTms et ChatterTms en s et non ms côté 61850 car Tms=&gt; s et Tmms =&gt; ms,Ajout du DO.variant pour les DO de type **G qui ne sont pas renseignés hors ORG ISA MAIN Suppression du LPAI pour la SAMU et ajout pour les SCU-xxx Passage ChLivTms et ChatterTms en s et non ms côté 61850 car Tms=&gt; s et Tmms =&gt; ms,Ajout du DO.variant pour les DO de type **G qui ne sont pas renseignés hors ORG ISA MAIN Suppression du LPAI pour la SAMU et ajout pour les SCU-xxx Passage ChLivTms et ChatterTms en s et non ms côté 61850 car Tms=&gt; s et Tmms =&gt; ms"/>
+                                    <rte:Hitem version="01.03.01" revision="A1" when="20220808" who="JEL" what="Modifications des DAI.val associés aux PhyHealth (remplacement des valeurs 0 qui est hors Enum et 1 par ok) Correction de l'erreur de nomage pour le PARAM T-BASCUL-FLUX,Modifications des DAI.val associés aux PhyHealth (remplacement des valeurs 0 qui est hors Enum et 1 par ok) Correction de l'erreur de nomage pour le PARAM T-BASCUL-FLUX,Modifications des DAI.val associés aux PhyHealth (remplacement des valeurs 0 qui est hors Enum et 1 par ok) Correction de l'erreur de nomage pour le PARAM T-BASCUL-FLUX,Modifications des DAI.val associés aux PhyHealth (remplacement des valeurs 0 qui est hors Enum et 1 par ok) Correction de l'erreur de nomage pour le PARAM T-BASCUL-FLUX,Modifications des DAI.val associés aux PhyHealth (remplacement des valeurs 0 qui est hors Enum et 1 par ok) Correction de l'erreur de nomage pour le PARAM T-BASCUL-FLUX,Modifications des DAI.val associés aux PhyHealth (remplacement des valeurs 0 qui est hors Enum et 1 par ok) Correction de l'erreur de nomage pour le PARAM T-BASCUL-FLUX,Modifications des DAI.val associés aux PhyHealth (remplacement des valeurs 0 qui est hors Enum et 1 par ok) Correction de l'erreur de nomage pour le PARAM T-BASCUL-FLUX,Modifications des DAI.val associés aux PhyHealth (remplacement des valeurs 0 qui est hors Enum et 1 par ok) Correction de l'erreur de nomage pour le PARAM T-BASCUL-FLUX,Modifications des DAI.val associés aux PhyHealth (remplacement des valeurs 0 qui est hors Enum et 1 par ok) Correction de l'erreur de nomage pour le PARAM T-BASCUL-FLUX,Modifications des DAI.val associés aux PhyHealth (remplacement des valeurs 0 qui est hors Enum et 1 par ok) Correction de l'erreur de nomage pour le PARAM T-BASCUL-FLUX,Modifications des DAI.val associés aux PhyHealth (remplacement des valeurs 0 qui est hors Enum et 1 par ok) Correction de l'erreur de nomage pour le PARAM T-BASCUL-FLUX,Modifications des DAI.val associés aux PhyHealth (remplacement des valeurs 0 qui est hors Enum et 1 par ok) Correction de l'erreur de nomage pour le PARAM T-BASCUL-FLUX,Modifications des DAI.val associés aux PhyHealth (remplacement des valeurs 0 qui est hors Enum et 1 par ok) Correction de l'erreur de nomage pour le PARAM T-BASCUL-FLUX"/>
+                                    <rte:Hitem version="01.04.00" revision="A1" when="20220808" who="JEL" what="Ajout des instances de LGOS et LSVS,Ajout des instances de LGOS et LSVS,Ajout des instances de LGOS et LSVS,Ajout des instances de LGOS et LSVS,Ajout des instances de LGOS et LSVS,Ajout des instances de LGOS et LSVS,Ajout des instances de LGOS et LSVS,Ajout des instances de LGOS et LSVS,Ajout des instances de LGOS et LSVS,Ajout des instances de LGOS et LSVS,Ajout des instances de LGOS et LSVS,Ajout des instances de LGOS et LSVS,Ajout des instances de LGOS et LSVS"/>
+                                    <rte:Hitem version="01.05.00" revision="A1" when="20220825" who="JEL" what="Suppression des instances de LGOS et LSVS différentes de 1 car instanciation dans SCT Ajout GUID pour regroupement &quot;ES.EQUIP&quot; (GO),Suppression des instances de LGOS et LSVS différentes de 1 car instanciation dans SCT Ajout GUID pour regroupement &quot;ES.EQUIP&quot; (GO),Suppression des instances de LGOS et LSVS différentes de 1 car instanciation dans SCT Ajout GUID pour regroupement &quot;ES.EQUIP&quot; (GO),Suppression des instances de LGOS et LSVS différentes de 1 car instanciation dans SCT Ajout GUID pour regroupement &quot;ES.EQUIP&quot; (GO),Suppression des instances de LGOS et LSVS différentes de 1 car instanciation dans SCT Ajout GUID pour regroupement &quot;ES.EQUIP&quot; (GO),Suppression des instances de LGOS et LSVS différentes de 1 car instanciation dans SCT Ajout GUID pour regroupement &quot;ES.EQUIP&quot; (GO),Suppression des instances de LGOS et LSVS différentes de 1 car instanciation dans SCT Ajout GUID pour regroupement &quot;ES.EQUIP&quot; (GO),Suppression des instances de LGOS et LSVS différentes de 1 car instanciation dans SCT Ajout GUID pour regroupement &quot;ES.EQUIP&quot; (GO),Suppression des instances de LGOS et LSVS différentes de 1 car instanciation dans SCT Ajout GUID pour regroupement &quot;ES.EQUIP&quot; (GO),Suppression des instances de LGOS et LSVS différentes de 1 car instanciation dans SCT Ajout GUID pour regroupement &quot;ES.EQUIP&quot; (GO),Suppression des instances de LGOS et LSVS différentes de 1 car instanciation dans SCT Ajout GUID pour regroupement &quot;ES.EQUIP&quot; (GO),Suppression des instances de LGOS et LSVS différentes de 1 car instanciation dans SCT Ajout GUID pour regroupement &quot;ES.EQUIP&quot; (GO),Suppression des instances de LGOS et LSVS différentes de 1 car instanciation dans SCT Ajout GUID pour regroupement &quot;ES.EQUIP&quot; (GO)"/>
+                                    <rte:Hitem version="01.06.00" revision="A1" when="20220914" who="JEL" what="Modification des RTE:2019A vers RTE:2022A et (Tr)IEC 61850-90-3:2015B vers  (Tr)IEC61850-90-3:2015B,Modification des RTE:2019A vers RTE:2022A et (Tr)IEC 61850-90-3:2015B vers  (Tr)IEC61850-90-3:2015B,Modification des RTE:2019A vers RTE:2022A et (Tr)IEC 61850-90-3:2015B vers  (Tr)IEC61850-90-3:2015B,Modification des RTE:2019A vers RTE:2022A et (Tr)IEC 61850-90-3:2015B vers  (Tr)IEC61850-90-3:2015B,Modification des RTE:2019A vers RTE:2022A et (Tr)IEC 61850-90-3:2015B vers  (Tr)IEC61850-90-3:2015B,Modification des RTE:2019A vers RTE:2022A et (Tr)IEC 61850-90-3:2015B vers  (Tr)IEC61850-90-3:2015B,Modification des RTE:2019A vers RTE:2022A et (Tr)IEC 61850-90-3:2015B vers  (Tr)IEC61850-90-3:2015B,Modification des RTE:2019A vers RTE:2022A et (Tr)IEC 61850-90-3:2015B vers  (Tr)IEC61850-90-3:2015B,Modification des RTE:2019A vers RTE:2022A et (Tr)IEC 61850-90-3:2015B vers  (Tr)IEC61850-90-3:2015B,Modification des RTE:2019A vers RTE:2022A et (Tr)IEC 61850-90-3:2015B vers  (Tr)IEC61850-90-3:2015B,Modification des RTE:2019A vers RTE:2022A et (Tr)IEC 61850-90-3:2015B vers  (Tr)IEC61850-90-3:2015B,Modification des RTE:2019A vers RTE:2022A et (Tr)IEC 61850-90-3:2015B vers  (Tr)IEC61850-90-3:2015B,Modification des RTE:2019A vers RTE:2022A et (Tr)IEC 61850-90-3:2015B vers  (Tr)IEC61850-90-3:2015B"/>
+                                </Private>
+                                <Val>01.07.00</Val>
+                            </DAI>
+                        </DOI>
+                    </LN0>
+                    <LN lnClass="LPCP" inst="1" lnType="RTE_45248BBFF8512F6420FCC8A53565DDB0_LPCP_V1.0.0" desc="">
+                        <DOI name="AdminCfg">
+                            <DAI name="setVal" valKind="RO" valImport="true">
+                                <Val>false</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>If true the port is administratively up See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="AutoNgt">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>If true the port is set to auto__negotiation See IEC 61850__90__4</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>false</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="AutoNgtCfg">
+                            <DAI name="setVal" valKind="RO" valImport="true">
+                                <Val>false</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>If true the port is set to auto__negotiation See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="Beh">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Mandatory but not used</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>off</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="Mau">
+                            <SDI name="units">
+                                <DAI name="SIUnit" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                                <DAI name="multiplier" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                            </SDI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Medium attachment unit link status See IEC 61850__90__4</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>0</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="MauCfg">
+                            <SDI name="units">
+                                <DAI name="SIUnit" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                                <DAI name="multiplier" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                            </SDI>
+                            <DAI name="setVal" valKind="RO" valImport="true">
+                                <Val>0</Val>
+                            </DAI>
+                            <DAI name="minVal" valKind="RO" valImport="false">
+                                <Val>0</Val>
+                            </DAI>
+                            <DAI name="maxVal" valKind="RO" valImport="false">
+                                <Val>32</Val>
+                            </DAI>
+                            <DAI name="stepSize" valKind="RO" valImport="false">
+                                <Val>1</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Currently supported value from MauCfgCap See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="MauCfgCap1">
+                            <SDI name="units">
+                                <DAI name="SIUnit" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                                <DAI name="multiplier" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                            </SDI>
+                            <DAI name="setVal" valKind="RO" valImport="false">
+                                <Val>0</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Supported medium access unit MAU setting n See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="NamPlt">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Name plate of the logical node</Val>
+                            </DAI>
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>None</Val>
+                            </DAI>
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Val>None</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PhyHealth">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Physical Health of the Board</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PhyNam">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Mandatory but not used</Val>
+                            </DAI>
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>None</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PortMac">
+                            <DAI name="setVal" valKind="RO" valImport="false">
+                                <Val>0</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Port MAC address as dash__separated hex number See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PortNam">
+                            <DAI name="setVal" valKind="RO" valImport="false">
+                                <Val>None</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Label of the terminal on the device See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PortNum">
+                            <DAI name="setVal" valKind="RO" valImport="false">
+                                <Val>0</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Number of the terminal on the device See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LPCP" inst="2" lnType="RTE_45248BBFF8512F6420FCC8A53565DDB0_LPCP_V1.0.0" desc="">
+                        <DOI name="AdminCfg">
+                            <DAI name="setVal" valKind="RO" valImport="true">
+                                <Val>false</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>If true the port is administratively up See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="AutoNgt">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>If true the port is set to auto__negotiation See IEC 61850__90__4</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>false</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="AutoNgtCfg">
+                            <DAI name="setVal" valKind="RO" valImport="true">
+                                <Val>false</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>If true the port is set to auto__negotiation See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="Beh">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Mandatory but not used</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>off</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="Mau">
+                            <SDI name="units">
+                                <DAI name="SIUnit" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                                <DAI name="multiplier" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                            </SDI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Medium attachment unit link status See IEC 61850__90__4</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>0</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="MauCfg">
+                            <SDI name="units">
+                                <DAI name="SIUnit" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                                <DAI name="multiplier" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                            </SDI>
+                            <DAI name="setVal" valKind="RO" valImport="true">
+                                <Val>24</Val>
+                            </DAI>
+                            <DAI name="minVal" valKind="RO" valImport="false">
+                                <Val>0</Val>
+                            </DAI>
+                            <DAI name="maxVal" valKind="RO" valImport="false">
+                                <Val>32</Val>
+                            </DAI>
+                            <DAI name="stepSize" valKind="RO" valImport="false">
+                                <Val>1</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Currently supported value from MauCfgCap See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="MauCfgCap1">
+                            <SDI name="units">
+                                <DAI name="SIUnit" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                                <DAI name="multiplier" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                            </SDI>
+                            <DAI name="setVal" valKind="RO" valImport="false">
+                                <Val>0</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Supported medium access unit MAU setting n See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="NamPlt">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Name plate of the logical node</Val>
+                            </DAI>
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>None</Val>
+                            </DAI>
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Val>None</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PhyHealth">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Physical Health of the Board</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PhyNam">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Mandatory but not used</Val>
+                            </DAI>
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>None</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PortMac">
+                            <DAI name="setVal" valKind="RO" valImport="false">
+                                <Val>0</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Port MAC address as dash__separated hex number See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PortNam">
+                            <DAI name="setVal" valKind="RO" valImport="false">
+                                <Val>None</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Label of the terminal on the device See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PortNum">
+                            <DAI name="setVal" valKind="RO" valImport="false">
+                                <Val>0</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Number of the terminal on the device See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LPCP" inst="3" lnType="RTE_45248BBFF8512F6420FCC8A53565DDB0_LPCP_V1.0.0" desc="">
+                        <DOI name="AdminCfg">
+                            <DAI name="setVal" valKind="RO" valImport="true">
+                                <Val>false</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>If true the port is administratively up See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="AutoNgt">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>If true the port is set to auto__negotiation See IEC 61850__90__4</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>false</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="AutoNgtCfg">
+                            <DAI name="setVal" valKind="RO" valImport="true">
+                                <Val>false</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>If true the port is set to auto__negotiation See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="Beh">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Mandatory but not used</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>off</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="Mau">
+                            <SDI name="units">
+                                <DAI name="SIUnit" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                                <DAI name="multiplier" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                            </SDI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Medium attachment unit link status See IEC 61850__90__4</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>0</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="MauCfg">
+                            <SDI name="units">
+                                <DAI name="SIUnit" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                                <DAI name="multiplier" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                            </SDI>
+                            <DAI name="setVal" valKind="RO" valImport="true">
+                                <Val>0</Val>
+                            </DAI>
+                            <DAI name="minVal" valKind="RO" valImport="false">
+                                <Val>0</Val>
+                            </DAI>
+                            <DAI name="maxVal" valKind="RO" valImport="false">
+                                <Val>32</Val>
+                            </DAI>
+                            <DAI name="stepSize" valKind="RO" valImport="false">
+                                <Val>1</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Currently supported value from MauCfgCap See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="MauCfgCap1">
+                            <SDI name="units">
+                                <DAI name="SIUnit" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                                <DAI name="multiplier" valKind="RO" valImport="false">
+                                    <Val/>
+                                </DAI>
+                            </SDI>
+                            <DAI name="setVal" valKind="RO" valImport="false">
+                                <Val>0</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Supported medium access unit MAU setting n See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="NamPlt">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Name plate of the logical node</Val>
+                            </DAI>
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>None</Val>
+                            </DAI>
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Val>None</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PhyHealth">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Physical Health of the Board</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PhyNam">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Mandatory but not used</Val>
+                            </DAI>
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>None</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PortMac">
+                            <DAI name="setVal" valKind="RO" valImport="false">
+                                <Val>0</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Port MAC address as dash__separated hex number See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PortNam">
+                            <DAI name="setVal" valKind="RO" valImport="false">
+                                <Val>None</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Label of the terminal on the device See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PortNum">
+                            <DAI name="setVal" valKind="RO" valImport="false">
+                                <Val>0</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Number of the terminal on the device See IEC 61850__90__4</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="GAPC" inst="0" lnType="RTE_CD1852A806CC07CF1A02BA9F9018043E_GAPC_V1.0.0" desc="">
+                        <DOI name="Beh">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Mandatory but not used</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>on</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="Ind1">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Watchdog</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LSET" inst="0" lnType="RTE_4C01897F66B9F2239C84FC2AA26C3814_LSET_V1.0.0" desc="">
+                        <DOI name="Beh">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Mandatory but not used</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>on</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="DlTmms1">
+                            <SDI name="units">
+                                <DAI name="SIUnit" valKind="RO" valImport="false">
+                                    <Val>s</Val>
+                                </DAI>
+                                <DAI name="multiplier" valKind="RO" valImport="false">
+                                    <Val>m</Val>
+                                </DAI>
+                            </SDI>
+                            <DAI name="setVal" valKind="RO" valImport="true">
+                                <Val>5000</Val>
+                            </DAI>
+                            <DAI name="minVal" valKind="RO" valImport="false">
+                                <Val>1000</Val>
+                            </DAI>
+                            <DAI name="maxVal" valKind="RO" valImport="false">
+                                <Val>60000</Val>
+                            </DAI>
+                            <DAI name="stepSize" valKind="RO" valImport="false">
+                                <Val>1000</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Watchdog Toggling Period</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="DlTmms2">
+                            <SDI name="units">
+                                <DAI name="SIUnit" valKind="RO" valImport="false">
+                                    <Val>s</Val>
+                                </DAI>
+                                <DAI name="multiplier" valKind="RO" valImport="false">
+                                    <Val>m</Val>
+                                </DAI>
+                            </SDI>
+                            <DAI name="setVal" valKind="RO" valImport="true">
+                                <Val>1</Val>
+                            </DAI>
+                            <DAI name="minVal" valKind="RO" valImport="false">
+                                <Val>1</Val>
+                            </DAI>
+                            <DAI name="maxVal" valKind="RO" valImport="false">
+                                <Val>1000</Val>
+                            </DAI>
+                            <DAI name="stepSize" valKind="RO" valImport="false">
+                                <Val>1</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Time delay to switch to the backup source SV or GOOSE if used</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="NamPlt">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Name plate of the logical node</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LTMS" inst="0" lnType="RTE_E6A2E5DCB686B185986C8E333F5A48E4_LTMS_V1.0.0" desc="">
+                        <DOI name="Beh">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Mandatory but not used</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>on</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TmChSt1">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>If true time channel n is receiving time messages within a specified time interval</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TmSrc">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Current time source identity</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TmSrcSet1">
+                            <DAI name="setVal" valKind="RO" valImport="true">
+                                <Val>1588</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Name of time source n</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TmSrcTyp">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Type of the clock source</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TmSyn">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Actual time synchronisation applied</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LPHD" inst="0" lnType="RTE_09EA62C852B00A7B198865EEB29B18B3_LPHD_V1.0.0" desc="">
+                        <DOI name="NumPwrUp">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Number of power up operations of the physical device since the last reset </Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PhyHealth">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>State of the physical device related HW and SW</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PhyNam">
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>RTE</Val>
+                            </DAI>
+                            <DAI name="hwRev" valKind="RO" valImport="false">
+                                <Val>Debian</Val>
+                            </DAI>
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Val>conduite_ppr-0.8.2</Val>
+                            </DAI>
+                            <DAI name="serNum" valKind="RO" valImport="false">
+                                <Val>SEAPATH</Val>
+                            </DAI>
+                            <DAI name="model" valKind="RO" valImport="false">
+                                <Val>GW</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>IED Passerelle</Val>
+                            </DAI>
+                            <DAI name="location" valKind="RO" valImport="true">
+                                <Val>None</Val>
+                            </DAI>
+                            <DAI name="name" valKind="RO" valImport="true">
+                                <Val>None</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="Proxy">
+                            <DAI name="stVal">
+                                <Val>false</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Indicates if this LN is a proxy False if not used </Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PwrDn">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>IED power down detected</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>false</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PwrSupAlm">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Alarm trigger status from the external power supply occurred </Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>false</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="PwrUp">
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>IED power up detected</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RsStat">
+                            <SDI name="pulseConfig">
+                                <DAI name="cmdQual" valKind="RO" valImport="true">
+                                    <Val>pulse</Val>
+                                </DAI>
+                                <DAI name="onDur" valKind="RO" valImport="true">
+                                    <Val>100</Val>
+                                </DAI>
+                                <DAI name="numPls" valKind="RO" valImport="false">
+                                    <Val>1</Val>
+                                </DAI>
+                                <DAI name="offDur" valKind="RO" valImport="false">
+                                    <Val>0</Val>
+                                </DAI>
+                            </SDI>
+                            <DAI name="operTimeout" valKind="RO" valImport="true">
+                                <Val>1000</Val>
+                            </DAI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>LPHD Statistics reset</Val>
+                            </DAI>
+                            <DAI name="ctlModel" valKind="RO" valImport="false">
+                                <Val>direct-with-enhanced-security</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>false</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="Sim">
+                            <SDI name="pulseConfig">
+                                <DAI name="offDur" valKind="RO" valImport="false">
+                                    <Val>0</Val>
+                                </DAI>
+                            </SDI>
+                            <DAI name="d" valKind="RO" valImport="false">
+                                <Val>Simulated GOOSE values or simulated sampled measurand values use activation</Val>
+                            </DAI>
+                            <DAI name="ctlModel" valKind="RO" valImport="true">
+                                <Val>status-only</Val>
+                            </DAI>
+                            <DAI name="stVal">
+                                <Val>false</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                </LDevice>
+            </Server>
+            <Services>
+                <DynAssociation max="4"/>
+                <GetDirectory/>
+                <GetDataObjectDefinition/>
+                <DataObjectDirectory/>
+                <GetDataSetValue/>
+                <DataSetDirectory/>
+                <ConfDataSet modify="true" maxAttributes="200" max="120"/>
+                <ReadWrite/>
+                <ConfReportControl bufMode="both" bufConf="true" max="120"/>
+                <GetCBValues/>
+                <ReportSettings rptID="Conf" optFields="Conf" bufTime="Conf" trgOps="Conf" intgPd="Conf" resvTms="true" owner="true" cbName="Conf" datSet="Conf"/>
+                <FileHandling mms="true"/>
+                <ConfLNs fixPrefix="true" fixLnInst="true"/>
+                <ClientServices noIctBinding="false">
+                    <TimeSyncProt iec61850_9_3="true"/>
+                </ClientServices>
+                <ConfLdName/>
+                <SupSubscription maxGo="120" maxSv="9"/>
+                <ConfSigRef max="1200"/>
+                <ValueHandling setToRO="true"/>
+                <RedProt prp="true"/>
+            </Services>
+        </AccessPoint>
+        <AccessPoint name="NTP_AP" clock="true"/>
+        <AccessPoint name="ADMIN_AP"/>
+    </IED>
+    <DataTypeTemplates>
+        <LNodeType lnClass="LLN0" id="RTE_F016E2CA81E068DF158D07BF45EC49F9_LLN0_V1.0.0">
+            <DO name="NamPlt" type="RTE_X_X_X_CF19FF016079750CB4219A7983C23ABA_LPL_V1.0.0"/>
+            <DO name="Beh" type="RTE_X_X_X_D1011A9BE70075A93F92541CD27715BB_ENS_V1.0.0"/>
+            <DO name="Health" type="RTE_X_X_X_46FFD3BD530FA6BCA3BA493B560AAFD1_ENS_V1.0.0"/>
+            <DO name="Mod" type="RTE_X_X_X_EB40757BA1EA756DDB1CFCFD78B97390_ENC_V1.0.0"/>
+        </LNodeType>
+        <LNodeType lnClass="LPCP" id="RTE_45248BBFF8512F6420FCC8A53565DDB0_LPCP_V1.0.0">
+            <DO name="AdminCfg" type="RTE_X_X_X_CC633E0EFEC47FC1D44A386B7D06BAEF_SPG_V1.0.0"/>
+            <DO name="MauCfg" type="RTE_X_X_X_DA609E4D37E5F52E41FEE27312842DAB_ING_V1.0.0"/>
+            <DO name="PortNum" type="RTE_X_X_X_553F8AE90EC0448B1518B00F5EAABB58_ING_V1.0.0"/>
+            <DO name="PhyHealth" type="RTE_X_X_X_46FFD3BD530FA6BCA3BA493B560AAFD1_ENS_V1.0.0"/>
+            <DO name="PortNam" type="RTE_X_X_X_4B36044EE546B8F3482EE35532CD5856_VSG_V1.0.0"/>
+            <DO name="AutoNgtCfg" type="RTE_X_X_X_CC633E0EFEC47FC1D44A386B7D06BAEF_SPG_V1.0.0"/>
+            <DO name="AutoNgt" type="RTE_X_X_X_777A206CEBA316C438C4678897FA07B9_SPS_V1.0.0"/>
+            <DO name="PortMac" type="RTE_X_X_X_4B36044EE546B8F3482EE35532CD5856_VSG_V1.0.0"/>
+            <DO name="Beh" type="RTE_X_X_X_2843211181B0F99D2A0CD11328F64602_ENS_V1.0.0"/>
+            <DO name="Mau" type="RTE_X_X_X_806B7A4A4831854D7BDA913FF4199573_INS_V1.0.0"/>
+            <DO name="MauCfgCap1" type="RTE_X_X_X_A8123B65C823EADB29FDD51EE9232AC5_ING_V1.0.0"/>
+            <DO name="NamPlt" type="RTE_X_X_X_AB93FADCC759886FCF9C66C2D264FF32_LPL_V1.0.0"/>
+            <DO name="PhyNam" type="RTE_X_X_X_783F647615C24FBFB3CBF4131A0765A8_DPL_V1.0.0"/>
+        </LNodeType>
+        <LNodeType lnClass="ITCI" id="RTE_E3A088B27D204BFE41D944DBE026573D_ITCI_V1.0.0">
+            <DO name="EEName" type="RTE_X_X_X_50ED698A44E430CE0D9DFC9C9116DBFA_DPL_V1.0.0"/>
+            <DO name="Beh" type="RTE_X_X_X_7A170650CB603320DB207F938C86BA78_ENS_V1.0.0"/>
+        </LNodeType>
+        <LNodeType lnClass="LPHD" id="RTE_09EA62C852B00A7B198865EEB29B18B3_LPHD_V1.0.0">
+            <DO name="PwrSupAlm" type="RTE_X_X_X_777A206CEBA316C438C4678897FA07B9_SPS_V1.0.0"/>
+            <DO name="NumPwrUp" type="RTE_X_X_X_54E3EE3759EDF5D2BE92FB47B8099A18_INS_V1.0.0"/>
+            <DO name="PhyNam" type="RTE_X_X_X_D93000A2D6F9B026504B48576A914DA3_DPL_V1.0.0"/>
+            <DO name="Proxy" type="RTE_X_X_X_777A206CEBA316C438C4678897FA07B9_SPS_V1.0.0"/>
+            <DO name="PwrDn" type="RTE_X_X_X_777A206CEBA316C438C4678897FA07B9_SPS_V1.0.0"/>
+            <DO name="PwrUp" type="RTE_X_X_X_777A206CEBA316C438C4678897FA07B9_SPS_V1.0.0"/>
+            <DO name="PhyHealth" type="RTE_X_X_X_46FFD3BD530FA6BCA3BA493B560AAFD1_ENS_V1.0.0"/>
+            <DO name="Sim" type="RTE_X_X_X_FAABC8F7968CA6F1C1C14673A2518B3D_SPC_V1.0.0"/>
+            <DO name="RsStat" type="RTE_X_X_X_D3D1EA6F2C542A648457FBEF3897EA4D_SPC_V1.0.0"/>
+        </LNodeType>
+        <LNodeType lnClass="LLN0" id="RTE_68D1C318297077101A6D17A209A257DE_LLN0_V1.0.0">
+            <DO name="Health" type="RTE_X_X_X_46FFD3BD530FA6BCA3BA493B560AAFD1_ENS_V1.0.0"/>
+            <DO name="NamPlt" type="RTE_X_X_X_CF19FF016079750CB4219A7983C23ABA_LPL_V1.0.0"/>
+            <DO name="Loc" type="RTE_X_X_X_777A206CEBA316C438C4678897FA07B9_SPS_V1.0.0"/>
+            <DO name="Beh" type="RTE_X_X_X_7A170650CB603320DB207F938C86BA78_ENS_V1.0.0"/>
+            <DO name="Mod" type="RTE_X_X_X_72877370EF5244190A62BD83D697EA74_ENC_V1.0.0"/>
+            <DO name="LocSta" type="RTE_X_X_X_B957F98D2DB150B8CAFB8F7C165214C3_SPC_V1.0.0"/>
+        </LNodeType>
+        <LNodeType lnClass="GAPC" id="RTE_AAC41797AD6EE78EC05A89E7104F4255_GAPC_V1.0.0">
+            <DO name="Beh" type="RTE_X_X_X_7A170650CB603320DB207F938C86BA78_ENS_V1.0.0"/>
+            <DO name="Ind1" type="RTE_X_X_X_777A206CEBA316C438C4678897FA07B9_SPS_V1.0.0"/>
+        </LNodeType>
+        <LNodeType lnClass="LCCH" id="RTE_6E9EE4715544D94BA5D7B19DFD284AC9_LCCH_V1.0.0">
+            <DO name="Beh" type="RTE_X_X_X_7A170650CB603320DB207F938C86BA78_ENS_V1.0.0"/>
+            <DO name="RedChLiv" type="RTE_X_X_X_777A206CEBA316C438C4678897FA07B9_SPS_V1.0.0"/>
+            <DO name="RedPortRef" type="RTE_X_X_X_027AABFDA8964E2F1909DACA4ADC9913_ORG_V1.0.0"/>
+            <DO name="OutOv" type="RTE_X_X_X_777A206CEBA316C438C4678897FA07B9_SPS_V1.0.0"/>
+            <DO name="ChLiv" type="RTE_X_X_X_777A206CEBA316C438C4678897FA07B9_SPS_V1.0.0"/>
+            <DO name="PortRef" type="RTE_X_X_X_027AABFDA8964E2F1909DACA4ADC9913_ORG_V1.0.0"/>
+        </LNodeType>
+        <LNodeType lnClass="GAPC" id="RTE_CD1852A806CC07CF1A02BA9F9018043E_GAPC_V1.0.0">
+            <DO name="Ind1" type="RTE_X_X_X_777A206CEBA316C438C4678897FA07B9_SPS_V1.0.0"/>
+            <DO name="Beh" type="RTE_X_X_X_2843211181B0F99D2A0CD11328F64602_ENS_V1.0.0"/>
+        </LNodeType>
+        <LNodeType lnClass="LSET" id="RTE_4C01897F66B9F2239C84FC2AA26C3814_LSET_V1.0.0">
+            <DO name="DlTmms1" type="RTE_X_X_X_DA609E4D37E5F52E41FEE27312842DAB_ING_V1.0.0"/>
+            <DO name="DlTmms2" type="RTE_X_X_X_DA609E4D37E5F52E41FEE27312842DAB_ING_V1.0.0"/>
+            <DO name="NamPlt" type="RTE_X_X_X_17075141E8F2740E1CED1C82504F1FB8_LPL_V1.0.0"/>
+            <DO name="Beh" type="RTE_X_X_X_2843211181B0F99D2A0CD11328F64602_ENS_V1.0.0"/>
+        </LNodeType>
+        <LNodeType lnClass="LPHD" id="RTE_32E66DA9B8848C38D4A584784B375AAE_LPHD_V1.0.0">
+            <DO name="PhyNam" type="RTE_X_X_X_D93000A2D6F9B026504B48576A914DA3_DPL_V1.0.0"/>
+            <DO name="PhyHealth" type="RTE_X_X_X_2D7E5A71E82BDDBE7AC53CE44FBB4458_ENS_V1.0.0"/>
+            <DO name="Proxy" type="RTE_X_X_X_B0A3B032248B14AC9A885403F1B1830A_SPS_V1.0.0"/>
+        </LNodeType>
+        <LNodeType lnClass="LTMS" id="RTE_E6A2E5DCB686B185986C8E333F5A48E4_LTMS_V1.0.0">
+            <DO name="TmSrcSet1" type="RTE_X_X_X_02DFA2BD4E30993B71D945EFA6575B86_VSG_V1.0.0"/>
+            <DO name="Beh" type="RTE_X_X_X_2843211181B0F99D2A0CD11328F64602_ENS_V1.0.0"/>
+            <DO name="TmSrc" type="RTE_X_X_X_F7D7A4EF735C509EA5992774AB05236D_VSS_V1.0.0"/>
+            <DO name="TmSyn" type="RTE_X_X_X_F2CBC6FBF42297C7A7269F7EE24A9207_ENS_V1.0.0"/>
+            <DO name="TmChSt1" type="RTE_X_X_X_777A206CEBA316C438C4678897FA07B9_SPS_V1.0.0"/>
+            <DO name="TmSrcTyp" type="RTE_X_X_X_531E3A6A55F42E867794E9928AA473E9_ENS_V1.0.0"/>
+        </LNodeType>
+        <DOType cdc="DPL" id="RTE_X_X_X_D93000A2D6F9B026504B48576A914DA3_DPL_V1.0.0">
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="vendor" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="hwRev" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="swRev" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="serNum" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="model" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="location" bType="VisString255" valKind="RO" valImport="true"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="name" bType="VisString64" valKind="RO" valImport="true"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="SPC" id="RTE_X_X_X_FAABC8F7968CA6F1C1C14673A2518B3D_SPC_V1.0.0">
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="origin" bType="Struct" type="RTE_7934516A99160CFE6BA163118894B809_V1.0.0"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="ctlNum" bType="INT8U"/>
+            <DA fc="ST" dchg="true" qchg="false" dupd="false" name="stVal" bType="BOOLEAN"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="OR" dchg="true" qchg="false" dupd="false" name="opRcvd" bType="BOOLEAN"/>
+            <DA fc="OR" dchg="true" qchg="false" dupd="false" name="opOk" bType="BOOLEAN"/>
+            <DA fc="OR" dchg="false" qchg="false" dupd="false" name="tOpOk" bType="Timestamp"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subEna" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subVal" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subQ" bType="Quality"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subID" bType="VisString64"/>
+            <DA fc="CF" dchg="true" qchg="false" dupd="false" name="pulseConfig" bType="Struct" type="RTE_0DB7845E00A6B6E4D52C365101396DF6_V1.0.0"/>
+            <DA fc="CF" dchg="true" qchg="false" dupd="false" name="ctlModel" bType="Enum" valKind="RO" type="CtlModelKind" valImport="true">
+                <Val>status-only</Val>
+            </DA>
+            <DA fc="CF" dchg="true" qchg="false" dupd="false" name="operTimeout" bType="INT32U" valKind="RO" valImport="true"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="CO" dchg="false" qchg="false" dupd="false" name="Cancel" bType="Struct" type="RTE_B3E1545DAFFE5A192CE7CBE085AAD439_V1.0.0"/>
+            <DA fc="CO" dchg="false" qchg="false" dupd="false" name="Oper" bType="Struct" type="RTE_E7EC3E3CCEFA6092FA668AEBCD1DF710_V1.0.0"/>
+        </DOType>
+        <DOType cdc="ING" id="RTE_X_X_X_DA609E4D37E5F52E41FEE27312842DAB_ING_V1.0.0">
+            <DA fc="SP" dchg="true" qchg="false" dupd="false" name="setVal" bType="INT32" valKind="RO" valImport="true"/>
+            <DA fc="CF" dchg="true" qchg="false" dupd="false" name="minVal" bType="INT32" valKind="RO" valImport="false"/>
+            <DA fc="CF" dchg="true" qchg="false" dupd="false" name="maxVal" bType="INT32" valKind="RO" valImport="false"/>
+            <DA fc="CF" dchg="true" qchg="false" dupd="false" name="stepSize" bType="INT32U" valKind="RO" valImport="false"/>
+            <DA fc="CF" dchg="true" qchg="false" dupd="false" name="units" bType="Struct" type="RTE_031559973E4A8641DEDCC01E82B100C1_V1.0.0"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="DPL" id="RTE_X_X_X_50ED698A44E430CE0D9DFC9C9116DBFA_DPL_V1.0.0">
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="vendor" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="hwRev" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="swRev" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="serNum" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="model" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="location" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="name" bType="VisString64" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="VSG" id="RTE_X_X_X_02DFA2BD4E30993B71D945EFA6575B86_VSG_V1.0.0">
+            <DA fc="SP" dchg="true" qchg="false" dupd="false" name="setVal" bType="VisString255" valKind="RO" valImport="true"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="SPS" id="RTE_X_X_X_777A206CEBA316C438C4678897FA07B9_SPS_V1.0.0">
+            <DA fc="ST" dchg="true" qchg="false" dupd="false" name="stVal" bType="BOOLEAN"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subEna" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subVal" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subQ" bType="Quality"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subID" bType="VisString64"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="INS" id="RTE_X_X_X_54E3EE3759EDF5D2BE92FB47B8099A18_INS_V1.0.0">
+            <DA fc="ST" dchg="true" qchg="false" dupd="false" name="stVal" bType="INT32"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subEna" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subVal" bType="INT32"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subQ" bType="Quality"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subID" bType="VisString64"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="VSG" id="RTE_X_X_X_4B36044EE546B8F3482EE35532CD5856_VSG_V1.0.0">
+            <DA fc="SP" dchg="true" qchg="false" dupd="false" name="setVal" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="SPC" id="RTE_X_X_X_B957F98D2DB150B8CAFB8F7C165214C3_SPC_V1.0.0">
+            <DA fc="ST" dchg="true" qchg="false" dupd="false" name="stVal" bType="BOOLEAN"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subEna" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subVal" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subQ" bType="Quality"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subID" bType="VisString64"/>
+            <DA fc="CF" dchg="true" qchg="false" dupd="false" name="ctlModel" bType="Enum" valKind="RO" type="CtlModelKind" valImport="true">
+                <Val>status-only</Val>
+            </DA>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="CO" dchg="false" qchg="false" dupd="false" name="Oper" bType="Struct" type="RTE_10AB0660FA5BC2F04C1D7002311503A7_V1.0.0"/>
+        </DOType>
+        <DOType cdc="SPS" id="RTE_X_X_X_B0A3B032248B14AC9A885403F1B1830A_SPS_V1.0.0">
+            <DA fc="ST" dchg="true" qchg="false" dupd="false" name="stVal" bType="BOOLEAN"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="ENS" id="RTE_X_X_X_531E3A6A55F42E867794E9928AA473E9_ENS_V1.0.0">
+            <DA fc="ST" dchg="true" qchg="false" dupd="false" name="stVal" bType="Enum" type="ClockSourceKind13"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subEna" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subVal" bType="Enum" type="ClockSourceKind13"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subQ" bType="Quality"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subID" bType="VisString64"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="VSS" id="RTE_X_X_X_F7D7A4EF735C509EA5992774AB05236D_VSS_V1.0.0">
+            <DA fc="ST" dchg="true" qchg="false" dupd="false" name="stVal" bType="VisString255"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="ENS" id="RTE_X_X_X_2843211181B0F99D2A0CD11328F64602_ENS_V1.0.0">
+            <DA fc="ST" dchg="true" qchg="false" dupd="false" name="stVal" bType="Enum" type="BehaviourModeKind15"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="ENS" id="RTE_X_X_X_D1011A9BE70075A93F92541CD27715BB_ENS_V1.0.0">
+            <DA fc="ST" dchg="true" qchg="false" dupd="false" name="stVal" bType="Enum" type="BehaviourModeKind15"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subEna" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subVal" bType="Enum" type="BehaviourModeKind15"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subQ" bType="Quality"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subID" bType="VisString64"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="ENS" id="RTE_X_X_X_F2CBC6FBF42297C7A7269F7EE24A9207_ENS_V1.0.0">
+            <DA fc="ST" dchg="true" qchg="false" dupd="false" name="stVal" bType="Enum" type="ClockSyncKind12"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subEna" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subVal" bType="Enum" type="ClockSyncKind12"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subQ" bType="Quality"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subID" bType="VisString64"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="LPL" id="RTE_X_X_X_CF19FF016079750CB4219A7983C23ABA_LPL_V1.0.0">
+            <DA fc="ST" dchg="true" qchg="false" dupd="false" name="paramRev" bType="INT32"/>
+            <DA fc="ST" dchg="true" qchg="false" dupd="false" name="valRev" bType="INT32"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="vendor" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="swRev" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="EX" dchg="false" qchg="false" dupd="false" name="ldNs" bType="VisString255"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="configRev" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="ENS" id="RTE_X_X_X_46FFD3BD530FA6BCA3BA493B560AAFD1_ENS_V1.0.0">
+            <DA fc="ST" dchg="true" qchg="false" dupd="true" name="stVal" bType="Enum" type="HealthKind"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subEna" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subVal" bType="Enum" type="HealthKind"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subQ" bType="Quality"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subID" bType="VisString64"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="ENS" id="RTE_X_X_X_7A170650CB603320DB207F938C86BA78_ENS_V1.0.0">
+            <DA fc="ST" dchg="true" qchg="false" dupd="true" name="stVal" bType="Enum" type="BehaviourModeKind15"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subEna" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subVal" bType="Enum" type="BehaviourModeKind"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subQ" bType="Quality"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subID" bType="VisString64"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="ING" id="RTE_X_X_X_A8123B65C823EADB29FDD51EE9232AC5_ING_V1.0.0">
+            <DA fc="SP" dchg="true" qchg="false" dupd="false" name="setVal" bType="INT32" valKind="RO" valImport="false"/>
+            <DA fc="CF" dchg="true" qchg="false" dupd="false" name="units" bType="Struct" type="RTE_031559973E4A8641DEDCC01E82B100C1_V1.0.0"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="DPL" id="RTE_X_X_X_783F647615C24FBFB3CBF4131A0765A8_DPL_V1.0.0">
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="vendor" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="ENS" id="RTE_X_X_X_2D7E5A71E82BDDBE7AC53CE44FBB4458_ENS_V1.0.0">
+            <DA fc="ST" dchg="true" qchg="false" dupd="true" name="stVal" bType="Enum" type="HealthKind"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="SPG" id="RTE_X_X_X_CC633E0EFEC47FC1D44A386B7D06BAEF_SPG_V1.0.0">
+            <DA fc="SP" dchg="true" qchg="false" dupd="false" name="setVal" bType="BOOLEAN" valKind="RO" valImport="true"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="ING" id="RTE_X_X_X_553F8AE90EC0448B1518B00F5EAABB58_ING_V1.0.0">
+            <DA fc="SP" dchg="true" qchg="false" dupd="false" name="setVal" bType="INT32" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="ORG" id="RTE_X_X_X_027AABFDA8964E2F1909DACA4ADC9913_ORG_V1.0.0">
+            <DA fc="SP" dchg="true" qchg="false" dupd="false" name="setSrcRef" bType="ObjRef"/>
+            <DA fc="SP" dchg="true" qchg="false" dupd="false" name="intAddr" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="ENC" id="RTE_X_X_X_EB40757BA1EA756DDB1CFCFD78B97390_ENC_V1.0.0">
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="origin" bType="Struct" type="RTE_7934516A99160CFE6BA163118894B809_V1.0.0"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="ctlNum" bType="INT8U"/>
+            <DA fc="ST" dchg="true" qchg="false" dupd="false" name="stVal" bType="Enum" type="BehaviourModeKind15"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="OR" dchg="true" qchg="false" dupd="false" name="opRcvd" bType="BOOLEAN"/>
+            <DA fc="OR" dchg="true" qchg="false" dupd="false" name="opOk" bType="BOOLEAN"/>
+            <DA fc="OR" dchg="false" qchg="false" dupd="false" name="tOpOk" bType="Timestamp"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subEna" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subVal" bType="Enum" type="BehaviourModeKind15"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subQ" bType="Quality"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subID" bType="VisString64"/>
+            <DA fc="CF" dchg="true" qchg="false" dupd="false" name="ctlModel" bType="Enum" valKind="RO" type="CtlModelKind03" valImport="true">
+                <Val>status-only</Val>
+            </DA>
+            <DA fc="CF" dchg="true" qchg="false" dupd="false" name="operTimeout" bType="INT32U" valKind="RO" valImport="true"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="CO" dchg="false" qchg="false" dupd="false" name="Oper" bType="Struct" type="RTE_352BE3C45AC7386B3D20C5D496FDD990_V1.0.0"/>
+            <DA fc="CO" dchg="false" qchg="false" dupd="false" name="Cancel" bType="Struct" type="RTE_5A41B3113CC639FA4A198B4DF532D1CC_V1.0.0"/>
+        </DOType>
+        <DOType cdc="SPC" id="RTE_X_X_X_D3D1EA6F2C542A648457FBEF3897EA4D_SPC_V1.0.0">
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="origin" bType="Struct" type="RTE_7934516A99160CFE6BA163118894B809_V1.0.0"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="ctlNum" bType="INT8U"/>
+            <DA fc="ST" dchg="true" qchg="false" dupd="false" name="stVal" bType="BOOLEAN"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="OR" dchg="true" qchg="false" dupd="false" name="opRcvd" bType="BOOLEAN"/>
+            <DA fc="OR" dchg="true" qchg="false" dupd="false" name="opOk" bType="BOOLEAN"/>
+            <DA fc="OR" dchg="false" qchg="false" dupd="false" name="tOpOk" bType="Timestamp"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subEna" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subVal" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subQ" bType="Quality"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subID" bType="VisString64"/>
+            <DA fc="CF" dchg="true" qchg="false" dupd="false" name="pulseConfig" bType="Struct" type="RTE_7F420CF619467C645082C1256D4D9E54_V1.0.0"/>
+            <DA fc="CF" dchg="true" qchg="false" dupd="false" name="ctlModel" bType="Enum" valKind="RO" type="CtlModelKind3" valImport="false">
+                <Val>direct-with-enhanced-security</Val>
+            </DA>
+            <DA fc="CF" dchg="true" qchg="false" dupd="false" name="operTimeout" bType="INT32U" valKind="RO" valImport="true"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="CO" dchg="false" qchg="false" dupd="false" name="Oper" bType="Struct" type="RTE_E7EC3E3CCEFA6092FA668AEBCD1DF710_V1.0.0"/>
+            <DA fc="CO" dchg="false" qchg="false" dupd="false" name="Cancel" bType="Struct" type="RTE_B3E1545DAFFE5A192CE7CBE085AAD439_V1.0.0"/>
+        </DOType>
+        <DOType cdc="INS" id="RTE_X_X_X_806B7A4A4831854D7BDA913FF4199573_INS_V1.0.0">
+            <DA fc="ST" dchg="true" qchg="false" dupd="false" name="stVal" bType="INT32"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subEna" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subVal" bType="INT32"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subQ" bType="Quality"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subID" bType="VisString64"/>
+            <DA fc="CF" dchg="true" qchg="false" dupd="false" name="units" bType="Struct" type="RTE_031559973E4A8641DEDCC01E82B100C1_V1.0.0"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="LPL" id="RTE_X_X_X_AB93FADCC759886FCF9C66C2D264FF32_LPL_V1.0.0">
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="vendor" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="swRev" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="EX" dchg="false" qchg="false" dupd="false" name="lnNs" bType="VisString255">
+                <Val>(Tr)IEC 61850-90-4:2013</Val>
+            </DA>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="LPL" id="RTE_X_X_X_17075141E8F2740E1CED1C82504F1FB8_LPL_V1.0.0">
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="vendor" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="swRev" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="EX" dchg="false" qchg="false" dupd="false" name="lnNs" bType="VisString255">
+                <Val>RTE:2022A</Val>
+            </DA>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+        </DOType>
+        <DOType cdc="ENC" id="RTE_X_X_X_72877370EF5244190A62BD83D697EA74_ENC_V1.0.0">
+            <DA fc="ST" dchg="true" qchg="false" dupd="false" name="stVal" bType="Enum" type="BehaviourModeKind15"/>
+            <DA fc="ST" dchg="false" qchg="true" dupd="false" name="q" bType="Quality"/>
+            <DA fc="ST" dchg="false" qchg="false" dupd="false" name="t" bType="Timestamp"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subEna" bType="BOOLEAN"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subVal" bType="Enum" type="BehaviourModeKind"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subQ" bType="Quality"/>
+            <DA fc="SV" dchg="false" qchg="false" dupd="false" name="subID" bType="VisString64"/>
+            <DA fc="CF" dchg="true" qchg="false" dupd="false" name="ctlModel" bType="Enum" valKind="RO" type="CtlModelKind" valImport="true">
+                <Val>status-only</Val>
+            </DA>
+            <DA fc="DC" dchg="false" qchg="false" dupd="false" name="d" bType="VisString255" valKind="RO" valImport="false"/>
+            <DA fc="CO" dchg="false" qchg="false" dupd="false" name="Oper" bType="Struct" type="RTE_10AB0660FA5BC2F04C1D7002311503A7_V1.0.0"/>
+        </DOType>
+        <DAType id="RTE_B18B834DC8584C5D9C468E79625A7AEE_V1.0.0">
+            <BDA name="orCat" bType="Enum" type="OriginatorCategoryKind"/>
+            <BDA name="orIdent" bType="Octet64"/>
+        </DAType>
+        <DAType id="RTE_031559973E4A8641DEDCC01E82B100C1_V1.0.0">
+            <BDA name="SIUnit" bType="Enum" valKind="RO" type="SIUnitKind" valImport="false"/>
+            <BDA name="multiplier" bType="Enum" valKind="RO" type="MultiplierKind" valImport="false"/>
+        </DAType>
+        <DAType id="RTE_E7EC3E3CCEFA6092FA668AEBCD1DF710_V1.0.0">
+            <BDA name="ctlVal" bType="BOOLEAN"/>
+            <BDA name="origin" bType="Struct" type="RTE_B18B834DC8584C5D9C468E79625A7AEE_V1.0.0"/>
+            <BDA name="ctlNum" bType="INT8U"/>
+            <BDA name="T" bType="Timestamp"/>
+            <BDA name="Test" bType="BOOLEAN"/>
+            <BDA name="Check" bType="Check"/>
+            <ProtNs type="8-MMS">IEC 61850-8-1:2003</ProtNs>
+        </DAType>
+        <DAType id="RTE_B3E1545DAFFE5A192CE7CBE085AAD439_V1.0.0">
+            <BDA name="ctlVal" bType="BOOLEAN"/>
+            <BDA name="origin" bType="Struct" type="RTE_B18B834DC8584C5D9C468E79625A7AEE_V1.0.0"/>
+            <BDA name="ctlNum" bType="INT8U"/>
+            <BDA name="T" bType="Timestamp"/>
+            <BDA name="Test" bType="BOOLEAN"/>
+            <ProtNs type="8-MMS">IEC 61850-8-1:2003</ProtNs>
+        </DAType>
+        <DAType id="RTE_7934516A99160CFE6BA163118894B809_V1.0.0">
+            <BDA name="orCat" bType="Enum" type="OriginatorCategoryKind"/>
+            <BDA name="orIdent" bType="Octet64"/>
+        </DAType>
+        <DAType id="RTE_5A41B3113CC639FA4A198B4DF532D1CC_V1.0.0">
+            <BDA name="ctlVal" bType="Enum" type="BehaviourModeKind"/>
+            <BDA name="origin" bType="Struct" type="RTE_B18B834DC8584C5D9C468E79625A7AEE_V1.0.0"/>
+            <BDA name="ctlNum" bType="INT8U"/>
+            <BDA name="T" bType="Timestamp"/>
+            <BDA name="Test" bType="BOOLEAN"/>
+            <ProtNs type="8-MMS">IEC 61850-8-1:2003</ProtNs>
+        </DAType>
+        <DAType id="RTE_352BE3C45AC7386B3D20C5D496FDD990_V1.0.0">
+            <BDA name="ctlVal" bType="Enum" type="BehaviourModeKind"/>
+            <BDA name="origin" bType="Struct" type="RTE_B18B834DC8584C5D9C468E79625A7AEE_V1.0.0"/>
+            <BDA name="ctlNum" bType="INT8U"/>
+            <BDA name="T" bType="Timestamp"/>
+            <BDA name="Test" bType="BOOLEAN"/>
+            <BDA name="Check" bType="Check"/>
+            <ProtNs type="8-MMS">IEC 61850-8-1:2003</ProtNs>
+        </DAType>
+        <DAType id="RTE_0DB7845E00A6B6E4D52C365101396DF6_V1.0.0">
+            <BDA name="cmdQual" bType="Enum" valKind="RO" type="OutputSignalKind" valImport="false"/>
+            <BDA name="onDur" bType="INT32U" valKind="RO" valImport="false"/>
+            <BDA name="offDur" bType="INT32U" valKind="RO" valImport="false"/>
+            <BDA name="numPls" bType="INT32U" valKind="RO" valImport="false"/>
+        </DAType>
+        <DAType id="RTE_7F420CF619467C645082C1256D4D9E54_V1.0.0">
+            <BDA name="cmdQual" bType="Enum" valKind="RO" type="OutputSignalKind" valImport="true"/>
+            <BDA name="onDur" bType="INT32U" valKind="RO" valImport="true"/>
+            <BDA name="offDur" bType="INT32U" valKind="RO" valImport="false"/>
+            <BDA name="numPls" bType="INT32U" valKind="RO" valImport="false"/>
+        </DAType>
+        <DAType id="RTE_10AB0660FA5BC2F04C1D7002311503A7_V1.0.0">
+            <BDA name="Check" bType="Check"/>
+            <ProtNs type="8-MMS">IEC 61850-8-1:2003</ProtNs>
+        </DAType>
+        <EnumType id="HealthKind">
+            <EnumVal ord="1">Ok</EnumVal>
+            <EnumVal ord="2">Warning</EnumVal>
+            <EnumVal ord="3">Alarm</EnumVal>
+        </EnumType>
+        <EnumType id="BehaviourModeKind">
+            <EnumVal ord="1">on</EnumVal>
+            <EnumVal ord="2">blocked</EnumVal>
+            <EnumVal ord="3">test</EnumVal>
+            <EnumVal ord="4">test/blocked</EnumVal>
+            <EnumVal ord="5">off</EnumVal>
+        </EnumType>
+        <EnumType id="ClockSyncKind12">
+            <EnumVal ord="1">InternalClock</EnumVal>
+            <EnumVal ord="2">LocalAreaClock</EnumVal>
+        </EnumType>
+        <EnumType id="BehaviourModeKind15">
+            <EnumVal ord="1">on</EnumVal>
+            <EnumVal ord="5">off</EnumVal>
+        </EnumType>
+        <EnumType id="SIUnitKind">
+            <EnumVal ord="1"/>
+            <EnumVal ord="2">m</EnumVal>
+            <EnumVal ord="3">kg</EnumVal>
+            <EnumVal ord="4">s</EnumVal>
+            <EnumVal ord="5">A</EnumVal>
+            <EnumVal ord="6">K</EnumVal>
+            <EnumVal ord="7">mol</EnumVal>
+            <EnumVal ord="8">cd</EnumVal>
+            <EnumVal ord="9">deg</EnumVal>
+            <EnumVal ord="10">rad</EnumVal>
+            <EnumVal ord="11">sr</EnumVal>
+            <EnumVal ord="21">Gy</EnumVal>
+            <EnumVal ord="22">Bq</EnumVal>
+            <EnumVal ord="23">°C</EnumVal>
+            <EnumVal ord="24">Sv</EnumVal>
+            <EnumVal ord="25">F</EnumVal>
+            <EnumVal ord="26">C</EnumVal>
+            <EnumVal ord="27">S</EnumVal>
+            <EnumVal ord="28">H</EnumVal>
+            <EnumVal ord="29">V</EnumVal>
+            <EnumVal ord="30">ohm</EnumVal>
+            <EnumVal ord="31">J</EnumVal>
+            <EnumVal ord="32">N</EnumVal>
+            <EnumVal ord="33">Hz</EnumVal>
+            <EnumVal ord="34">lx</EnumVal>
+            <EnumVal ord="35">Lm</EnumVal>
+            <EnumVal ord="36">Wb</EnumVal>
+            <EnumVal ord="37">T</EnumVal>
+            <EnumVal ord="38">W</EnumVal>
+            <EnumVal ord="39">Pa</EnumVal>
+            <EnumVal ord="41">m²</EnumVal>
+            <EnumVal ord="42">m³</EnumVal>
+            <EnumVal ord="43">m/s</EnumVal>
+            <EnumVal ord="44">m/s²</EnumVal>
+            <EnumVal ord="45">m³/s</EnumVal>
+            <EnumVal ord="46">m/m³</EnumVal>
+            <EnumVal ord="47">M</EnumVal>
+            <EnumVal ord="48">kg/m³</EnumVal>
+            <EnumVal ord="49">m²/s</EnumVal>
+            <EnumVal ord="50">W/m K</EnumVal>
+            <EnumVal ord="51">J/K</EnumVal>
+            <EnumVal ord="52">ppm</EnumVal>
+            <EnumVal ord="53">1/s</EnumVal>
+            <EnumVal ord="54">rad/s</EnumVal>
+            <EnumVal ord="55">W/m²</EnumVal>
+            <EnumVal ord="56">J/m²</EnumVal>
+            <EnumVal ord="57">S/m</EnumVal>
+            <EnumVal ord="58">K/s</EnumVal>
+            <EnumVal ord="59">Pa/s</EnumVal>
+            <EnumVal ord="60">J/kg K</EnumVal>
+            <EnumVal ord="61">VA</EnumVal>
+            <EnumVal ord="62">Watts</EnumVal>
+            <EnumVal ord="63">VAr</EnumVal>
+            <EnumVal ord="64">phi</EnumVal>
+            <EnumVal ord="65">cos(phi)</EnumVal>
+            <EnumVal ord="66">Vs</EnumVal>
+            <EnumVal ord="67">V²</EnumVal>
+            <EnumVal ord="68">As</EnumVal>
+            <EnumVal ord="69">A²</EnumVal>
+            <EnumVal ord="70">A²t</EnumVal>
+            <EnumVal ord="71">VAh</EnumVal>
+            <EnumVal ord="72">Wh</EnumVal>
+            <EnumVal ord="73">VArh</EnumVal>
+            <EnumVal ord="74">V/Hz</EnumVal>
+            <EnumVal ord="75">Hz/s</EnumVal>
+            <EnumVal ord="76">char</EnumVal>
+            <EnumVal ord="77">char/s</EnumVal>
+            <EnumVal ord="78">kgm²</EnumVal>
+            <EnumVal ord="79">dB</EnumVal>
+            <EnumVal ord="80">J/Wh</EnumVal>
+            <EnumVal ord="81">W/s</EnumVal>
+            <EnumVal ord="82">l/s</EnumVal>
+            <EnumVal ord="83">dBm</EnumVal>
+            <EnumVal ord="84">h</EnumVal>
+            <EnumVal ord="85">min</EnumVal>
+            <EnumVal ord="86">Ohm/m</EnumVal>
+            <EnumVal ord="87">percent/s</EnumVal>
+            <EnumVal ord="88">A/V</EnumVal>
+            <EnumVal ord="89">A/Vs</EnumVal>
+        </EnumType>
+        <EnumType id="MultiplierKind">
+            <EnumVal ord="-24">y</EnumVal>
+            <EnumVal ord="-21">z</EnumVal>
+            <EnumVal ord="-18">a</EnumVal>
+            <EnumVal ord="-15">f</EnumVal>
+            <EnumVal ord="-12">p</EnumVal>
+            <EnumVal ord="-9">n</EnumVal>
+            <EnumVal ord="-6">µ</EnumVal>
+            <EnumVal ord="-3">m</EnumVal>
+            <EnumVal ord="-2">c</EnumVal>
+            <EnumVal ord="-1">d</EnumVal>
+            <EnumVal ord="0"/>
+            <EnumVal ord="1">da</EnumVal>
+            <EnumVal ord="2">h</EnumVal>
+            <EnumVal ord="3">k</EnumVal>
+            <EnumVal ord="6">M</EnumVal>
+            <EnumVal ord="9">G</EnumVal>
+            <EnumVal ord="12">T</EnumVal>
+            <EnumVal ord="15">P</EnumVal>
+            <EnumVal ord="18">E</EnumVal>
+            <EnumVal ord="21">Z</EnumVal>
+            <EnumVal ord="24">Y</EnumVal>
+        </EnumType>
+        <EnumType id="CtlModelKind03">
+            <EnumVal ord="0">status-only</EnumVal>
+            <EnumVal ord="3">direct-with-enhanced-security</EnumVal>
+        </EnumType>
+        <EnumType id="OutputSignalKind">
+            <EnumVal ord="0">pulse</EnumVal>
+            <EnumVal ord="1">persistent</EnumVal>
+            <EnumVal ord="2">persistent-feedback</EnumVal>
+        </EnumType>
+        <EnumType id="CtlModelKind">
+            <EnumVal ord="0">status-only</EnumVal>
+            <EnumVal ord="3">direct-with-enhanced-security</EnumVal>
+        </EnumType>
+        <EnumType id="OriginatorCategoryKind">
+            <EnumVal ord="0">not-supported</EnumVal>
+            <EnumVal ord="1">bay-control</EnumVal>
+            <EnumVal ord="2">station-control</EnumVal>
+            <EnumVal ord="3">remote-control</EnumVal>
+            <EnumVal ord="4">automatic-bay</EnumVal>
+            <EnumVal ord="5">automatic-station</EnumVal>
+            <EnumVal ord="6">automatic-remote</EnumVal>
+            <EnumVal ord="7">maintenance</EnumVal>
+            <EnumVal ord="8">process</EnumVal>
+        </EnumType>
+        <EnumType id="CtlModelKind3">
+            <EnumVal ord="3">direct-with-enhanced-security</EnumVal>
+        </EnumType>
+        <EnumType id="ClockSourceKind13">
+            <EnumVal ord="1">Unknown</EnumVal>
+            <EnumVal ord="3">PTP</EnumVal>
+        </EnumType>
+    </DataTypeTemplates>
+</SCL>

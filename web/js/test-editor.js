@@ -28,6 +28,24 @@ const TYPE_PREFIX = {
     cvs: 'CVS'
 };
 
+const STATE_OPTIONS = [
+    { value: 'DEB', label: 'DEB' },
+    { value: 'FIN', label: 'FIN' },
+    { value: 'ES', label: 'ES' },
+    { value: 'HS', label: 'HS' },
+    { value: 'FUG', label: 'FUG' }
+];
+
+function buildStateOptions(selectedValue = '', placeholder = 'État') {
+    const normalized = (selectedValue || '').toUpperCase();
+    const placeholderSelected = !normalized ? 'selected' : '';
+    const options = STATE_OPTIONS.map(option => {
+        const isSelected = normalized === option.value ? 'selected' : '';
+        return `<option value="${option.value}" ${isSelected}>${option.label}</option>`;
+    }).join('');
+    return `<option value="" ${placeholderSelected}>${placeholder}</option>${options}`;
+}
+
 const queryParams = new URLSearchParams(window.location.search);
 let selectedType = (queryParams.get('type') || 'ru').toLowerCase();
 let originalType = selectedType;
@@ -242,12 +260,7 @@ function renderPreconditions() {
                     value="${escapeHtml(precon.name || '')}"
                     onchange="updatePrecondition('${precon.id}', 'name', this.value)">
                 <select class="form-input" onchange="updatePrecondition('${precon.id}', 'state', this.value)">
-                    <option value="">État</option>
-                    <option value="ES" ${precon.state === 'ES' ? 'selected' : ''}>ES - En Service</option>
-                    <option value="HS" ${precon.state === 'HS' ? 'selected' : ''}>HS - Hors Service</option>
-                    <option value="DEB" ${precon.state === 'DEB' ? 'selected' : ''}>DEB - Débouclé</option>
-                    <option value="FIN" ${precon.state === 'FIN' ? 'selected' : ''}>FIN - Forcé Inactif</option>
-                    <option value="FUG" ${precon.state === 'FUG' ? 'selected' : ''}>FUG - Fugitif</option>
+                    ${buildStateOptions(precon.state, 'État')}
                 </select>
                 <button class="btn-remove" onclick="removePrecondition('${precon.id}')">🗑️</button>
             </div>
@@ -344,12 +357,7 @@ function renderSteps() {
                         <div class="form-group">
                             <label>État</label>
                             <select class="form-input" onchange="updateStep('${stepId}', 'state', this.value)">
-                                <option value="" ${!step.state ? 'selected' : ''}>Sélectionner</option>
-                                <option value="DEB" ${step.state === 'DEB' ? 'selected' : ''}>DEB</option>
-                                <option value="FIN" ${step.state === 'FIN' ? 'selected' : ''}>FIN</option>
-                                <option value="ES" ${step.state === 'ES' ? 'selected' : ''}>ES</option>
-                                <option value="HS" ${step.state === 'HS' ? 'selected' : ''}>HS</option>
-                                <option value="FUG" ${step.state === 'FUG' ? 'selected' : ''}>FUG</option>
+                                ${buildStateOptions(step.state, 'Sélectionner')}
                             </select>
                         </div>
 
@@ -403,12 +411,7 @@ function renderInfo(type, items, label) {
                 <input type="text" placeholder="Nom ${label}" value="${escapeHtml(info.name || '')}"
                     onchange="updateInfo('${type}', '${info.id}', 'name', this.value)">
                 <select onchange="updateInfo('${type}', '${info.id}', 'state', this.value)">
-                    <option value="">État</option>
-                    <option value="ES" ${info.state === 'ES' ? 'selected' : ''}>ES</option>
-                    <option value="HS" ${info.state === 'HS' ? 'selected' : ''}>HS</option>
-                    <option value="DEB" ${info.state === 'DEB' ? 'selected' : ''}>DEB</option>
-                    <option value="FIN" ${info.state === 'FIN' ? 'selected' : ''}>FIN</option>
-                    <option value="FUG" ${info.state === 'FUG' ? 'selected' : ''}>FUG</option>
+                    ${buildStateOptions(info.state, 'État')}
                 </select>
                 <button class="btn-icon-small" style="width: 24px; height: 24px; background: var(--danger);"
                     onclick="removeInfo('${type}', '${info.id}')">✕</button>
@@ -442,12 +445,7 @@ function addPrecondition() {
             <input type="text" class="form-input" placeholder="Nom de la précondition"
                 onchange="updatePrecondition('${preconditionId}', 'name', this.value)">
             <select class="form-input" onchange="updatePrecondition('${preconditionId}', 'state', this.value)">
-                <option value="">État</option>
-                <option value="ES">ES - En Service</option>
-                <option value="HS">HS - Hors Service</option>
-                <option value="DEB">DEB - Débouclé</option>
-                <option value="FIN">FIN - Forcé Inactif</option>
-                <option value="FUG">FUG - Fugitif</option>
+                ${buildStateOptions('', 'État')}
             </select>
             <button class="btn-remove" onclick="removePrecondition('${preconditionId}')">
                 🗑️
@@ -661,12 +659,7 @@ function addStep() {
                     <div class="form-group">
                         <label>État</label>
                         <select class="form-input" onchange="updateStep('${stepId}', 'state', this.value)">
-                            <option value="">Sélectionner</option>
-                            <option value="DEB">DEB</option>
-                            <option value="FIN">FIN</option>
-                            <option value="ES">ES</option>
-                            <option value="HS">HS</option>
-                            <option value="FUG">FUG</option>
+                            ${buildStateOptions('', 'Sélectionner')}
                         </select>
                     </div>
 
@@ -935,12 +928,7 @@ function addInfo(type, label) {
         <div class="info-item" id="${infoId}">
             <input type="text" placeholder="Nom ${label}" onchange="updateInfo('${type}', '${infoId}', 'name', this.value)">
             <select onchange="updateInfo('${type}', '${infoId}', 'state', this.value)">
-                <option value="">État</option>
-                <option value="ES">ES</option>
-                <option value="HS">HS</option>
-                <option value="DEB">DEB</option>
-                <option value="FIN">FIN</option>
-                <option value="FUG">FUG</option>
+                ${buildStateOptions('', 'État')}
             </select>
             <button class="btn-icon-small" style="width: 24px; height: 24px; background: var(--danger);"
                 onclick="removeInfo('${type}', '${infoId}')">✕</button>

@@ -1,0 +1,71 @@
+{
+  "icd_list": [
+    {
+      "icd_id": "ICD_BCU_EFACEC",
+      "ied_type": "BCU",
+      "manufacturer": "Efacec",
+      "version": "BCU Ligne V11.7.0",
+      "filename": "da6543d5_BCU-Ligne-V11.7.9-19March25.icd",
+      "path": "BCU\\Efacec\\BCU_Ligne_V11.7.0.json",
+      "ld_count": 60,
+      "ln_count": 557,
+      "imported_at": "2026-01-31T18:24:14.596739Z"
+    },
+    {
+      "icd_id": "ICD_BPU_EFACEC",
+      "ied_type": "BPU",
+      "manufacturer": "Efacec",
+      "version": "BCU Ligne V11.7.0",
+      "filename": "655632dd_BPU-Ligne-V11.7.9-19March25.icd",
+      "path": "BPU\\Efacec\\BCU_Ligne_V11.7.0.json",
+      "ld_count": 60,
+      "ln_count": 557,
+      "imported_at": "2026-01-31T18:24:43.601700Z"
+    },
+    {
+      "icd_id": "ICD_ASLD_RTE_AUPOS",
+      "ied_type": "ASLD",
+      "manufacturer": "RTE-AUPOS",
+      "version": "1.1.0",
+      "filename": "8d6c8d38_ICD_ASLD.icd",
+      "path": "ASLD\\RTE-AUPOS\\1.1.0.json",
+      "ld_count": 2,
+      "ln_count": 54,
+      "imported_at": "2026-01-31T18:24:58.539326Z"
+    },
+    {
+      "icd_id": "ICD_SCU_MCB_SCLE_SFE",
+      "ied_type": "SCU-MCB",
+      "manufacturer": "SCLE SFE",
+      "version": "2.1h",
+      "filename": "24faee89_ARKENS-SV1120-GGGG-6A5_SCU-MCB_2.1h-1.icd",
+      "path": "SCU-MCB\\SCLE_SFE\\2.1h.json",
+      "ld_count": 3,
+      "ln_count": 196,
+      "imported_at": "2026-01-31T18:30:55.564818Z"
+    },
+    {
+      "icd_id": "ICD_SCU_ORG_SCLE_SFE",
+      "ied_type": "SCU-ORG",
+      "manufacturer": "SCLE SFE",
+      "version": "2.2a",
+      "filename": "c95deb22_ARKENS-SV2320-GGAAAAGAG-88D_SCU-ORG_2.2a-1.icd",
+      "path": "SCU-ORG\\SCLE_SFE\\2.2a.json",
+      "ld_count": 18,
+      "ln_count": 419,
+      "imported_at": "2026-01-31T18:30:56.005717Z"
+    },
+    {
+      "icd_id": "ICD_SCU_TG_SCLE_SFE",
+      "ied_type": "SCU-TG",
+      "manufacturer": "SCLE SFE",
+      "version": "2.2a",
+      "filename": "3d153a49_ARKENS-SV2320-GGGAAAAGA-08C_SCU-TG_2.2a-1.icd",
+      "path": "SCU-TG\\SCLE_SFE\\2.2a.json",
+      "ld_count": 4,
+      "ln_count": 323,
+      "imported_at": "2026-01-31T18:30:56.185298Z"
+    }
+  ],
+  "last_updated": "2026-01-31T18:30:56.213922Z"
+}
