@@ -59,7 +59,19 @@
       "ld_count": 60,
       "ln_count": 557,
       "imported_at": "2026-01-31T21:45:31.057046Z"
+    },
+    {
+      "icd_id": "ICD_ASLD",
+      "ied_type": "ASLD",
+      "ied_type_attr": "ASLD",
+      "manufacturer": "RTE-AUPOS",
+      "version": "1.1.0",
+      "filename": "9051465a_ICD_ASLD.icd",
+      "path": "9051465a_ICD_ASLD.json",
+      "ld_count": 2,
+      "ln_count": 54,
+      "imported_at": "2026-01-31T21:51:57.704280Z"
     }
   ],
-  "last_updated": "2026-01-31T21:45:31.096822Z"
+  "last_updated": "2026-01-31T21:51:57.706364Z"
 }

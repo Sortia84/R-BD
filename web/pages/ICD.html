@@ -14,9 +14,10 @@
 
 <body>
     <!-- Header chargé dynamiquement -->
+    <div id="header-container"></div>
 
     <!-- Panneau flottant ICD orphelins -->
-    <aside class="orphan-panel" id="orphan-panel">
+    <aside class="orphan-panel hidden" id="orphan-panel">
         <div class="orphan-panel-header" onclick="toggleOrphanPanel()">
             <span class="orphan-panel-title">⚠️ ICD non assignés</span>
             <span class="orphan-panel-count" id="orphan-count">0</span>
@@ -28,7 +29,7 @@
         </div>
     </aside>
 
-    <main class="guide-main has-orphan-panel">
+    <main class="guide-main panel-hidden" id="main-content">
         <section class="card">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
@@ -77,7 +78,7 @@
         <section class="card">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <h3 style="margin: 0 0 8px 0;">📦 Équipements IED</h3>
+                    <h3 style="margin: 0 0 8px 0;">🖲️ Équipements IED</h3>
                     <p class="muted" style="margin: 0;">Chaque carte représente un type d'équipement et ses ICD associés
                     </p>
                 </div>
@@ -96,7 +97,12 @@
 
     <script src="../js/ied-icd-manager.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', initIedIcdPage);
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Charger le header
+            await loadHeader({ activePage: 'icd', title: 'Gestion IED / ICD' });
+            // Initialiser la page
+            initIedIcdPage();
+        });
     </script>
 </body>
 

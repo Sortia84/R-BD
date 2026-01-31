@@ -24,7 +24,7 @@ async function initIedIcdPage() {
 // Gestion du panneau flottant orphelins
 function initOrphanPanel() {
     const panel = document.getElementById('orphan-panel');
-    const main = document.querySelector('.guide-main');
+    const main = document.getElementById('main-content') || document.querySelector('.guide-main');
     if (!panel || !main) return;
 
     // Restaurer l'état depuis localStorage
@@ -37,7 +37,7 @@ function initOrphanPanel() {
 
 function toggleOrphanPanel() {
     const panel = document.getElementById('orphan-panel');
-    const main = document.querySelector('.guide-main');
+    const main = document.getElementById('main-content') || document.querySelector('.guide-main');
     if (!panel || !main) return;
 
     panel.classList.toggle('collapsed');
@@ -49,18 +49,28 @@ function toggleOrphanPanel() {
 
 function updateOrphanPanelVisibility() {
     const panel = document.getElementById('orphan-panel');
-    const main = document.querySelector('.guide-main');
+    const main = document.getElementById('main-content') || document.querySelector('.guide-main');
     const orphans = getOrphanIcds();
 
     if (!panel || !main) return;
 
     if (orphans.length === 0) {
+        // Pas d'orphelins : cacher le panneau et centrer le main
         panel.classList.add('hidden');
         main.classList.add('panel-hidden');
-        main.classList.remove('panel-collapsed');
+        main.classList.remove('has-orphan-panel', 'panel-collapsed');
     } else {
+        // Des orphelins : afficher le panneau
         panel.classList.remove('hidden');
         main.classList.remove('panel-hidden');
+        main.classList.add('has-orphan-panel');
+
+        // Gérer l'état collapsed
+        if (panel.classList.contains('collapsed')) {
+            main.classList.add('panel-collapsed');
+        } else {
+            main.classList.remove('panel-collapsed');
+        }
     }
 
     // Mettre à jour le compteur
@@ -238,11 +248,13 @@ function getFilteredPatterns() {
         // Exclure les enfants (ils seront affichés dans la carte du parent)
         if (p.parent) return false;
 
-        // Filtre recherche
+        // Filtre recherche : inclut display_name, pattern, id ET icd_refs
+        const icdRefs = p.icd_refs || [];
         const matchSearch = !search ||
             p.display_name.toLowerCase().includes(search) ||
             p.pattern.toLowerCase().includes(search) ||
-            p.id.toLowerCase().includes(search);
+            p.id.toLowerCase().includes(search) ||
+            icdRefs.some(ref => ref.toLowerCase().includes(search));
 
         // Filtre statut liaison (inclure les ICD des variants aussi)
         const linkedIcds = getIcdsForPatternWithVariants(p);
@@ -293,7 +305,7 @@ function buildIedCard(pattern) {
              ondragleave="handleDragLeave(event)"
              ondrop="handleDrop(event)">
             <div class="ied-card-header">
-                <div class="ied-icon">📦</div>
+                <div class="ied-icon">🖲️</div>
                 <div class="ied-info">
                     <h3>${escapeHtml(pattern.display_name)}</h3>
                     <code class="pattern-code">${escapeHtml(pattern.pattern)}</code>
@@ -436,6 +448,7 @@ function renderOrphanIcds() {
 
     container.innerHTML = orphans.map(icd => {
         const icdId = icd.icd_id;
+        const displayType = icd.ied_type_attr || icd.ied_type;
         return `
             <div class="orphan-icd-card"
                  draggable="true"
@@ -444,11 +457,18 @@ function renderOrphanIcds() {
                  ondragend="handleDragEnd(event)">
                 <div class="orphan-card-icon">📄</div>
                 <div class="orphan-card-info">
-                    <div class="orphan-card-type">${escapeHtml(icd.ied_type)}</div>
+                    <div class="orphan-card-type">${escapeHtml(displayType)}</div>
                     <div class="orphan-card-manufacturer">${escapeHtml(icd.manufacturer)}</div>
                     <div class="orphan-card-version">${escapeHtml(icd.version)}</div>
                 </div>
-                <div class="orphan-card-hint">⋮⋮</div>
+                <div class="orphan-card-actions">
+                    <button class="btn-icon-small btn-danger"
+                            onclick="event.stopPropagation(); deleteOrphanIcd('${escapeHtml(icdId)}')"
+                            title="Supprimer cet ICD">
+                        🗑️
+                    </button>
+                    <span class="orphan-card-hint">⋮⋮</span>
+                </div>
             </div>
         `;
     }).join('');
@@ -806,6 +826,66 @@ async function unlinkIcdApi(patternId, icdId) {
     } catch (e) {
         console.error('Erreur déliaison:', e);
     }
+}
+
+async function deleteOrphanIcd(icdId) {
+    // Récupérer les infos de l'ICD pour affichage
+    const icd = icdCatalog.find(i => i.icd_id === icdId);
+    const displayName = icd?.ied_type_attr || icd?.type || icdId;
+
+    if (!confirm(`Supprimer définitivement l'ICD "${displayName}" ?\n\nCette action est irréversible.`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/${icdId}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || 'Erreur de suppression');
+        }
+
+        const result = await response.json();
+        console.log(`🗑️ ICD supprimé:`, result);
+
+        // Recharger le catalogue et mettre à jour l'affichage
+        await loadIcdCatalog();
+        renderOrphanIcds();
+        updateStats();
+
+        // Notification visuelle
+        showNotification(`✅ ICD "${displayName}" supprimé`);
+    } catch (e) {
+        console.error('❌ Erreur suppression ICD:', e);
+        alert('❌ Erreur: ' + e.message);
+    }
+}
+
+function showNotification(message) {
+    // Créer une notification temporaire
+    const notif = document.createElement('div');
+    notif.className = 'toast-notification';
+    notif.textContent = message;
+    notif.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+    document.body.appendChild(notif);
+
+    setTimeout(() => {
+        notif.style.animation = 'fadeOut 0.3s ease';
+        setTimeout(() => notif.remove(), 300);
+    }, 3000);
 }
 
 async function reanalyzeAll() {

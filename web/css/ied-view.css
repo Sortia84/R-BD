@@ -299,6 +299,51 @@
     align-items: center;
 }
 
+.orphan-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.orphan-delete-btn {
+    background: transparent;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.orphan-delete-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: #ef4444;
+}
+
+/* Animations pour notifications */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
 /* Stats summary */
 .stats-summary {
     display: flex;
@@ -549,8 +594,10 @@
     margin-left: 50px;
 }
 
-.guide-main.has-orphan-panel.panel-hidden {
+/* Quand panneau caché (pas d'orphelins) : centrage normal */
+.guide-main.panel-hidden {
     margin-left: 0;
+    transition: margin-left 0.3s ease;
 }
 
 .orphan-icd-card:hover {
