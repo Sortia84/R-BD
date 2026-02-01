@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>R#BD — Gestion Fichiers ISA</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/templates.css" />
+    <link rel="stylesheet" href="../css/isa.css" />
+    <script src="../js/header-loader.js"></script>
+</head>
+
+<body>
+    <!-- Header chargé dynamiquement -->
+    <div id="header-container"></div>
+
+    <!-- Panneau flottant fichiers ISA orphelins -->
+    <aside class="orphan-panel hidden" id="orphan-panel">
+        <div class="orphan-panel-header" onclick="toggleOrphanPanel()">
+            <span class="orphan-panel-title">⚠️ Fichiers non assignés</span>
+            <span class="orphan-panel-count" id="orphan-count">0</span>
+            <span class="orphan-panel-arrow" id="orphan-arrow">◀</span>
+        </div>
+        <div class="orphan-panel-content" id="orphan-panel-content">
+            <p class="orphan-panel-hint">Glissez-déposez sur une carte de type ISA</p>
+            <div id="orphan-files" class="orphan-list"></div>
+        </div>
+    </aside>
+
+    <main class="guide-main panel-hidden" id="main-content">
+        <section class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2>Gestion Fichiers ISA</h2>
+                    <p class="muted">Importez et associez vos fichiers ISA (xlsx, xml, csv...) aux types de données</p>
+                </div>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <button class="btn btn-primary" onclick="triggerIsaUpload()">
+                        ➕ Importer des fichiers
+                    </button>
+                    <button class="btn" onclick="reanalyzeAll()" title="Relancer toutes les analyses">
+                        🔄 Tout ré-analyser
+                    </button>
+                </div>
+            </div>
+            <input id="isa-upload" type="file" accept=".xlsx,.xls,.xml,.csv,.json" multiple hidden />
+        </section>
+
+        <!-- Filtres -->
+        <section class="card">
+            <div class="card-header">
+                <h3 style="margin: 0 0 8px 0;">🔎 Filtres</h3>
+            </div>
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <label for="filter-search">Recherche</label>
+                    <input type="text" id="filter-search" class="filter-input" placeholder="Nom, type..."
+                        oninput="renderIsaTypeCards()">
+                </div>
+                <div class="filter-group">
+                    <label for="filter-linked">Statut</label>
+                    <select id="filter-linked" class="filter-select" onchange="renderIsaTypeCards()">
+                        <option value="">Tous</option>
+                        <option value="linked">Avec fichiers</option>
+                        <option value="unlinked">Sans fichiers</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-format">Format</label>
+                    <select id="filter-format" class="filter-select" onchange="renderIsaTypeCards()">
+                        <option value="">Tous formats</option>
+                        <option value="xlsx">Excel (.xlsx)</option>
+                        <option value="xml">XML (.xml)</option>
+                        <option value="csv">CSV (.csv)</option>
+                        <option value="json">JSON (.json)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-secondary" onclick="resetFilters()">Réinitialiser</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Liste des Types ISA -->
+        <section class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin: 0 0 8px 0;">📁 Types de données ISA</h3>
+                    <p class="muted" style="margin: 0;">Chaque carte représente un type de données et ses fichiers
+                        associés</p>
+                </div>
+                <div class="stats-summary" id="stats-summary"></div>
+            </div>
+            <div class="divider"></div>
+
+            <div id="isa-cards" class="isa-grid">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📂</div>
+                    <p>Chargement...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/isa-manager.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Charger le header
+            await loadHeader({ activePage: 'isa', title: 'Gestion Fichiers ISA' });
+            // Initialiser la page
+            initIsaPage();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+{
+  "files": [
+    {
+      "id": "8ba709229c97",
+      "original_name": "cde_by_risa.json",
+      "filename": "8ba709229c97_cde_by_risa.json",
+      "format": "json",
+      "size": 1914807,
+      "imported_at": "2026-02-01T22:58:10.067469",
+      "type_refs": [
+        "isa_cde"
+      ],
+      "path": "data\\isa\\files\\isa_cde\\8ba709229c97_cde_by_risa.json"
+    }
+  ],
+  "last_updated": "2026-02-01T22:58:17.213071"
+}

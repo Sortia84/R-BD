@@ -1,0 +1,71 @@
+{
+  "version": "1.0",
+  "description": "Types de fichiers ISA pour R#BD",
+  "types": [
+    {
+      "id": "config_materiel",
+      "name": "Configuration Matériel",
+      "category": "config",
+      "description": "Fichiers de configuration matérielle",
+      "formats": [
+        "xlsx",
+        "xml"
+      ],
+      "icon": "⚙️"
+    },
+    {
+      "id": "mapping_signaux",
+      "name": "Mapping Signaux",
+      "category": "mapping",
+      "description": "Tables de correspondance des signaux",
+      "formats": [
+        "xlsx",
+        "csv"
+      ],
+      "icon": "🗺️"
+    },
+    {
+      "id": "parametres_reseau",
+      "name": "Paramètres Réseau",
+      "category": "config",
+      "description": "Configuration réseau et adresses",
+      "formats": [
+        "xml",
+        "json"
+      ],
+      "icon": "🌐"
+    },
+    {
+      "id": "donnees_reference",
+      "name": "Données de Référence",
+      "category": "reference",
+      "description": "Tables de référence et nomenclatures",
+      "formats": [
+        "xlsx",
+        "csv"
+      ],
+      "icon": "📖"
+    },
+    {
+      "id": "isa_cde",
+      "name": "ISA CDE",
+      "category": "liste",
+      "description": "Fichiers des ISA CDE pour R#GUIDE/R#TOOLS",
+      "formats": [
+        "json"
+      ],
+      "icon": "🖨️"
+    },
+    {
+      "id": "modele_donnees",
+      "name": "Modèle de Données",
+      "category": "data",
+      "description": "Définition du modèle de données IEC 61850",
+      "formats": [
+        "xml",
+        "json"
+      ],
+      "icon": "📊"
+    }
+  ]
+}
