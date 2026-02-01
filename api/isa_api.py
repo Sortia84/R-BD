@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 import uuid
 
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -45,7 +45,7 @@ async def get_catalog() -> dict[str, Any]:
 @router.post("/upload")
 async def upload_isa(
     file: UploadFile = File(...),
-    type_id: str | None = None
+    type_id: str | None = Form(None)
 ) -> dict[str, Any]:
     """
     Upload un fichier ISA.

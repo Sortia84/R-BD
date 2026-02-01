@@ -241,7 +241,16 @@ class ISAManager:
 
         # Nom de stockage
         stored_name = f"{file_id}_{original_name}"
-        stored_path = self.uploads_dir / stored_name
+
+        # Déterminer le dossier de destination selon le type
+        if type_id:
+            # Fichier lié : stocker dans data/isa/files/{type_id}/
+            dest_dir = self.files_dir / type_id
+            dest_dir.mkdir(parents=True, exist_ok=True)
+            stored_path = dest_dir / stored_name
+        else:
+            # Fichier orphelin : stocker dans uploads/ISA/
+            stored_path = self.uploads_dir / stored_name
 
         # Copier le fichier
         shutil.copy2(file_path, stored_path)
@@ -255,7 +264,7 @@ class ISAManager:
             "size": stored_path.stat().st_size,
             "imported_at": datetime.now().isoformat(),
             "type_refs": [type_id] if type_id else [],
-            "path": str(stored_path.relative_to(self.uploads_dir.parent.parent))
+            "path": str(stored_path.relative_to(self.data_dir.parent))
         }
 
         # Ajouter au catalogue
