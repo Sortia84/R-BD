@@ -1,0 +1,297 @@
+{
+  "icd_id": "ICD_SELTA_TPS3000_DIGITAL_PLATFORMS_TPS_3000_TELEPROTECTION_EQUIPMENT",
+  "ied_type": "TAC",
+  "ied_type_attr": "Selta_TPS3000",
+  "manufacturer": "Digital Platforms",
+  "config_version": "-",
+  "desc": "TPS-3000 TeleProtection Equipment",
+  "version": "TPS-3000 TeleProtection Equipment",
+  "filename": "c536b108_ICD_TAC_TPS3000_RTE_Health.icd",
+  "imported_at": "2026-01-31T22:41:09.053362Z",
+  "ieds": [
+    {
+      "name": "TEMPLATE_IEDNAME",
+      "lds": [
+        {
+          "name": "LDSUIED",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "LGOS",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "LGOS",
+              "lninst": "2"
+            },
+            {
+              "ln_class": "LGOS",
+              "lninst": "3"
+            },
+            {
+              "ln_class": "LGOS",
+              "lninst": "4"
+            },
+            {
+              "ln_class": "LGOS",
+              "lninst": "5"
+            },
+            {
+              "ln_class": "LGOS",
+              "lninst": "6"
+            },
+            {
+              "ln_class": "LGOS",
+              "lninst": "7"
+            },
+            {
+              "ln_class": "LGOS",
+              "lninst": "8"
+            }
+          ]
+        },
+        {
+          "name": "LDTAC1",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "ITPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "PSCH",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            }
+          ]
+        },
+        {
+          "name": "LDTAC2",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "ITPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "PSCH",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            }
+          ]
+        },
+        {
+          "name": "LDTAC3",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "ITPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "PSCH",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            }
+          ]
+        },
+        {
+          "name": "LDTAC4",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "ITPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "PSCH",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            }
+          ]
+        },
+        {
+          "name": "LDTAC5",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "ITPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "PSCH",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            }
+          ]
+        },
+        {
+          "name": "LDTAC6",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "ITPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "PSCH",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            }
+          ]
+        },
+        {
+          "name": "LDTAC7",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "ITPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "PSCH",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            }
+          ]
+        },
+        {
+          "name": "LDTAC8",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "ITPC",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "PSCH",
+              "lninst": "0"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            },
+            {
+              "ln_class": "GGIO",
+              "lninst": "1"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "ld_count": 9,
+  "ln_count": 58
+}

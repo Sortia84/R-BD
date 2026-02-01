@@ -92,33 +92,60 @@ class IEDPatternManager:
 
     # --- Liaison ICD ↔ Pattern ---
 
-    def link_icd_to_pattern(self, pattern_id: str, icd_path: str) -> bool:
-        """Lie un ICD (chemin relatif) à un pattern IED."""
+    def link_icd_to_pattern(self, pattern_id: str, icd_ref: str) -> bool:
+        """Lie un ICD à un pattern IED et propage aux variants (enfants)."""
         data = self.load_patterns()
         pattern = next((p for p in data["ied_patterns"] if p["id"] == pattern_id), None)
 
         if not pattern:
             return False
 
+        # Ajouter l'ICD au pattern principal
         if "icd_refs" not in pattern:
             pattern["icd_refs"] = []
 
-        if icd_path not in pattern["icd_refs"]:
-            pattern["icd_refs"].append(icd_path)
+        modified = False
+        if icd_ref not in pattern["icd_refs"]:
+            pattern["icd_refs"].append(icd_ref)
+            modified = True
+
+        # Propager aux variants (patterns enfants qui ont parent = pattern_id)
+        for child in data["ied_patterns"]:
+            if child.get("parent") == pattern_id:
+                if "icd_refs" not in child:
+                    child["icd_refs"] = []
+                if icd_ref not in child["icd_refs"]:
+                    child["icd_refs"].append(icd_ref)
+                    modified = True
+
+        if modified:
             self.save_patterns(data)
 
         return True
 
-    def unlink_icd_from_pattern(self, pattern_id: str, icd_path: str) -> bool:
-        """Supprime la liaison ICD d'un pattern."""
+    def unlink_icd_from_pattern(self, pattern_id: str, icd_ref: str) -> bool:
+        """Supprime la liaison ICD d'un pattern et de ses variants."""
         data = self.load_patterns()
         pattern = next((p for p in data["ied_patterns"] if p["id"] == pattern_id), None)
 
-        if not pattern or "icd_refs" not in pattern:
+        if not pattern:
             return False
 
-        if icd_path in pattern["icd_refs"]:
-            pattern["icd_refs"].remove(icd_path)
+        modified = False
+
+        # Retirer du pattern principal
+        if "icd_refs" in pattern and icd_ref in pattern["icd_refs"]:
+            pattern["icd_refs"].remove(icd_ref)
+            modified = True
+
+        # Propager aux variants (patterns enfants)
+        for child in data["ied_patterns"]:
+            if child.get("parent") == pattern_id:
+                if "icd_refs" in child and icd_ref in child["icd_refs"]:
+                    child["icd_refs"].remove(icd_ref)
+                    modified = True
+
+        if modified:
             self.save_patterns(data)
             return True
 

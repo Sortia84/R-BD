@@ -1,11 +1,13 @@
 {
-  "icd_id": "ICD_PROTECTION",
+  "icd_id": "ICD_PROTECTION_EFACEC_1_187_BCU_LIGNE_V11_7_0",
   "ied_type": "BPU",
   "ied_type_attr": "Protection",
   "manufacturer": "Efacec",
+  "config_version": "1.187",
+  "desc": "BCU Ligne V11.7.0",
   "version": "BCU Ligne V11.7.0",
   "filename": "4091aed1_BPU-Ligne-V11.7.9-19March25.icd",
-  "imported_at": "2026-01-31T21:45:31.057046Z",
+  "imported_at": "2026-01-31T22:41:08.325122Z",
   "ieds": [
     {
       "name": "TEMPLATE",

@@ -1,5 +1,9 @@
 // test-editor.js - Gestion de l'éditeur de tests RU/MVS/CVS
 
+// ============================================================
+// Données globales
+// ============================================================
+
 let currentTest = {
     id: '',
     name: '',
@@ -21,6 +25,11 @@ let currentTest = {
 
 let stepCounter = 1;
 let isEditing = false;
+
+// Données de référence chargées depuis l'API
+let iedPatterns = [];      // Liste des patterns IED depuis liste_ied.json
+let icdCatalog = [];       // Catalogue des ICD depuis index.json
+let icdDetailsCache = {};  // Cache des détails ICD (LDs, LNs)
 
 const TYPE_PREFIX = {
     ru: 'RU',
@@ -107,44 +116,397 @@ function refreshTypeLabels() {
 }
 
 /**
- * Charge les IEDs depuis l'analyse SCD
+ * Charge les IEDs depuis l'API et configure les sélecteurs liés
  */
 async function loadReferenceLists() {
     const iedSelect = document.getElementById('test-ied');
+    const variantSelect = document.getElementById('test-variant');
     const ldSelect = document.getElementById('test-ld');
     const lnSelect = document.getElementById('test-ln');
     const lninstSelect = document.getElementById('test-lninst');
 
+    // Charger les patterns IED et le catalogue ICD
     await Promise.all([
-        loadList('/data/ied/liste_ied.json', iedSelect),
-        loadList('/data/ld/liste_ld.json', ldSelect),
-        loadList('/data/ln/liste_ln.json', lnSelect),
-        loadList('/data/ln/liste_ln.json', lninstSelect)
+        loadIedPatterns(),
+        loadIcdCatalog()
     ]);
+
+    // Remplir la liste des IED (patterns parents uniquement)
+    populateIedSelect(iedSelect);
+
+    // Configurer les événements de changement en cascade
+    iedSelect.addEventListener('change', () => onIedChange());
+    variantSelect.addEventListener('change', () => onVariantChange());
+    ldSelect.addEventListener('change', () => onLdChange());
+    lnSelect.addEventListener('change', () => onLnChange());
+
+    // Initialiser les listes dépendantes comme vides
+    resetSelect(variantSelect, '— Aucun —');
+    resetSelect(ldSelect, 'Sélectionner un LD');
+    resetSelect(lnSelect, 'Sélectionner un LN');
+    resetSelect(lninstSelect, 'Sélectionner LNinst');
 }
 
-async function loadList(url, selectElement) {
-    if (!selectElement) {
-        return;
+/**
+ * Charge les patterns IED depuis liste_ied.json
+ */
+async function loadIedPatterns() {
+    try {
+        const response = await fetch('/data/ied/liste_ied.json');
+        if (!response.ok) return;
+        const data = await response.json();
+        iedPatterns = data.ied_patterns || [];
+        console.log(`📋 ${iedPatterns.length} patterns IED chargés`);
+    } catch (error) {
+        console.warn('Impossible de charger les patterns IED', error);
+        iedPatterns = [];
+    }
+}
+
+/**
+ * Charge le catalogue ICD depuis index.json
+ */
+async function loadIcdCatalog() {
+    try {
+        const response = await fetch('/data/icd/index.json');
+        if (!response.ok) return;
+        const data = await response.json();
+        icdCatalog = data.icd_list || [];
+        console.log(`📦 ${icdCatalog.length} ICD dans le catalogue`);
+    } catch (error) {
+        console.warn('Impossible de charger le catalogue ICD', error);
+        icdCatalog = [];
+    }
+}
+
+/**
+ * Charge les détails d'un ICD (LDs et LNs)
+ */
+async function loadIcdDetails(icdId) {
+    // Vérifier le cache
+    if (icdDetailsCache[icdId]) {
+        return icdDetailsCache[icdId];
+    }
+
+    // Trouver le chemin du fichier JSON
+    const icdEntry = icdCatalog.find(i => i.icd_id === icdId);
+    if (!icdEntry || !icdEntry.path) {
+        console.warn(`ICD non trouvé: ${icdId}`);
+        return null;
     }
 
     try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            return;
-        }
-        const items = await response.json();
-        if (!Array.isArray(items)) {
-            return;
-        }
-        items.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item;
-            option.textContent = item;
-            selectElement.appendChild(option);
-        });
+        const response = await fetch(`/data/icd/${icdEntry.path}`);
+        if (!response.ok) return null;
+        const data = await response.json();
+        icdDetailsCache[icdId] = data;
+        return data;
     } catch (error) {
-        console.warn(`Impossible de charger ${url}`, error);
+        console.warn(`Impossible de charger les détails ICD: ${icdId}`, error);
+        return null;
+    }
+}
+
+/**
+ * Remplit le sélecteur IED avec les patterns parents
+ */
+function populateIedSelect(selectElement) {
+    if (!selectElement) return;
+
+    // Ne garder que les patterns parents (sans parent défini)
+    const parentPatterns = iedPatterns.filter(p => !p.parent);
+
+    // Trier par display_name
+    parentPatterns.sort((a, b) =>
+        a.display_name.localeCompare(b.display_name, 'fr', { sensitivity: 'base' })
+    );
+
+    selectElement.innerHTML = '<option value="">Sélectionner un IED</option>';
+
+    parentPatterns.forEach(pattern => {
+        const hasIcd = (pattern.icd_refs || []).length > 0;
+        const option = document.createElement('option');
+        option.value = pattern.id;
+        option.textContent = `${pattern.display_name} (${pattern.pattern})`;
+        if (!hasIcd) {
+            option.textContent += ' ⚠️ Sans ICD';
+            option.style.color = '#f59e0b';
+        }
+        selectElement.appendChild(option);
+    });
+}
+
+/**
+ * Reset un sélecteur avec un placeholder
+ */
+function resetSelect(selectElement, placeholder) {
+    if (!selectElement) return;
+    selectElement.innerHTML = `<option value="">${placeholder}</option>`;
+}
+
+/**
+ * Événement: changement d'IED sélectionné
+ */
+async function onIedChange() {
+    const iedSelect = document.getElementById('test-ied');
+    const variantSelect = document.getElementById('test-variant');
+    const ldSelect = document.getElementById('test-ld');
+    const lnSelect = document.getElementById('test-ln');
+    const lninstSelect = document.getElementById('test-lninst');
+
+    const patternId = iedSelect.value;
+
+    // Reset les listes dépendantes
+    resetSelect(variantSelect, '— Aucun —');
+    resetSelect(ldSelect, 'Chargement...');
+    resetSelect(lnSelect, 'Sélectionner un LN');
+    resetSelect(lninstSelect, 'Sélectionner LNinst');
+
+    if (!patternId) {
+        resetSelect(ldSelect, 'Sélectionner un LD');
+        return;
+    }
+
+    // Trouver le pattern parent
+    const pattern = iedPatterns.find(p => p.id === patternId);
+    if (!pattern) {
+        resetSelect(ldSelect, 'Aucun LD disponible');
+        return;
+    }
+
+    // Peupler la liste des variants (enfants de ce pattern)
+    const variants = iedPatterns.filter(p => p.parent === patternId);
+    if (variants.length > 0) {
+        variants.sort((a, b) => a.display_name.localeCompare(b.display_name, 'fr'));
+        for (const variant of variants) {
+            const option = document.createElement('option');
+            option.value = variant.id;
+            option.textContent = variant.display_name;
+            variantSelect.appendChild(option);
+        }
+    }
+
+    // Charger les LDs depuis le pattern parent (par défaut)
+    await loadLdsForPattern(pattern);
+}
+
+/**
+ * Événement: changement de variant sélectionné
+ */
+async function onVariantChange() {
+    const iedSelect = document.getElementById('test-ied');
+    const variantSelect = document.getElementById('test-variant');
+    const ldSelect = document.getElementById('test-ld');
+    const lnSelect = document.getElementById('test-ln');
+    const lninstSelect = document.getElementById('test-lninst');
+
+    // Reset les listes dépendantes
+    resetSelect(ldSelect, 'Chargement...');
+    resetSelect(lnSelect, 'Sélectionner un LN');
+    resetSelect(lninstSelect, 'Sélectionner LNinst');
+
+    const variantId = variantSelect.value;
+    const parentId = iedSelect.value;
+
+    // Si pas de variant sélectionné, utiliser le parent
+    const patternId = variantId || parentId;
+    if (!patternId) {
+        resetSelect(ldSelect, 'Sélectionner un LD');
+        return;
+    }
+
+    const pattern = iedPatterns.find(p => p.id === patternId);
+    if (!pattern) {
+        resetSelect(ldSelect, 'Aucun LD disponible');
+        return;
+    }
+
+    await loadLdsForPattern(pattern);
+}
+
+/**
+ * Charge les LDs depuis les ICDs associés à un pattern
+ */
+async function loadLdsForPattern(pattern) {
+    const ldSelect = document.getElementById('test-ld');
+
+    const icdRefs = pattern.icd_refs || [];
+    if (icdRefs.length === 0) {
+        resetSelect(ldSelect, '⚠️ Aucun ICD associé');
+        return;
+    }
+
+    // Charger les LDs depuis le(s) ICD associé(s)
+    const allLds = new Map(); // nom -> { ldName, icdId, lns }
+
+    for (const icdId of icdRefs) {
+        const icdDetails = await loadIcdDetails(icdId);
+        if (!icdDetails || !icdDetails.ieds) continue;
+
+        for (const ied of icdDetails.ieds) {
+            for (const ld of ied.lds || []) {
+                if (!allLds.has(ld.name)) {
+                    allLds.set(ld.name, {
+                        ldName: ld.name,
+                        icdId: icdId,
+                        lns: ld.lns || []
+                    });
+                }
+            }
+        }
+    }
+
+    // Remplir le sélecteur LD
+    resetSelect(ldSelect, 'Sélectionner un LD');
+
+    if (allLds.size === 0) {
+        resetSelect(ldSelect, 'Aucun LD dans l\'ICD');
+        return;
+    }
+
+    // Trier et ajouter les options
+    const sortedLds = [...allLds.keys()].sort();
+    for (const ldName of sortedLds) {
+        const option = document.createElement('option');
+        option.value = ldName;
+        option.textContent = ldName;
+        option.dataset.icdId = allLds.get(ldName).icdId;
+        ldSelect.appendChild(option);
+    }
+
+    // Stocker les LDs en mémoire pour l'événement suivant
+    ldSelect.dataset.ldsData = JSON.stringify(Object.fromEntries(allLds));
+}
+
+/**
+ * Événement: changement de LD sélectionné
+ */
+function onLdChange() {
+    const ldSelect = document.getElementById('test-ld');
+    const lnSelect = document.getElementById('test-ln');
+    const lninstSelect = document.getElementById('test-lninst');
+
+    const ldName = ldSelect.value;
+
+    // Reset les listes dépendantes
+    resetSelect(lnSelect, 'Sélectionner un LN');
+    resetSelect(lninstSelect, 'Sélectionner LNinst');
+
+    if (!ldName) return;
+
+    // Récupérer les données des LDs
+    const ldsDataStr = ldSelect.dataset.ldsData;
+    if (!ldsDataStr) return;
+
+    const ldsData = JSON.parse(ldsDataStr);
+    const ldData = ldsData[ldName];
+    if (!ldData || !ldData.lns) return;
+
+    // Extraire les classes LN uniques
+    const lnClasses = [...new Set(ldData.lns.map(ln => ln.ln_class))].sort();
+
+    // Remplir le sélecteur LN
+    for (const lnClass of lnClasses) {
+        const option = document.createElement('option');
+        option.value = lnClass;
+        option.textContent = lnClass;
+        lnSelect.appendChild(option);
+    }
+
+    // Stocker les LNs pour l'événement suivant
+    lnSelect.dataset.lnsData = JSON.stringify(ldData.lns);
+}
+
+/**
+ * Événement: changement de LN sélectionné
+ */
+function onLnChange() {
+    const lnSelect = document.getElementById('test-ln');
+    const lninstSelect = document.getElementById('test-lninst');
+
+    const lnClass = lnSelect.value;
+
+    // Reset la liste LNinst
+    resetSelect(lninstSelect, 'Sélectionner LNinst');
+
+    if (!lnClass) return;
+
+    // Récupérer les données des LNs
+    const lnsDataStr = lnSelect.dataset.lnsData;
+    if (!lnsDataStr) return;
+
+    const lnsData = JSON.parse(lnsDataStr);
+
+    // Filtrer les LNinst pour cette classe
+    const instances = lnsData
+        .filter(ln => ln.ln_class === lnClass)
+        .map(ln => ln.lninst || '0')
+        .sort((a, b) => {
+            const numA = parseInt(a) || 0;
+            const numB = parseInt(b) || 0;
+            return numA - numB;
+        });
+
+    // Dédupliquer
+    const uniqueInstances = [...new Set(instances)];
+
+    // Remplir le sélecteur LNinst
+    for (const inst of uniqueInstances) {
+        const option = document.createElement('option');
+        option.value = inst;
+        option.textContent = inst || '(vide)';
+        lninstSelect.appendChild(option);
+    }
+
+    // Si un seul choix, le sélectionner automatiquement
+    if (uniqueInstances.length === 1) {
+        lninstSelect.value = uniqueInstances[0];
+    }
+}
+
+/**
+ * Restaure les valeurs des sélecteurs liés lors du chargement d'un test existant
+ * @param {string} iedValue - ID du pattern IED
+ * @param {string} variantValue - ID du variant (optionnel)
+ * @param {string} ldValue - Nom du LD
+ * @param {string} lnValue - Classe du LN
+ * @param {string} lninstValue - Instance du LN
+ */
+async function restoreLinkedSelectors(iedValue, variantValue, ldValue, lnValue, lninstValue) {
+    const iedSelect = document.getElementById('test-ied');
+    const variantSelect = document.getElementById('test-variant');
+    const ldSelect = document.getElementById('test-ld');
+    const lnSelect = document.getElementById('test-ln');
+    const lninstSelect = document.getElementById('test-lninst');
+
+    // Si pas d'IED, rien à restaurer
+    if (!iedValue) return;
+
+    // 1. Sélectionner l'IED et charger les variants + LDs
+    iedSelect.value = iedValue;
+    await onIedChange();
+
+    // 2. Si un variant était sélectionné, le restaurer et recharger les LDs
+    if (variantValue) {
+        variantSelect.value = variantValue;
+        await onVariantChange();
+    }
+
+    // 3. Sélectionner le LD et charger les LNs
+    if (ldValue) {
+        ldSelect.value = ldValue;
+        onLdChange();
+    }
+
+    // 4. Sélectionner le LN et charger les LNinst
+    if (lnValue) {
+        lnSelect.value = lnValue;
+        onLnChange();
+    }
+
+    // 5. Sélectionner le LNinst
+    if (lninstValue) {
+        lninstSelect.value = lninstValue;
     }
 }
 
@@ -190,7 +552,7 @@ function makeUniqueId(baseId, type = selectedType) {
 /**
  * Charge un test existant
  */
-function loadTest(testId) {
+async function loadTest(testId) {
     const tests = getSavedTests(selectedType);
     const test = tests.find(t => t.id === testId);
     if (!test) {
@@ -223,11 +585,10 @@ function loadTest(testId) {
 
     document.getElementById('test-id').value = currentTest.id || '';
     document.getElementById('test-name').value = currentTest.name || '';
-    document.getElementById('test-ied').value = currentTest.ied || '';
-    document.getElementById('test-ld').value = currentTest.ld || '';
-    document.getElementById('test-ln').value = currentTest.ln || '';
-    document.getElementById('test-lninst').value = currentTest.lninst || '';
     document.getElementById('test-description').value = currentTest.description || '';
+
+    // Restaurer les sélecteurs liés (IED → Variant → LD → LN → LNinst)
+    await restoreLinkedSelectors(test.ied, test.variant, test.ld, test.ln, test.lninst);
 
     refreshTypeLabels();
 
@@ -985,6 +1346,7 @@ function collectFormData() {
     currentTest.type = (document.getElementById('test-type')?.value || selectedType).toLowerCase();
     currentTest.name = document.getElementById('test-name').value;
     currentTest.ied = document.getElementById('test-ied').value;
+    currentTest.variant = document.getElementById('test-variant').value;
     currentTest.ld = document.getElementById('test-ld').value;
     currentTest.ln = document.getElementById('test-ln').value;
     currentTest.lninst = document.getElementById('test-lninst').value;

@@ -24,24 +24,20 @@ async function initIedIcdPage() {
 // Gestion du panneau flottant orphelins
 function initOrphanPanel() {
     const panel = document.getElementById('orphan-panel');
-    const main = document.getElementById('main-content') || document.querySelector('.guide-main');
-    if (!panel || !main) return;
+    if (!panel) return;
 
     // Restaurer l'état depuis localStorage
     const isCollapsed = localStorage.getItem('orphanPanelCollapsed') === 'true';
     if (isCollapsed) {
         panel.classList.add('collapsed');
-        main.classList.add('panel-collapsed');
     }
 }
 
 function toggleOrphanPanel() {
     const panel = document.getElementById('orphan-panel');
-    const main = document.getElementById('main-content') || document.querySelector('.guide-main');
-    if (!panel || !main) return;
+    if (!panel) return;
 
     panel.classList.toggle('collapsed');
-    main.classList.toggle('panel-collapsed');
 
     // Sauvegarder l'état
     localStorage.setItem('orphanPanelCollapsed', panel.classList.contains('collapsed'));
@@ -49,28 +45,16 @@ function toggleOrphanPanel() {
 
 function updateOrphanPanelVisibility() {
     const panel = document.getElementById('orphan-panel');
-    const main = document.getElementById('main-content') || document.querySelector('.guide-main');
     const orphans = getOrphanIcds();
 
-    if (!panel || !main) return;
+    if (!panel) return;
 
     if (orphans.length === 0) {
-        // Pas d'orphelins : cacher le panneau et centrer le main
+        // Pas d'orphelins : cacher le panneau
         panel.classList.add('hidden');
-        main.classList.add('panel-hidden');
-        main.classList.remove('has-orphan-panel', 'panel-collapsed');
     } else {
         // Des orphelins : afficher le panneau
         panel.classList.remove('hidden');
-        main.classList.remove('panel-hidden');
-        main.classList.add('has-orphan-panel');
-
-        // Gérer l'état collapsed
-        if (panel.classList.contains('collapsed')) {
-            main.classList.add('panel-collapsed');
-        } else {
-            main.classList.remove('panel-collapsed');
-        }
     }
 
     // Mettre à jour le compteur
@@ -248,16 +232,21 @@ function getFilteredPatterns() {
         // Exclure les enfants (ils seront affichés dans la carte du parent)
         if (p.parent) return false;
 
-        // Filtre recherche : inclut display_name, pattern, id ET icd_refs
-        const icdRefs = p.icd_refs || [];
+        // Filtre recherche : inclut display_name, pattern, id ET infos ICD liés
+        const linkedIcds = getIcdsForPatternWithVariants(p);
         const matchSearch = !search ||
             p.display_name.toLowerCase().includes(search) ||
             p.pattern.toLowerCase().includes(search) ||
             p.id.toLowerCase().includes(search) ||
-            icdRefs.some(ref => ref.toLowerCase().includes(search));
+            linkedIcds.some(icd =>
+                (icd.desc || '').toLowerCase().includes(search) ||
+                (icd.ied_type_attr || '').toLowerCase().includes(search) ||
+                (icd.ied_type || '').toLowerCase().includes(search) ||
+                (icd.manufacturer || '').toLowerCase().includes(search) ||
+                (icd.icd_id || '').toLowerCase().includes(search)
+            );
 
-        // Filtre statut liaison (inclure les ICD des variants aussi)
-        const linkedIcds = getIcdsForPatternWithVariants(p);
+        // Filtre statut liaison
         const hasIcd = linkedIcds.length > 0;
         const matchLinked = !linkedValue ||
             (linkedValue === 'linked' && hasIcd) ||
@@ -342,8 +331,8 @@ function buildIcdItem(icd, currentPattern) {
     // Utiliser icd_id comme identifiant unique
     const icdId = icd.icd_id;
     const encodedId = encodeURIComponent(icdId);
-    // Afficher ied_type_attr s'il existe (type unique), sinon ied_type
-    const displayType = icd.ied_type_attr || icd.ied_type;
+    // Afficher desc s'il existe (ex: SAMUA1), sinon ied_type_attr, sinon ied_type
+    const displayType = icd.desc || icd.ied_type_attr || icd.ied_type;
 
     return `
         <div class="icd-item" data-icd-id="${escapeHtml(icdId)}">
@@ -448,7 +437,9 @@ function renderOrphanIcds() {
 
     container.innerHTML = orphans.map(icd => {
         const icdId = icd.icd_id;
-        const displayType = icd.ied_type_attr || icd.ied_type;
+        // Afficher desc s'il existe (ex: SAMUA1), sinon ied_type_attr, sinon ied_type
+        const displayType = icd.desc || icd.ied_type_attr || icd.ied_type;
+        const subInfo = icd.desc ? `${icd.ied_type_attr || icd.ied_type} • ${icd.manufacturer}` : icd.manufacturer;
         return `
             <div class="orphan-icd-card"
                  draggable="true"
@@ -458,14 +449,14 @@ function renderOrphanIcds() {
                 <div class="orphan-card-icon">📄</div>
                 <div class="orphan-card-info">
                     <div class="orphan-card-type">${escapeHtml(displayType)}</div>
-                    <div class="orphan-card-manufacturer">${escapeHtml(icd.manufacturer)}</div>
+                    <div class="orphan-card-manufacturer">${escapeHtml(subInfo)}</div>
                     <div class="orphan-card-version">${escapeHtml(icd.version)}</div>
                 </div>
                 <div class="orphan-card-actions">
-                    <button class="btn-icon-small btn-danger"
+                    <button class="btn-icon btn-danger"
                             onclick="event.stopPropagation(); deleteOrphanIcd('${escapeHtml(icdId)}')"
                             title="Supprimer cet ICD">
-                        🗑️
+                        ✕
                     </button>
                     <span class="orphan-card-hint">⋮⋮</span>
                 </div>
@@ -572,8 +563,10 @@ function updateStats() {
     const container = document.getElementById('stats-summary');
     if (!container) return;
 
-    const totalPatterns = iedPatterns.length;
-    const patternsWithIcd = iedPatterns.filter(p => (p.icd_refs || []).length > 0).length;
+    // Ne compter que les patterns parents (sans parent défini)
+    const parentPatterns = iedPatterns.filter(p => !p.parent);
+    const totalPatterns = parentPatterns.length;
+    const patternsWithIcd = parentPatterns.filter(p => (p.icd_refs || []).length > 0).length;
     const orphanCount = getOrphanIcds().length;
 
     container.innerHTML = `
@@ -597,14 +590,14 @@ async function showAssignIcdModal(patternId) {
     const icdOptions = allIcds.map(icd => {
         const isLinked = currentRefs.includes(icd.icd_id);
         const isOrphan = orphans.some(o => o.icd_id === icd.icd_id);
-        // Afficher ied_type_attr s'il existe, sinon ied_type
-        const displayType = icd.ied_type_attr || icd.ied_type;
+        // Afficher desc s'il existe (ex: SAMUA1), sinon ied_type_attr, sinon ied_type
+        const displayType = icd.desc || icd.ied_type_attr || icd.ied_type;
 
         return `
             <label class="icd-option ${isLinked ? 'already-linked' : ''} ${isOrphan ? 'orphan' : ''}">
                 <input type="checkbox" value="${escapeHtml(icd.icd_id)}" ${isLinked ? 'checked' : ''}>
                 <span class="icd-option-name">${escapeHtml(displayType)}</span>
-                <span class="icd-option-version">${escapeHtml(icd.version)}</span>
+                <span class="icd-option-version">${escapeHtml(icd.manufacturer)} • ${escapeHtml(icd.version)}</span>
                 ${isOrphan ? '<span class="badge-orphan">Non assigné</span>' : ''}
             </label>
         `;
@@ -637,8 +630,9 @@ async function showAssignIcdModal(patternId) {
 async function showMoveIcdModal(icdId, currentPatternId) {
     const currentPattern = iedPatterns.find(p => p.id === currentPatternId);
     const icd = icdCatalog.find(i => i.icd_id === icdId);
-    const displayType = icd?.ied_type_attr || icd?.ied_type || icdId;
-    const displayName = icd ? `${displayType} (${icd.version})` : icdId;
+    // Afficher desc s'il existe (ex: SAMUA1), sinon ied_type_attr
+    const displayType = icd?.desc || icd?.ied_type_attr || icd?.ied_type || icdId;
+    const displayName = icd ? `${displayType} (${icd.manufacturer})` : icdId;
 
     // Exclure les variants (patterns avec parent) - ils partagent le même ICD que leur parent
     const patternOptions = iedPatterns
@@ -677,8 +671,9 @@ async function showMoveIcdModal(icdId, currentPatternId) {
 
 async function showAssignOrphanModal(icdId) {
     const icd = icdCatalog.find(i => i.icd_id === icdId);
-    const displayType = icd?.ied_type_attr || icd?.ied_type || icdId;
-    const displayName = icd ? `${displayType} (${icd.version})` : icdId;
+    // Afficher desc s'il existe (ex: SAMUA1), sinon ied_type_attr
+    const displayType = icd?.desc || icd?.ied_type_attr || icd?.ied_type || icdId;
+    const displayName = icd ? `${displayType} (${icd.manufacturer})` : icdId;
 
     // Exclure les variants (patterns avec parent) - ils partagent le même ICD que leur parent
     const patternOptions = iedPatterns
@@ -831,7 +826,8 @@ async function unlinkIcdApi(patternId, icdId) {
 async function deleteOrphanIcd(icdId) {
     // Récupérer les infos de l'ICD pour affichage
     const icd = icdCatalog.find(i => i.icd_id === icdId);
-    const displayName = icd?.ied_type_attr || icd?.type || icdId;
+    // Afficher desc s'il existe (ex: SAMUA1), sinon ied_type_attr
+    const displayName = icd?.desc || icd?.ied_type_attr || icd?.ied_type || icdId;
 
     if (!confirm(`Supprimer définitivement l'ICD "${displayName}" ?\n\nCette action est irréversible.`)) {
         return;

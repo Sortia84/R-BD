@@ -1,11 +1,13 @@
 {
-  "icd_id": "ICD_ARKENS_SV1120_HGAAA_EB5",
+  "icd_id": "ICD_ARKENS_SV1120_HGAAA_EB5_SCLE_SFE_2_2A",
   "ied_type": "SCU-ORG",
   "ied_type_attr": "ARKENS-SV1120-HGAAA-EB5",
   "manufacturer": "SCLE SFE",
+  "config_version": "2.2a",
+  "desc": "",
   "version": "2.2a",
   "filename": "64734e1c_ARKENS-SV1120-HGAAA-EB5_SCU-ORG_2.2a-1.icd",
-  "imported_at": "2026-01-31T21:44:41.007046Z",
+  "imported_at": "2026-01-31T22:41:08.533531Z",
   "ieds": [
     {
       "name": "TEMPLATE",

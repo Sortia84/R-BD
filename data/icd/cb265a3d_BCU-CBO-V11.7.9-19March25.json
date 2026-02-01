@@ -1,11 +1,13 @@
 {
-  "icd_id": "ICD_PROTECTION",
+  "icd_id": "ICD_PROTECTION_EFACEC_1_192_BCU_CBO_V11_6_8",
   "ied_type": "BCU",
   "ied_type_attr": "Protection",
   "manufacturer": "Efacec",
+  "config_version": "1.192",
+  "desc": "BCU CBO V11.6.8",
   "version": "BCU CBO V11.6.8",
   "filename": "cb265a3d_BCU-CBO-V11.7.9-19March25.icd",
-  "imported_at": "2026-01-31T21:45:25.182674Z",
+  "imported_at": "2026-01-31T22:41:09.322737Z",
   "ieds": [
     {
       "name": "TEMPLATE",

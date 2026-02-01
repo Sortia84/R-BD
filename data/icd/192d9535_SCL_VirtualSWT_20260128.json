@@ -1,0 +1,46 @@
+{
+  "icd_id": "ICD_SWT_RTE_VDF",
+  "ied_type": "SWT",
+  "ied_type_attr": "SWT",
+  "manufacturer": "RTE",
+  "config_version": "VDF",
+  "desc": "",
+  "version": "VDF",
+  "filename": "192d9535_SCL_VirtualSWT_20260128.icd",
+  "imported_at": "2026-01-31T22:41:07.928727Z",
+  "ieds": [
+    {
+      "name": "VirtualSW",
+      "lds": [
+        {
+          "name": "LDSUIED",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDSWITCH",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "ld_count": 2,
+  "ln_count": 4
+}

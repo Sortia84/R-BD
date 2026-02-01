@@ -1,0 +1,46 @@
+{
+  "icd_id": "ICD_VDF_RTE_VDF",
+  "ied_type": "SYN",
+  "ied_type_attr": "VDF",
+  "manufacturer": "RTE",
+  "config_version": "VDF",
+  "desc": "",
+  "version": "VDF",
+  "filename": "5c0efdd3_SCL_VirtualSYN_20240819.icd",
+  "imported_at": "2026-01-31T22:46:51.348169Z",
+  "ieds": [
+    {
+      "name": "VirtualSYN",
+      "lds": [
+        {
+          "name": "LDIT",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDSUIED",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "ld_count": 2,
+  "ln_count": 4
+}

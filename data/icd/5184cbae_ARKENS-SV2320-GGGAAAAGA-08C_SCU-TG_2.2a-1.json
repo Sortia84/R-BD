@@ -1,11 +1,13 @@
 {
-  "icd_id": "ICD_ARKENS_SV2320_GGGAAAAGA_08C",
+  "icd_id": "ICD_ARKENS_SV2320_GGGAAAAGA_08C_SCLE_SFE_2_2A",
   "ied_type": "SCU-TG",
   "ied_type_attr": "ARKENS-SV2320-GGGAAAAGA-08C",
   "manufacturer": "SCLE SFE",
+  "config_version": "2.2a",
+  "desc": "",
   "version": "2.2a",
   "filename": "5184cbae_ARKENS-SV2320-GGGAAAAGA-08C_SCU-TG_2.2a-1.icd",
-  "imported_at": "2026-01-31T21:44:48.552340Z",
+  "imported_at": "2026-01-31T22:41:08.421909Z",
   "ieds": [
     {
       "name": "TEMPLATE",

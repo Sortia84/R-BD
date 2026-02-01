@@ -11,7 +11,7 @@
             "display_name": "BCU Ligne",
             "description": "Bay Control Unit",
             "icd_refs": [
-                "ICD_PROTECTION"
+                "ICD_PROTECTION_EFACEC_1_187_BCU_LIGNE_V11_7_0"
             ],
             "variants": []
         },
@@ -22,7 +22,7 @@
             "display_name": "BPU",
             "description": "Bay Protection Unit",
             "icd_refs": [
-                "ICD_PROTECTION"
+                "ICD_PROTECTION_EFACEC_1_187_BCU_LIGNE_V11_7_0"
             ],
             "variants": []
         },
@@ -35,7 +35,7 @@
             "display_name": "SCU Ligne",
             "description": "Station Control Unit",
             "icd_refs": [
-                "ICD_ARKENS_SV1120_HGAAA_EB5"
+                "ICD_ARKENS_SV1120_HGAAA_EB5_SCLE_SFE_2_2A"
             ],
             "variants": [
                 "*SCU1",
@@ -48,7 +48,9 @@
             "exclusions": [],
             "display_name": "SCU1",
             "description": "Station Control Unit 1",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_ARKENS_SV1120_HGAAA_EB5_SCLE_SFE_2_2A"
+            ],
             "parent": "SCU"
         },
         {
@@ -57,16 +59,20 @@
             "exclusions": [],
             "display_name": "SCU2",
             "description": "Station Control Unit 2",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_ARKENS_SV1120_HGAAA_EB5_SCLE_SFE_2_2A"
+            ],
             "parent": "SCU"
         },
         {
             "id": "PIU",
             "pattern": "*PIU*",
             "exclusions": [],
-            "display_name": "PIU (tous)",
+            "display_name": "PIU Ligne",
             "description": "Process Interface Unit",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_PROTECTION_EFACEC_1_47_SAMUA1"
+            ],
             "variants": [
                 "*PIU1",
                 "*PIU2"
@@ -78,7 +84,9 @@
             "exclusions": [],
             "display_name": "PIU1",
             "description": "Process Interface Unit 1",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_PROTECTION_EFACEC_1_47_SAMUA1"
+            ],
             "parent": "PIU"
         },
         {
@@ -87,7 +95,9 @@
             "exclusions": [],
             "display_name": "PIU2",
             "description": "Process Interface Unit 2",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_PROTECTION_EFACEC_1_47_SAMUA1"
+            ],
             "parent": "PIU"
         },
         {
@@ -97,7 +107,7 @@
             "display_name": "CBO BCU1",
             "description": "CBO Bay Control Unit 1",
             "icd_refs": [
-                "ICD_PROTECTION"
+                "ICD_PROTECTION_EFACEC_1_192_BCU_CBO_V11_6_8"
             ],
             "variants": []
         },
@@ -108,7 +118,7 @@
             "display_name": "CBO SCU1",
             "description": "CBO Station Control Unit 1",
             "icd_refs": [
-                "ICD_ARKENS_SV2320_GGAAAAGAG_88D"
+                "ICD_ARKENS_SV2320_GGAAAAGAG_88D_SCLE_SFE_2_2A"
             ],
             "variants": []
         },
@@ -118,17 +128,19 @@
             "exclusions": [],
             "display_name": "CBO PIU1",
             "description": "CBO Process Interface Unit 1",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_PROTECTION_EFACEC_1_37_SAMUH"
+            ],
             "variants": []
         },
         {
             "id": "TGSCU",
             "pattern": "*TGSCU*",
             "exclusions": [],
-            "display_name": "TGSCU (tous)",
-            "description": "TG Station Control Unit",
+            "display_name": "SCU TG",
+            "description": "TG SCU",
             "icd_refs": [
-                "ICD_ARKENS_SV2320_GGGAAAAGA_08C"
+                "ICD_ARKENS_SV2320_GGGAAAAGA_08C_SCLE_SFE_2_2A"
             ],
             "variants": [
                 "*TGSCU1-2",
@@ -142,7 +154,9 @@
             "exclusions": [],
             "display_name": "TGSCU1-2",
             "description": "TG SCU 1 et 2 (les deux)",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_ARKENS_SV2320_GGGAAAAGA_08C_SCLE_SFE_2_2A"
+            ],
             "parent": "TGSCU"
         },
         {
@@ -153,7 +167,9 @@
             ],
             "display_name": "TGSCU1 seul",
             "description": "TG SCU 1 uniquement",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_ARKENS_SV2320_GGGAAAAGA_08C_SCLE_SFE_2_2A"
+            ],
             "parent": "TGSCU"
         },
         {
@@ -164,7 +180,9 @@
             ],
             "display_name": "TGSCU2 seul",
             "description": "TG SCU 2 uniquement",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_ARKENS_SV2320_GGGAAAAGA_08C_SCLE_SFE_2_2A"
+            ],
             "parent": "TGSCU"
         },
         {
@@ -174,7 +192,7 @@
             "display_name": "TGSCU3",
             "description": "TG SCU 3",
             "icd_refs": [
-                "ICD_ARKENS_SV1120_GGGG_6A5"
+                "ICD_ARKENS_SV1120_GGGG_6A5_SCLE_SFE_2_1H"
             ],
             "variants": []
         },
@@ -184,7 +202,9 @@
             "exclusions": [],
             "display_name": "FPAUTP",
             "description": "FPA UTP",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_AUT_RTE_AUPOS_1_1_0"
+            ],
             "variants": []
         },
         {
@@ -193,7 +213,9 @@
             "exclusions": [],
             "display_name": "HYPER",
             "description": "Hyperviseur",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_VDF_RTE_VDF"
+            ],
             "variants": []
         },
         {
@@ -202,7 +224,9 @@
             "exclusions": [],
             "display_name": "ICT",
             "description": "ICT",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_VDF_RTE_VDF"
+            ],
             "variants": []
         },
         {
@@ -211,7 +235,9 @@
             "exclusions": [],
             "display_name": "OND",
             "description": "Onduleur",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_VDF_RTE_VDF"
+            ],
             "variants": []
         },
         {
@@ -220,7 +246,9 @@
             "exclusions": [],
             "display_name": "SWC",
             "description": "Switch C",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_SWC_RTE_VDF"
+            ],
             "variants": []
         },
         {
@@ -229,7 +257,9 @@
             "exclusions": [],
             "display_name": "SWT",
             "description": "Switch T",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_SWT_RTE_VDF"
+            ],
             "variants": []
         },
         {
@@ -238,7 +268,9 @@
             "exclusions": [],
             "display_name": "SYNC",
             "description": "Synchronisateur",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_VDF_RTE_VDF"
+            ],
             "variants": []
         },
         {
@@ -249,7 +281,9 @@
             ],
             "display_name": "GRP",
             "description": "Groupe",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_GRP_RTE_AUPOS_1_2_0"
+            ],
             "variants": []
         },
         {
@@ -258,7 +292,9 @@
             "exclusions": [],
             "display_name": "GRPR",
             "description": "Groupe R",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_GRPR_RTE_AUPOS_1_2_0"
+            ],
             "variants": []
         },
         {
@@ -267,7 +303,9 @@
             "exclusions": [],
             "display_name": "TCD",
             "description": "Téléconduite",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_GW_RTE_1_5_2"
+            ],
             "variants": []
         },
         {
@@ -276,7 +314,9 @@
             "exclusions": [],
             "display_name": "TG",
             "description": "Tranche Générale",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_TG_RTE_AUPOS_1_2_0"
+            ],
             "variants": []
         },
         {
@@ -285,7 +325,9 @@
             "exclusions": [],
             "display_name": "PO",
             "description": "Poste Opérateur",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_PO_RTE_1_2_0"
+            ],
             "variants": []
         },
         {
@@ -294,7 +336,9 @@
             "exclusions": [],
             "display_name": "ASLD",
             "description": "Automate supervision ADD",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_ASLD_RTE_AUPOS_1_1_0"
+            ],
             "variants": []
         },
         {
@@ -303,7 +347,9 @@
             "exclusions": [],
             "display_name": "TGTOP",
             "description": "TG TOP",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_TOPO_RTE_AUPOS_1_2_0"
+            ],
             "variants": []
         },
         {
@@ -312,7 +358,9 @@
             "exclusions": [],
             "display_name": "TAC",
             "description": "TAC",
-            "icd_refs": [],
+            "icd_refs": [
+                "ICD_SELTA_TPS3000_DIGITAL_PLATFORMS_TPS_3000_TELEPROTECTION_EQUIPMENT"
+            ],
             "variants": []
         }
     ]

@@ -1,11 +1,13 @@
 {
-  "icd_id": "ICD_ASLD",
+  "icd_id": "ICD_ASLD_RTE_AUPOS_1_1_0",
   "ied_type": "ASLD",
   "ied_type_attr": "ASLD",
   "manufacturer": "RTE-AUPOS",
+  "config_version": "1.1.0",
+  "desc": "",
   "version": "1.1.0",
   "filename": "9051465a_ICD_ASLD.icd",
-  "imported_at": "2026-01-31T21:51:57.704280Z",
+  "imported_at": "2026-01-31T22:41:08.650860Z",
   "ieds": [
     {
       "name": "TEMPLATE",

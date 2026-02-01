@@ -56,14 +56,15 @@ class ICDParser:
     def _parse_ied_node(self, ied_node: etree._Element, filename: str) -> dict[str, Any]:
         """Parse un noeud IED et extrait les informations."""
         manufacturer = ied_node.get("manufacturer", "Inconnu")
-        desc = ied_node.get("desc") or ied_node.get("configVersion") or "Version inconnue"
-        ied_name = ied_node.get("name", "IED")
-
-        # Attribut type de l'IED (ex: ARKENS-SV2320-GGAAAAGAG-88D) - unique par modèle
         ied_type_attr = ied_node.get("type", "UNKNOWN")
+        config_version = ied_node.get("configVersion", "")
+        desc = ied_node.get("desc", "")
+        version_display = desc or config_version or "Version inconnue"
+        ied_name = ied_node.get("name", "IED")
 
         # Extraire COMPAS-IEDType pour la catégorie (SCU-ORG, BCU, etc.)
         compas_type = self._extract_compas_type(ied_node)
+        ied_type_attr = ied_node.get("type", "UNKNOWN")
         ied_type = compas_type or ied_type_attr
 
         # Extraire LDevices et LN
@@ -72,12 +73,17 @@ class ICDParser:
         ld_count = len(ldevices)
         ln_count = sum(len(ld.get("lns", [])) for ld in ldevices)
 
+        # Construire l'identifiant unique avec type + manufacturer + configVersion + desc
+        icd_id = self._build_icd_id(ied_type_attr, manufacturer, config_version, desc)
+
         return {
-            "icd_id": self._build_icd_id(ied_type_attr),
+            "icd_id": icd_id,
             "ied_type": ied_type,
-            "ied_type_attr": ied_type_attr,  # Nouveau: garder le type original pour référence
+            "ied_type_attr": ied_type_attr,
             "manufacturer": manufacturer,
-            "version": desc,
+            "config_version": config_version,
+            "desc": desc,
+            "version": version_display,
             "filename": filename,
             "imported_at": datetime.utcnow().isoformat() + "Z",
             "ieds": [
@@ -129,15 +135,18 @@ class ICDParser:
 
         return ldevices
 
-    def _build_icd_id(self, ied_type_attr: str) -> str:
-        """Construit un identifiant ICD unique basé sur l'attribut type de l'IED.
+    def _build_icd_id(self, ied_type: str, manufacturer: str, config_version: str, desc: str) -> str:
+        """Construit un identifiant ICD unique basé sur type + manufacturer + configVersion + desc.
 
-        L'attribut type (ex: ARKENS-SV2320-GGAAAAGAG-88D) est unique par modèle
-        d'équipement et permet de différencier les ICD même si type/manufacturer/version
-        sont identiques.
+        Exemple: type="Protection", manufacturer="Efacec", configVersion="1.47", desc="SAMUA1"
+        => ICD_PROTECTION_EFACEC_1_47_SAMUA1
         """
+        # Combiner les 4 attributs
+        combined = f"{ied_type}_{manufacturer}_{config_version}_{desc}"
         # Sanitize pour créer un ID valide
-        sanitized = re.sub(r"[^A-Z0-9]+", "_", ied_type_attr.upper().strip()).strip("_")
+        sanitized = re.sub(r"[^A-Z0-9]+", "_", combined.upper().strip()).strip("_")
+        # Éviter les underscores multiples
+        sanitized = re.sub(r"_+", "_", sanitized)
         return f"ICD_{sanitized}" if sanitized else "ICD_UNKNOWN"
 
     def _get_icd_path(self, filename: str) -> Path:

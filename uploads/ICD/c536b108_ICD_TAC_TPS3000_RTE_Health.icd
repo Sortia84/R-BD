@@ -1,0 +1,1053 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<SCL xmlns="http://www.iec.ch/61850/2003/SCL" xmlns:IEC_60870_5_104="http://www.iec.ch/61850-80-1/2007/IEC_60870-5-104" xmlns:compas="https://www.lfenergy.org/compas/extension/v1" xmlns:eTr-IEC61850-90-2="http://www.iec.ch/61850-90-2/2015/SCL" xmlns:rte="http://www.rte-france.com" version="2007" revision="B" release="4">
+    <Header id="00000health" version="01.00.00" revision="A" toolID="GEN TOOL"/>
+    <Communication>
+        <SubNetwork type="8-MMS" name="RSPACE_PROCESS_NETWORK">
+            <Text/>
+            <BitRate unit="b/s" multiplier="M">100</BitRate>
+            <ConnectedAP iedName="TEMPLATE_IEDNAME" apName="PROCESS_AP">
+                <Address>
+                    <P type="IP">10.13.5.200</P>
+                    <P type="IP-SUBNET">255.255.0.0</P>
+                    <P type="IP-GATEWAY">10.13.0.253</P>
+                    <P type="OSI-AP-Title">1,3,9999,23</P>
+                    <P type="OSI-AE-Qualifier">23</P>
+                    <P type="OSI-PSEL">00000001</P>
+                    <P type="OSI-SSEL">0001</P>
+                    <P type="OSI-TSEL">0001</P>
+                    <P type="S-Profile">1</P>
+                </Address>
+                <PhysConn type="Connection" desc="PRP-A"/>
+                <PhysConn type="RedConn" desc="PRP-B"/>
+            </ConnectedAP>
+        </SubNetwork>
+        <SubNetwork type="IP" name="RSPACE_ADMIN_NETWORK">
+            <Text/>
+            <BitRate unit="b/s" multiplier="M">100</BitRate>
+            <ConnectedAP iedName="TEMPLATE_IEDNAME" apName="ADMIN_AP">
+                <Address>
+                    <P type="IP">10.13.5.200</P>
+                    <P type="IP-SUBNET">255.255.0.0</P>
+                    <P type="IP-GATEWAY">10.13.0.253</P>
+                </Address>
+                <PhysConn type="Connection" desc="ADM"/>
+            </ConnectedAP>
+        </SubNetwork>
+    </Communication>
+    <IED name="TEMPLATE_IEDNAME" type="Selta_TPS3000" manufacturer="Digital Platforms" configVersion="-" desc="TPS-3000 TeleProtection Equipment">
+        <Private type="COMPAS-IEDType">TAC</Private>
+        <Private type="SeltaType">TPS3000_RTE</Private>
+        <Private type="ICDver">1.6</Private>
+        
+        <Services>
+            <DynAssociation max="4"/>
+            <SettingGroups>
+                <SGEdit resvTms="true"/>
+                <ConfSG resvTms="true"/>
+            </SettingGroups>
+            <GetDirectory/>
+            <GetDataObjectDefinition/>
+            <DataObjectDirectory/>
+            <GetDataSetValue/>
+            <DataSetDirectory/>
+            <ConfDataSet modify="true" maxAttributes="600" max="120"/>
+            <ReadWrite/>
+            <ConfReportControl bufMode="both" bufConf="true" max="120"/>
+            <GetCBValues/>
+            <ReportSettings rptID="Conf" optFields="Conf" bufTime="Conf" trgOps="Conf" intgPd="Conf" resvTms="true" owner="true" cbName="Conf" datSet="Conf"/>
+            <GSESettings appID="Conf" kdaParticipant="false" cbName="Conf" datSet="Conf"/>
+            <GOOSE fixedOffs="true" goose="true" max="60"/>
+            <ClientServices goose="true" sv="true" supportsLdName="true" maxAttributes="4000" maxGOOSE="120" maxSMV="9">
+                <TimeSyncProt iec61850_9_3="true"/>
+            </ClientServices>
+            <SupSubscription maxGo="60" maxSv="9"/>
+            <ConfSigRef max="1200"/>
+            <RedProt prp="true"/>
+        </Services>
+        <AccessPoint name="PROCESS_AP">
+            <Server timeout="30">
+                <Authentication none="false" password="false" weak="false" strong="false" certificate="false"/>
+                <LDevice inst="LDSUIED" desc="General Information">
+                    <LN0 lnClass="LLN0" inst="" lnType="LLN000" desc="Logical node zero">
+                        <DOI name="Mod">
+                            <DAI name="ctlModel">
+                                <Val>direct-with-enhanced-security</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="NamPlt">
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>Digital Platforms</Val>
+                            </DAI>
+                            <DAI name="valRev"/>
+                            <DAI name="paramRev"/>
+                            <DAI name="d" valKind="RO" valImport="false"/>
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Val>658050901-A0-IT_pu_t_bnd_1.6.3</Val>
+                            </DAI>
+                            <DAI name="configRev" valKind="RO" valImport="false"/>
+                        </DOI>
+                        <DOI name="Health"/>
+                    </LN0>
+                    <LN lnClass="LPHD" inst="0" lnType="LPHD00" desc="Physical device information">
+                        <DOI name="PhyNam">
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>Digital Platforms</Val>
+                            </DAI>
+                            <DAI name="hwRev" valKind="RO" valImport="false">
+                                <Val>0.0</Val>
+                            </DAI>
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Val>658050901-A0-IT_pu_t_bnd_1.6.3</Val>
+                            </DAI>
+                            <DAI name="serNum" valKind="RO" valImport="false">
+                                <Val>000000000000</Val>
+                            </DAI>
+                            <DAI name="model" valKind="RO" valImport="false">
+                                <Val>TPS-3000</Val>
+                            </DAI>
+                            <DAI name="location" valKind="RO" valImport="true"/>
+                            <DAI name="name" valKind="RO" valImport="true"/>
+                        </DOI>
+                        <DOI name="Proxy">
+                            <DAI name="stVal">
+                                <Val>false</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="Sim">
+                            <DAI name="ctlModel">
+                                <Val>direct-with-enhanced-security</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LGOS" inst="1" lnType="LGOS00" desc="GOOSE subscription">
+                        <DOI name="GoCBRef">
+                            <DAI name="setSrcRef">
+                                <Val/>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LGOS" inst="2" lnType="LGOS00" desc="GOOSE subscription">
+                        <DOI name="GoCBRef">
+                            <DAI name="setSrcRef">
+                                <Val/>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LGOS" inst="3" lnType="LGOS00" desc="GOOSE subscription">
+                        <DOI name="GoCBRef">
+                            <DAI name="setSrcRef">
+                                <Val/>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LGOS" inst="4" lnType="LGOS00" desc="GOOSE subscription">
+                        <DOI name="GoCBRef">
+                            <DAI name="setSrcRef">
+                                <Val/>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LGOS" inst="5" lnType="LGOS00" desc="GOOSE subscription">
+                        <DOI name="GoCBRef">
+                            <DAI name="setSrcRef">
+                                <Val/>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LGOS" inst="6" lnType="LGOS00" desc="GOOSE subscription">
+                        <DOI name="GoCBRef">
+                            <DAI name="setSrcRef">
+                                <Val/>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LGOS" inst="7" lnType="LGOS00" desc="GOOSE subscription">
+                        <DOI name="GoCBRef">
+                            <DAI name="setSrcRef">
+                                <Val/>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN lnClass="LGOS" inst="8" lnType="LGOS00" desc="GOOSE subscription">
+                        <DOI name="GoCBRef">
+                            <DAI name="setSrcRef">
+                                <Val/>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                </LDevice>
+                <LDevice inst="LDTAC1" desc="Command1">
+                    <LN0 lnClass="LLN0" inst="" lnType="LLN000" desc="Logical node zero">
+                        <DataSet name="TAC1_signal" desc="TAC1 signals">
+                            <FCDA ldInst="LDTAC1" lnClass="PSCH" lnInst="0" doName="TxTr" fc="ST"/>
+                            <FCDA ldInst="LDTAC1" lnClass="PSCH" lnInst="0" doName="TxBlk" fc="ST"/>
+                            <FCDA ldInst="LDTAC1" lnClass="PSCH" lnInst="0" doName="TxPrm" fc="ST"/>
+                            <FCDA ldInst="LDTAC1" lnClass="PSCH" lnInst="0" doName="RxTr1" fc="ST"/>
+                            <FCDA ldInst="LDTAC1" lnClass="PSCH" lnInst="0" doName="RxBlk1" fc="ST"/>
+                            <FCDA ldInst="LDTAC1" lnClass="PSCH" lnInst="0" doName="RxPrm1" fc="ST"/>
+                            <FCDA ldInst="LDTAC1" lnClass="ITPC" lnInst="0" doName="TxCmdCnt1" fc="ST"/>
+                            <FCDA ldInst="LDTAC1" lnClass="ITPC" lnInst="0" doName="RxCmdCnt1" fc="ST"/>
+                        </DataSet>
+                        <ReportControl rptID="TAC1" confRev="1" buffered="true" bufTime="200" intgPd="0" name="TAC1_R" datSet="TAC1_signal" desc="report TAC1">
+                            <TrgOps dchg="true" qchg="true" dupd="false" period="false"/>
+                            <OptFields seqNum="false" timeStamp="false" dataSet="false" reasonCode="false" dataRef="false" entryID="false" configRef="false"/>
+                            <RptEnabled max="1"/>
+                        </ReportControl>
+                        <DOI name="Mod">
+                            <DAI name="ctlModel">
+                                <Val>direct-with-enhanced-security</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="NamPlt">
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>Digital Platforms</Val>
+                            </DAI>
+                            <DAI name="valRev"/>
+                            <DAI name="paramRev"/>
+                            <DAI name="d" valKind="RO" valImport="false"/>
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Val>658050901-A0-IT_pu_t_bnd_1.6.3</Val>
+                            </DAI>
+                            <DAI name="configRev" valKind="RO" valImport="false"/>
+                        </DOI>
+                        <DOI name="Health"/>
+                        <Inputs>
+                            <ExtRef intAddr="LDTAC1/In_Tr_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxTr" desc="DYN_LDTAC1_Emission ordre vers TAC distante_1_BOOLEAN_1_general_1"/>
+                            <ExtRef intAddr="LDTAC1/In_Blk_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxBlk" desc="DYN_LDTAC1_Emission ordre vers TAC distante_1_BOOLEAN_2_general_1"/>
+                            <ExtRef intAddr="LDTAC1/In_Prm_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxPrm" desc="DYN_LDTAC1_Emission ordre vers TAC distante_1_BOOLEAN_3_general_1"/>
+                        </Inputs>
+                    </LN0>
+                    <LN lnClass="ITPC" inst="0" lnType="ITPC00" desc="Teleprotection communication interfaces"/>
+                    <LN lnClass="PSCH" inst="0" lnType="PSCH01" desc="Protection scheme">
+                        <DOI name="TxPrm">
+                            <DAI name="d">
+                                <Val>Command A Prm</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TxBlk">
+                            <DAI name="d">
+                                <Val>Command A Blk</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TxTr">
+                            <DAI name="d">
+                                <Val>Command A Tr</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxPrm1">
+                            <DAI name="d">
+                                <Val>Command A Prm Notification</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxBlk1">
+                            <DAI name="d">
+                                <Val>Command A Blk Notification</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxTr1">
+                            <DAI name="d">
+                                <Val>Command A Tr Notification</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN prefix="In_Tr_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Tr_1"/>
+                    <LN prefix="In_Blk_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Blk_1"/>
+                    <LN prefix="In_Prm_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Prm_1"/>
+                </LDevice>
+                <LDevice inst="LDTAC2" desc="Command2">
+                    <LN0 lnClass="LLN0" inst="" lnType="LLN000" desc="Logical node zero">
+                        <DataSet name="TAC2_signal" desc="TAC2 signals">
+                            <FCDA ldInst="LDTAC2" lnClass="PSCH" lnInst="0" doName="TxTr" fc="ST"/>
+                            <FCDA ldInst="LDTAC2" lnClass="PSCH" lnInst="0" doName="TxBlk" fc="ST"/>
+                            <FCDA ldInst="LDTAC2" lnClass="PSCH" lnInst="0" doName="TxPrm" fc="ST"/>
+                            <FCDA ldInst="LDTAC2" lnClass="PSCH" lnInst="0" doName="RxTr1" fc="ST"/>
+                            <FCDA ldInst="LDTAC2" lnClass="PSCH" lnInst="0" doName="RxBlk1" fc="ST"/>
+                            <FCDA ldInst="LDTAC2" lnClass="PSCH" lnInst="0" doName="RxPrm1" fc="ST"/>
+                            <FCDA ldInst="LDTAC2" lnClass="ITPC" lnInst="0" doName="TxCmdCnt1" fc="ST"/>
+                            <FCDA ldInst="LDTAC2" lnClass="ITPC" lnInst="0" doName="RxCmdCnt1" fc="ST"/>
+                        </DataSet>
+                        <ReportControl rptID="TAC2" confRev="1" buffered="true" bufTime="200" intgPd="0" name="TAC2_R" datSet="TAC2_signal" desc="report TAC2">
+                            <TrgOps dchg="true" qchg="true" dupd="false" period="false"/>
+                            <OptFields seqNum="false" timeStamp="false" dataSet="false" reasonCode="false" dataRef="false" entryID="false" configRef="false"/>
+                            <RptEnabled max="1"/>
+                        </ReportControl>
+                        <DOI name="Mod">
+                            <DAI name="ctlModel">
+                                <Val>direct-with-enhanced-security</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="NamPlt">
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>Digital Platforms</Val>
+                            </DAI>
+                            <DAI name="valRev"/>
+                            <DAI name="paramRev"/>
+                            <DAI name="d" valKind="RO" valImport="false"/>
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Val>658050901-A0-IT_pu_t_bnd_1.6.3</Val>
+                            </DAI>
+                            <DAI name="configRev" valKind="RO" valImport="false"/>
+                        </DOI>
+                        <DOI name="Health"/>
+                        <Inputs>
+                            <ExtRef intAddr="LDTAC2/In_Tr_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxTr" desc="DYN_LDTAC2_Emission ordre vers TAC distante_1_BOOLEAN_1_general_1"/>
+                            <ExtRef intAddr="LDTAC2/In_Blk_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxBlk" desc="DYN_LDTAC2_Emission ordre vers TAC distante_1_BOOLEAN_2_general_1"/>
+                            <ExtRef intAddr="LDTAC2/In_Prm_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxPrm" desc="DYN_LDTAC2_Emission ordre vers TAC distante_1_BOOLEAN_3_general_1"/>
+                        </Inputs>
+                    </LN0>
+                    <LN lnClass="ITPC" inst="0" lnType="ITPC00" desc="Teleprotection communication interfaces"/>
+                    <LN lnClass="PSCH" inst="0" lnType="PSCH01" desc="Protection scheme">
+                        <DOI name="TxPrm">
+                            <DAI name="d">
+                                <Val>Command B Prm</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TxBlk">
+                            <DAI name="d">
+                                <Val>Command B Blk</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TxTr">
+                            <DAI name="d">
+                                <Val>Command B Tr</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxPrm1">
+                            <DAI name="d">
+                                <Val>Command B Prm Notification</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxBlk1">
+                            <DAI name="d">
+                                <Val>Command B Blk Notification</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxTr1">
+                            <DAI name="d">
+                                <Val>Command B Tr Notification</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN prefix="In_Tr_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Tr_1"/>
+                    <LN prefix="In_Blk_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Blk_1"/>
+                    <LN prefix="In_Prm_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Prm_1"/>
+                </LDevice>
+                <LDevice inst="LDTAC3" desc="Command3">
+                    <LN0 lnClass="LLN0" inst="" lnType="LLN000" desc="Logical node zero">
+                        <DataSet name="TAC3_signal" desc="TAC3 signals">
+                            <FCDA ldInst="LDTAC3" lnClass="PSCH" lnInst="0" doName="TxTr" fc="ST"/>
+                            <FCDA ldInst="LDTAC3" lnClass="PSCH" lnInst="0" doName="TxBlk" fc="ST"/>
+                            <FCDA ldInst="LDTAC3" lnClass="PSCH" lnInst="0" doName="TxPrm" fc="ST"/>
+                            <FCDA ldInst="LDTAC3" lnClass="PSCH" lnInst="0" doName="RxTr1" fc="ST"/>
+                            <FCDA ldInst="LDTAC3" lnClass="PSCH" lnInst="0" doName="RxBlk1" fc="ST"/>
+                            <FCDA ldInst="LDTAC3" lnClass="PSCH" lnInst="0" doName="RxPrm1" fc="ST"/>
+                            <FCDA ldInst="LDTAC3" lnClass="ITPC" lnInst="0" doName="TxCmdCnt1" fc="ST"/>
+                            <FCDA ldInst="LDTAC3" lnClass="ITPC" lnInst="0" doName="RxCmdCnt1" fc="ST"/>
+                        </DataSet>
+                        <ReportControl rptID="TAC3" confRev="1" buffered="true" bufTime="200" intgPd="0" name="TAC3_R" datSet="TAC3_signal" desc="TAC3 signal">
+                            <TrgOps dchg="true" qchg="true" dupd="false" period="false"/>
+                            <OptFields seqNum="false" timeStamp="false" dataSet="false" reasonCode="false" dataRef="false" entryID="false" configRef="false"/>
+                            <RptEnabled max="1"/>
+                        </ReportControl>
+                        <DOI name="Mod">
+                            <DAI name="ctlModel">
+                                <Val>direct-with-enhanced-security</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="NamPlt">
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>Digital Platforms</Val>
+                            </DAI>
+                            <DAI name="valRev"/>
+                            <DAI name="paramRev"/>
+                            <DAI name="d" valKind="RO" valImport="false"/>
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Val>658050901-A0-IT_pu_t_bnd_1.6.3</Val>
+                            </DAI>
+                            <DAI name="configRev" valKind="RO" valImport="false"/>
+                        </DOI>
+                        <DOI name="Health"/>
+                        <Inputs>
+                            <ExtRef intAddr="LDTAC3/In_Tr_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxTr" desc="DYN_LDTAC3_Emission ordre vers TAC distante_1_BOOLEAN_1_general_1"/>
+                            <ExtRef intAddr="LDTAC3/In_Blk_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxBlk" desc="DYN_LDTAC3_Emission ordre vers TAC distante_1_BOOLEAN_2_general_1"/>
+                            <ExtRef intAddr="LDTAC3/In_Prm_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxPrm" desc="DYN_LDTAC3_Emission ordre vers TAC distante_1_BOOLEAN_3_general_1"/>
+                        </Inputs>
+                    </LN0>
+                    <LN lnClass="ITPC" inst="0" lnType="ITPC00" desc="Teleprotection communication interfaces"/>
+                    <LN lnClass="PSCH" inst="0" lnType="PSCH01" desc="Protection scheme">
+                        <DOI name="TxPrm">
+                            <DAI name="d">
+                                <Val>Command C Prm</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TxBlk">
+                            <DAI name="d">
+                                <Val>Command C Blk</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TxTr">
+                            <DAI name="d">
+                                <Val>Command C Tr</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxPrm1">
+                            <DAI name="d">
+                                <Val>Command C Prm Notification</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxBlk1">
+                            <DAI name="d">
+                                <Val>Command C Blk Notification</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxTr1">
+                            <DAI name="d">
+                                <Val>Command C Tr Notification</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN prefix="In_Tr_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Tr_1"/>
+                    <LN prefix="In_Blk_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Blk_1"/>
+                    <LN prefix="In_Prm_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Prm_1"/>
+                </LDevice>
+                <LDevice inst="LDTAC4" desc="Command4">
+                    <LN0 lnClass="LLN0" inst="" lnType="LLN000" desc="Logical node zero">
+                        <DataSet name="TAC4_signal" desc="TAC4 signals">
+                            <FCDA ldInst="LDTAC4" lnClass="PSCH" lnInst="0" doName="TxTr" fc="ST"/>
+                            <FCDA ldInst="LDTAC4" lnClass="PSCH" lnInst="0" doName="TxBlk" fc="ST"/>
+                            <FCDA ldInst="LDTAC4" lnClass="PSCH" lnInst="0" doName="TxPrm" fc="ST"/>
+                            <FCDA ldInst="LDTAC4" lnClass="PSCH" lnInst="0" doName="RxTr1" fc="ST"/>
+                            <FCDA ldInst="LDTAC4" lnClass="PSCH" lnInst="0" doName="RxBlk1" fc="ST"/>
+                            <FCDA ldInst="LDTAC4" lnClass="PSCH" lnInst="0" doName="RxPrm1" fc="ST"/>
+                            <FCDA ldInst="LDTAC4" lnClass="ITPC" lnInst="0" doName="TxCmdCnt1" fc="ST"/>
+                            <FCDA ldInst="LDTAC4" lnClass="ITPC" lnInst="0" doName="RxCmdCnt1" fc="ST"/>
+                        </DataSet>
+                        <ReportControl rptID="TAC4" confRev="1" buffered="true" bufTime="200" intgPd="0" name="TAC4_R" datSet="TAC4_signal" desc="report TAC4">
+                            <TrgOps dchg="true" qchg="true" dupd="false" period="false"/>
+                            <OptFields seqNum="false" timeStamp="false" dataSet="false" reasonCode="false" dataRef="false" entryID="false" configRef="false"/>
+                            <RptEnabled max="1"/>
+                        </ReportControl>
+                        <DOI name="Mod">
+                            <DAI name="ctlModel">
+                                <Val>direct-with-enhanced-security</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="NamPlt">
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>Digital Platforms</Val>
+                            </DAI>
+                            <DAI name="valRev"/>
+                            <DAI name="paramRev"/>
+                            <DAI name="d" valKind="RO" valImport="false"/>
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Val>658050901-A0-IT_pu_t_bnd_1.6.3</Val>
+                            </DAI>
+                            <DAI name="configRev" valKind="RO" valImport="false"/>
+                        </DOI>
+                        <DOI name="Health"/>
+                        <Inputs>
+                            <ExtRef intAddr="LDTAC4/In_Tr_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxTr" desc="DYN_LDTAC4_Emission ordre vers TAC distante_1_BOOLEAN_1_general_1"/>
+                            <ExtRef intAddr="LDTAC4/In_Blk_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxBlk" desc="DYN_LDTAC4_Emission ordre vers TAC distante_1_BOOLEAN_2_general_1"/>
+                            <ExtRef intAddr="LDTAC4/In_Prm_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxPrm" desc="DYN_LDTAC4_Emission ordre vers TAC distante_1_BOOLEAN_3_general_1"/>
+                        </Inputs>
+                    </LN0>
+                    <LN lnClass="ITPC" inst="0" lnType="ITPC00" desc="Teleprotection communication interfaces"/>
+                    <LN lnClass="PSCH" inst="0" lnType="PSCH01" desc="Protection scheme">
+                        <DOI name="TxPrm">
+                            <DAI name="d">
+                                <Val>Command D Prm</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TxBlk">
+                            <DAI name="d">
+                                <Val>Command D Blk</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TxTr">
+                            <DAI name="d">
+                                <Val>Command D Tr</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxPrm1">
+                            <DAI name="d">
+                                <Val>Command D Prm Notification</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxBlk1">
+                            <DAI name="d">
+                                <Val>Command D Blk Notification</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxTr1">
+                            <DAI name="d">
+                                <Val>Command D Tr Notification</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN prefix="In_Tr_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Tr_1"/>
+                    <LN prefix="In_Blk_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Blk_1"/>
+                    <LN prefix="In_Prm_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Prm_1"/>
+                </LDevice>
+                <LDevice inst="LDTAC5" desc="Command5">
+                    <LN0 lnClass="LLN0" inst="" lnType="LLN000" desc="Logical node zero">
+                        <DataSet name="TAC5_signal" desc="TAC5 signals">
+                            <FCDA ldInst="LDTAC5" lnClass="PSCH" lnInst="0" doName="TxTr" fc="ST"/>
+                            <FCDA ldInst="LDTAC5" lnClass="PSCH" lnInst="0" doName="TxBlk" fc="ST"/>
+                            <FCDA ldInst="LDTAC5" lnClass="PSCH" lnInst="0" doName="TxPrm" fc="ST"/>
+                            <FCDA ldInst="LDTAC5" lnClass="PSCH" lnInst="0" doName="RxTr1" fc="ST"/>
+                            <FCDA ldInst="LDTAC5" lnClass="PSCH" lnInst="0" doName="RxBlk1" fc="ST"/>
+                            <FCDA ldInst="LDTAC5" lnClass="PSCH" lnInst="0" doName="RxPrm1" fc="ST"/>
+                            <FCDA ldInst="LDTAC5" lnClass="ITPC" lnInst="0" doName="TxCmdCnt1" fc="ST"/>
+                            <FCDA ldInst="LDTAC5" lnClass="ITPC" lnInst="0" doName="RxCmdCnt1" fc="ST"/>
+                        </DataSet>
+                        <ReportControl rptID="TAC5" confRev="1" buffered="true" bufTime="200" intgPd="0" name="TAC5_R" datSet="TAC5_signal" desc="report TAC5">
+                            <TrgOps dchg="true" qchg="true" dupd="false" period="false"/>
+                            <OptFields seqNum="false" timeStamp="false" dataSet="false" reasonCode="false" dataRef="false" entryID="false" configRef="false"/>
+                            <RptEnabled max="1"/>
+                        </ReportControl>
+                        <DOI name="Mod">
+                            <DAI name="ctlModel">
+                                <Val>direct-with-enhanced-security</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="NamPlt">
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>Digital Platforms</Val>
+                            </DAI>
+                            <DAI name="valRev"/>
+                            <DAI name="paramRev"/>
+                            <DAI name="d" valKind="RO" valImport="false"/>
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Val>658050901-A0-IT_pu_t_bnd_1.6.3</Val>
+                            </DAI>
+                            <DAI name="configRev" valKind="RO" valImport="false"/>
+                        </DOI>
+                        <DOI name="Health"/>
+                        <Inputs>
+                            <ExtRef intAddr="LDTAC5/In_Tr_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxTr" desc="DYN_LDTAC5_Emission ordre vers TAC distante_1_BOOLEAN_1_general_1"/>
+                            <ExtRef intAddr="LDTAC5/In_Blk_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxBlk" desc="DYN_LDTAC5_Emission ordre vers TAC distante_1_BOOLEAN_2_general_1"/>
+                            <ExtRef intAddr="LDTAC5/In_Prm_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxPrm" desc="DYN_LDTAC5_Emission ordre vers TAC distante_1_BOOLEAN_3_general_1"/>
+                        </Inputs>
+                    </LN0>
+                    <LN lnClass="ITPC" inst="0" lnType="ITPC00" desc="Teleprotection communication interfaces"/>
+                    <LN lnClass="PSCH" inst="0" lnType="PSCH01" desc="Protection scheme">
+                        <DOI name="TxPrm">
+                            <DAI name="d">
+                                <Val>Command E Prm</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TxBlk">
+                            <DAI name="d">
+                                <Val>Command E Blk</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TxTr">
+                            <DAI name="d">
+                                <Val>Command E Tr</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxPrm1">
+                            <DAI name="d">
+                                <Val>Command E Prm Notification</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxBlk1">
+                            <DAI name="d">
+                                <Val>Command E Blk Notification</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxTr1">
+                            <DAI name="d">
+                                <Val>Command E Tr Notification</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN prefix="In_Tr_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Tr_1"/>
+                    <LN prefix="In_Blk_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Blk_1"/>
+                    <LN prefix="In_Prm_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Prm_1"/>
+                </LDevice>
+                <LDevice inst="LDTAC6" desc="Command6">
+                    <LN0 lnClass="LLN0" inst="" lnType="LLN000" desc="Logical node zero">
+                        <DataSet name="TAC6_signal" desc="TAC6 signals">
+                            <FCDA ldInst="LDTAC6" lnClass="PSCH" lnInst="0" doName="TxTr" fc="ST"/>
+                            <FCDA ldInst="LDTAC6" lnClass="PSCH" lnInst="0" doName="TxBlk" fc="ST"/>
+                            <FCDA ldInst="LDTAC6" lnClass="PSCH" lnInst="0" doName="TxPrm" fc="ST"/>
+                            <FCDA ldInst="LDTAC6" lnClass="PSCH" lnInst="0" doName="RxTr1" fc="ST"/>
+                            <FCDA ldInst="LDTAC6" lnClass="PSCH" lnInst="0" doName="RxBlk1" fc="ST"/>
+                            <FCDA ldInst="LDTAC6" lnClass="PSCH" lnInst="0" doName="RxPrm1" fc="ST"/>
+                            <FCDA ldInst="LDTAC6" lnClass="ITPC" lnInst="0" doName="TxCmdCnt1" fc="ST"/>
+                            <FCDA ldInst="LDTAC6" lnClass="ITPC" lnInst="0" doName="RxCmdCnt1" fc="ST"/>
+                        </DataSet>
+                        <ReportControl rptID="TAC6" confRev="1" buffered="true" bufTime="200" intgPd="0" name="TAC6_R" datSet="TAC6_signal" desc="report TAC6">
+                            <TrgOps dchg="true" qchg="true" dupd="false" period="false"/>
+                            <OptFields seqNum="false" timeStamp="false" dataSet="false" reasonCode="false" dataRef="false" entryID="false" configRef="false"/>
+                            <RptEnabled max="1"/>
+                        </ReportControl>
+                        <DOI name="Mod">
+                            <DAI name="ctlModel">
+                                <Val>direct-with-enhanced-security</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="NamPlt">
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>Digital Platforms</Val>
+                            </DAI>
+                            <DAI name="valRev"/>
+                            <DAI name="paramRev"/>
+                            <DAI name="d" valKind="RO" valImport="false"/>
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Val>658050901-A0-IT_pu_t_bnd_1.6.3</Val>
+                            </DAI>
+                            <DAI name="configRev" valKind="RO" valImport="false"/>
+                        </DOI>
+                        <DOI name="Health"/>
+                        <Inputs>
+                            <ExtRef intAddr="LDTAC6/In_Tr_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxTr" desc="DYN_LDTAC6_Emission ordre vers TAC distante_1_BOOLEAN_1_general_1"/>
+                            <ExtRef intAddr="LDTAC6/In_Blk_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxBlk" desc="DYN_LDTAC6_Emission ordre vers TAC distante_1_BOOLEAN_2_general_1"/>
+                            <ExtRef intAddr="LDTAC6/In_Prm_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxPrm" desc="DYN_LDTAC6_Emission ordre vers TAC distante_1_BOOLEAN_3_general_1"/>
+                        </Inputs>
+                    </LN0>
+                    <LN lnClass="ITPC" inst="0" lnType="ITPC00" desc="Teleprotection communication interfaces"/>
+                    <LN lnClass="PSCH" inst="0" lnType="PSCH01" desc="Protection scheme">
+                        <DOI name="TxPrm">
+                            <DAI name="d">
+                                <Val>Command F Prm</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TxBlk">
+                            <DAI name="d">
+                                <Val>Command F Blk</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TxTr">
+                            <DAI name="d">
+                                <Val>Command F Tr</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxPrm1">
+                            <DAI name="d">
+                                <Val>Command F Prm Notification</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxBlk1">
+                            <DAI name="d">
+                                <Val>Command F Blk Notification</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxTr1">
+                            <DAI name="d">
+                                <Val>Command F Tr Notification</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN prefix="In_Tr_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Tr_1"/>
+                    <LN prefix="In_Blk_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Blk_1"/>
+                    <LN prefix="In_Prm_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Prm_1"/>
+                </LDevice>
+                <LDevice inst="LDTAC7" desc="Command7">
+                    <LN0 lnClass="LLN0" inst="" lnType="LLN000" desc="Logical node zero">
+                        <DataSet name="TAC7_signal" desc="TAC7 signals">
+                            <FCDA ldInst="LDTAC7" lnClass="PSCH" lnInst="0" doName="TxTr" fc="ST"/>
+                            <FCDA ldInst="LDTAC7" lnClass="PSCH" lnInst="0" doName="TxBlk" fc="ST"/>
+                            <FCDA ldInst="LDTAC7" lnClass="PSCH" lnInst="0" doName="TxPrm" fc="ST"/>
+                            <FCDA ldInst="LDTAC7" lnClass="PSCH" lnInst="0" doName="RxTr1" fc="ST"/>
+                            <FCDA ldInst="LDTAC7" lnClass="PSCH" lnInst="0" doName="RxBlk1" fc="ST"/>
+                            <FCDA ldInst="LDTAC7" lnClass="PSCH" lnInst="0" doName="RxPrm1" fc="ST"/>
+                            <FCDA ldInst="LDTAC7" lnClass="ITPC" lnInst="0" doName="TxCmdCnt1" fc="ST"/>
+                            <FCDA ldInst="LDTAC7" lnClass="ITPC" lnInst="0" doName="RxCmdCnt1" fc="ST"/>
+                        </DataSet>
+                        <ReportControl rptID="TAC7" confRev="1" buffered="true" bufTime="200" intgPd="0" name="TAC7_R" datSet="TAC7_signal" desc="report TAC7">
+                            <TrgOps dchg="true" qchg="true" dupd="false" period="false"/>
+                            <OptFields seqNum="false" timeStamp="false" dataSet="false" reasonCode="false" dataRef="false" entryID="false" configRef="false"/>
+                            <RptEnabled max="1"/>
+                        </ReportControl>
+                        <DOI name="Mod">
+                            <DAI name="ctlModel">
+                                <Val>direct-with-enhanced-security</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="NamPlt">
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>Digital Platforms</Val>
+                            </DAI>
+                            <DAI name="valRev"/>
+                            <DAI name="paramRev"/>
+                            <DAI name="d" valKind="RO" valImport="false"/>
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Val>658050901-A0-IT_pu_t_bnd_1.6.3</Val>
+                            </DAI>
+                            <DAI name="configRev" valKind="RO" valImport="false"/>
+                        </DOI>
+                        <DOI name="Health"/>
+                        <Inputs>
+                            <ExtRef intAddr="LDTAC7/In_Tr_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxTr" desc="DYN_LDTAC7_Emission ordre vers TAC distante_1_BOOLEAN_1_general_1"/>
+                            <ExtRef intAddr="LDTAC7/In_Blk_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxBlk" desc="DYN_LDTAC7_Emission ordre vers TAC distante_1_BOOLEAN_2_general_1"/>
+                            <ExtRef intAddr="LDTAC7/In_Prm_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxPrm" desc="DYN_LDTAC7_Emission ordre vers TAC distante_1_BOOLEAN_3_general_1"/>
+                        </Inputs>
+                    </LN0>
+                    <LN lnClass="ITPC" inst="0" lnType="ITPC00" desc="Teleprotection communication interfaces"/>
+                    <LN lnClass="PSCH" inst="0" lnType="PSCH01" desc="Protection scheme">
+                        <DOI name="TxPrm">
+                            <DAI name="d">
+                                <Val>Command G Prm</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TxBlk">
+                            <DAI name="d">
+                                <Val>Command G Blk</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TxTr">
+                            <DAI name="d">
+                                <Val>Command G Tr</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxPrm1">
+                            <DAI name="d">
+                                <Val>Command G Prm Notification</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxBlk1">
+                            <DAI name="d">
+                                <Val>Command G Blk Notification</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxTr1">
+                            <DAI name="d">
+                                <Val>Command G Tr Notification</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN prefix="In_Tr_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Tr_1"/>
+                    <LN prefix="In_Blk_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Blk_1"/>
+                    <LN prefix="In_Prm_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Prm_1"/>
+                </LDevice>
+                <LDevice inst="LDTAC8" desc="Command8">
+                    <LN0 lnClass="LLN0" inst="" lnType="LLN000" desc="Logical node zero">
+                        <DataSet name="TAC8_signal" desc="TAC8 signals">
+                            <FCDA ldInst="LDTAC8" lnClass="PSCH" lnInst="0" doName="TxTr" fc="ST"/>
+                            <FCDA ldInst="LDTAC8" lnClass="PSCH" lnInst="0" doName="TxBlk" fc="ST"/>
+                            <FCDA ldInst="LDTAC8" lnClass="PSCH" lnInst="0" doName="TxPrm" fc="ST"/>
+                            <FCDA ldInst="LDTAC8" lnClass="PSCH" lnInst="0" doName="RxTr1" fc="ST"/>
+                            <FCDA ldInst="LDTAC8" lnClass="PSCH" lnInst="0" doName="RxBlk1" fc="ST"/>
+                            <FCDA ldInst="LDTAC8" lnClass="PSCH" lnInst="0" doName="RxPrm1" fc="ST"/>
+                            <FCDA ldInst="LDTAC8" lnClass="ITPC" lnInst="0" doName="TxCmdCnt1" fc="ST"/>
+                            <FCDA ldInst="LDTAC8" lnClass="ITPC" lnInst="0" doName="RxCmdCnt1" fc="ST"/>
+                        </DataSet>
+                        <ReportControl rptID="TAC8" confRev="1" buffered="true" bufTime="200" intgPd="0" name="TAC8_R" datSet="TAC8_signal" desc="report TAC8">
+                            <TrgOps dchg="true" qchg="true" dupd="false" period="false"/>
+                            <OptFields seqNum="false" timeStamp="false" dataSet="false" reasonCode="false" dataRef="false" entryID="false" configRef="false"/>
+                            <RptEnabled max="1"/>
+                        </ReportControl>
+                        <DOI name="Mod">
+                            <DAI name="ctlModel">
+                                <Val>direct-with-enhanced-security</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="NamPlt">
+                            <DAI name="vendor" valKind="RO" valImport="false">
+                                <Val>Digital Platforms</Val>
+                            </DAI>
+                            <DAI name="valRev"/>
+                            <DAI name="paramRev"/>
+                            <DAI name="d" valKind="RO" valImport="false"/>
+                            <DAI name="swRev" valKind="RO" valImport="false">
+                                <Val>658050901-A0-IT_pu_t_bnd_1.6.3</Val>
+                            </DAI>
+                            <DAI name="configRev" valKind="RO" valImport="false"/>
+                        </DOI>
+                        <DOI name="Health"/>
+                        <Inputs>
+                            <ExtRef intAddr="LDTAC8/In_Tr_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxTr" desc="DYN_LDTAC8_Emission ordre vers TAC distante_1_BOOLEAN_1_general_1"/>
+                            <ExtRef intAddr="LDTAC8/In_Blk_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxBlk" desc="DYN_LDTAC8_Emission ordre vers TAC distante_1_BOOLEAN_2_general_1"/>
+                            <ExtRef intAddr="LDTAC8/In_Prm_GGIO1$ST$Ind1" pLN="PSCH" pDO="TxPrm" desc="DYN_LDTAC8_Emission ordre vers TAC distante_1_BOOLEAN_3_general_1"/>
+                        </Inputs>
+                    </LN0>
+                    <LN lnClass="ITPC" inst="0" lnType="ITPC00" desc="Teleprotection communication interfaces"/>
+                    <LN lnClass="PSCH" inst="0" lnType="PSCH01" desc="Protection scheme">
+                        <DOI name="TxPrm">
+                            <DAI name="d">
+                                <Val>Command H Prm</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TxBlk">
+                            <DAI name="d">
+                                <Val>Command H Blk</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="TxTr">
+                            <DAI name="d">
+                                <Val>Command H Tr</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxPrm1">
+                            <DAI name="d">
+                                <Val>Command H Prm Notification</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxBlk1">
+                            <DAI name="d">
+                                <Val>Command H Blk Notification</Val>
+                            </DAI>
+                        </DOI>
+                        <DOI name="RxTr1">
+                            <DAI name="d">
+                                <Val>Command H Tr Notification</Val>
+                            </DAI>
+                        </DOI>
+                    </LN>
+                    <LN prefix="In_Tr_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Tr_1"/>
+                    <LN prefix="In_Blk_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Blk_1"/>
+                    <LN prefix="In_Prm_" lnClass="GGIO" inst="1" lnType="GGIO02" desc="Input_Command_Prm_1"/>
+                </LDevice>
+            </Server>
+            <Services>
+                <DynAssociation max="4"/>
+                <SettingGroups>
+                    <SGEdit resvTms="true"/>
+                    <ConfSG resvTms="true"/>
+                </SettingGroups>
+                <GetDirectory/>
+                <GetDataObjectDefinition/>
+                <DataObjectDirectory/>
+                <GetDataSetValue/>
+                <DataSetDirectory/>
+                <ConfDataSet modify="true" maxAttributes="600" max="120"/>
+                <ReadWrite/>
+                <ConfReportControl bufMode="both" bufConf="true" max="120"/>
+                <GetCBValues/>
+                <ReportSettings rptID="Conf" optFields="Conf" bufTime="Conf" trgOps="Conf" intgPd="Conf" resvTms="true" owner="true" cbName="Conf" datSet="Conf"/>
+                <GSESettings appID="Conf" kdaParticipant="false" cbName="Conf" datSet="Conf"/>
+                <GOOSE fixedOffs="true" goose="true" max="60"/>
+                <ClientServices goose="true" sv="true" supportsLdName="true" maxAttributes="4000" maxGOOSE="120" maxSMV="9">
+                    <TimeSyncProt iec61850_9_3="true"/>
+                </ClientServices>
+                <SupSubscription maxGo="60" maxSv="9"/>
+                <ConfSigRef max="1200"/>
+                <RedProt prp="true"/>
+            </Services>
+        </AccessPoint>
+        <AccessPoint name="ADMIN_AP"/>
+    </IED>
+    <DataTypeTemplates>
+        <LNodeType iedType="Selta_TPS3000" lnClass="LLN0" id="LLN000">
+            <DO name="Mod" type="swcfgMod"/>
+            <DO name="Beh" type="swcfgBeh"/>
+            <DO name="Health" type="swcfgHealth"/>
+            <DO name="NamPlt" type="swcfgNamPlt_3"/>
+            <DO name="Loc" type="swcfgSPS"/>
+        </LNodeType>
+        <LNodeType iedType="Selta_TPS3000" lnClass="LPHD" id="LPHD00">
+            <DO name="PhyNam" type="swcfgPhyNam"/>
+            <DO name="PhyHealth" type="swcfgHealth"/>
+            <DO name="Proxy" type="swcfgSPS"/>
+            <DO name="Sim" type="swcfgSim"/>
+        </LNodeType>
+        <LNodeType iedType="Selta_TPS3000" lnClass="ITPC" id="ITPC00">
+            <DO name="Beh" type="swcfgBeh"/>
+            <DO name="EEHealth" type="swcfgHealth"/>
+            <DO name="LosSig" type="swcfgSPS"/>
+            <DO name="LosSyn" type="swcfgSPS"/>
+            <DO name="Ber" type="swcfgMV"/>
+            <DO name="Snr" type="swcfgMV"/>
+            <DO name="CarLev" type="swcfgMV"/>
+            <DO name="GrdRxCmd" type="swcfgSPS"/>
+            <DO name="LoopTestTm" type="swcfgMV"/>
+            <DO name="TxCmdCnt1" type="swcfgINS"/>
+            <DO name="RxCmdCnt1" type="swcfgINS"/>
+        </LNodeType>
+        <LNodeType iedType="Selta_TPS3000" lnClass="LGOS" id="LGOS00">
+            <DO name="Beh" type="swcfgBeh"/>
+            <DO name="St" type="swcfgSPS"/>
+            <DO name="SimSt" type="swcfgSPS"/>
+            <DO name="LastStNum" type="swcfgINS"/>
+            <DO name="ConfRevNum" type="swcfgINS"/>
+            <DO name="GoCBRef" type="swcfgGoCBRef"/>
+        </LNodeType>
+        <LNodeType iedType="Selta_TPS3000" lnClass="GGIO" id="GGIO02">
+            <DO name="Beh" type="swcfgBeh"/>
+            <DO name="Ind1" type="swcfgSPS"/>
+        </LNodeType>
+        <LNodeType iedType="Selta_TPS3000" lnClass="CALH" id="CALH00">
+            <DO name="Beh" type="swcfgBeh"/>
+            <DO name="GrAlm" type="swcfgSPS"/>
+            <DO name="GrAlm1" type="swcfgSPS"/>
+            <DO name="GrAlm2" type="swcfgSPS"/>
+            <DO name="GrAlm3" type="swcfgSPS"/>
+            <DO name="GrAlm4" type="swcfgSPS"/>
+            <DO name="GrAlm5" type="swcfgSPS"/>
+            <DO name="GrAlm6" type="swcfgSPS"/>
+            <DO name="GrAlm7" type="swcfgSPS"/>
+            <DO name="GrAlm8" type="swcfgSPS"/>
+            <DO name="GrAlm9" type="swcfgSPS"/>
+            <DO name="GrAlm10" type="swcfgSPS"/>
+        </LNodeType>
+        <LNodeType iedType="Selta_TPS3000" lnClass="PSCH" id="PSCH01">
+            <DO name="Beh" type="swcfgBeh"/>
+            <DO name="TxPrm" type="swcfgACT"/>
+            <DO name="TxBlk" type="swcfgACT"/>
+            <DO name="TxTr" type="swcfgACT"/>
+            <DO name="RxPrm1" type="swcfgACT"/>
+            <DO name="RxBlk1" type="swcfgACT"/>
+            <DO name="RxTr1" type="swcfgACT"/>
+            <DO name="Op" type="swcfgACT"/>
+        </LNodeType>
+        <DOType iedType="Selta_TPS3000" cdc="ENC" id="swcfgMod">
+            <DA fc="ST" name="origin" bType="Struct" type="my_origin"/>
+            <DA fc="ST" name="ctlNum" bType="INT8U"/>
+            <DA fc="ST" name="stVal" bType="Enum" type="ModVal"/>
+            <DA fc="ST" name="q" bType="Quality"/>
+            <DA fc="ST" name="t" bType="Timestamp"/>
+            <DA fc="CF" name="ctlModel" bType="Enum" type="CtlModelVal"/>
+            <DA fc="DC" name="d" bType="VisString255"/>
+            <DA fc="OR" name="opRcvd" bType="BOOLEAN"/>
+            <DA fc="OR" name="opOk" bType="BOOLEAN"/>
+            <DA fc="OR" name="tOpOk" bType="Timestamp"/>
+            <DA fc="CF" name="operTimeout" bType="INT32U"/>
+            <DA fc="CF" name="sboTimeout" bType="INT32U"/>
+            <DA fc="CO" name="Oper" bType="Struct" type="my_Oper_1"/>
+            <DA fc="CO" name="SBO" bType="VisString129"/>
+            <DA fc="CO" name="SBOw" bType="Struct" type="my_Oper_1"/>
+            <DA fc="CO" name="Cancel" bType="Struct" type="my_Cancel_1"/>
+        </DOType>
+        <DOType iedType="Selta_TPS3000" cdc="ENS" id="swcfgBeh">
+            <DA fc="ST" name="stVal" bType="Enum" type="ModVal"/>
+            <DA fc="ST" name="q" bType="Quality"/>
+            <DA fc="ST" name="t" bType="Timestamp"/>
+            <DA fc="DC" name="d" bType="VisString255"/>
+        </DOType>
+        <DOType iedType="Selta_TPS3000" cdc="LPL" id="swcfgNamPlt_3">
+            <DA fc="DC" name="vendor" bType="VisString255"/>
+            <DA fc="DC" name="swRev" bType="VisString255"/>
+            <DA fc="DC" name="d" bType="VisString255"/>
+            <DA fc="DC" name="configRev" bType="VisString255"/>
+            <DA fc="EX" name="ldNs" bType="VisString255"/>
+            <DA fc="ST" name="valRev" bType="INT32"/>
+            <DA fc="ST" name="paramRev" bType="INT32"/>
+        </DOType>
+        <DOType iedType="Selta_TPS3000" cdc="DPL" id="swcfgPhyNam">
+            <DA fc="DC" name="vendor" bType="VisString255"/>
+            <DA fc="DC" name="hwRev" bType="VisString255"/>
+            <DA fc="DC" name="swRev" bType="VisString255"/>
+            <DA fc="DC" name="serNum" bType="VisString255"/>
+            <DA fc="DC" name="model" bType="VisString255"/>
+            <DA fc="DC" name="location" bType="VisString255"/>
+            <DA fc="DC" name="name" bType="VisString64"/>
+            <DA fc="DC" name="mRID" bType="VisString255"/>
+        </DOType>
+        <DOType iedType="Selta_TPS3000" cdc="ENS" id="swcfgHealth">
+            <DA fc="ST" name="stVal" bType="Enum" type="HealthVal"/>
+            <DA fc="ST" name="q" bType="Quality"/>
+            <DA fc="ST" name="t" bType="Timestamp"/>
+            <DA fc="DC" name="d" bType="VisString255"/>
+        </DOType>
+        <DOType iedType="Selta_TPS3000" cdc="MV" id="swcfgMV">
+            <DA fc="MX" name="mag" bType="Struct" type="swcfgmag"/>
+            <DA fc="MX" name="q" bType="Quality"/>
+            <DA fc="MX" name="t" bType="Timestamp"/>
+        </DOType>
+        <DOType iedType="Selta_TPS3000" cdc="SPC" id="swcfgSim">
+            <DA fc="ST" name="origin" bType="Struct" type="my_origin"/>
+            <DA fc="ST" name="ctlNum" bType="INT8U"/>
+            <DA fc="ST" name="stVal" bType="BOOLEAN"/>
+            <DA fc="ST" name="q" bType="Quality"/>
+            <DA fc="ST" name="t" bType="Timestamp"/>
+            <DA fc="CF" name="ctlModel" bType="Enum" type="CtlModelVal"/>
+            <DA fc="DC" name="d" bType="VisString255"/>
+            <DA fc="OR" name="opRcvd" bType="BOOLEAN"/>
+            <DA fc="OR" name="opOk" bType="BOOLEAN"/>
+            <DA fc="OR" name="tOpOk" bType="Timestamp"/>
+            <DA fc="CF" name="operTimeout" bType="INT32U"/>
+            <DA fc="CF" name="sboTimeout" bType="INT32U"/>
+            <DA fc="CO" name="Oper" bType="Struct" type="my_Oper_2"/>
+            <DA fc="CO" name="SBO" bType="VisString129"/>
+            <DA fc="CO" name="SBOw" bType="Struct" type="my_Oper_2"/>
+            <DA fc="CO" name="Cancel" bType="Struct" type="my_Cancel_2"/>
+        </DOType>
+        <DOType iedType="Selta_TPS3000" cdc="ORG" id="swcfgGoCBRef">
+            <DA fc="SP" name="setSrcRef" bType="ObjRef"/>
+        </DOType>
+        <DOType iedType="Selta_TPS3000" cdc="ACT" id="swcfgACT">
+            <DA fc="ST" name="general" bType="BOOLEAN"/>
+            <DA fc="ST" name="q" bType="Quality"/>
+            <DA fc="ST" name="t" bType="Timestamp"/>
+            <DA fc="DC" name="d" bType="VisString255"/>
+        </DOType>
+        <DOType iedType="Selta_TPS3000" cdc="SPS" id="swcfgSPS">
+            <DA fc="ST" name="stVal" bType="BOOLEAN"/>
+            <DA fc="ST" name="q" bType="Quality"/>
+            <DA fc="ST" name="t" bType="Timestamp"/>
+            <DA fc="DC" name="d" bType="VisString255"/>
+        </DOType>
+        <DOType iedType="Selta_TPS3000" cdc="INS" id="swcfgINS">
+            <DA fc="ST" name="stVal" bType="INT32"/>
+            <DA fc="ST" name="q" bType="Quality"/>
+            <DA fc="ST" name="t" bType="Timestamp"/>
+            <DA fc="DC" name="d" bType="VisString255"/>
+        </DOType>
+        <DAType iedType="Selta_TPS3000" id="swcfgmag">
+            <BDA name="f" bType="FLOAT32"/>
+        </DAType>
+        <DAType iedType="Selta_TPS3000" id="my_Oper_1">
+            <BDA name="ctlVal" bType="Enum" type="ModVal"/>
+            <BDA name="origin" bType="Struct" type="my_origin"/>
+            <BDA name="ctlNum" bType="INT8U"/>
+            <BDA name="T" bType="Timestamp"/>
+            <BDA name="Test" bType="BOOLEAN"/>
+            <BDA name="Check" bType="Check"/>
+        </DAType>
+        <DAType iedType="Selta_TPS3000" id="my_Cancel_1">
+            <BDA name="ctlVal" bType="Enum" type="ModVal"/>
+            <BDA name="origin" bType="Struct" type="my_origin"/>
+            <BDA name="ctlNum" bType="INT8U"/>
+            <BDA name="T" bType="Timestamp"/>
+            <BDA name="Test" bType="BOOLEAN"/>
+        </DAType>
+        <DAType iedType="Selta_TPS3000" id="my_Oper_2">
+            <BDA name="ctlVal" bType="BOOLEAN"/>
+            <BDA name="origin" bType="Struct" type="my_origin"/>
+            <BDA name="ctlNum" bType="INT8U"/>
+            <BDA name="T" bType="Timestamp"/>
+            <BDA name="Test" bType="BOOLEAN"/>
+            <BDA name="Check" bType="Check"/>
+        </DAType>
+        <DAType iedType="Selta_TPS3000" id="my_Cancel_2">
+            <BDA name="ctlVal" bType="BOOLEAN"/>
+            <BDA name="origin" bType="Struct" type="my_origin"/>
+            <BDA name="ctlNum" bType="INT8U"/>
+            <BDA name="T" bType="Timestamp"/>
+            <BDA name="Test" bType="BOOLEAN"/>
+        </DAType>
+        <DAType iedType="Selta_TPS3000" id="my_origin">
+            <BDA name="orCat" bType="Enum" type="OrCatVal"/>
+            <BDA name="orIdent" bType="Octet64"/>
+        </DAType>
+        <EnumType id="CtlModelVal">
+            <EnumVal ord="0">status-only</EnumVal>
+            <EnumVal ord="3">direct-with-enhanced-security</EnumVal>
+        </EnumType>
+        <EnumType id="HealthVal">
+            <EnumVal ord="1">Ok</EnumVal>
+            <EnumVal ord="2">Warning</EnumVal>
+            <EnumVal ord="3">Alarm</EnumVal>
+        </EnumType>
+        <EnumType id="ModVal">
+            <EnumVal ord="1">on</EnumVal>
+            <EnumVal ord="2">blocked</EnumVal>
+            <EnumVal ord="3">test</EnumVal>
+            <EnumVal ord="4">test/blocked</EnumVal>
+            <EnumVal ord="5">off</EnumVal>
+        </EnumType>
+        <EnumType id="OrCatVal">
+            <EnumVal ord="0">not-supported</EnumVal>
+            <EnumVal ord="1">bay-control</EnumVal>
+            <EnumVal ord="2">station-control</EnumVal>
+            <EnumVal ord="3">remote-control</EnumVal>
+            <EnumVal ord="4">automatic-bay</EnumVal>
+            <EnumVal ord="5">automatic-station</EnumVal>
+            <EnumVal ord="6">automatic-remote</EnumVal>
+            <EnumVal ord="7">maintenance</EnumVal>
+            <EnumVal ord="8">process</EnumVal>
+        </EnumType>
+    </DataTypeTemplates>
+</SCL>

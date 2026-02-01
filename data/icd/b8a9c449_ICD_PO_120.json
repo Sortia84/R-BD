@@ -1,0 +1,46 @@
+{
+  "icd_id": "ICD_PO_RTE_1_2_0",
+  "ied_type": "VIRT",
+  "ied_type_attr": "PO",
+  "manufacturer": "RTE",
+  "config_version": "1.2.0",
+  "desc": "",
+  "version": "1.2.0",
+  "filename": "b8a9c449_ICD_PO_120.icd",
+  "imported_at": "2026-01-31T22:41:08.944710Z",
+  "ieds": [
+    {
+      "name": "VirtualVIRT",
+      "lds": [
+        {
+          "name": "LDIT",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        },
+        {
+          "name": "LDSUIED",
+          "lns": [
+            {
+              "ln_class": "LLN0",
+              "lninst": ""
+            },
+            {
+              "ln_class": "LPHD",
+              "lninst": "0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "ld_count": 2,
+  "ln_count": 4
+}
