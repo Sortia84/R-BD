@@ -234,6 +234,43 @@
     opacity: 1;
 }
 
+/* ============================================================
+   Bouton Référent (étoile) et badge
+   ============================================================ */
+
+.btn-star {
+    color: var(--muted);
+    font-size: 16px;
+    transition: all 0.2s;
+}
+
+.btn-star:hover {
+    color: #f59e0b;
+    transform: scale(1.15);
+}
+
+.btn-star.active {
+    color: #f59e0b;
+}
+
+.file-item.is-default {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 1px solid #f59e0b;
+}
+
+.default-badge {
+    display: inline-block;
+    background: #f59e0b;
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 6px;
+    text-transform: uppercase;
+    vertical-align: middle;
+}
+
 .no-files {
     text-align: center;
     padding: 16px;
@@ -750,49 +787,6 @@
     background: var(--card);
     color: var(--text);
     font-size: 14px;
-}
-
-/* Filter input */
-.filter-input {
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--card);
-    color: var(--text);
-    font-size: 14px;
-    width: 200px;
-}
-
-.filter-input:focus {
-    outline: none;
-    border-color: var(--accent);
-}
-
-.filter-select {
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--card);
-    color: var(--text);
-    font-size: 14px;
-}
-
-.filters-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    align-items: flex-end;
-}
-
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.filter-group label {
-    font-size: 12px;
-    color: var(--muted);
 }
 
 /* ============================================================

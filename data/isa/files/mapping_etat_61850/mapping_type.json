@@ -1,0 +1,5862 @@
+{
+    "schema": "rcontrole-iec61850-normative-mapping",
+    "version": "1.3",
+    "goal": "Mapping normatif (valeurs/structures) pour décodage, validation et simulation IEC 61850 (GOOSE/Reports/SV).",
+    "types": {
+        "BOOLEAN": {
+            "values": [
+                false,
+                true
+            ]
+        },
+        "VISIBLE_STRING": {
+            "notes": [
+                "Chaîne ASCII imprimable (SCL: VisString)."
+            ]
+        },
+        "UNICODE_STRING": {
+            "notes": [
+                "Chaîne Unicode (selon implémentations)."
+            ]
+        },
+        "INT8": {
+            "range": [
+                -128,
+                127
+            ]
+        },
+        "INT16": {
+            "range": [
+                -32768,
+                32767
+            ]
+        },
+        "INT32": {
+            "range": [
+                -2147483648,
+                2147483647
+            ]
+        },
+        "INT64": {
+            "range": [
+                -9223372036854775808,
+                9223372036854775807
+            ]
+        },
+        "INT8U": {
+            "range": [
+                0,
+                255
+            ]
+        },
+        "INT16U": {
+            "range": [
+                0,
+                65535
+            ]
+        },
+        "INT24U": {
+            "range": [
+                0,
+                16777215
+            ]
+        },
+        "INT32U": {
+            "range": [
+                0,
+                4294967295
+            ]
+        },
+        "FLOAT32": {
+            "notes": [
+                "IEEE 754 float."
+            ]
+        },
+        "FLOAT64": {
+            "notes": [
+                "IEEE 754 double."
+            ]
+        },
+        "Quality": {
+            "description": "q (Quality) : bitstring IEC 61850 rendu lisible.",
+            "validity": {
+                "bits": 2,
+                "mapping": {
+                    "00": "good",
+                    "01": "invalid",
+                    "10": "questionable",
+                    "11": "reserved"
+                }
+            },
+            "detailQualityFlags": {
+                "type": "bitFlags",
+                "flags": [
+                    "overflow",
+                    "outOfRange",
+                    "badReference",
+                    "oscillatory",
+                    "failure",
+                    "oldData",
+                    "inconsistent",
+                    "inaccurate"
+                ],
+                "values": [
+                    false,
+                    true
+                ]
+            },
+            "source": {
+                "bits": 1,
+                "mapping": {
+                    "0": "process",
+                    "1": "substituted"
+                }
+            },
+            "test": {
+                "bits": 1,
+                "values": [
+                    false,
+                    true
+                ]
+            },
+            "operatorBlocked": {
+                "bits": 1,
+                "values": [
+                    false,
+                    true
+                ]
+            },
+            "jsonShape": {
+                "validity": "good|invalid|questionable|reserved",
+                "detail": [
+                    "overflow|outOfRange|badReference|oscillatory|failure|oldData|inconsistent|inaccurate"
+                ],
+                "source": "process|substituted",
+                "test": "boolean",
+                "operatorBlocked": "boolean"
+            }
+        },
+        "Timestamp": {
+            "description": "t (Timestamp/UTCTime) : structure temps IEC 61850 rendue lisible.",
+            "fields": {
+                "secondsSinceEpoch": {
+                    "type": "INT32U",
+                    "description": "Secondes depuis 1970-01-01T00:00:00Z"
+                },
+                "fractionOfSecond": {
+                    "type": "INT32U",
+                    "description": "Fraction de seconde (résolution selon implémentation)"
+                },
+                "timeQuality": {
+                    "type": "bitFlags",
+                    "flags": [
+                        "clockFailure",
+                        "clockNotSynchronized",
+                        "leapSecondKnown"
+                    ],
+                    "timeAccuracy": {
+                        "type": "INT8U|INT16U",
+                        "notes": [
+                            "Souvent une classe de précision numérique, pas une liste de labels."
+                        ]
+                    }
+                }
+            },
+            "convenience": {
+                "iso8601": {
+                    "type": "string",
+                    "example": "2026-01-19T12:34:56.789Z"
+                }
+            }
+        },
+        "Dbpos": {
+            "description": "DPS : Double point status.",
+            "values": [
+                "intermediate-state",
+                "off",
+                "on",
+                "bad-state"
+            ],
+            "mappingTypical": {
+                "0": "intermediate-state",
+                "1": "off(ouvert)",
+                "2": "on(fermé)",
+                "3": "bad-state"
+            }
+        },
+        "Tcmd": {
+            "description": "Commande binaire (ex: start/stop) selon contexte constructeur.",
+            "values": [
+                "stop",
+                "start"
+            ],
+            "mappingTypical": {
+                "0": "stop",
+                "1": "start"
+            }
+        },
+        "Check": {
+            "description": "Check d'interverrouillage / synchrocheck (utilisé dans certains contrôles).",
+            "values": [
+                "interlock",
+                "synchrocheck"
+            ]
+        },
+        "CtlModel": {
+            "description": "Modèle de contrôle (ctlModel).",
+            "values": [
+                "status-only",
+                "direct-with-normal-security",
+                "sbo-with-normal-security",
+                "direct-with-enhanced-security",
+                "sbo-with-enhanced-security"
+            ]
+        },
+        "OrCat": {
+            "description": "Originator category (origine).",
+            "values": [
+                "not-supported",
+                "bay-control",
+                "station-control",
+                "remote-control",
+                "automatic-bay",
+                "automatic-station",
+                "automatic-remote",
+                "maintenance",
+                "process"
+            ]
+        },
+        "Origin": {
+            "description": "Origin (souvent Pos.origin.*).",
+            "fields": {
+                "orCat": {
+                    "type": "OrCat"
+                },
+                "orIdent": {
+                    "type": "VISIBLE_STRING"
+                }
+            }
+        },
+        "Beh": {
+            "description": "Behaviour (LLN0.Beh.stVal).",
+            "values": [
+                "on",
+                "blocked",
+                "test",
+                "test-blocked",
+                "off"
+            ]
+        },
+        "Health": {
+            "description": "Health (Health.stVal).",
+            "values": [
+                "ok",
+                "warning",
+                "alarm",
+                "reserved"
+            ]
+        },
+        "AnalogueValue": {
+            "description": "Valeur analogique (MV/SV) : instMag.*",
+            "fields": {
+                "instMag": {
+                    "fields": {
+                        "i": {
+                            "type": "INT32"
+                        },
+                        "f": {
+                            "type": "FLOAT32"
+                        }
+                    }
+                }
+            }
+        },
+        "Enum": {
+            "description": "Type énuméré défini par EnumType SCL",
+            "notes": [
+                "Voir section enumTypes pour les valeurs"
+            ]
+        },
+        "Struct": {
+            "description": "Structure complexe (DAType SCL)",
+            "notes": [
+                "Défini par DAType dans DataTypeTemplates"
+            ]
+        },
+        "ObjRef": {
+            "description": "Object reference (chemin LN/DO)",
+            "notes": [
+                "Format: LDname/LNprefix.LNclass.inst/DOname.DAname"
+            ]
+        },
+        "VisString129": {
+            "description": "Chaîne ASCII 129 caractères max",
+            "maxLength": 129
+        }
+    },
+    "commonDA": {
+        "stVal": {
+            "meaning": "Status value",
+            "expectedTypes": [
+                "BOOLEAN",
+                "Dbpos",
+                "INT32",
+                "Enum (via EnumType SCL)"
+            ]
+        },
+        "q": {
+            "meaning": "Quality",
+            "type": "Quality"
+        },
+        "t": {
+            "meaning": "Timestamp",
+            "type": "Timestamp"
+        },
+        "ctlVal": {
+            "meaning": "Control value",
+            "expectedTypes": [
+                "BOOLEAN",
+                "Dbpos",
+                "INT32",
+                "Enum (via EnumType SCL)",
+                "Tcmd (cas usuels start/stop)"
+            ]
+        },
+        "origin": {
+            "meaning": "Origin structure",
+            "type": "Origin"
+        },
+        "subEna": {
+            "meaning": "Substitution enabled",
+            "type": "BOOLEAN",
+            "values": [
+                false,
+                true
+            ]
+        },
+        "subVal": {
+            "meaning": "Substituted value",
+            "notes": [
+                "Même type que la valeur associée (ex: BOOLEAN/Dbpos/AnalogueValue)."
+            ]
+        },
+        "ctlModel": {
+            "meaning": "Control model",
+            "type": "CtlModel",
+            "expectedTypes": [
+                "CtlModel"
+            ]
+        },
+        "Oper": {
+            "meaning": "Operate command structure",
+            "fields": [
+                "ctlVal",
+                "origin",
+                "ctlNum",
+                "T",
+                "Test",
+                "Check"
+            ]
+        },
+        "SBO": {
+            "meaning": "Select Before Operate (return string)",
+            "type": "VISIBLE_STRING"
+        },
+        "SBOw": {
+            "meaning": "Select Before Operate with value",
+            "fields": [
+                "ctlVal",
+                "origin",
+                "ctlNum",
+                "T",
+                "Test",
+                "Check"
+            ]
+        },
+        "Cancel": {
+            "meaning": "Cancel control operation",
+            "fields": [
+                "ctlVal",
+                "origin",
+                "ctlNum",
+                "T",
+                "Test"
+            ]
+        },
+        "d": {
+            "meaning": "Description",
+            "type": "VISIBLE_STRING"
+        },
+        "dU": {
+            "meaning": "Unicode description",
+            "type": "UNICODE_STRING"
+        },
+        "blkEna": {
+            "meaning": "Block enable",
+            "type": "BOOLEAN"
+        },
+        "actVal": {
+            "meaning": "Actual value (analogue)",
+            "type": "AnalogueValue"
+        },
+        "mag": {
+            "meaning": "Magnitude",
+            "type": "AnalogueValue"
+        },
+        "phsA": {
+            "meaning": "Phase A value",
+            "type": "CMV"
+        },
+        "phsB": {
+            "meaning": "Phase B value",
+            "type": "CMV"
+        },
+        "phsC": {
+            "meaning": "Phase C value",
+            "type": "CMV"
+        },
+        "neut": {
+            "meaning": "Neutral value",
+            "type": "CMV"
+        }
+    },
+    "cdc": {
+        "SPS": {
+            "description": "Single Point Status",
+            "typicalDA": [
+                {
+                    "name": "stVal",
+                    "type": "BOOLEAN",
+                    "fc": ""
+                },
+                {
+                    "name": "q",
+                    "type": "Quality",
+                    "fc": ""
+                },
+                {
+                    "name": "t",
+                    "type": "Timestamp",
+                    "fc": ""
+                },
+                {
+                    "name": "blkEna",
+                    "type": "BOOLEAN",
+                    "fc": "BL"
+                },
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "subEna",
+                    "type": "BOOLEAN",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subID",
+                    "type": "VisString64",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subQ",
+                    "type": "Quality",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subVal",
+                    "type": "BOOLEAN",
+                    "fc": "SV"
+                }
+            ]
+        },
+        "DPS": {
+            "description": "Double Point Status",
+            "typicalDA": [
+                {
+                    "name": "stVal",
+                    "type": "Dbpos",
+                    "fc": ""
+                },
+                {
+                    "name": "q",
+                    "type": "Quality",
+                    "fc": ""
+                },
+                {
+                    "name": "t",
+                    "type": "Timestamp",
+                    "fc": ""
+                }
+            ]
+        },
+        "INS": {
+            "description": "Integer Status",
+            "typicalDA": [
+                {
+                    "name": "stVal",
+                    "type": "INT32",
+                    "fc": ""
+                },
+                {
+                    "name": "q",
+                    "type": "Quality",
+                    "fc": ""
+                },
+                {
+                    "name": "t",
+                    "type": "Timestamp",
+                    "fc": ""
+                },
+                {
+                    "name": "blkEna",
+                    "type": "BOOLEAN",
+                    "fc": "BL"
+                },
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "subEna",
+                    "type": "BOOLEAN",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subID",
+                    "type": "VisString64",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subQ",
+                    "type": "Quality",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subVal",
+                    "type": "INT32",
+                    "fc": "SV"
+                },
+                {
+                    "name": "units",
+                    "type": "Struct",
+                    "fc": "CF"
+                }
+            ]
+        },
+        "ENS": {
+            "description": "Enumerated Status",
+            "typicalDA": [
+                {
+                    "name": "stVal",
+                    "type": "Enum",
+                    "fc": ""
+                },
+                {
+                    "name": "q",
+                    "type": "Quality",
+                    "fc": ""
+                },
+                {
+                    "name": "t",
+                    "type": "Timestamp",
+                    "fc": ""
+                },
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "subEna",
+                    "type": "BOOLEAN",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subID",
+                    "type": "VisString64",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subQ",
+                    "type": "Quality",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subVal",
+                    "type": "Enum",
+                    "fc": "SV"
+                }
+            ],
+            "notes": [
+                "Les valeurs possibles viennent d'un EnumType SCL dans DataTypeTemplates (ou d'une lib constructeur)."
+            ]
+        },
+        "MV": {
+            "description": "Measured Value",
+            "typicalDA": [
+                {
+                    "name": "mag",
+                    "type": "instMag.i/f",
+                    "fc": ""
+                },
+                {
+                    "name": "q",
+                    "type": "Quality",
+                    "fc": ""
+                },
+                {
+                    "name": "t",
+                    "type": "Timestamp",
+                    "fc": ""
+                },
+                {
+                    "name": "blkEna",
+                    "type": "BOOLEAN",
+                    "fc": "BL"
+                },
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "db",
+                    "type": "INT32U",
+                    "fc": "CF"
+                },
+                {
+                    "name": "dbRef",
+                    "type": "FLOAT32",
+                    "fc": "CF"
+                },
+                {
+                    "name": "instMag",
+                    "type": "Struct",
+                    "fc": "MX"
+                },
+                {
+                    "name": "range",
+                    "type": "Enum",
+                    "fc": "MX"
+                },
+                {
+                    "name": "rangeC",
+                    "type": "Struct",
+                    "fc": "CF"
+                },
+                {
+                    "name": "subEna",
+                    "type": "BOOLEAN",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subID",
+                    "type": "VisString64",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subMag",
+                    "type": "Struct",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subQ",
+                    "type": "Quality",
+                    "fc": "SV"
+                },
+                {
+                    "name": "units",
+                    "type": "Struct",
+                    "fc": "CF"
+                }
+            ],
+            "mag": {
+                "type": "AnalogueValue"
+            }
+        },
+        "LPL": {
+            "description": "Logical node name plate",
+            "typicalDA": [
+                {
+                    "name": "configRev",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "ldNs",
+                    "type": "VisString255",
+                    "fc": "EX"
+                },
+                {
+                    "name": "lnNs",
+                    "type": "VisString255",
+                    "fc": "EX"
+                },
+                {
+                    "name": "paramRev",
+                    "type": "INT32",
+                    "fc": "ST"
+                },
+                {
+                    "name": "swRev",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "valRev",
+                    "type": "INT32",
+                    "fc": "ST"
+                },
+                {
+                    "name": "vendor",
+                    "type": "VisString255",
+                    "fc": "DC"
+                }
+            ],
+            "source": "ICD"
+        },
+        "ASG": {
+            "description": "Analogue setting",
+            "typicalDA": [
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "maxVal",
+                    "type": "Struct",
+                    "fc": "CF"
+                },
+                {
+                    "name": "minVal",
+                    "type": "Struct",
+                    "fc": "CF"
+                },
+                {
+                    "name": "setMag",
+                    "type": "Struct",
+                    "fc": "SE"
+                },
+                {
+                    "name": "stepSize",
+                    "type": "Struct",
+                    "fc": "CF"
+                },
+                {
+                    "name": "units",
+                    "type": "Struct",
+                    "fc": "CF"
+                }
+            ],
+            "source": "ICD"
+        },
+        "VSG": {
+            "description": "Visible string setting",
+            "typicalDA": [
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "setVal",
+                    "type": "VisString255",
+                    "fc": "SP"
+                }
+            ],
+            "source": "ICD"
+        },
+        "ENC": {
+            "description": "Controllable enumerated status",
+            "typicalDA": [
+                {
+                    "name": "Cancel",
+                    "type": "Struct",
+                    "fc": "CO"
+                },
+                {
+                    "name": "Oper",
+                    "type": "Struct",
+                    "fc": "CO"
+                },
+                {
+                    "name": "SBO",
+                    "type": "VisString129",
+                    "fc": "CO"
+                },
+                {
+                    "name": "SBOw",
+                    "type": "Struct",
+                    "fc": "CO"
+                },
+                {
+                    "name": "ctlModel",
+                    "type": "Enum",
+                    "fc": "CF"
+                },
+                {
+                    "name": "ctlNum",
+                    "type": "INT8U",
+                    "fc": "ST"
+                },
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "opOk",
+                    "type": "BOOLEAN",
+                    "fc": "OR"
+                },
+                {
+                    "name": "opRcvd",
+                    "type": "BOOLEAN",
+                    "fc": "OR"
+                },
+                {
+                    "name": "operTimeout",
+                    "type": "INT32U",
+                    "fc": "CF"
+                },
+                {
+                    "name": "origin",
+                    "type": "Struct",
+                    "fc": "ST"
+                },
+                {
+                    "name": "q",
+                    "type": "Quality",
+                    "fc": "ST"
+                },
+                {
+                    "name": "sboClass",
+                    "type": "Enum",
+                    "fc": "CF"
+                },
+                {
+                    "name": "sboTimeout",
+                    "type": "INT32U",
+                    "fc": "CF"
+                },
+                {
+                    "name": "stSeld",
+                    "type": "BOOLEAN",
+                    "fc": "ST"
+                }
+            ],
+            "source": "ICD"
+        },
+        "ING": {
+            "description": "Integer setting",
+            "typicalDA": [
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "dU",
+                    "type": "Unicode255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "maxVal",
+                    "type": "INT32",
+                    "fc": "CF"
+                },
+                {
+                    "name": "minVal",
+                    "type": "INT32",
+                    "fc": "CF"
+                },
+                {
+                    "name": "setVal",
+                    "type": "INT32",
+                    "fc": "SP"
+                },
+                {
+                    "name": "stepSize",
+                    "type": "INT32U",
+                    "fc": "CF"
+                },
+                {
+                    "name": "units",
+                    "type": "Struct",
+                    "fc": "CF"
+                }
+            ],
+            "source": "ICD"
+        },
+        "ORG": {
+            "description": "Single point (origin)",
+            "typicalDA": [
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "intAddr",
+                    "type": "VisString255",
+                    "fc": "SP"
+                },
+                {
+                    "name": "purpose",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "setSrcCB",
+                    "type": "ObjRef",
+                    "fc": "SP"
+                },
+                {
+                    "name": "setSrcRef",
+                    "type": "ObjRef",
+                    "fc": "SP"
+                },
+                {
+                    "name": "setTstCB",
+                    "type": "ObjRef",
+                    "fc": "SP"
+                },
+                {
+                    "name": "setTstRef",
+                    "type": "ObjRef",
+                    "fc": "SP"
+                },
+                {
+                    "name": "tstEna",
+                    "type": "BOOLEAN",
+                    "fc": "SP"
+                }
+            ],
+            "source": "ICD"
+        },
+        "ENG": {
+            "description": "Enumerated status setting",
+            "typicalDA": [
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "setVal",
+                    "type": "Enum",
+                    "fc": "SP"
+                }
+            ],
+            "source": "ICD"
+        },
+        "SPG": {
+            "description": "Single point setting",
+            "typicalDA": [
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "setVal",
+                    "type": "BOOLEAN",
+                    "fc": "SP"
+                }
+            ],
+            "source": "ICD"
+        },
+        "DPL": {
+            "description": "Device name plate",
+            "typicalDA": [
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "ePSName",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "hwRev",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "location",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "mRID",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "model",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "name",
+                    "type": "VisString64",
+                    "fc": "DC"
+                },
+                {
+                    "name": "owner",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "serNum",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "swRev",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "vendor",
+                    "type": "VisString255",
+                    "fc": "DC"
+                }
+            ],
+            "source": "ICD"
+        },
+        "DPC": {
+            "description": "Double point control",
+            "typicalDA": [
+                {
+                    "name": "Cancel",
+                    "type": "Struct",
+                    "fc": "CO"
+                },
+                {
+                    "name": "Oper",
+                    "type": "Struct",
+                    "fc": "CO"
+                },
+                {
+                    "name": "ctlModel",
+                    "type": "Enum",
+                    "fc": "CF"
+                },
+                {
+                    "name": "ctlNum",
+                    "type": "INT8U",
+                    "fc": "ST"
+                },
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "opOk",
+                    "type": "BOOLEAN",
+                    "fc": "OR"
+                },
+                {
+                    "name": "opRcvd",
+                    "type": "BOOLEAN",
+                    "fc": "OR"
+                },
+                {
+                    "name": "operTimeout",
+                    "type": "INT32U",
+                    "fc": "CF"
+                },
+                {
+                    "name": "origin",
+                    "type": "Struct",
+                    "fc": "ST"
+                },
+                {
+                    "name": "pulseConfig",
+                    "type": "Struct",
+                    "fc": "CF"
+                },
+                {
+                    "name": "q",
+                    "type": "Quality",
+                    "fc": "ST"
+                },
+                {
+                    "name": "stVal",
+                    "type": "Dbpos",
+                    "fc": "ST"
+                },
+                {
+                    "name": "subEna",
+                    "type": "BOOLEAN",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subID",
+                    "type": "VisString64",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subQ",
+                    "type": "Quality",
+                    "fc": "SV"
+                }
+            ],
+            "source": "ICD"
+        },
+        "SPC": {
+            "description": "Single point control",
+            "typicalDA": [
+                {
+                    "name": "Cancel",
+                    "type": "Struct",
+                    "fc": "CO"
+                },
+                {
+                    "name": "Oper",
+                    "type": "Struct",
+                    "fc": "CO"
+                },
+                {
+                    "name": "SBO",
+                    "type": "VisString129",
+                    "fc": "CO"
+                },
+                {
+                    "name": "SBOw",
+                    "type": "Struct",
+                    "fc": "CO"
+                },
+                {
+                    "name": "blkEna",
+                    "type": "BOOLEAN",
+                    "fc": "BL"
+                },
+                {
+                    "name": "ctlModel",
+                    "type": "Enum",
+                    "fc": "CF"
+                },
+                {
+                    "name": "ctlNum",
+                    "type": "INT8U",
+                    "fc": "ST"
+                },
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "opOk",
+                    "type": "BOOLEAN",
+                    "fc": "OR"
+                },
+                {
+                    "name": "opRcvd",
+                    "type": "BOOLEAN",
+                    "fc": "OR"
+                },
+                {
+                    "name": "operTimeout",
+                    "type": "INT32U",
+                    "fc": "CF"
+                },
+                {
+                    "name": "origin",
+                    "type": "Struct",
+                    "fc": "ST"
+                },
+                {
+                    "name": "pulseConfig",
+                    "type": "Struct",
+                    "fc": "CF"
+                },
+                {
+                    "name": "q",
+                    "type": "Quality",
+                    "fc": "ST"
+                },
+                {
+                    "name": "sboClass",
+                    "type": "Enum",
+                    "fc": "CF"
+                }
+            ],
+            "source": "ICD"
+        },
+        "ACT": {
+            "description": "Protection activation",
+            "typicalDA": [
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "general",
+                    "type": "BOOLEAN",
+                    "fc": "ST"
+                },
+                {
+                    "name": "neut",
+                    "type": "BOOLEAN",
+                    "fc": "ST"
+                },
+                {
+                    "name": "originSrc",
+                    "type": "Struct",
+                    "fc": "ST"
+                },
+                {
+                    "name": "phsA",
+                    "type": "BOOLEAN",
+                    "fc": "ST"
+                },
+                {
+                    "name": "phsB",
+                    "type": "BOOLEAN",
+                    "fc": "ST"
+                },
+                {
+                    "name": "phsC",
+                    "type": "BOOLEAN",
+                    "fc": "ST"
+                },
+                {
+                    "name": "q",
+                    "type": "Quality",
+                    "fc": "ST"
+                },
+                {
+                    "name": "t",
+                    "type": "Timestamp",
+                    "fc": "ST"
+                }
+            ],
+            "source": "ICD"
+        },
+        "ACD": {
+            "description": "Directional protection activation",
+            "typicalDA": [
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "dirGeneral",
+                    "type": "Enum",
+                    "fc": "ST"
+                },
+                {
+                    "name": "general",
+                    "type": "BOOLEAN",
+                    "fc": "ST"
+                },
+                {
+                    "name": "q",
+                    "type": "Quality",
+                    "fc": "ST"
+                },
+                {
+                    "name": "t",
+                    "type": "Timestamp",
+                    "fc": "ST"
+                }
+            ],
+            "source": "ICD"
+        },
+        "VSS": {
+            "description": "Visible string status",
+            "typicalDA": [
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "q",
+                    "type": "Quality",
+                    "fc": "ST"
+                },
+                {
+                    "name": "stVal",
+                    "type": "VisString255",
+                    "fc": "ST"
+                },
+                {
+                    "name": "t",
+                    "type": "Timestamp",
+                    "fc": "ST"
+                }
+            ],
+            "source": "ICD"
+        },
+        "SAV": {
+            "description": "Sampled analogue value",
+            "typicalDA": [
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "instMag",
+                    "type": "Struct",
+                    "fc": "MX"
+                },
+                {
+                    "name": "max",
+                    "type": "Struct",
+                    "fc": "CF"
+                },
+                {
+                    "name": "min",
+                    "type": "Struct",
+                    "fc": "CF"
+                },
+                {
+                    "name": "q",
+                    "type": "Quality",
+                    "fc": "MX"
+                },
+                {
+                    "name": "sVC",
+                    "type": "Struct",
+                    "fc": "CF"
+                },
+                {
+                    "name": "units",
+                    "type": "Struct",
+                    "fc": "CF"
+                }
+            ],
+            "source": "ICD"
+        },
+        "VSD": {
+            "description": "Visible string description",
+            "typicalDA": [
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "dataNs",
+                    "type": "VisString255",
+                    "fc": "EX"
+                },
+                {
+                    "name": "val",
+                    "type": "VisString255",
+                    "fc": "DC"
+                }
+            ],
+            "source": "ICD"
+        },
+        "BCR": {
+            "description": "Binary counter reading",
+            "typicalDA": [
+                {
+                    "name": "actVal",
+                    "type": "INT64",
+                    "fc": "ST"
+                },
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "pulsQty",
+                    "type": "FLOAT32",
+                    "fc": "CF"
+                },
+                {
+                    "name": "q",
+                    "type": "Quality",
+                    "fc": "ST"
+                },
+                {
+                    "name": "t",
+                    "type": "Timestamp",
+                    "fc": "ST"
+                }
+            ],
+            "source": "ICD"
+        },
+        "WYE": {
+            "description": "Phase to ground values",
+            "typicalDA": [
+                {
+                    "name": "angRef",
+                    "type": "Enum",
+                    "fc": "CF"
+                },
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                }
+            ],
+            "source": "ICD"
+        },
+        "DEL": {
+            "description": "Measured value with deadband",
+            "typicalDA": [
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                }
+            ],
+            "source": "ICD"
+        },
+        "SEQ": {
+            "description": "Sequence",
+            "typicalDA": [
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "phsRef",
+                    "type": "Enum",
+                    "fc": "CF"
+                },
+                {
+                    "name": "seqT",
+                    "type": "Enum",
+                    "fc": "MX"
+                }
+            ],
+            "source": "ICD"
+        },
+        "HWYE": {
+            "description": "Harmonic value (wye)",
+            "typicalDA": [
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "evalTm",
+                    "type": "INT16U",
+                    "fc": "CF"
+                },
+                {
+                    "name": "frequency",
+                    "type": "FLOAT32",
+                    "fc": "CF"
+                },
+                {
+                    "name": "hvRef",
+                    "type": "Enum",
+                    "fc": "CF"
+                },
+                {
+                    "name": "maxPts",
+                    "type": "INT16U",
+                    "fc": "CF"
+                },
+                {
+                    "name": "numCyc",
+                    "type": "INT16U",
+                    "fc": "CF"
+                },
+                {
+                    "name": "numHar",
+                    "type": "INT16U",
+                    "fc": "CF"
+                }
+            ],
+            "source": "ICD"
+        },
+        "CMV": {
+            "description": "Complex measured value",
+            "typicalDA": [
+                {
+                    "name": "angRef",
+                    "type": "Enum",
+                    "fc": "CF"
+                },
+                {
+                    "name": "blkEna",
+                    "type": "BOOLEAN",
+                    "fc": "BL"
+                },
+                {
+                    "name": "cVal",
+                    "type": "Struct",
+                    "fc": "MX"
+                },
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "db",
+                    "type": "INT32U",
+                    "fc": "CF"
+                },
+                {
+                    "name": "dbAng",
+                    "type": "INT32U",
+                    "fc": "CF"
+                },
+                {
+                    "name": "dbAngRef",
+                    "type": "FLOAT32",
+                    "fc": "CF"
+                },
+                {
+                    "name": "dbRef",
+                    "type": "FLOAT32",
+                    "fc": "CF"
+                },
+                {
+                    "name": "q",
+                    "type": "Quality",
+                    "fc": "MX"
+                },
+                {
+                    "name": "range",
+                    "type": "Enum",
+                    "fc": "MX"
+                },
+                {
+                    "name": "rangeC",
+                    "type": "Struct",
+                    "fc": "CF"
+                },
+                {
+                    "name": "subCVal",
+                    "type": "Struct",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subEna",
+                    "type": "BOOLEAN",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subID",
+                    "type": "VisString64",
+                    "fc": "SV"
+                },
+                {
+                    "name": "subQ",
+                    "type": "Quality",
+                    "fc": "SV"
+                }
+            ],
+            "source": "ICD"
+        },
+        "INC": {
+            "description": "Integer controlled step position",
+            "typicalDA": [
+                {
+                    "name": "Cancel",
+                    "type": "Struct",
+                    "fc": "CO"
+                },
+                {
+                    "name": "Oper",
+                    "type": "Struct",
+                    "fc": "CO"
+                },
+                {
+                    "name": "ctlModel",
+                    "type": "Enum",
+                    "fc": "CF"
+                },
+                {
+                    "name": "ctlNum",
+                    "type": "INT8U",
+                    "fc": "ST"
+                },
+                {
+                    "name": "d",
+                    "type": "VisString255",
+                    "fc": "DC"
+                },
+                {
+                    "name": "maxVal",
+                    "type": "INT32",
+                    "fc": "CF"
+                },
+                {
+                    "name": "minVal",
+                    "type": "INT32",
+                    "fc": "CF"
+                },
+                {
+                    "name": "opOk",
+                    "type": "BOOLEAN",
+                    "fc": "OR"
+                },
+                {
+                    "name": "opRcvd",
+                    "type": "BOOLEAN",
+                    "fc": "OR"
+                },
+                {
+                    "name": "operTimeout",
+                    "type": "INT32U",
+                    "fc": "CF"
+                },
+                {
+                    "name": "origin",
+                    "type": "Struct",
+                    "fc": "ST"
+                },
+                {
+                    "name": "q",
+                    "type": "Quality",
+                    "fc": "ST"
+                },
+                {
+                    "name": "stVal",
+                    "type": "INT32",
+                    "fc": "ST"
+                },
+                {
+                    "name": "stepSize",
+                    "type": "INT32U",
+                    "fc": "CF"
+                },
+                {
+                    "name": "subEna",
+                    "type": "BOOLEAN",
+                    "fc": "SV"
+                }
+            ],
+            "source": "ICD"
+        }
+    },
+    "gooseSimulationHints": {
+        "whatTriggersPublish": [
+            "Changement de valeur d'une DA incluse dans le DataSet (ex: stVal, instMag.i, etc.)",
+            "Changement de q si q est incluse dans le DataSet",
+            "Changement de confRev/test/ndsCom côté GOOSE Control Block"
+        ],
+        "qualityDefaults": {
+            "q_default": {
+                "validity": "good",
+                "detail": [],
+                "source": "process",
+                "test": false,
+                "operatorBlocked": false
+            }
+        }
+    },
+    "patternsObservedInYourDatasets": {
+        "GOOSE": {
+            "LLN0.Beh": {
+                "stVal": "Beh",
+                "q": "Quality",
+                "t": "Timestamp"
+            },
+            "CILO0.Health": {
+                "stVal": "Health",
+                "q": "Quality",
+                "t": "Timestamp"
+            },
+            "CSWI0.Pos": {
+                "stVal": "Dbpos",
+                "q": "Quality",
+                "t": "Timestamp",
+                "origin": "Origin"
+            },
+            "CSWI0.OpCls.general": {
+                "stVal": "BOOLEAN",
+                "q": "Quality",
+                "t": "Timestamp"
+            },
+            "CSWI0.OpOpn.general": {
+                "stVal": "BOOLEAN",
+                "q": "Quality",
+                "t": "Timestamp"
+            },
+            "TVTR*.FuFail": {
+                "stVal": "BOOLEAN",
+                "q": "Quality",
+                "t": "Timestamp"
+            },
+            "LSYN0.WYESyncSrcId": {
+                "stVal": "INT32|Enum (selon SCD)",
+                "q": "Quality",
+                "t": "Timestamp"
+            }
+        },
+        "SV": {
+            "TCTR*.AmpSv.instMag.i": "INT32",
+            "TVTR*.VolSv.instMag.i": "INT32",
+            "q": "Quality"
+        }
+    },
+    "last_merged": "2026-02-02T00:39:55.297614Z",
+    "merge_stats": {
+        "icd_count": 29,
+        "enum_types_added": 165,
+        "cdc_added": 23
+    },
+    "enumTypes": {
+        "FaultDirectionKind": {
+            "description": "EnumType FaultDirectionKind (extrait des ICD)",
+            "values": [
+                "backward",
+                "both",
+                "forward",
+                "unknown"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRP",
+                "GRPR",
+                "GW",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SWC",
+                "SWT",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "CtlModelKind": {
+            "description": "EnumType CtlModelKind (extrait des ICD)",
+            "values": [
+                "direct-with-enhanced-security",
+                "direct-with-normal-security",
+                "sbo-with-enhanced-security",
+                "sbo-with-normal-security",
+                "status-only"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRP",
+                "GRPR",
+                "GW",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SWC",
+                "SWT",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "MultiplierKind": {
+            "description": "EnumType MultiplierKind (extrait des ICD)",
+            "values": [
+                "E",
+                "G",
+                "M",
+                "P",
+                "T",
+                "Y",
+                "Z",
+                "a",
+                "c",
+                "d",
+                "da",
+                "f",
+                "h",
+                "k",
+                "m",
+                "n",
+                "p",
+                "y",
+                "z",
+                "µ"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRP",
+                "GRPR",
+                "GW",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SWC",
+                "SWT",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "HealthKind": {
+            "description": "EnumType HealthKind (extrait des ICD)",
+            "values": [
+                "Alarm",
+                "Ok",
+                "Warning"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRP",
+                "GRPR",
+                "GW",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SWC",
+                "SWT",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "OriginatorCategoryKind": {
+            "description": "EnumType OriginatorCategoryKind (extrait des ICD)",
+            "values": [
+                "automatic-bay",
+                "automatic-remote",
+                "automatic-station",
+                "bay-control",
+                "maintenance",
+                "not-supported",
+                "process",
+                "remote-control",
+                "station-control"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRP",
+                "GRPR",
+                "GW",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SWC",
+                "SWT",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SIUnitKind": {
+            "description": "EnumType SIUnitKind (extrait des ICD)",
+            "values": [
+                "1/s",
+                "A",
+                "A/V",
+                "A/Vs",
+                "As",
+                "A²",
+                "A²t",
+                "Bq",
+                "C",
+                "F",
+                "Gy",
+                "H",
+                "Hz",
+                "Hz/s",
+                "J",
+                "J/K",
+                "J/Wh",
+                "J/kg K",
+                "J/m²",
+                "K",
+                "K/s",
+                "Lm",
+                "M",
+                "N",
+                "Ohm/m",
+                "Pa",
+                "Pa/s",
+                "S",
+                "S/m",
+                "Sv",
+                "T",
+                "V",
+                "V/Hz",
+                "VA",
+                "VAh",
+                "VAr",
+                "VArh",
+                "Vs",
+                "V²",
+                "W",
+                "W/m K",
+                "W/m²",
+                "W/s",
+                "Watts",
+                "Wb",
+                "Wh",
+                "cd",
+                "char",
+                "char/s",
+                "cos(phi)",
+                "dB",
+                "dBm",
+                "deg",
+                "h",
+                "kg",
+                "kg/m³",
+                "kgm²",
+                "l/s",
+                "lx",
+                "m",
+                "m/m³",
+                "m/s",
+                "m/s²",
+                "min",
+                "mol",
+                "m²",
+                "m²/s",
+                "m³",
+                "m³/s",
+                "ohm",
+                "percent/s",
+                "phi",
+                "ppm",
+                "rad",
+                "rad/s",
+                "s",
+                "sr",
+                "°C"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRP",
+                "GRPR",
+                "GW",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SWC",
+                "SWT",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SetPhNumKind": {
+            "description": "EnumType SetPhNumKind (extrait des ICD)",
+            "values": [
+                "ph0",
+                "ph11",
+                "ph3",
+                "ph4",
+                "ph7",
+                "ph8"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRP",
+                "GRPR",
+                "GW",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SWC",
+                "SWT",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "BehaviourModeKind": {
+            "description": "EnumType BehaviourModeKind (extrait des ICD)",
+            "values": [
+                "blocked",
+                "off",
+                "on",
+                "test",
+                "test/blocked"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRP",
+                "GRPR",
+                "GW",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SWC",
+                "SWT",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "OutputSignalKind": {
+            "description": "EnumType OutputSignalKind (extrait des ICD)",
+            "values": [
+                "persistent",
+                "persistent-feedback",
+                "pulse"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRP",
+                "GRPR",
+                "GW",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SWC",
+                "SWT",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SwitchFunctionKind": {
+            "description": "EnumType SwitchFunctionKind (extrait des ICD)",
+            "values": [
+                "Disconnector"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRP",
+                "GRPR",
+                "GW",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SWC",
+                "SWT",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "ClockSyncKind": {
+            "description": "EnumType ClockSyncKind (extrait des ICD)",
+            "values": [
+                "GlobalAreaClock",
+                "InternalClock",
+                "LocalAreaClock"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRP",
+                "GRPR",
+                "GW",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SWC",
+                "SWT",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "PhyHealthKind": {
+            "description": "EnumType PhyHealthKind (extrait des ICD)",
+            "values": [
+                "alarm",
+                "ok",
+                "warning"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRP",
+                "GRPR",
+                "GW",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SWC",
+                "SWT",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "InModKind": {
+            "description": "EnumType InModKind (extrait des ICD)",
+            "values": [
+                "Active high",
+                "Active low"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRP",
+                "GRPR",
+                "GW",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SWC",
+                "SWT",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "ClockSourceKind": {
+            "description": "EnumType ClockSourceKind (extrait des ICD)",
+            "values": [
+                "PTP",
+                "Unknown"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRP",
+                "GRPR",
+                "GW",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SWC",
+                "SWT",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "OutModKind": {
+            "description": "EnumType OutModKind (extrait des ICD)",
+            "values": [
+                "Active high",
+                "Active low"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRP",
+                "GRPR",
+                "GW",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SWC",
+                "SWT",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "orCategory": {
+            "description": "EnumType orCategory (extrait des ICD)",
+            "values": [
+                "automatic-bay",
+                "automatic-remote",
+                "automatic-station",
+                "bay-control",
+                "maintenance",
+                "not-supported",
+                "process",
+                "remote-control",
+                "station-control"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "CmdQual": {
+            "description": "EnumType CmdQual (extrait des ICD)",
+            "values": [
+                "persistent",
+                "pulse"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "CtlModels": {
+            "description": "EnumType CtlModels (extrait des ICD)",
+            "values": [
+                "direct-with-enhanced-security",
+                "direct-with-normal-security",
+                "sbo-with-enhanced-security",
+                "sbo-with-normal-security",
+                "status-only"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SboClasses": {
+            "description": "EnumType SboClasses (extrait des ICD)",
+            "values": [
+                "operate-many",
+                "operate-once"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "TripModeKind": {
+            "description": "EnumType TripModeKind (extrait des ICD)",
+            "values": [
+                "1 or 3 phase tripping",
+                "1 phase tripping",
+                "3 phase tripping"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SetTxRxSchKind": {
+            "description": "EnumType SetTxRxSchKind (extrait des ICD)",
+            "values": [
+                "blocking",
+                "none",
+                "permissive_overreach",
+                "permissive_underreach"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "CalcIntervalKind": {
+            "description": "EnumType CalcIntervalKind (extrait des ICD)",
+            "values": [
+                "MS"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "WeakEndInfeedModeKind": {
+            "description": "EnumType WeakEndInfeedModeKind (extrait des ICD)",
+            "values": [
+                "Echo",
+                "Echo and Operate",
+                "Off",
+                "Operate"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "DirectionModeKind": {
+            "description": "EnumType DirectionModeKind (extrait des ICD)",
+            "values": [
+                "Forward",
+                "NonDirectional",
+                "Reverse"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "LatModKind": {
+            "description": "EnumType LatModKind (extrait des ICD)",
+            "values": [
+                "latched",
+                "non latched"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "FaultLoopKind": {
+            "description": "EnumType FaultLoopKind (extrait des ICD)",
+            "values": [
+                "Others",
+                "PhaseAtoB",
+                "PhaseAtoGround",
+                "PhaseBtoC",
+                "PhaseBtoGround",
+                "PhaseCtoA",
+                "PhaseCtoGround"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "TriggerSourceKind": {
+            "description": "EnumType TriggerSourceKind (extrait des ICD)",
+            "values": [
+                "Both",
+                "External",
+                "Internal"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "CalcModeKind": {
+            "description": "EnumType CalcModeKind (extrait des ICD)",
+            "values": [
+                "PERIOD"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "LevelTriggerModeKind": {
+            "description": "EnumType LevelTriggerModeKind (extrait des ICD)",
+            "values": [
+                "Negative or Falling",
+                "Other",
+                "Positive or Rising"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "CalcMethodKind": {
+            "description": "EnumType CalcMethodKind (extrait des ICD)",
+            "values": [
+                "RMS_FUNDAMENTAL",
+                "TRUE_RMS"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "BreakerOpCapabilityKind": {
+            "description": "EnumType BreakerOpCapabilityKind (extrait des ICD)",
+            "values": [
+                "Close-Open",
+                "None",
+                "Open"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "RecCycModKind": {
+            "description": "EnumType RecCycModKind (extrait des ICD)",
+            "values": [
+                "REB",
+                "REB+RVB",
+                "REB+RVL",
+                "RVB",
+                "RVB+L",
+                "RVL",
+                "all"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "FailureDetectionKind": {
+            "description": "EnumType FailureDetectionKind (extrait des ICD)",
+            "values": [
+                "Breaker Status",
+                "Current",
+                "Other"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "AutoReclosingKind": {
+            "description": "EnumType AutoReclosingKind (extrait des ICD)",
+            "values": [
+                "Aborted",
+                "CBclosed",
+                "CycleUnsuccessful",
+                "FaultDisappeared",
+                "InProgress",
+                "NotReady",
+                "Ready",
+                "Successful",
+                "TripFromProtection",
+                "Unsuccessful",
+                "WaitToComplete",
+                "WaitingForTrip"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SetModKind": {
+            "description": "EnumType SetModKind (extrait des ICD)",
+            "values": [
+                "off",
+                "on"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "WYESyncKind": {
+            "description": "EnumType WYESyncKind (extrait des ICD)",
+            "values": [
+                "Global",
+                "Local synchronisation",
+                "Not synchronised"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "PhaseReferenceKind": {
+            "description": "EnumType PhaseReferenceKind (extrait des ICD)",
+            "values": [
+                "Synchrophasor"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "HvReferenceKind": {
+            "description": "EnumType HvReferenceKind (extrait des ICD)",
+            "values": [
+                "fundamental"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SequenceKind": {
+            "description": "EnumType SequenceKind (extrait des ICD)",
+            "values": [
+                "pos-neg-zero"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "WYESyncNKind": {
+            "description": "EnumType WYESyncNKind (extrait des ICD)",
+            "values": [
+                "Global",
+                "Local synchronisation",
+                "Not synchronised"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "RangeKind": {
+            "description": "EnumType RangeKind (extrait des ICD)",
+            "values": [
+                "high",
+                "high-high",
+                "low",
+                "low-low",
+                "normal"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "LedBlkKind": {
+            "description": "EnumType LedBlkKind (extrait des ICD)",
+            "values": [
+                "fast blinking",
+                "fix",
+                "slow blinking"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "PhaseAngleReferenceKind": {
+            "description": "EnumType PhaseAngleReferenceKind (extrait des ICD)",
+            "values": [
+                "Synchrophasor"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "BPU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_BehaviourModeKind_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_BehaviourModeKind_ (extrait des ICD)",
+            "values": [
+                "blocked",
+                "off",
+                "on",
+                "test",
+                "test/blocked"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_BehaviourModeKind15_1_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_BehaviourModeKind15_1_ (extrait des ICD)",
+            "values": [
+                "off",
+                "on"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_ClockSourceKind13_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_ClockSourceKind13_ (extrait des ICD)",
+            "values": [
+                "PTP",
+                "Unknown"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_ClockSyncKind12_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_ClockSyncKind12_ (extrait des ICD)",
+            "values": [
+                "GlobalAreaClock",
+                "InternalClock",
+                "LocalAreaClock"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_CtlModelKind01_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_CtlModelKind01_ (extrait des ICD)",
+            "values": [
+                "direct-with-normal-security",
+                "status-only"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_CtlModelKind03_1_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_CtlModelKind03_1_ (extrait des ICD)",
+            "values": [
+                "direct-with-enhanced-security",
+                "status-only"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_CtlModelKind0_1_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_CtlModelKind0_1_ (extrait des ICD)",
+            "values": [
+                "status-only"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_CtlModelKind1_1_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_CtlModelKind1_1_ (extrait des ICD)",
+            "values": [
+                "direct-with-normal-security"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_CtlModelKind3_1_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_CtlModelKind3_1_ (extrait des ICD)",
+            "values": [
+                "direct-with-enhanced-security"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_FaultDirectionKind0_1_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_FaultDirectionKind0_1_ (extrait des ICD)",
+            "values": [
+                "unknown"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_HealthKind_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_HealthKind_ (extrait des ICD)",
+            "values": [
+                "Alarm",
+                "Ok",
+                "Warning"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_HealthKind13_1_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_HealthKind13_1_ (extrait des ICD)",
+            "values": [
+                "Alarm",
+                "Ok"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_InModKind_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_InModKind_ (extrait des ICD)",
+            "values": [
+                "Active high",
+                "Active low"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_LatModKind_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_LatModKind_ (extrait des ICD)",
+            "values": [
+                "latched",
+                "non latched"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_LedBlkKind_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_LedBlkKind_ (extrait des ICD)",
+            "values": [
+                "fast blinking",
+                "fix",
+                "slow blinking"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_LedOffColKindOff_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_LedOffColKindOff_ (extrait des ICD)",
+            "values": [
+                "off"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_LedOnColKindBlue_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_LedOnColKindBlue_ (extrait des ICD)",
+            "values": [
+                "blue"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_LedOnColKindGreen_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_LedOnColKindGreen_ (extrait des ICD)",
+            "values": [
+                "green"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_LedOnColKindRed_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_LedOnColKindRed_ (extrait des ICD)",
+            "values": [
+                "red"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_MultiplierKind_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_MultiplierKind_ (extrait des ICD)",
+            "values": [
+                "E",
+                "G",
+                "M",
+                "P",
+                "T",
+                "Y",
+                "Z",
+                "a",
+                "c",
+                "d",
+                "da",
+                "f",
+                "h",
+                "k",
+                "m",
+                "n",
+                "p",
+                "y",
+                "z",
+                "µ"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_OriginatorCategoryKind_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_OriginatorCategoryKind_ (extrait des ICD)",
+            "values": [
+                "automatic-bay",
+                "automatic-remote",
+                "automatic-station",
+                "bay-control",
+                "maintenance",
+                "not-supported",
+                "process",
+                "remote-control",
+                "station-control"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_OutModKind_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_OutModKind_ (extrait des ICD)",
+            "values": [
+                "Active high",
+                "Active low"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_OutputSignalKind_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_OutputSignalKind_ (extrait des ICD)",
+            "values": [
+                "persistent",
+                "persistent-feedback",
+                "pulse"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_PhyHealthKind_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_PhyHealthKind_ (extrait des ICD)",
+            "values": [
+                "alarm",
+                "ok",
+                "warning"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_RotatingMachineStateKind13_1_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_RotatingMachineStateKind13_1_ (extrait des ICD)",
+            "values": [
+                "Started",
+                "Stopped"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_RotationalDirectionKind3_1_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_RotationalDirectionKind3_1_ (extrait des ICD)",
+            "values": [
+                "Unknown"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_SIUnitKind_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_SIUnitKind_ (extrait des ICD)",
+            "values": [
+                "1/s",
+                "A",
+                "A/V",
+                "A/Vs",
+                "As",
+                "A²",
+                "A²t",
+                "Bq",
+                "C",
+                "F",
+                "Gy",
+                "H",
+                "Hz",
+                "Hz/s",
+                "J",
+                "J/K",
+                "J/Wh",
+                "J/kg K",
+                "J/m²",
+                "K",
+                "K/s",
+                "Lm",
+                "M",
+                "N",
+                "Ohm/m",
+                "Pa",
+                "Pa/s",
+                "S",
+                "S/m",
+                "Sv",
+                "T",
+                "V",
+                "V/Hz",
+                "VA",
+                "VAh",
+                "VAr",
+                "VArh",
+                "Vs",
+                "V²",
+                "W",
+                "W/m K",
+                "W/m²",
+                "W/s",
+                "Watts",
+                "Wb",
+                "Wh",
+                "cd",
+                "char",
+                "char/s",
+                "cos(phi)",
+                "dB",
+                "dBm",
+                "deg",
+                "h",
+                "kg",
+                "kg/m³",
+                "kgm²",
+                "l/s",
+                "lx",
+                "m",
+                "m/m³",
+                "m/s",
+                "m/s²",
+                "min",
+                "mol",
+                "m²",
+                "m²/s",
+                "m³",
+                "m³/s",
+                "ohm",
+                "percent/s",
+                "phi",
+                "ppm",
+                "rad",
+                "rad/s",
+                "s",
+                "sr",
+                "°C"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_SwitchFunctionKind1_1_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_SwitchFunctionKind1_1_ (extrait des ICD)",
+            "values": [
+                "Load Break"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_TG2_2_2A_Textlist_SwitchFunctionKind2_1_": {
+            "description": "EnumType SCLE_SCU_TG2_2_2A_Textlist_SwitchFunctionKind2_1_ (extrait des ICD)",
+            "values": [
+                "Disconnector"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "SCU-TG",
+                "SYN",
+                "TAC",
+                "TG",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_BehaviourModeKind_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_BehaviourModeKind_ (extrait des ICD)",
+            "values": [
+                "blocked",
+                "off",
+                "on",
+                "test",
+                "test/blocked"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_BehaviourModeKind15_1_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_BehaviourModeKind15_1_ (extrait des ICD)",
+            "values": [
+                "off",
+                "on"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_ClockSourceKind13_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_ClockSourceKind13_ (extrait des ICD)",
+            "values": [
+                "PTP",
+                "Unknown"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_ClockSyncKind12_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_ClockSyncKind12_ (extrait des ICD)",
+            "values": [
+                "GlobalAreaClock",
+                "InternalClock",
+                "LocalAreaClock"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_CtlModelKind01_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_CtlModelKind01_ (extrait des ICD)",
+            "values": [
+                "direct-with-normal-security",
+                "status-only"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_CtlModelKind03_1_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_CtlModelKind03_1_ (extrait des ICD)",
+            "values": [
+                "direct-with-enhanced-security",
+                "status-only"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_CtlModelKind0_1_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_CtlModelKind0_1_ (extrait des ICD)",
+            "values": [
+                "status-only"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_CtlModelKind1_1_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_CtlModelKind1_1_ (extrait des ICD)",
+            "values": [
+                "direct-with-normal-security"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_CtlModelKind1_autoAdded_3_1_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_CtlModelKind1_autoAdded_3_1_ (extrait des ICD)",
+            "values": [
+                "direct-with-enhanced-security",
+                "direct-with-normal-security"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_CtlModelKind3_1_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_CtlModelKind3_1_ (extrait des ICD)",
+            "values": [
+                "direct-with-enhanced-security"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_FaultDirectionKind0_1_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_FaultDirectionKind0_1_ (extrait des ICD)",
+            "values": [
+                "unknown"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_HealthKind_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_HealthKind_ (extrait des ICD)",
+            "values": [
+                "Alarm",
+                "Ok",
+                "Warning"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_HealthKind13_1_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_HealthKind13_1_ (extrait des ICD)",
+            "values": [
+                "Alarm",
+                "Ok"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_InModKind_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_InModKind_ (extrait des ICD)",
+            "values": [
+                "Active high",
+                "Active low"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_LatModKind_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_LatModKind_ (extrait des ICD)",
+            "values": [
+                "latched",
+                "non latched"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_LedBlkKind_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_LedBlkKind_ (extrait des ICD)",
+            "values": [
+                "fast blinking",
+                "fix",
+                "slow blinking"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_LedOffColKindOff_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_LedOffColKindOff_ (extrait des ICD)",
+            "values": [
+                "off"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_LedOnColKindBlue_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_LedOnColKindBlue_ (extrait des ICD)",
+            "values": [
+                "blue"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_LedOnColKindGreen_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_LedOnColKindGreen_ (extrait des ICD)",
+            "values": [
+                "green"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_LedOnColKindRed_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_LedOnColKindRed_ (extrait des ICD)",
+            "values": [
+                "red"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_MultiplierKind_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_MultiplierKind_ (extrait des ICD)",
+            "values": [
+                "E",
+                "G",
+                "M",
+                "P",
+                "T",
+                "Y",
+                "Z",
+                "a",
+                "c",
+                "d",
+                "da",
+                "f",
+                "h",
+                "k",
+                "m",
+                "n",
+                "p",
+                "y",
+                "z",
+                "µ"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_OriginatorCategoryKind_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_OriginatorCategoryKind_ (extrait des ICD)",
+            "values": [
+                "automatic-bay",
+                "automatic-remote",
+                "automatic-station",
+                "bay-control",
+                "maintenance",
+                "not-supported",
+                "process",
+                "remote-control",
+                "station-control"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_OutModKind_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_OutModKind_ (extrait des ICD)",
+            "values": [
+                "Active high",
+                "Active low"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_OutputSignalKind_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_OutputSignalKind_ (extrait des ICD)",
+            "values": [
+                "persistent",
+                "persistent-feedback",
+                "pulse"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_PhyHealthKind_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_PhyHealthKind_ (extrait des ICD)",
+            "values": [
+                "alarm",
+                "ok",
+                "warning"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_RotatingMachineStateKind13_1_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_RotatingMachineStateKind13_1_ (extrait des ICD)",
+            "values": [
+                "Started",
+                "Stopped"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_RotationalDirectionKind3_1_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_RotationalDirectionKind3_1_ (extrait des ICD)",
+            "values": [
+                "Unknown"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_SIUnitKind_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_SIUnitKind_ (extrait des ICD)",
+            "values": [
+                "1/s",
+                "A",
+                "A/V",
+                "A/Vs",
+                "As",
+                "A²",
+                "A²t",
+                "Bq",
+                "C",
+                "F",
+                "Gy",
+                "H",
+                "Hz",
+                "Hz/s",
+                "J",
+                "J/K",
+                "J/Wh",
+                "J/kg K",
+                "J/m²",
+                "K",
+                "K/s",
+                "Lm",
+                "M",
+                "N",
+                "Ohm/m",
+                "Pa",
+                "Pa/s",
+                "S",
+                "S/m",
+                "Sv",
+                "T",
+                "V",
+                "V/Hz",
+                "VA",
+                "VAh",
+                "VAr",
+                "VArh",
+                "Vs",
+                "V²",
+                "W",
+                "W/m K",
+                "W/m²",
+                "W/s",
+                "Watts",
+                "Wb",
+                "Wh",
+                "cd",
+                "char",
+                "char/s",
+                "cos(phi)",
+                "dB",
+                "dBm",
+                "deg",
+                "h",
+                "kg",
+                "kg/m³",
+                "kgm²",
+                "l/s",
+                "lx",
+                "m",
+                "m/m³",
+                "m/s",
+                "m/s²",
+                "min",
+                "mol",
+                "m²",
+                "m²/s",
+                "m³",
+                "m³/s",
+                "ohm",
+                "percent/s",
+                "phi",
+                "ppm",
+                "rad",
+                "rad/s",
+                "s",
+                "sr",
+                "°C"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_SwitchFunctionKind1_1_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_SwitchFunctionKind1_1_ (extrait des ICD)",
+            "values": [
+                "Load Break"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_LIGNE1_2_2A_Textlist_SwitchFunctionKind2_1_": {
+            "description": "EnumType SCLE_SCU_LIGNE1_2_2A_Textlist_SwitchFunctionKind2_1_ (extrait des ICD)",
+            "values": [
+                "Disconnector"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "ASLD",
+                "AUT",
+                "BCU",
+                "CLUS",
+                "GRPR",
+                "ICT",
+                "OND",
+                "SAMU",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "VTRefStKind": {
+            "description": "EnumType VTRefStKind (extrait des ICD)",
+            "values": [
+                "No VT available",
+                "No valid VT",
+                "VT output valid",
+                "Voltage zero"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC",
+                "TOPO",
+                "VIRT"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_BehaviourModeKind_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_BehaviourModeKind_ (extrait des ICD)",
+            "values": [
+                "blocked",
+                "off",
+                "on",
+                "test",
+                "test/blocked"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_BehaviourModeKind15_1_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_BehaviourModeKind15_1_ (extrait des ICD)",
+            "values": [
+                "off",
+                "on"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_ClockSourceKind13_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_ClockSourceKind13_ (extrait des ICD)",
+            "values": [
+                "PTP",
+                "Unknown"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_ClockSyncKind12_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_ClockSyncKind12_ (extrait des ICD)",
+            "values": [
+                "GlobalAreaClock",
+                "InternalClock",
+                "LocalAreaClock"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_CtlModelKind01_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_CtlModelKind01_ (extrait des ICD)",
+            "values": [
+                "direct-with-normal-security",
+                "status-only"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_CtlModelKind03_1_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_CtlModelKind03_1_ (extrait des ICD)",
+            "values": [
+                "direct-with-enhanced-security",
+                "status-only"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_CtlModelKind0_1_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_CtlModelKind0_1_ (extrait des ICD)",
+            "values": [
+                "status-only"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_CtlModelKind1_1_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_CtlModelKind1_1_ (extrait des ICD)",
+            "values": [
+                "direct-with-normal-security"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_CtlModelKind1_autoAdded_3_1_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_CtlModelKind1_autoAdded_3_1_ (extrait des ICD)",
+            "values": [
+                "direct-with-enhanced-security",
+                "direct-with-normal-security"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_CtlModelKind3_1_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_CtlModelKind3_1_ (extrait des ICD)",
+            "values": [
+                "direct-with-enhanced-security"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_FaultDirectionKind0_1_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_FaultDirectionKind0_1_ (extrait des ICD)",
+            "values": [
+                "unknown"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_HealthKind_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_HealthKind_ (extrait des ICD)",
+            "values": [
+                "Alarm",
+                "Ok",
+                "Warning"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_HealthKind13_1_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_HealthKind13_1_ (extrait des ICD)",
+            "values": [
+                "Alarm",
+                "Ok"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_LatModKind_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_LatModKind_ (extrait des ICD)",
+            "values": [
+                "latched",
+                "non latched"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_LedBlkKind_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_LedBlkKind_ (extrait des ICD)",
+            "values": [
+                "fast blinking",
+                "fix",
+                "slow blinking"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_LedOffColKindOff_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_LedOffColKindOff_ (extrait des ICD)",
+            "values": [
+                "off"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_LedOnColKindBlue_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_LedOnColKindBlue_ (extrait des ICD)",
+            "values": [
+                "blue"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_LedOnColKindGreen_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_LedOnColKindGreen_ (extrait des ICD)",
+            "values": [
+                "green"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_LedOnColKindRed_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_LedOnColKindRed_ (extrait des ICD)",
+            "values": [
+                "red"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_MultiplierKind_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_MultiplierKind_ (extrait des ICD)",
+            "values": [
+                "E",
+                "G",
+                "M",
+                "P",
+                "T",
+                "Y",
+                "Z",
+                "a",
+                "c",
+                "d",
+                "da",
+                "f",
+                "h",
+                "k",
+                "m",
+                "n",
+                "p",
+                "y",
+                "z",
+                "µ"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_OriginatorCategoryKind_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_OriginatorCategoryKind_ (extrait des ICD)",
+            "values": [
+                "automatic-bay",
+                "automatic-remote",
+                "automatic-station",
+                "bay-control",
+                "maintenance",
+                "not-supported",
+                "process",
+                "remote-control",
+                "station-control"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_OutModKind_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_OutModKind_ (extrait des ICD)",
+            "values": [
+                "Active high",
+                "Active low"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_OutputSignalKind_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_OutputSignalKind_ (extrait des ICD)",
+            "values": [
+                "persistent",
+                "persistent-feedback",
+                "pulse"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_PhyHealthKind_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_PhyHealthKind_ (extrait des ICD)",
+            "values": [
+                "alarm",
+                "ok",
+                "warning"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_RotatingMachineStateKind13_1_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_RotatingMachineStateKind13_1_ (extrait des ICD)",
+            "values": [
+                "Started",
+                "Stopped"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_RotationalDirectionKind3_1_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_RotationalDirectionKind3_1_ (extrait des ICD)",
+            "values": [
+                "Unknown"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_SIUnitKind_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_SIUnitKind_ (extrait des ICD)",
+            "values": [
+                "1/s",
+                "A",
+                "A/V",
+                "A/Vs",
+                "As",
+                "A²",
+                "A²t",
+                "Bq",
+                "C",
+                "F",
+                "Gy",
+                "H",
+                "Hz",
+                "Hz/s",
+                "J",
+                "J/K",
+                "J/Wh",
+                "J/kg K",
+                "J/m²",
+                "K",
+                "K/s",
+                "Lm",
+                "M",
+                "N",
+                "Ohm/m",
+                "Pa",
+                "Pa/s",
+                "S",
+                "S/m",
+                "Sv",
+                "T",
+                "V",
+                "V/Hz",
+                "VA",
+                "VAh",
+                "VAr",
+                "VArh",
+                "Vs",
+                "V²",
+                "W",
+                "W/m K",
+                "W/m²",
+                "W/s",
+                "Watts",
+                "Wb",
+                "Wh",
+                "cd",
+                "char",
+                "char/s",
+                "cos(phi)",
+                "dB",
+                "dBm",
+                "deg",
+                "h",
+                "kg",
+                "kg/m³",
+                "kgm²",
+                "l/s",
+                "lx",
+                "m",
+                "m/m³",
+                "m/s",
+                "m/s²",
+                "min",
+                "mol",
+                "m²",
+                "m²/s",
+                "m³",
+                "m³/s",
+                "ohm",
+                "percent/s",
+                "phi",
+                "ppm",
+                "rad",
+                "rad/s",
+                "s",
+                "sr",
+                "°C"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_MCB2_2_1H_Textlist_SwitchFunctionKind1_1_": {
+            "description": "EnumType SCLE_SCU_MCB2_2_1H_Textlist_SwitchFunctionKind1_1_ (extrait des ICD)",
+            "values": [
+                "Load Break"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "AUT",
+                "BCU",
+                "CLUS",
+                "SCU-MCB",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "CtlModelVal": {
+            "description": "EnumType CtlModelVal (extrait des ICD)",
+            "values": [
+                "direct-with-enhanced-security",
+                "status-only"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "HealthVal": {
+            "description": "EnumType HealthVal (extrait des ICD)",
+            "values": [
+                "Alarm",
+                "Ok",
+                "Warning"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "ModVal": {
+            "description": "EnumType ModVal (extrait des ICD)",
+            "values": [
+                "blocked",
+                "off",
+                "on",
+                "test",
+                "test/blocked"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "OrCatVal": {
+            "description": "EnumType OrCatVal (extrait des ICD)",
+            "values": [
+                "automatic-bay",
+                "automatic-remote",
+                "automatic-station",
+                "bay-control",
+                "maintenance",
+                "not-supported",
+                "process",
+                "remote-control",
+                "station-control"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG",
+                "TAC"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_BehaviourModeKind_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_BehaviourModeKind_ (extrait des ICD)",
+            "values": [
+                "blocked",
+                "off",
+                "on",
+                "test",
+                "test/blocked"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_BehaviourModeKind15_1_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_BehaviourModeKind15_1_ (extrait des ICD)",
+            "values": [
+                "off",
+                "on"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_ClockSourceKind13_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_ClockSourceKind13_ (extrait des ICD)",
+            "values": [
+                "PTP",
+                "Unknown"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_ClockSyncKind12_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_ClockSyncKind12_ (extrait des ICD)",
+            "values": [
+                "GlobalAreaClock",
+                "InternalClock",
+                "LocalAreaClock"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_CtlModelKind01_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_CtlModelKind01_ (extrait des ICD)",
+            "values": [
+                "direct-with-normal-security",
+                "status-only"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_CtlModelKind03_1_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_CtlModelKind03_1_ (extrait des ICD)",
+            "values": [
+                "direct-with-enhanced-security",
+                "status-only"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_CtlModelKind0_1_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_CtlModelKind0_1_ (extrait des ICD)",
+            "values": [
+                "status-only"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_CtlModelKind1_1_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_CtlModelKind1_1_ (extrait des ICD)",
+            "values": [
+                "direct-with-normal-security"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_CtlModelKind1_autoAdded_3_1_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_CtlModelKind1_autoAdded_3_1_ (extrait des ICD)",
+            "values": [
+                "direct-with-enhanced-security",
+                "direct-with-normal-security"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_CtlModelKind3_1_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_CtlModelKind3_1_ (extrait des ICD)",
+            "values": [
+                "direct-with-enhanced-security"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_FaultDirectionKind0_1_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_FaultDirectionKind0_1_ (extrait des ICD)",
+            "values": [
+                "unknown"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_HealthKind_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_HealthKind_ (extrait des ICD)",
+            "values": [
+                "Alarm",
+                "Ok",
+                "Warning"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_HealthKind13_1_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_HealthKind13_1_ (extrait des ICD)",
+            "values": [
+                "Alarm",
+                "Ok"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_InModKind_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_InModKind_ (extrait des ICD)",
+            "values": [
+                "Active high",
+                "Active low"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_LatModKind_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_LatModKind_ (extrait des ICD)",
+            "values": [
+                "latched",
+                "non latched"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_LedBlkKind_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_LedBlkKind_ (extrait des ICD)",
+            "values": [
+                "fast blinking",
+                "fix",
+                "slow blinking"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_LedOffColKindOff_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_LedOffColKindOff_ (extrait des ICD)",
+            "values": [
+                "off"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_LedOnColKindBlue_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_LedOnColKindBlue_ (extrait des ICD)",
+            "values": [
+                "blue"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_LedOnColKindGreen_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_LedOnColKindGreen_ (extrait des ICD)",
+            "values": [
+                "green"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_LedOnColKindRed_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_LedOnColKindRed_ (extrait des ICD)",
+            "values": [
+                "red"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_MultiplierKind_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_MultiplierKind_ (extrait des ICD)",
+            "values": [
+                "E",
+                "G",
+                "M",
+                "P",
+                "T",
+                "Y",
+                "Z",
+                "a",
+                "c",
+                "d",
+                "da",
+                "f",
+                "h",
+                "k",
+                "m",
+                "n",
+                "p",
+                "y",
+                "z",
+                "µ"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_OriginatorCategoryKind_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_OriginatorCategoryKind_ (extrait des ICD)",
+            "values": [
+                "automatic-bay",
+                "automatic-remote",
+                "automatic-station",
+                "bay-control",
+                "maintenance",
+                "not-supported",
+                "process",
+                "remote-control",
+                "station-control"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_OutModKind_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_OutModKind_ (extrait des ICD)",
+            "values": [
+                "Active high",
+                "Active low"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_OutputSignalKind_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_OutputSignalKind_ (extrait des ICD)",
+            "values": [
+                "persistent",
+                "persistent-feedback",
+                "pulse"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_PhyHealthKind_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_PhyHealthKind_ (extrait des ICD)",
+            "values": [
+                "alarm",
+                "ok",
+                "warning"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_RotatingMachineStateKind13_1_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_RotatingMachineStateKind13_1_ (extrait des ICD)",
+            "values": [
+                "Started",
+                "Stopped"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_RotationalDirectionKind3_1_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_RotationalDirectionKind3_1_ (extrait des ICD)",
+            "values": [
+                "Unknown"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_SIUnitKind_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_SIUnitKind_ (extrait des ICD)",
+            "values": [
+                "1/s",
+                "A",
+                "A/V",
+                "A/Vs",
+                "As",
+                "A²",
+                "A²t",
+                "Bq",
+                "C",
+                "F",
+                "Gy",
+                "H",
+                "Hz",
+                "Hz/s",
+                "J",
+                "J/K",
+                "J/Wh",
+                "J/kg K",
+                "J/m²",
+                "K",
+                "K/s",
+                "Lm",
+                "M",
+                "N",
+                "Ohm/m",
+                "Pa",
+                "Pa/s",
+                "S",
+                "S/m",
+                "Sv",
+                "T",
+                "V",
+                "V/Hz",
+                "VA",
+                "VAh",
+                "VAr",
+                "VArh",
+                "Vs",
+                "V²",
+                "W",
+                "W/m K",
+                "W/m²",
+                "W/s",
+                "Watts",
+                "Wb",
+                "Wh",
+                "cd",
+                "char",
+                "char/s",
+                "cos(phi)",
+                "dB",
+                "dBm",
+                "deg",
+                "h",
+                "kg",
+                "kg/m³",
+                "kgm²",
+                "l/s",
+                "lx",
+                "m",
+                "m/m³",
+                "m/s",
+                "m/s²",
+                "min",
+                "mol",
+                "m²",
+                "m²/s",
+                "m³",
+                "m³/s",
+                "ohm",
+                "percent/s",
+                "phi",
+                "ppm",
+                "rad",
+                "rad/s",
+                "s",
+                "sr",
+                "°C"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_SwitchFunctionKind1_1_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_SwitchFunctionKind1_1_ (extrait des ICD)",
+            "values": [
+                "Load Break"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        },
+        "SCLE_SCU_CBO2_2_2A_Textlist_SwitchFunctionKind2_1_": {
+            "description": "EnumType SCLE_SCU_CBO2_2_2A_Textlist_SwitchFunctionKind2_1_ (extrait des ICD)",
+            "values": [
+                "Disconnector"
+            ],
+            "source": "ICD",
+            "used_in": [
+                "BCU",
+                "CLUS",
+                "SCU-ORG"
+            ]
+        }
+    }
+}

@@ -4,6 +4,7 @@ const API_BASE = '/api/icd';
 
 let iedPatterns = [];   // Patterns IED depuis liste_ied.json
 let icdCatalog = [];    // ICD importés
+let icdDefaults = {};   // ICD référents: {pattern_id: {manufacturer: icd_id, ...}, ...}
 
 // ============================================================
 // Initialisation
@@ -12,13 +13,90 @@ let icdCatalog = [];    // ICD importés
 async function initIedIcdPage() {
     await Promise.all([
         loadIedPatterns(),
-        loadIcdCatalog()
+        loadIcdCatalog(),
+        loadIcdDefaults()
     ]);
     setupIcdUploadWithAutoLink();
     renderIedCards();
     renderOrphanIcds();
     updateStats();
     initOrphanPanel();
+}
+
+// Charger les ICD référents (par pattern ET manufacturer)
+async function loadIcdDefaults() {
+    try {
+        const response = await fetch(`${API_BASE}/default`);
+        if (!response.ok) throw new Error('Erreur chargement defaults');
+        const data = await response.json();
+        // Structure: {pattern_id: {manufacturer: icd_id, ...}, ...}
+        icdDefaults = data.defaults || {};
+        const totalCount = Object.values(icdDefaults).reduce((sum, v) => sum + Object.keys(v).length, 0);
+        console.log(`⭐ ${totalCount} ICD référent(s) chargés pour ${Object.keys(icdDefaults).length} pattern(s)`);
+    } catch (error) {
+        console.warn('Erreur chargement defaults:', error);
+        icdDefaults = {};
+    }
+}
+
+// Vérifier si un ICD est le référent pour un pattern + manufacturer
+function isDefaultIcd(icd, patternId) {
+    const manufacturer = icd.manufacturer;
+    if (!patternId || !manufacturer) return false;
+
+    const patternDefaults = icdDefaults[patternId];
+    if (!patternDefaults) return false;
+
+    return patternDefaults[manufacturer] === icd.icd_id;
+}
+
+// Définir/supprimer un ICD comme référent pour un pattern + manufacturer
+async function toggleDefaultIcd(encodedIcdId, encodedPatternId, encodedManufacturer) {
+    const icdId = decodeURIComponent(encodedIcdId);
+    const patternId = decodeURIComponent(encodedPatternId);
+    const manufacturer = decodeURIComponent(encodedManufacturer);
+
+    const patternDefaults = icdDefaults[patternId] || {};
+    const isCurrentlyDefault = patternDefaults[manufacturer] === icdId;
+
+    try {
+        if (isCurrentlyDefault) {
+            // Supprimer le référent
+            const response = await fetch(`${API_BASE}/default/${encodeURIComponent(patternId)}/${encodeURIComponent(manufacturer)}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok) throw new Error('Erreur suppression référent');
+
+            // Mise à jour locale
+            if (icdDefaults[patternId]) {
+                delete icdDefaults[patternId][manufacturer];
+                if (Object.keys(icdDefaults[patternId]).length === 0) {
+                    delete icdDefaults[patternId];
+                }
+            }
+            console.log(`⭐ Référent supprimé pour ${patternId}/${manufacturer}`);
+        } else {
+            // Définir comme référent
+            const response = await fetch(`${API_BASE}/default/${encodeURIComponent(patternId)}/${encodeURIComponent(manufacturer)}/${encodeURIComponent(icdId)}`, {
+                method: 'POST'
+            });
+            if (!response.ok) throw new Error('Erreur définition référent');
+
+            // Mise à jour locale
+            if (!icdDefaults[patternId]) {
+                icdDefaults[patternId] = {};
+            }
+            icdDefaults[patternId][manufacturer] = icdId;
+            console.log(`⭐ ${icdId} défini comme référent pour ${patternId}/${manufacturer}`);
+        }
+
+        // Re-rendre l'UI
+        renderIedCards();
+        renderOrphanIcds();
+    } catch (error) {
+        console.error('Erreur toggle default:', error);
+        alert('Erreur: ' + error.message);
+    }
 }
 
 // Gestion du panneau flottant orphelins
@@ -331,18 +409,32 @@ function buildIcdItem(icd, currentPattern) {
     // Utiliser icd_id comme identifiant unique
     const icdId = icd.icd_id;
     const encodedId = encodeURIComponent(icdId);
+    const patternId = currentPattern.id;
+    const encodedPatternId = encodeURIComponent(patternId);
+    const manufacturer = icd.manufacturer || '';
+    const encodedManufacturer = encodeURIComponent(manufacturer);
     // Afficher desc s'il existe (ex: SAMUA1), sinon ied_type_attr, sinon ied_type
     const displayType = icd.desc || icd.ied_type_attr || icd.ied_type;
 
+    // Bouton référent ⭐ (par pattern + manufacturer)
+    const isDefault = isDefaultIcd(icd, patternId);
+    const starClass = isDefault ? 'btn-star active' : 'btn-star';
+    const starIcon = isDefault ? '⭐' : '☆';
+    const starTitle = isDefault ? 'Retirer comme référent' : `Définir comme référent (${manufacturer})`;
+
     return `
-        <div class="icd-item" data-icd-id="${escapeHtml(icdId)}">
+        <div class="icd-item ${isDefault ? 'is-default' : ''}" data-icd-id="${escapeHtml(icdId)}">
             <div class="icd-item-info">
                 <strong>${escapeHtml(displayType)}</strong>
+                ${isDefault ? '<span class="default-badge">Référent</span>' : ''}
                 <div class="icd-item-meta">
                     ${escapeHtml(icd.manufacturer)} • ${escapeHtml(icd.version)} • ${icd.ld_count || 0} LD • ${icd.ln_count || 0} LN
                 </div>
             </div>
             <div class="icd-item-actions">
+                <button class="btn-icon ${starClass}" onclick="toggleDefaultIcd('${encodedId}', '${encodedPatternId}', '${encodedManufacturer}')" title="${starTitle}">
+                    ${starIcon}
+                </button>
                 <button class="btn-icon" onclick="showMoveIcdModal(decodeURIComponent('${encodedId}'), '${currentPattern.id}')" title="Changer d'équipement">
                     ↔️
                 </button>

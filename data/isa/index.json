@@ -10,8 +10,56 @@
       "type_refs": [
         "isa_cde"
       ],
-      "path": "data\\isa\\files\\isa_cde\\8ba709229c97_cde_by_risa.json"
+      "path": "data\\isa\\files\\isa_cde\\8ba709229c97_cde_by_risa.json",
+      "is_default_for": [
+        "isa_cde"
+      ]
+    },
+    {
+      "id": "a2073626a491",
+      "original_name": "tcd_by_risa.json",
+      "filename": "a2073626a491_tcd_by_risa.json",
+      "format": "json",
+      "size": 970260,
+      "imported_at": "2026-02-01T23:21:49.978413",
+      "type_refs": [
+        "isa_tcd"
+      ],
+      "path": "data\\isa\\files\\isa_tcd\\a2073626a491_tcd_by_risa.json",
+      "is_default_for": [
+        "isa_tcd"
+      ]
+    },
+    {
+      "id": "b7baa35d48b4",
+      "original_name": "Export_ISA_modif_0.0.0_analyse_0.0.0.json",
+      "filename": "b7baa35d48b4_Export_ISA_modif_0.0.0_analyse_0.0.0.json",
+      "format": "json",
+      "size": 4412603,
+      "imported_at": "2026-02-02T00:16:16.971806",
+      "type_refs": [
+        "risa"
+      ],
+      "path": "data\\isa\\files\\risa\\b7baa35d48b4_Export_ISA_modif_0.0.0_analyse_0.0.0.json",
+      "is_default_for": [
+        "risa"
+      ]
+    },
+    {
+      "id": "17b991f416ba",
+      "original_name": "mapping_type.json",
+      "filename": "17b991f416ba_mapping_type.json",
+      "format": "json",
+      "size": 12595,
+      "imported_at": "2026-02-02T00:48:44.972088",
+      "type_refs": [
+        "mapping_etat_61850"
+      ],
+      "path": "data\\isa\\files\\mapping_etat_61850\\17b991f416ba_mapping_type.json",
+      "is_default_for": [
+        "mapping_etat_61850"
+      ]
     }
   ],
-  "last_updated": "2026-02-01T22:58:17.213071"
+  "last_updated": "2026-02-02T02:30:27.996308"
 }

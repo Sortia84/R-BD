@@ -47,42 +47,6 @@
             <input id="isa-upload" type="file" accept=".xlsx,.xls,.xml,.csv,.json" multiple hidden />
         </section>
 
-        <!-- Filtres -->
-        <section class="card">
-            <div class="card-header">
-                <h3 style="margin: 0 0 8px 0;">🔎 Filtres</h3>
-            </div>
-            <div class="filters-bar">
-                <div class="filter-group">
-                    <label for="filter-search">Recherche</label>
-                    <input type="text" id="filter-search" class="filter-input" placeholder="Nom, type..."
-                        oninput="renderIsaTypeCards()">
-                </div>
-                <div class="filter-group">
-                    <label for="filter-linked">Statut</label>
-                    <select id="filter-linked" class="filter-select" onchange="renderIsaTypeCards()">
-                        <option value="">Tous</option>
-                        <option value="linked">Avec fichiers</option>
-                        <option value="unlinked">Sans fichiers</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="filter-format">Format</label>
-                    <select id="filter-format" class="filter-select" onchange="renderIsaTypeCards()">
-                        <option value="">Tous formats</option>
-                        <option value="xlsx">Excel (.xlsx)</option>
-                        <option value="xml">XML (.xml)</option>
-                        <option value="csv">CSV (.csv)</option>
-                        <option value="json">JSON (.json)</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>&nbsp;</label>
-                    <button class="btn btn-secondary" onclick="resetFilters()">Réinitialiser</button>
-                </div>
-            </div>
-        </section>
-
         <!-- Liste des Types ISA -->
         <section class="card">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">

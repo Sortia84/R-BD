@@ -215,6 +215,104 @@ class IEDPatternManager:
 
         return suggestions
 
+    # ============================================================
+    # Gestion des ICD référents par pattern ET par manufacturer
+    # ============================================================
+    # Structure: pattern["default_icds"] = { "manufacturer": "icd_id", ... }
+
+    def set_default_icd(self, pattern_id: str, manufacturer: str, icd_id: str) -> bool:
+        """
+        Définit un ICD comme référent pour un pattern et un manufacturer.
+
+        Args:
+            pattern_id: ID du pattern (ex: "SCU", "BCU")
+            manufacturer: Constructeur (ex: "SCLE SFE", "Efacec")
+            icd_id: ID de l'ICD à définir comme référent
+
+        Returns:
+            True si succès
+        """
+        data = self.load_patterns()
+        pattern = next((p for p in data["ied_patterns"] if p["id"] == pattern_id), None)
+
+        if not pattern:
+            return False
+
+        # Initialiser default_icds si absent
+        if "default_icds" not in pattern:
+            pattern["default_icds"] = {}
+
+        # Définir le référent pour ce manufacturer
+        pattern["default_icds"][manufacturer] = icd_id
+
+        self.save_patterns(data)
+        return True
+
+    def get_default_icd(self, pattern_id: str, manufacturer: str | None = None) -> str | dict | None:
+        """
+        Récupère l'ICD référent pour un pattern.
+
+        Args:
+            pattern_id: ID du pattern
+            manufacturer: Si fourni, retourne l'ICD pour ce manufacturer spécifique
+                         Sinon, retourne le dict complet {manufacturer: icd_id}
+
+        Returns:
+            - Si manufacturer: l'icd_id ou None
+            - Sinon: dict {manufacturer: icd_id} ou {}
+        """
+        pattern = self.get_pattern_by_id(pattern_id)
+        if not pattern:
+            return None if manufacturer else {}
+
+        defaults = pattern.get("default_icds", {})
+
+        if manufacturer:
+            return defaults.get(manufacturer)
+        return defaults
+
+    def clear_default_icd(self, pattern_id: str, manufacturer: str) -> bool:
+        """
+        Supprime le référent pour un pattern et un manufacturer.
+
+        Returns:
+            True si un référent a été supprimé
+        """
+        data = self.load_patterns()
+        pattern = next((p for p in data["ied_patterns"] if p["id"] == pattern_id), None)
+
+        if not pattern or "default_icds" not in pattern:
+            return False
+
+        if manufacturer not in pattern["default_icds"]:
+            return False
+
+        del pattern["default_icds"][manufacturer]
+        self.save_patterns(data)
+        return True
+
+    def get_all_defaults(self) -> dict[str, dict[str, str]]:
+        """
+        Retourne tous les référents de tous les patterns.
+
+        Returns:
+            Dict {pattern_id: {manufacturer: icd_id, ...}, ...}
+        """
+        data = self.load_patterns()
+        result = {}
+
+        for pattern in data["ied_patterns"]:
+            defaults = pattern.get("default_icds", {})
+            if defaults:
+                result[pattern["id"]] = defaults
+
+        return result
+
+    def is_default_icd(self, pattern_id: str, manufacturer: str, icd_id: str) -> bool:
+        """Vérifie si un ICD est le référent pour un pattern/manufacturer."""
+        default = self.get_default_icd(pattern_id, manufacturer)
+        return default == icd_id
+
 
 # --- CLI utilitaire ---
 if __name__ == "__main__":

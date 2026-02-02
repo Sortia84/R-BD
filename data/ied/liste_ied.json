@@ -13,7 +13,10 @@
             "icd_refs": [
                 "ICD_PROTECTION_EFACEC_1_187_BCU_LIGNE_V11_7_0"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "Efacec": "ICD_PROTECTION_EFACEC_1_187_BCU_LIGNE_V11_7_0"
+            }
         },
         {
             "id": "BPU",
@@ -24,7 +27,10 @@
             "icd_refs": [
                 "ICD_PROTECTION_EFACEC_1_187_BCU_LIGNE_V11_7_0"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "Efacec": "ICD_PROTECTION_EFACEC_1_187_BCU_LIGNE_V11_7_0"
+            }
         },
         {
             "id": "SCU",
@@ -40,7 +46,10 @@
             "variants": [
                 "*SCU1",
                 "*SCU2"
-            ]
+            ],
+            "default_icds": {
+                "SCLE SFE": "ICD_ARKENS_SV1120_HGAAA_EB5_SCLE_SFE_2_2A"
+            }
         },
         {
             "id": "SCU1",
@@ -75,8 +84,12 @@
             ],
             "variants": [
                 "*PIU1",
-                "*PIU2"
-            ]
+                "*PIU2",
+                "*SAMU*"
+            ],
+            "default_icds": {
+                "Efacec": "ICD_PROTECTION_EFACEC_1_47_SAMUA1"
+            }
         },
         {
             "id": "PIU1",
@@ -101,6 +114,17 @@
             "parent": "PIU"
         },
         {
+            "id": "SAMU",
+            "pattern": "*SAMU*",
+            "exclusions": [],
+            "display_name": "SAMU",
+            "description": "SAMU",
+            "icd_refs": [
+                "ICD_PROTECTION_EFACEC_1_37_SAMUH"
+            ],
+            "parent": "PIU"
+        },
+        {
             "id": "CBO_BCU1",
             "pattern": "*CBO*BCU1",
             "exclusions": [],
@@ -109,7 +133,10 @@
             "icd_refs": [
                 "ICD_PROTECTION_EFACEC_1_192_BCU_CBO_V11_6_8"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "Efacec": "ICD_PROTECTION_EFACEC_1_192_BCU_CBO_V11_6_8"
+            }
         },
         {
             "id": "CBO_SCU1",
@@ -120,7 +147,10 @@
             "icd_refs": [
                 "ICD_ARKENS_SV2320_GGAAAAGAG_88D_SCLE_SFE_2_2A"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "SCLE SFE": "ICD_ARKENS_SV2320_GGAAAAGAG_88D_SCLE_SFE_2_2A"
+            }
         },
         {
             "id": "CBO_PIU1",
@@ -131,7 +161,10 @@
             "icd_refs": [
                 "ICD_PROTECTION_EFACEC_1_37_SAMUH"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "Efacec": "ICD_PROTECTION_EFACEC_1_37_SAMUH"
+            }
         },
         {
             "id": "TGSCU",
@@ -146,12 +179,19 @@
                 "*TGSCU1-2",
                 "*TGSCU1",
                 "*TGSCU2"
-            ]
+            ],
+            "default_icds": {
+                "SCLE SFE": "ICD_ARKENS_SV2320_GGGAAAAGA_08C_SCLE_SFE_2_2A"
+            }
         },
         {
             "id": "TGSCU1-2",
             "pattern": "*TGSCU1-2",
             "exclusions": [],
+            "inclusions": [
+                "*TGSCU1",
+                "*TGSCU2"
+            ],
             "display_name": "TGSCU1-2",
             "description": "TG SCU 1 et 2 (les deux)",
             "icd_refs": [
@@ -162,9 +202,7 @@
         {
             "id": "TGSCU1",
             "pattern": "*TGSCU1",
-            "exclusions": [
-                "*TGSCU1-2"
-            ],
+            "exclusions": [],
             "display_name": "TGSCU1 seul",
             "description": "TG SCU 1 uniquement",
             "icd_refs": [
@@ -175,11 +213,19 @@
         {
             "id": "TGSCU2",
             "pattern": "*TGSCU2",
-            "exclusions": [
-                "*TGSCU1-2"
-            ],
+            "exclusions": [],
             "display_name": "TGSCU2 seul",
             "description": "TG SCU 2 uniquement",
+            "icd_refs": [
+                "ICD_ARKENS_SV2320_GGGAAAAGA_08C_SCLE_SFE_2_2A"
+            ],
+            "parent": "TGSCU"
+        },
+        {
+            "id": "SCU-TG",
+            "pattern": "*SCU-TG*",
+            "display_name": "SCU-TG",
+            "description": "SCU TG",
             "icd_refs": [
                 "ICD_ARKENS_SV2320_GGGAAAAGA_08C_SCLE_SFE_2_2A"
             ],
@@ -194,7 +240,23 @@
             "icd_refs": [
                 "ICD_ARKENS_SV1120_GGGG_6A5_SCLE_SFE_2_1H"
             ],
-            "variants": []
+            "variants": [
+                "*SCU-MCB*"
+            ],
+            "default_icds": {
+                "SCLE SFE": "ICD_ARKENS_SV1120_GGGG_6A5_SCLE_SFE_2_1H"
+            }
+        },
+        {
+            "id": "SCU-MCB",
+            "pattern": "*SCU-MCB",
+            "exclusions": [],
+            "display_name": "SCU-MCB",
+            "description": "SCU MCB",
+            "icd_refs": [
+                "ICD_ARKENS_SV1120_GGGG_6A5_SCLE_SFE_2_1H"
+            ],
+            "parent": "TGSCU3"
         },
         {
             "id": "FPAUTP",
@@ -205,7 +267,10 @@
             "icd_refs": [
                 "ICD_AUT_RTE_AUPOS_1_1_0"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "RTE-AUPOS": "ICD_AUT_RTE_AUPOS_1_1_0"
+            }
         },
         {
             "id": "HYPER",
@@ -216,7 +281,10 @@
             "icd_refs": [
                 "ICD_VDF_RTE_VDF"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "RTE": "ICD_VDF_RTE_VDF"
+            }
         },
         {
             "id": "ICT",
@@ -227,7 +295,10 @@
             "icd_refs": [
                 "ICD_VDF_RTE_VDF"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "RTE": "ICD_VDF_RTE_VDF"
+            }
         },
         {
             "id": "OND",
@@ -238,7 +309,10 @@
             "icd_refs": [
                 "ICD_VDF_RTE_VDF"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "RTE": "ICD_VDF_RTE_VDF"
+            }
         },
         {
             "id": "SWC",
@@ -249,7 +323,10 @@
             "icd_refs": [
                 "ICD_SWC_RTE_VDF"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "RTE": "ICD_SWC_RTE_VDF"
+            }
         },
         {
             "id": "SWT",
@@ -260,7 +337,10 @@
             "icd_refs": [
                 "ICD_SWT_RTE_VDF"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "RTE": "ICD_SWT_RTE_VDF"
+            }
         },
         {
             "id": "SYNC",
@@ -271,7 +351,10 @@
             "icd_refs": [
                 "ICD_VDF_RTE_VDF"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "RTE": "ICD_VDF_RTE_VDF"
+            }
         },
         {
             "id": "GRP",
@@ -284,7 +367,10 @@
             "icd_refs": [
                 "ICD_GRP_RTE_AUPOS_1_2_0"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "RTE-AUPOS": "ICD_GRP_RTE_AUPOS_1_2_0"
+            }
         },
         {
             "id": "GRPR",
@@ -295,7 +381,10 @@
             "icd_refs": [
                 "ICD_GRPR_RTE_AUPOS_1_2_0"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "RTE-AUPOS": "ICD_GRPR_RTE_AUPOS_1_2_0"
+            }
         },
         {
             "id": "TGGW1",
@@ -306,7 +395,10 @@
             "icd_refs": [
                 "ICD_GW_RTE_1_5_2"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "RTE": "ICD_GW_RTE_1_5_2"
+            }
         },
         {
             "id": "TGTG",
@@ -317,7 +409,10 @@
             "icd_refs": [
                 "ICD_TG_RTE_AUPOS_1_2_0"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "RTE-AUPOS": "ICD_TG_RTE_AUPOS_1_2_0"
+            }
         },
         {
             "id": "FPPO1",
@@ -328,7 +423,10 @@
             "icd_refs": [
                 "ICD_PO_RTE_1_2_0"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "RTE": "ICD_PO_RTE_1_2_0"
+            }
         },
         {
             "id": "TGASLD",
@@ -339,7 +437,10 @@
             "icd_refs": [
                 "ICD_ASLD_RTE_AUPOS_1_1_0"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "RTE-AUPOS": "ICD_ASLD_RTE_AUPOS_1_1_0"
+            }
         },
         {
             "id": "TGTOP",
@@ -350,7 +451,10 @@
             "icd_refs": [
                 "ICD_TOPO_RTE_AUPOS_1_2_0"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "RTE-AUPOS": "ICD_TOPO_RTE_AUPOS_1_2_0"
+            }
         },
         {
             "id": "TAC",
@@ -361,7 +465,10 @@
             "icd_refs": [
                 "ICD_SELTA_TPS3000_DIGITAL_PLATFORMS_TPS_3000_TELEPROTECTION_EQUIPMENT"
             ],
-            "variants": []
+            "variants": [],
+            "default_icds": {
+                "Digital Platforms": "ICD_SELTA_TPS3000_DIGITAL_PLATFORMS_TPS_3000_TELEPROTECTION_EQUIPMENT"
+            }
         }
     ]
 }

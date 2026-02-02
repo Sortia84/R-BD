@@ -4,6 +4,7 @@ const API_BASE = '/api/isa';
 
 let isaTypes = [];      // Types ISA depuis liste_isa.json
 let isaCatalog = [];    // Fichiers ISA importés
+let isaDefaults = {};   // Fichiers référents par type: {type_id: file_entry}
 
 // ============================================================
 // Initialisation
@@ -14,11 +15,67 @@ async function initIsaPage() {
         loadIsaTypes(),
         loadIsaCatalog()
     ]);
+    // Les defaults sont dans chaque fichier (is_default: true)
+    buildIsaDefaults();
     setupIsaUploadWithAutoLink();
     renderIsaTypeCards();
     renderOrphanFiles();
     updateStats();
     initOrphanPanel();
+}
+
+// Construire la map des fichiers référents à partir du catalogue
+function buildIsaDefaults() {
+    isaDefaults = {};
+    for (const file of isaCatalog) {
+        // Utiliser is_default_for (liste de type_ids)
+        const defaultFor = file.is_default_for || [];
+        for (const typeId of defaultFor) {
+            isaDefaults[typeId] = file;
+        }
+    }
+    console.log(`⭐ ${Object.keys(isaDefaults).length} fichier(s) référent(s) ISA`);
+}
+
+// Vérifier si un fichier est le référent pour un type
+function isDefaultFile(file, typeId) {
+    const defaultFile = isaDefaults[typeId];
+    return defaultFile && defaultFile.id === file.id;
+}
+
+// Définir/supprimer un fichier comme référent
+async function toggleDefaultFile(fileId, typeId) {
+    const currentDefault = isaDefaults[typeId];
+    const isCurrentlyDefault = currentDefault && currentDefault.id === fileId;
+
+    try {
+        if (isCurrentlyDefault) {
+            // Supprimer le référent
+            const response = await fetch(`${API_BASE}/default/${encodeURIComponent(typeId)}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok) throw new Error('Erreur suppression référent');
+            delete isaDefaults[typeId];
+            console.log(`⭐ Référent supprimé pour ${typeId}`);
+        } else {
+            // Définir comme référent
+            const response = await fetch(`${API_BASE}/default/${encodeURIComponent(typeId)}/${encodeURIComponent(fileId)}`, {
+                method: 'POST'
+            });
+            if (!response.ok) throw new Error('Erreur définition référent');
+            // Recharger le catalogue pour avoir les données à jour
+            await loadIsaCatalog();
+            buildIsaDefaults();
+            console.log(`⭐ ${fileId} défini comme référent pour ${typeId}`);
+        }
+
+        // Re-rendre l'UI
+        renderIsaTypeCards();
+        renderOrphanFiles();
+    } catch (error) {
+        console.error('Erreur toggle default:', error);
+        alert('Erreur: ' + error.message);
+    }
 }
 
 // Gestion du panneau flottant orphelins
@@ -155,33 +212,7 @@ function renderIsaTypeCards() {
     const container = document.getElementById('isa-cards');
     if (!container) return;
 
-    const searchFilter = document.getElementById('filter-search')?.value.toLowerCase() || '';
-    const linkedFilter = document.getElementById('filter-linked')?.value || '';
-    const formatFilter = document.getElementById('filter-format')?.value || '';
-
-    // Filtrer les types
-    let filteredTypes = isaTypes.filter(type => {
-        // Filtre recherche
-        if (searchFilter) {
-            const searchIn = `${type.name} ${type.id} ${type.description || ''}`.toLowerCase();
-            if (!searchIn.includes(searchFilter)) return false;
-        }
-
-        // Filtre statut
-        const linkedFiles = getFilesForType(type.id);
-        if (linkedFilter === 'linked' && linkedFiles.length === 0) return false;
-        if (linkedFilter === 'unlinked' && linkedFiles.length > 0) return false;
-
-        // Filtre format
-        if (formatFilter) {
-            const acceptedFormats = type.formats || [];
-            if (!acceptedFormats.includes(formatFilter)) return false;
-        }
-
-        return true;
-    });
-
-    if (filteredTypes.length === 0) {
+    if (isaTypes.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
                 <div class="empty-state-icon">📭</div>
@@ -191,7 +222,7 @@ function renderIsaTypeCards() {
         return;
     }
 
-    container.innerHTML = filteredTypes.map(type => renderIsaCard(type)).join('');
+    container.innerHTML = isaTypes.map(type => renderIsaCard(type)).join('');
 
     // Setup drag & drop
     setupDragAndDrop();
@@ -202,7 +233,8 @@ function renderIsaCard(type) {
     const hasFiles = linkedFiles.length > 0;
     const statusClass = hasFiles ? 'has-files' : 'no-files-status';
 
-    const icon = getTypeIcon(type.category || type.id);
+    // Utiliser l'icône définie dans le type, sinon fallback sur la catégorie
+    const icon = type.icon || getTypeIcon(type.category || type.id);
     const formats = (type.formats || ['xlsx', 'xml', 'csv']).map(f =>
         `<span class="format-tag ${f}">.${f}</span>`
     ).join('');
@@ -248,22 +280,34 @@ function renderIsaCard(type) {
 }
 
 function renderFilesList(files, typeId) {
-    return files.map(file => `
-        <div class="file-item" data-file-id="${file.id}">
-            <div class="file-item-info">
-                <strong>${file.original_name || file.filename}</strong>
-                <div class="file-item-meta">
-                    <span class="file-format-badge format-tag ${file.format}">${file.format.toUpperCase()}</span>
-                    <span>${formatFileSize(file.size)}</span>
-                    <span>${formatDate(file.imported_at)}</span>
+    return files.map(file => {
+        const isDefault = isDefaultFile(file, typeId);
+        const starClass = isDefault ? 'btn-star active' : 'btn-star';
+        const starIcon = isDefault ? '⭐' : '☆';
+        const starTitle = isDefault ? 'Retirer comme référent' : 'Définir comme référent';
+        const itemClass = isDefault ? 'file-item is-default' : 'file-item';
+
+        return `
+            <div class="${itemClass}" data-file-id="${file.id}">
+                <div class="file-item-info">
+                    <strong>${file.original_name || file.filename}</strong>
+                    ${isDefault ? '<span class="default-badge">Référent</span>' : ''}
+                    <div class="file-item-meta">
+                        <span class="file-format-badge format-tag ${file.format}">${file.format.toUpperCase()}</span>
+                        <span>${formatFileSize(file.size)}</span>
+                        <span>${formatDate(file.imported_at)}</span>
+                    </div>
+                </div>
+                <div class="file-item-actions">
+                    <button class="btn-icon ${starClass}" onclick="toggleDefaultFile('${file.id}', '${typeId}')" title="${starTitle}">
+                        ${starIcon}
+                    </button>
+                    <button class="btn-icon" onclick="viewFileDetails('${file.id}')" title="Détails">👁️</button>
+                    <button class="btn-icon btn-danger" onclick="unlinkFile('${file.id}', '${typeId}')" title="Retirer">✕</button>
                 </div>
             </div>
-            <div class="file-item-actions">
-                <button class="btn-icon" onclick="viewFileDetails('${file.id}')" title="Détails">👁️</button>
-                <button class="btn-icon btn-danger" onclick="unlinkFile('${file.id}', '${typeId}')" title="Retirer">✕</button>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 function getFilesForType(typeId) {
@@ -549,7 +593,7 @@ async function confirmSelectFiles(typeId, btn) {
 }
 
 // ============================================================
-// Stats & Filters
+// Stats
 // ============================================================
 
 function updateStats() {
@@ -565,18 +609,6 @@ function updateStats() {
         <span class="stat-item">${linkedCount} associés</span>
         ${orphanCount > 0 ? `<span class="stat-item warning">${orphanCount} orphelins</span>` : ''}
     `;
-}
-
-function resetFilters() {
-    const searchInput = document.getElementById('filter-search');
-    const linkedSelect = document.getElementById('filter-linked');
-    const formatSelect = document.getElementById('filter-format');
-
-    if (searchInput) searchInput.value = '';
-    if (linkedSelect) linkedSelect.value = '';
-    if (formatSelect) formatSelect.value = '';
-
-    renderIsaTypeCards();
 }
 
 // ============================================================

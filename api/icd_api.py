@@ -1,7 +1,14 @@
 # icd_api.py - API REST pour la gestion des ICD
 """
 Endpoints FastAPI pour l'import, listing et gestion des ICD.
-Structure de stockage : data/icd/{type}/{manufacturer}/{version}.json
+Structure de stockage : data/icd/{filename}.json (1 fichier par ICD)
+
+Parser complet IEC 61850 avec extraction :
+- DO/DA avec résolution depuis DataTypeTemplates
+- Private elements (COMPAS-IEDType, SCLE_IDPACK, firmware, etc.)
+- Control Blocks (GOOSE, Report, SV)
+- DataSets avec FCDA
+- Inputs/ExtRef (abonnements)
 
 Inclut aussi la gestion des patterns IED et leurs liaisons.
 """
@@ -15,7 +22,7 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from core.icd_parser import ICDParser
+from core.icd_parser import ICDParserV2 as ICDParser
 from core.ied_pattern_manager import IEDPatternManager
 
 router = APIRouter(prefix="/api/icd", tags=["ICD"])
@@ -60,6 +67,40 @@ async def get_icd_details(icd_id: str) -> dict[str, Any]:
     details = parser.get_icd_details_by_id(icd_id)
     if not details:
         raise HTTPException(status_code=404, detail="ICD non trouvé")
+    return details
+
+
+@router.get("/full/{icd_id}")
+async def get_icd_full(icd_id: str, include_types: bool = False) -> dict[str, Any]:
+    """
+    Retourne les détails COMPLETS d'un ICD incluant :
+    - IED avec tous les LD, LN, DO, DA résolus
+    - Privates (COMPAS-IEDType, SCLE_IDPACK, firmware, etc.)
+    - DataSets avec FCDA
+    - Control Blocks (GOOSE, Report, SV)
+    - Inputs/ExtRef
+    - DataTypeTemplates (si include_types=true)
+
+    Args:
+        icd_id: Identifiant unique de l'ICD
+        include_types: Si True, inclut les DataTypeTemplates complets
+    """
+    details = parser.get_icd_details_by_id(icd_id)
+    if not details:
+        raise HTTPException(status_code=404, detail="ICD non trouvé")
+
+    # Par défaut, ne pas inclure DataTypeTemplates (lourd)
+    if not include_types and "data_type_templates" in details:
+        # Garder juste les stats
+        dtt = details.get("data_type_templates", {})
+        details["data_type_templates"] = {
+            "lnode_types_count": len(dtt.get("lnode_types", {})),
+            "do_types_count": len(dtt.get("do_types", {})),
+            "da_types_count": len(dtt.get("da_types", {})),
+            "enum_types_count": len(dtt.get("enum_types", {})),
+            "_note": "Ajouter ?include_types=true pour les types complets"
+        }
+
     return details
 
 
@@ -310,4 +351,131 @@ async def suggest_patterns_for_icd(icd_type: str) -> dict[str, Any]:
         "suggestion_count": len(suggestions),
         "suggestions": suggestions
     }
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# GESTION DES ICD RÉFÉRENTS (par pattern_id ET manufacturer)
+# ═══════════════════════════════════════════════════════════════════════════
+# Structure: { pattern_id: { manufacturer: icd_id, ... }, ... }
+# Permet d'avoir un référent différent par constructeur pour chaque pattern
+
+@router.get("/default")
+async def list_default_icds() -> dict[str, Any]:
+    """
+    Liste tous les ICD référents par pattern et manufacturer.
+    Retourne: { pattern_id: { manufacturer: icd_id, ... }, ... }
+    """
+    defaults = pattern_manager.get_all_defaults()
+    return {
+        "success": True,
+        "defaults": defaults,
+        "count": sum(len(v) for v in defaults.values())
+    }
+
+
+@router.get("/default/{pattern_id}")
+async def get_default_icds_for_pattern(pattern_id: str) -> dict[str, Any]:
+    """
+    Retourne les ICD référents pour un pattern (tous manufacturers).
+    """
+    pattern = pattern_manager.get_pattern_by_id(pattern_id)
+    if not pattern:
+        raise HTTPException(status_code=404, detail=f"Pattern '{pattern_id}' non trouvé")
+
+    # Récupérer le dict {manufacturer: icd_id} directement du pattern
+    defaults = pattern.get("default_icds", {})
+
+    # Enrichir avec les détails des ICD
+    enriched = {}
+    for manufacturer, icd_id in defaults.items():
+        icd_details = parser.get_icd_details_by_id(str(icd_id))
+        enriched[manufacturer] = {
+            "icd_id": icd_id,
+            "details": icd_details
+        }
+
+    return {
+        "success": True,
+        "pattern_id": pattern_id,
+        "pattern_name": pattern.get("display_name", pattern_id),
+        "defaults": enriched
+    }
+
+
+@router.get("/default/{pattern_id}/{manufacturer}")
+async def get_default_icd_for_pattern_manufacturer(pattern_id: str, manufacturer: str) -> dict[str, Any]:
+    """
+    Retourne l'ICD référent pour un pattern et un manufacturer spécifique.
+    Endpoint principal pour les applications externes (R#SCD, etc.).
+    """
+    default_result = pattern_manager.get_default_icd(pattern_id, manufacturer)
+    if not default_result or not isinstance(default_result, str):
+        raise HTTPException(
+            status_code=404,
+            detail=f"Aucun ICD référent pour pattern='{pattern_id}', manufacturer='{manufacturer}'"
+        )
+
+    icd_details = parser.get_icd_details_by_id(default_result)
+
+    return {
+        "success": True,
+        "pattern_id": pattern_id,
+        "manufacturer": manufacturer,
+        "icd_id": default_result,
+        "icd": icd_details
+    }
+
+
+@router.post("/default/{pattern_id}/{manufacturer}/{icd_id}")
+async def set_default_icd_for_pattern(pattern_id: str, manufacturer: str, icd_id: str) -> dict[str, Any]:
+    """
+    Définit un ICD comme référent pour un pattern et un manufacturer.
+    Si un autre ICD était référent pour cette combinaison, il est remplacé.
+    """
+    # Vérifier que le pattern existe
+    pattern = pattern_manager.get_pattern_by_id(pattern_id)
+    if not pattern:
+        raise HTTPException(status_code=404, detail=f"Pattern '{pattern_id}' non trouvé")
+
+    # Vérifier que l'ICD existe
+    icd_details = parser.get_icd_details_by_id(icd_id)
+    if not icd_details:
+        raise HTTPException(status_code=404, detail=f"ICD '{icd_id}' non trouvé")
+
+    success = pattern_manager.set_default_icd(pattern_id, manufacturer, icd_id)
+    if not success:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Impossible de définir le référent"
+        )
+
+    return {
+        "success": True,
+        "message": f"ICD '{icd_id}' défini comme référent pour {pattern_id}/{manufacturer}",
+        "pattern_id": pattern_id,
+        "manufacturer": manufacturer,
+        "icd_id": icd_id
+    }
+
+
+@router.delete("/default/{pattern_id}/{manufacturer}")
+async def clear_default_icd_for_pattern(pattern_id: str, manufacturer: str) -> dict[str, Any]:
+    """
+    Supprime le référent pour un pattern et un manufacturer.
+    """
+    success = pattern_manager.clear_default_icd(pattern_id, manufacturer)
+    if not success:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Aucun ICD référent pour pattern='{pattern_id}', manufacturer='{manufacturer}'"
+        )
+
+    return {
+        "success": True,
+        "message": f"Référent supprimé pour {pattern_id}/{manufacturer}",
+        "pattern_id": pattern_id,
+        "manufacturer": manufacturer
+    }
+
+
 

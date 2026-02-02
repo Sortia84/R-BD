@@ -18,6 +18,7 @@ from fastapi.responses import FileResponse
 
 from api.icd_api import router as icd_router
 from api.isa_api import router as isa_router
+from api.mapping_api import router as mapping_router
 
 # Configuration
 BASE_DIR = Path(__file__).parent
@@ -38,6 +39,7 @@ app = FastAPI(
 # Inclure les routes API
 app.include_router(icd_router)
 app.include_router(isa_router)
+app.include_router(mapping_router)
 
 # Servir les fichiers statiques
 app.mount("/web", StaticFiles(directory=str(WEB_DIR)), name="web")

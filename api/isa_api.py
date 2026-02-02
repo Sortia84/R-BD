@@ -277,6 +277,70 @@ async def get_orphan_files() -> dict[str, Any]:
 
 
 # ============================================================
+# Gestion des fichiers référents (default par type)
+# ============================================================
+
+@router.get("/default/{type_id}")
+async def get_default_file_for_type(type_id: str) -> dict[str, Any]:
+    """
+    Retourne le fichier référent pour un type ISA.
+    Endpoint principal pour les applications externes.
+    """
+    file_entry = manager.get_default_file(type_id)
+    if not file_entry:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Aucun fichier trouvé pour le type '{type_id}'"
+        )
+
+    return {
+        "success": True,
+        "type_id": type_id,
+        "file": file_entry
+    }
+
+
+@router.post("/default/{type_id}/{file_id}")
+async def set_default_file_for_type(type_id: str, file_id: str) -> dict[str, Any]:
+    """
+    Définit un fichier comme référent pour un type ISA.
+    Si un autre fichier était référent, il est remplacé.
+    """
+    success = manager.set_default_file(type_id, file_id)
+    if not success:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Impossible de définir le fichier '{file_id}' comme référent pour '{type_id}'"
+        )
+
+    return {
+        "success": True,
+        "message": f"Fichier '{file_id}' défini comme référent pour '{type_id}'",
+        "type_id": type_id,
+        "file_id": file_id
+    }
+
+
+@router.delete("/default/{type_id}")
+async def clear_default_file_for_type(type_id: str) -> dict[str, Any]:
+    """
+    Supprime le référent pour un type ISA.
+    """
+    success = manager.clear_default_file(type_id)
+    if not success:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Aucun fichier référent trouvé pour le type '{type_id}'"
+        )
+
+    return {
+        "success": True,
+        "message": f"Référent supprimé pour le type '{type_id}'",
+        "type_id": type_id
+    }
+
+
+# ============================================================
 # Route dynamique (doit être en dernier pour éviter les conflits)
 # ============================================================
 

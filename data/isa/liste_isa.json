@@ -3,48 +3,37 @@
   "description": "Types de fichiers ISA pour R#BD",
   "types": [
     {
-      "id": "config_materiel",
-      "name": "Configuration Matériel",
-      "category": "config",
-      "description": "Fichiers de configuration matérielle",
+      "id": "risa",
+      "name": "Fichier RISA",
+      "category": "liste",
+      "description": "Ensemble du RISA utilisé sur R#SPACE",
       "formats": [
+        "json",
         "xlsx",
-        "xml"
+        "xls"
       ],
-      "icon": "⚙️"
+      "icon": "🚨"
     },
     {
-      "id": "mapping_signaux",
-      "name": "Mapping Signaux",
-      "category": "mapping",
-      "description": "Tables de correspondance des signaux",
+      "id": "mapping_etat_61850",
+      "name": "Mapping État 61850",
+      "category": "liste",
+      "description": "Mapping entre valeur et état en 61850",
       "formats": [
-        "xlsx",
-        "csv"
-      ],
-      "icon": "🗺️"
-    },
-    {
-      "id": "parametres_reseau",
-      "name": "Paramètres Réseau",
-      "category": "config",
-      "description": "Configuration réseau et adresses",
-      "formats": [
-        "xml",
         "json"
       ],
-      "icon": "🌐"
+      "icon": "🪢"
     },
     {
-      "id": "donnees_reference",
-      "name": "Données de Référence",
-      "category": "reference",
-      "description": "Tables de référence et nomenclatures",
+      "id": "isa_alarmes",
+      "name": "ISA Alarmes",
+      "category": "liste",
+      "description": "Fichiers des ISA Alarmes/Equations pour R#GUIDE/R#TOOLS",
       "formats": [
-        "xlsx",
-        "csv"
+        "json",
+        "xml"
       ],
-      "icon": "📖"
+      "icon": "🚨"
     },
     {
       "id": "isa_cde",
@@ -57,15 +46,25 @@
       "icon": "🖨️"
     },
     {
-      "id": "modele_donnees",
-      "name": "Modèle de Données",
-      "category": "data",
-      "description": "Définition du modèle de données IEC 61850",
+      "id": "isa_tcd",
+      "name": "ISA TCD",
+      "category": "liste",
+      "description": "Fichiers des ISA TCD pour R#GUIDE/R#TOOLS",
+      "formats": [
+        "json"
+      ],
+      "icon": "🚗"
+    },
+    {
+      "id": "parametres_reseau",
+      "name": "Paramètres Réseau",
+      "category": "config",
+      "description": "Configuration réseau et adresses",
       "formats": [
         "xml",
         "json"
       ],
-      "icon": "📊"
+      "icon": "🌐"
     }
   ]
 }

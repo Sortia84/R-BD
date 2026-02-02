@@ -413,16 +413,129 @@ class ISAManager:
         return [f for f in files if not f.get("type_refs")]
 
     # ============================================================
-    # Analyse (placeholder pour futures implémentations)
+    # Gestion des fichiers référents (par défaut)
+    # ============================================================
+
+    def set_default_file(self, type_id: str, file_id: str) -> bool:
+        """
+        Définit un fichier comme référent pour un type donné.
+        Un seul fichier peut être référent par type.
+
+        Args:
+            type_id: ID du type ISA
+            file_id: ID du fichier à définir comme référent
+
+        Returns:
+            True si succès, False sinon
+        """
+        data = self._load_index()
+        files = data.get("files", [])
+
+        # Vérifier que le fichier existe et est lié au type
+        target_file = None
+        for f in files:
+            if f.get("id") == file_id:
+                if type_id not in f.get("type_refs", []):
+                    return False  # Fichier non lié à ce type
+                target_file = f
+                break
+
+        if not target_file:
+            return False
+
+        # Retirer is_default des autres fichiers du même type
+        for f in files:
+            if type_id in f.get("type_refs", []):
+                defaults = f.get("is_default_for", [])
+                if type_id in defaults:
+                    defaults.remove(type_id)
+                    f["is_default_for"] = defaults
+
+        # Définir ce fichier comme référent
+        defaults = target_file.get("is_default_for", [])
+        if type_id not in defaults:
+            defaults.append(type_id)
+        target_file["is_default_for"] = defaults
+
+        data["files"] = files
+        self._save_index(data)
+        return True
+
+    def get_default_file(self, type_id: str) -> dict | None:
+        """
+        Retourne le fichier référent pour un type donné.
+
+        Args:
+            type_id: ID du type ISA
+
+        Returns:
+            Le fichier référent ou None si aucun défini
+        """
+        files = self.get_catalog()
+        for f in files:
+            if type_id in f.get("is_default_for", []):
+                return f
+
+        # Fallback: retourner le premier fichier du type s'il n'y a pas de référent
+        type_files = self.get_files_for_type(type_id)
+        if type_files:
+            return type_files[0]
+
+        return None
+
+    def clear_default_file(self, type_id: str) -> bool:
+        """
+        Supprime le fichier référent pour un type.
+
+        Args:
+            type_id: ID du type ISA
+
+        Returns:
+            True si un référent a été supprimé, False sinon
+        """
+        data = self._load_index()
+        files = data.get("files", [])
+        cleared = False
+
+        for f in files:
+            defaults = f.get("is_default_for", [])
+            if type_id in defaults:
+                defaults.remove(type_id)
+                f["is_default_for"] = defaults
+                cleared = True
+
+        if cleared:
+            data["files"] = files
+            self._save_index(data)
+
+        return cleared
+
+    def is_default_file(self, file_id: str, type_id: str) -> bool:
+        """Vérifie si un fichier est le référent pour un type."""
+        file_entry = self.get_file_by_id(file_id)
+        if not file_entry:
+            return False
+        return type_id in file_entry.get("is_default_for", [])
+
+    # ============================================================
+    # Analyse selon le type
     # ============================================================
 
     def analyze_file(self, file_id: str, type_id: str) -> dict:
         """
         Analyse un fichier selon son type.
-        Retourne les résultats d'analyse.
 
-        Note: L'implémentation dépend du type de fichier.
-        Pour l'instant, retourne les métadonnées de base.
+        Types supportés :
+        - isa_alarmes (XML) : Parse équations + enrichissement RISA si dispo
+        - risa (JSON) : Stockage direct, pas d'analyse
+        - Autres : Métadonnées de base
+
+        Args:
+            file_id: ID du fichier à analyser
+            type_id: ID du type pour lequel analyser
+
+        Returns:
+            Résultats d'analyse
         """
         file_entry = self.get_file_by_id(file_id)
         if not file_entry:
@@ -432,7 +545,12 @@ class ISAManager:
         if not file_type:
             raise ValueError(f"Type non trouvé: {type_id}")
 
-        # Analyse basique (à étendre selon les besoins)
+        file_format = file_entry.get("format", "").lower()
+        file_path = self._get_file_current_path(file_entry)
+
+        if not file_path or not file_path.exists():
+            raise ValueError(f"Fichier physique non trouvé: {file_entry.get('filename')}")
+
         result = {
             "file_id": file_id,
             "type_id": type_id,
@@ -440,7 +558,7 @@ class ISAManager:
             "status": "success",
             "file_info": {
                 "name": file_entry.get("original_name"),
-                "format": file_entry.get("format"),
+                "format": file_format,
                 "size": file_entry.get("size")
             },
             "type_info": {
@@ -449,12 +567,102 @@ class ISAManager:
             }
         }
 
-        # TODO: Implémenter analyses spécifiques selon le type
-        # - config_materiel: parser XML config
-        # - mapping_signaux: parser Excel mapping
-        # - etc.
+        # Analyse spécifique selon le type
+        try:
+            if type_id == "isa_alarmes" and file_format == "xml":
+                result["analysis"] = self._analyze_equation_xml(file_path, file_id)
+            elif type_id == "risa" and file_format == "json":
+                result["analysis"] = {"type": "risa", "status": "stored", "message": "Fichier RISA stocké"}
+            else:
+                result["analysis"] = {"type": "basic", "message": "Pas d'analyse spécifique"}
+        except Exception as e:
+            result["status"] = "error"
+            result["error"] = str(e)
 
         return result
+
+    def _analyze_equation_xml(self, file_path: Path, file_id: str) -> dict:
+        """
+        Analyse un fichier XML d'équations/alarmes.
+        Enrichit avec RISA si disponible.
+
+        Args:
+            file_path: Chemin du fichier XML
+            file_id: ID du fichier pour nommer le JSON résultat
+
+        Returns:
+            Résultats d'analyse
+        """
+        from core.isa_parsers.equation_parser import parse_equation_xml
+        from core.isa_parsers.risa_enricher import enrich_with_risa
+
+        # 1. Parser le XML
+        equation_data = parse_equation_xml(file_path)
+
+        # 2. Chercher un fichier RISA disponible pour enrichissement
+        risa_files = self.get_files_for_type("risa")
+        risa_json_files = [f for f in risa_files if f.get("format") == "json"]
+
+        if risa_json_files:
+            # Prendre le plus récent
+            risa_file = max(risa_json_files, key=lambda x: x.get("imported_at", ""))
+            risa_path = self._get_file_current_path(risa_file)
+
+            if risa_path and risa_path.exists():
+                try:
+                    with open(risa_path, "r", encoding="utf-8") as f:
+                        risa_data = json.load(f)
+
+                    # 3. Enrichir avec RISA
+                    equation_data = enrich_with_risa(equation_data, risa_data)
+                    equation_data["metadata"]["risa_source"] = risa_file.get("original_name")
+                except Exception as e:
+                    equation_data["metadata"]["risa_error"] = str(e)
+        else:
+            equation_data["metadata"]["risa_source"] = None
+            equation_data["metadata"]["enriched"] = False
+
+        # 4. Sauvegarder le JSON analysé à côté du fichier original
+        output_path = file_path.with_suffix(".analyzed.json")
+        with open(output_path, "w", encoding="utf-8") as f:
+            json.dump(equation_data, f, indent=2, ensure_ascii=False)
+
+        return {
+            "type": "equation_xml",
+            "output_file": output_path.name,
+            "regroupements_count": equation_data["metadata"]["total_regroupements"],
+            "entrees_count": equation_data["metadata"]["total_entrees"],
+            "wildcards_count": equation_data["metadata"]["wildcards_count"],
+            "enriched": equation_data["metadata"].get("enriched", False),
+            "risa_source": equation_data["metadata"].get("risa_source"),
+            "enrichment_stats": equation_data["metadata"].get("enrichment_stats", {})
+        }
+
+    def get_analyzed_data(self, file_id: str) -> dict | None:
+        """
+        Récupère les données analysées d'un fichier (le JSON généré).
+
+        Args:
+            file_id: ID du fichier
+
+        Returns:
+            Données analysées ou None si pas encore analysé
+        """
+        file_entry = self.get_file_by_id(file_id)
+        if not file_entry:
+            return None
+
+        file_path = self._get_file_current_path(file_entry)
+        if not file_path:
+            return None
+
+        # Chercher le fichier .analyzed.json
+        analyzed_path = file_path.with_suffix(".analyzed.json")
+        if analyzed_path.exists():
+            with open(analyzed_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+
+        return None
 
     def reanalyze_all(self) -> list[dict]:
         """Relance l'analyse de tous les fichiers liés."""
