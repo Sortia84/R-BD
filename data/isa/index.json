@@ -59,7 +59,22 @@
       "is_default_for": [
         "mapping_etat_61850"
       ]
+    },
+    {
+      "id": "56270aeefe42",
+      "original_name": "GRP_1.5.47_modif.xml",
+      "filename": "56270aeefe42_GRP_1.5.47_modif.xml",
+      "format": "xml",
+      "size": 117949,
+      "imported_at": "2026-02-03T21:50:50.002849",
+      "type_refs": [
+        "isa_alarmes"
+      ],
+      "path": "data\\isa\\files\\isa_alarmes\\56270aeefe42_GRP_1.5.47_modif.xml",
+      "is_default_for": [
+        "isa_alarmes"
+      ]
     }
   ],
-  "last_updated": "2026-02-02T02:30:27.996308"
+  "last_updated": "2026-02-03T21:50:58.390705"
 }

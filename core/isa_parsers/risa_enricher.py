@@ -8,54 +8,173 @@ from typing import Any
 from .equation_parser import match_wildcard
 
 
-def find_risa_matches(pattern: str, risa_data: dict, search_field: str = "Libelle8") -> list[dict]:
+def flatten_risa_data(risa_data: dict) -> list[dict]:
+    """
+    Aplatit les données RISA en liste d'entrées.
+
+    Le fichier RISA peut avoir deux structures:
+    - "index": dictionnaire plat indexé par Libelle8/Libelle16 (PRINCIPAL)
+    - "tree": structure arborescente IED -> LD -> LN -> ... (SECONDAIRE)
+
+    Cette fonction utilise prioritairement l'index s'il existe.
+
+    Args:
+        risa_data: Données RISA brutes
+
+    Returns:
+        Liste d'entrées aplaties
+    """
+    entries = []
+
+    # 1. Utiliser l'index s'il existe (c'est le format principal et le plus complet)
+    index = risa_data.get("index", {})
+    if index:
+        for key, value in index.items():
+            if not isinstance(value, dict):
+                continue
+            # Ignorer les entrées vides (clés sans valeur)
+            if not value:
+                continue
+            # Vérifier que c'est une entrée valide avec au moins Libelle8 ou UniqueID
+            if "UniqueID" in value or "Libelle8" in value:
+                entries.append({
+                    "key": key,
+                    "IED": value.get("IED", ""),
+                    "LD": value.get("LD", ""),
+                    "LN": value.get("LN", ""),
+                    "instance": value.get("LN.inst", ""),
+                    "DO": value.get("DO", ""),
+                    "UniqueID": value.get("UniqueID", ""),
+                    "Libelle8": value.get("Libelle8", key),  # Utiliser la clé si pas de Libelle8
+                    "Libelle16": value.get("Libelle16", ""),
+                    "InfosISA": value.get("InfosISA", {})
+                })
+        return entries
+
+    # 2. Fallback sur l'arbre si pas d'index
+    tree = risa_data.get("tree", risa_data)
+
+    def recurse(node: Any, path: list[str] | None = None):
+        if path is None:
+            path = []
+
+        if not isinstance(node, dict):
+            return
+
+        # Si on trouve un noeud feuille avec UniqueID et Libelle8, c'est une entrée
+        if "UniqueID" in node and "Libelle8" in node:
+            entries.append({
+                "key": "/".join(path),
+                "IED": path[0] if len(path) > 0 else "",
+                "LD": path[1] if len(path) > 1 else "",
+                "LN": path[2] if len(path) > 2 else "",
+                "instance": path[3] if len(path) > 3 else "",
+                "DO": path[4] if len(path) > 4 else "",
+                "UniqueID": node.get("UniqueID"),
+                "Libelle8": node.get("Libelle8", ""),
+                "Libelle16": node.get("Libelle16", ""),
+                "InfosISA": node.get("InfosISA", {})
+            })
+            return
+
+        # Sinon, continuer la récursion
+        for key, value in node.items():
+            if isinstance(value, dict):
+                recurse(value, path + [key])
+
+    recurse(tree)
+    return entries
+
+
+# Alias pour compatibilité
+flatten_risa_tree = flatten_risa_data
+
+
+# Cache pour éviter de recalculer l'aplatissement à chaque appel
+_flattened_cache: dict[int, list[dict]] = {}
+
+
+def get_flattened_risa(risa_data: dict) -> list[dict]:
+    """
+    Retourne la version aplatie du RISA, avec cache.
+
+    Args:
+        risa_data: Données RISA brutes
+
+    Returns:
+        Liste d'entrées aplaties
+    """
+    cache_key = id(risa_data)
+    if cache_key not in _flattened_cache:
+        _flattened_cache[cache_key] = flatten_risa_tree(risa_data)
+    return _flattened_cache[cache_key]
+
+
+def find_risa_matches(pattern: str, risa_data: dict, search_field: str = "both") -> list[dict]:
     """
     Trouve toutes les entrées RISA qui correspondent à un pattern (avec ou sans wildcard).
 
     Args:
         pattern: Pattern à chercher (ex: "DF.CHA.*" ou "DF.CHA.1")
-        risa_data: Dictionnaire RISA (clés = libellés, valeurs = infos)
-        search_field: Champ à utiliser pour la recherche ("Libelle8" ou "Libelle16")
+        risa_data: Dictionnaire RISA (structure arborescente ou aplatie)
+        search_field: Champ à utiliser pour la recherche:
+            - "Libelle8" : cherche uniquement dans Libelle8
+            - "Libelle16" : cherche uniquement dans Libelle16
+            - "both" (défaut) : cherche dans Libelle8 ET Libelle16
 
     Returns:
         Liste des entrées RISA correspondantes avec leurs InfosISA
     """
     matches = []
+    seen_ids = set()  # Pour éviter les doublons
     is_wildcard = "*" in pattern or "?" in pattern
 
-    for key, value in risa_data.items():
-        if not isinstance(value, dict):
+    # Aplatir la structure RISA si nécessaire
+    flat_entries = get_flattened_risa(risa_data)
+
+    # Déterminer les champs à chercher
+    if search_field == "both":
+        fields_to_search = ["Libelle8", "Libelle16"]
+    else:
+        fields_to_search = [search_field]
+
+    for entry in flat_entries:
+        unique_id = entry.get("UniqueID", "")
+
+        # Vérifier si déjà trouvé (éviter doublons)
+        if unique_id and unique_id in seen_ids:
             continue
 
-        # Récupérer le libellé à comparer
-        libelle = value.get(search_field, key)
+        # Chercher dans tous les champs spécifiés
+        for field in fields_to_search:
+            libelle = entry.get(field, "")
+            if not libelle:
+                continue
 
-        # Vérifier la correspondance
-        if is_wildcard:
-            if match_wildcard(pattern, libelle):
+            matched = False
+            # Vérifier la correspondance
+            if is_wildcard:
+                if match_wildcard(pattern, libelle):
+                    matched = True
+            else:
+                # Comparaison exacte (insensible à la casse)
+                if libelle.upper() == pattern.upper():
+                    matched = True
+
+            if matched:
+                if unique_id:
+                    seen_ids.add(unique_id)
                 matches.append({
-                    "key": key,
-                    "libelle8": value.get("Libelle8", ""),
-                    "libelle16": value.get("Libelle16", ""),
-                    "UniqueID": value.get("UniqueID", ""),
-                    "IED": value.get("IED", ""),
-                    "LD": value.get("LD", ""),
-                    "LN": value.get("LN", ""),
-                    "InfosISA": value.get("InfosISA", {})
+                    "key": entry.get("key", ""),
+                    "libelle8": entry.get("Libelle8", ""),
+                    "libelle16": entry.get("Libelle16", ""),
+                    "UniqueID": unique_id,
+                    "IED": entry.get("IED", ""),
+                    "LD": entry.get("LD", ""),
+                    "LN": entry.get("LN", ""),
+                    "InfosISA": entry.get("InfosISA", {})
                 })
-        else:
-            # Comparaison exacte (insensible à la casse)
-            if libelle.upper() == pattern.upper() or key.upper() == pattern.upper():
-                matches.append({
-                    "key": key,
-                    "libelle8": value.get("Libelle8", ""),
-                    "libelle16": value.get("Libelle16", ""),
-                    "UniqueID": value.get("UniqueID", ""),
-                    "IED": value.get("IED", ""),
-                    "LD": value.get("LD", ""),
-                    "LN": value.get("LN", ""),
-                    "InfosISA": value.get("InfosISA", {})
-                })
+                break  # Pas besoin de chercher dans l'autre champ
 
     return matches
 

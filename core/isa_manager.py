@@ -274,7 +274,28 @@ class ISAManager:
         data["files"] = files
         self._save_index(data)
 
+        # Analyse automatique pour certains types
+        if type_id and self._should_auto_analyze(type_id, ext):
+            try:
+                analysis_result = self.analyze_file(file_id, type_id)
+                file_entry["analysis_result"] = analysis_result
+            except Exception as e:
+                file_entry["analysis_error"] = str(e)
+
         return file_entry
+
+    def _should_auto_analyze(self, type_id: str, ext: str) -> bool:
+        """Détermine si un type de fichier doit être analysé automatiquement."""
+        # Types nécessitant une analyse automatique
+        auto_analyze_types = {
+            "isa_alarmes": [".xml"],      # Équations XML → JSON enrichi RISA
+            "isa_cde": [".xml", ".json"], # Données CDE
+            "isa_tcd": [".xml", ".json"], # Données TCD
+        }
+
+        if type_id in auto_analyze_types:
+            return ext.lower() in auto_analyze_types[type_id]
+        return False
 
     def delete_file(self, file_id: str) -> bool:
         """Supprime un fichier ISA (depuis uploads ou data/files)."""
@@ -521,7 +542,7 @@ class ISAManager:
     # Analyse selon le type
     # ============================================================
 
-    def analyze_file(self, file_id: str, type_id: str) -> dict:
+    def analyze_file(self, file_id: str, type_id: str, enrich: bool = True) -> dict:
         """
         Analyse un fichier selon son type.
 
@@ -533,6 +554,7 @@ class ISAManager:
         Args:
             file_id: ID du fichier à analyser
             type_id: ID du type pour lequel analyser
+            enrich: Si True, enrichit avec RISA. Si False, analyse brute sans enrichissement.
 
         Returns:
             Résultats d'analyse
@@ -570,7 +592,7 @@ class ISAManager:
         # Analyse spécifique selon le type
         try:
             if type_id == "isa_alarmes" and file_format == "xml":
-                result["analysis"] = self._analyze_equation_xml(file_path, file_id)
+                result["analysis"] = self._analyze_equation_xml(file_path, file_id, enrich=enrich)
             elif type_id == "risa" and file_format == "json":
                 result["analysis"] = {"type": "risa", "status": "stored", "message": "Fichier RISA stocké"}
             else:
@@ -581,14 +603,15 @@ class ISAManager:
 
         return result
 
-    def _analyze_equation_xml(self, file_path: Path, file_id: str) -> dict:
+    def _analyze_equation_xml(self, file_path: Path, file_id: str, enrich: bool = True) -> dict:
         """
         Analyse un fichier XML d'équations/alarmes.
-        Enrichit avec RISA si disponible.
+        Enrichit avec RISA si disponible et si enrich=True.
 
         Args:
             file_path: Chemin du fichier XML
             file_id: ID du fichier pour nommer le JSON résultat
+            enrich: Si True, enrichit avec RISA. Si False, analyse brute.
 
         Returns:
             Résultats d'analyse
@@ -599,31 +622,42 @@ class ISAManager:
         # 1. Parser le XML
         equation_data = parse_equation_xml(file_path)
 
-        # 2. Chercher un fichier RISA disponible pour enrichissement
-        risa_files = self.get_files_for_type("risa")
-        risa_json_files = [f for f in risa_files if f.get("format") == "json"]
+        # 2. Enrichissement RISA uniquement si demandé
+        if enrich:
+            # Chercher un fichier RISA disponible pour enrichissement
+            risa_files = self.get_files_for_type("risa")
+            risa_json_files = [f for f in risa_files if f.get("format") == "json"]
 
-        if risa_json_files:
-            # Prendre le plus récent
-            risa_file = max(risa_json_files, key=lambda x: x.get("imported_at", ""))
-            risa_path = self._get_file_current_path(risa_file)
+            if risa_json_files:
+                # Prendre le plus récent
+                risa_file = max(risa_json_files, key=lambda x: x.get("imported_at", ""))
+                risa_path = self._get_file_current_path(risa_file)
 
-            if risa_path and risa_path.exists():
-                try:
-                    with open(risa_path, "r", encoding="utf-8") as f:
-                        risa_data = json.load(f)
+                if risa_path and risa_path.exists():
+                    try:
+                        with open(risa_path, "r", encoding="utf-8") as f:
+                            risa_data = json.load(f)
 
-                    # 3. Enrichir avec RISA
-                    equation_data = enrich_with_risa(equation_data, risa_data)
-                    equation_data["metadata"]["risa_source"] = risa_file.get("original_name")
-                except Exception as e:
-                    equation_data["metadata"]["risa_error"] = str(e)
+                        # 3. Enrichir avec RISA
+                        equation_data = enrich_with_risa(equation_data, risa_data)
+                        equation_data["metadata"]["risa_source"] = risa_file.get("original_name")
+                    except Exception as e:
+                        equation_data["metadata"]["risa_error"] = str(e)
+            else:
+                equation_data["metadata"]["risa_source"] = None
+                equation_data["metadata"]["enriched"] = False
         else:
-            equation_data["metadata"]["risa_source"] = None
+            # Mode sans enrichissement
             equation_data["metadata"]["enriched"] = False
+            equation_data["metadata"]["risa_source"] = None
+            equation_data["metadata"]["analysis_mode"] = "raw"
 
-        # 4. Sauvegarder le JSON analysé à côté du fichier original
-        output_path = file_path.with_suffix(".analyzed.json")
+        # 4. Sauvegarder le JSON analysé - suffixe différent si sans enrichissement
+        if enrich:
+            output_path = file_path.with_suffix(".analyzed.json")
+        else:
+            output_path = file_path.with_suffix(".analyzed.raw.json")
+
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(equation_data, f, indent=2, ensure_ascii=False)
 
@@ -635,7 +669,8 @@ class ISAManager:
             "wildcards_count": equation_data["metadata"]["wildcards_count"],
             "enriched": equation_data["metadata"].get("enriched", False),
             "risa_source": equation_data["metadata"].get("risa_source"),
-            "enrichment_stats": equation_data["metadata"].get("enrichment_stats", {})
+            "enrichment_stats": equation_data["metadata"].get("enrichment_stats", {}),
+            "analysis_mode": "enriched" if enrich else "raw"
         }
 
     def get_analyzed_data(self, file_id: str) -> dict | None:

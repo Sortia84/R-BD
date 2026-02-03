@@ -231,10 +231,17 @@ async def unlink_file_from_type(request: LinkRequest) -> dict[str, Any]:
 # ============================================================
 
 @router.post("/analyze/{file_id}")
-async def analyze_file(file_id: str, type_id: str) -> dict[str, Any]:
-    """Lance l'analyse d'un fichier selon son type."""
+async def analyze_file(file_id: str, type_id: str, enrich: bool = True) -> dict[str, Any]:
+    """
+    Lance l'analyse d'un fichier selon son type.
+
+    Args:
+        file_id: ID du fichier à analyser
+        type_id: ID du type pour lequel analyser
+        enrich: Si True (défaut), enrichit avec RISA. Si False, analyse brute sans enrichissement.
+    """
     try:
-        result = manager.analyze_file(file_id, type_id)
+        result = manager.analyze_file(file_id, type_id, enrich=enrich)
         return {
             "success": True,
             "result": result
