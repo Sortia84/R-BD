@@ -269,6 +269,23 @@ async def reanalyze_all() -> dict[str, Any]:
     }
 
 
+@router.get("/analyzed/{file_id}")
+async def get_analyzed_data(file_id: str) -> dict[str, Any]:
+    """
+    Récupère les données analysées d'un fichier (le JSON généré).
+
+    Args:
+        file_id: ID du fichier
+
+    Returns:
+        Données analysées ou 404 si pas encore analysé
+    """
+    data = manager.get_analyzed_data(file_id)
+    if data is None:
+        raise HTTPException(status_code=404, detail=f"Données analysées non trouvées pour {file_id}")
+    return data
+
+
 # ============================================================
 # Orphelins
 # ============================================================

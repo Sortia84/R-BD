@@ -70,9 +70,10 @@ function setSavedTests(type, tests) {
 /**
  * Initialise l'éditeur
  */
-function initEditor() {
+async function initEditor() {
     // Charger les IEDs depuis le SCD si disponible
-    loadReferenceLists();
+    // ⚠️ DOIT être await pour que les <select> soient peuplés AVANT loadTest
+    await loadReferenceLists();
 
     setupTypeSelector();
     ensureRandomId();
@@ -81,7 +82,7 @@ function initEditor() {
     // Si on édite un test existant, charger ses données
     const testId = new URLSearchParams(window.location.search).get('id');
     if (testId) {
-        loadTest(testId);
+        await loadTest(testId);
     }
 }
 
@@ -505,8 +506,16 @@ async function restoreLinkedSelectors(iedValue, variantValue, ldValue, lnValue, 
     }
 
     // 5. Sélectionner le LNinst
-    if (lninstValue) {
+    // Tolérance : "" et "0" sont équivalents (LLN0 a souvent lnInst vide)
+    if (lninstValue !== undefined && lninstValue !== null) {
         lninstSelect.value = lninstValue;
+        // Si la valeur n'a pas matché, essayer le fallback "" ↔ "0"
+        if (lninstSelect.value !== lninstValue) {
+            const fallback = lninstValue === "" ? "0" : (lninstValue === "0" ? "" : null);
+            if (fallback !== null) {
+                lninstSelect.value = fallback;
+            }
+        }
     }
 }
 
@@ -1354,9 +1363,32 @@ function collectFormData() {
 }
 
 /**
+ * Sauvegarde l'essai côté serveur (auto-sync)
+ */
+async function saveEssaiToServer(essaiData) {
+    try {
+        const response = await fetch('/api/essais', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(essaiData),
+        });
+        if (!response.ok) {
+            console.warn('⚠️ Sauvegarde serveur échouée:', response.status);
+            return false;
+        }
+        const result = await response.json();
+        console.log(`✅ Essai ${result.action} côté serveur: ${result.id}`);
+        return true;
+    } catch (error) {
+        console.warn('⚠️ Sauvegarde serveur indisponible:', error.message);
+        return false;
+    }
+}
+
+/**
  * Sauvegarde le test
  */
-function saveTest() {
+async function saveTest() {
     const selectedValue = (document.getElementById('test-type')?.value || selectedType).toLowerCase();
     selectedType = selectedValue;
 
@@ -1396,6 +1428,12 @@ function saveTest() {
         const updatedPrevious = previousTests.filter(t => t.id !== currentTest.id);
         setSavedTests(originalType, updatedPrevious);
         originalType = selectedType;
+    }
+
+    // Sauvegarder côté serveur AVANT la redirection
+    const serverOk = await saveEssaiToServer({ ...currentTest });
+    if (!serverOk) {
+        console.warn('⚠️ Essai sauvegardé en local uniquement');
     }
 
     alert('✅ Test sauvegardé avec succès !');

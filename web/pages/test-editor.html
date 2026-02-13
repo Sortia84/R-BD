@@ -193,7 +193,11 @@
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                         <label class="form-label">📊 Informations CDE</label>
-                        <button class="btn-icon-small" onclick="addCDE()">➕</button>
+                        <div style="display: flex; gap: 4px;">
+                            <button class="btn-db-picker" onclick="openCDEPicker()"
+                                title="Sélectionner depuis la base ISA">🗄️</button>
+                            <button class="btn-icon-small" onclick="addCDE()" title="Ajout manuel">➕</button>
+                        </div>
                     </div>
                     <div id="cde-container">
                         <p class="text-muted-small">Aucun CDE ajouté</p>
@@ -205,7 +209,11 @@
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                         <label class="form-label">⚠️ Alarmes</label>
-                        <button class="btn-icon-small" onclick="addAlarme()">➕</button>
+                        <div style="display: flex; gap: 4px;">
+                            <button class="btn-db-picker" onclick="openAlarmesPicker()"
+                                title="Sélectionner depuis la base ISA">🗄️</button>
+                            <button class="btn-icon-small" onclick="addAlarme()" title="Ajout manuel">➕</button>
+                        </div>
                     </div>
                     <div id="alarmes-container">
                         <p class="text-muted-small">Aucune alarme ajoutée</p>
@@ -217,7 +225,11 @@
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                         <label class="form-label">ℹ️ Informations TCD</label>
-                        <button class="btn-icon-small" onclick="addTCD()">➕</button>
+                        <div style="display: flex; gap: 4px;">
+                            <button class="btn-db-picker" onclick="openTCDPicker()"
+                                title="Sélectionner depuis la base ISA">🗄️</button>
+                            <button class="btn-icon-small" onclick="addTCD()" title="Ajout manuel">➕</button>
+                        </div>
                     </div>
                     <div id="tcd-container">
                         <p class="text-muted-small">Aucune information TCD</p>
@@ -243,6 +255,7 @@
     </main>
 
     <script src="../js/test-editor.js"></script>
+    <script src="../js/isa-picker.js"></script>
     <script>
         loadHeader({
             activePage: 'templates-essais',

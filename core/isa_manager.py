@@ -673,15 +673,18 @@ class ISAManager:
             "analysis_mode": "enriched" if enrich else "raw"
         }
 
-    def get_analyzed_data(self, file_id: str) -> dict | None:
+    def get_analyzed_data(self, file_id: str) -> dict | list | None:
         """
-        Récupère les données analysées d'un fichier (le JSON généré).
+        Récupère les données analysées d'un fichier.
+
+        - Pour les XML : retourne le contenu du .analyzed.json
+        - Pour les JSON : retourne directement le contenu du fichier
 
         Args:
             file_id: ID du fichier
 
         Returns:
-            Données analysées ou None si pas encore analysé
+            Données analysées ou None si pas disponible
         """
         file_entry = self.get_file_by_id(file_id)
         if not file_entry:
@@ -691,11 +694,24 @@ class ISAManager:
         if not file_path:
             return None
 
-        # Chercher le fichier .analyzed.json
-        analyzed_path = file_path.with_suffix(".analyzed.json")
-        if analyzed_path.exists():
-            with open(analyzed_path, "r", encoding="utf-8") as f:
-                return json.load(f)
+        file_format = file_entry.get("format", "").lower()
+
+        # Pour les fichiers XML, chercher le .analyzed.json
+        if file_format == "xml":
+            analyzed_path = file_path.with_suffix(".analyzed.json")
+            if analyzed_path.exists():
+                with open(analyzed_path, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            return None
+
+        # Pour les fichiers JSON, retourner directement le contenu
+        if file_format == "json" and file_path.exists():
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                # Si c'est une liste, l'encapsuler pour uniformiser
+                if isinstance(data, list):
+                    return {"entries": data, "metadata": {"source_file": file_path.name, "format": "json_list"}}
+                return data
 
         return None
 

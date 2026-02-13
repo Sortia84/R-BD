@@ -1,0 +1,53 @@
+[
+  {
+    "id": "RU-1DXF31",
+    "name": "LDPHAS1test",
+    "ied": "BCU",
+    "ld": "LDPHAS1",
+    "ln": "LLN0",
+    "lninst": "",
+    "description": "",
+    "preconditions": [
+      {
+        "id": "precon_1771004115733",
+        "name": "fd",
+        "state": "DEB"
+      }
+    ],
+    "files": [],
+    "linked_tests_ru": [],
+    "linked_tests_mvs": [],
+    "linked_tests_cvs": [],
+    "steps": [
+      {
+        "id": "step_1771004121309",
+        "number": 1,
+        "name": "test",
+        "injection": "Sans",
+        "fault_type": "",
+        "state": "",
+        "temporisation": "Manuel",
+        "duration": 0,
+        "unit": "ms"
+      },
+      {
+        "id": "step_1771004122030",
+        "number": 2,
+        "name": "test",
+        "injection": "Sans",
+        "fault_type": "",
+        "state": "",
+        "temporisation": "Manuel",
+        "duration": 0,
+        "unit": "ms"
+      }
+    ],
+    "cde": [],
+    "alarmes": [],
+    "tcd": [],
+    "type": "ru",
+    "variant": "",
+    "updated_at": "2026-02-13T21:28:25.294344",
+    "created_at": "2026-02-13T21:28:25.294344"
+  }
+]

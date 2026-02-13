@@ -28,6 +28,8 @@ function initTemplatesPage() {
     loadReferenceLists();
     bindFilters();
     loadTemplatesList();
+    // Synchroniser automatiquement le localStorage vers le serveur
+    syncAllToServer();
 }
 
 function bindFilters() {
@@ -228,6 +230,7 @@ function duplicateTest(testId, type) {
     copy.type = type;
     tests.push(copy);
     setTestsByType(type, tests);
+    syncTypeToServer(type);
     loadTemplatesList();
 }
 
@@ -245,6 +248,7 @@ function deleteTest(testId, type) {
 
     const updated = tests.filter(t => t.id !== testId);
     setTestsByType(type, updated);
+    syncTypeToServer(type);
     loadTemplatesList();
 }
 
@@ -252,4 +256,37 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+/**
+ * Synchronise automatiquement les essais du localStorage vers le serveur.
+ * Appelé au chargement de la page pour garantir la cohérence.
+ */
+async function syncAllToServer() {
+    const types = ['ru', 'cvs', 'mvs'];
+    for (const type of types) {
+        await syncTypeToServer(type);
+    }
+}
+
+/**
+ * Synchronise un type d'essais vers le serveur.
+ */
+async function syncTypeToServer(type) {
+    const tests = getTestsByType(type);
+    try {
+        const response = await fetch('/api/essais/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type, essais: tests }),
+        });
+        if (response.ok) {
+            const result = await response.json();
+            console.log(`🔄 Sync ${type}: ${result.synced} essai(s) synchronisé(s)`);
+        } else {
+            console.warn(`⚠️ Sync ${type} échouée:`, response.status);
+        }
+    } catch (error) {
+        console.warn(`⚠️ Sync ${type} indisponible:`, error.message);
+    }
 }
