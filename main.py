@@ -3,6 +3,10 @@
 Lance le serveur R#BD avec :
 - API REST pour la gestion des ICD
 - Fichiers statiques (HTML/CSS/JS)
+
+PHASE 0 FIX (27 mars 2026): 
+  Port WEB: 8554 → 8597 (élimination collision avec R#STOCK)
+  Port API: 8654 → 8664 (alignement logique +67 offset)
 """
 
 import sys
@@ -16,19 +20,18 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
+from config import WEB_PORT, API_PORT
 from api.icd_api import router as icd_router
 from api.isa_api import router as isa_router
 from api.mapping_api import router as mapping_router
 from api.essais_api import router as essais_router
+from api.templates_api import router as templates_router
 
 # Configuration
 BASE_DIR = Path(__file__).parent
 WEB_DIR = BASE_DIR / "web"
 DATA_DIR = BASE_DIR / "data"
 UPLOADS_DIR = BASE_DIR / "uploads"
-
-WEB_PORT = 8554
-API_PORT = 8654
 
 # Application FastAPI
 app = FastAPI(
@@ -42,6 +45,7 @@ app.include_router(icd_router)
 app.include_router(isa_router)
 app.include_router(mapping_router)
 app.include_router(essais_router)
+app.include_router(templates_router)
 
 # Servir les fichiers statiques
 app.mount("/web", StaticFiles(directory=str(WEB_DIR)), name="web")
