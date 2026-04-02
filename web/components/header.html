@@ -1,34 +1,33 @@
-<header class="guide-header">
-    <img class="guide-logo" src="./assets/RCONTROLE.png" alt="R#CONTROLE" />
-    <div class="header-title-row">
-        <div class="header-title" id="header-title">R#BD</div>
-        <div class="header-meta">© 2025 APPLETON - RTE R#CONTROLE</div>
+<!--
+  Header mutualisé R#BD
+
+  Ce composant est injecté dynamiquement par /js/header-loader.js.
+  Il utilise les mêmes classes CSS (rscd-*) que R#SCD pour garantir
+  une cohérence visuelle totale entre les applications R#CONTROLE.
+
+  Navigation SPA : chaque bouton a un data-view qui déclenche switchView()
+  dans app.js pour afficher la vue correspondante sans rechargement.
+-->
+<header class="rscd-header">
+    <img class="rscd-logo" src="/assets/RCONTROLE.png" alt="Logo R-CONTROL" />
+
+    <div class="rscd-header-title-row">
+        <div class="rscd-header-title" id="rscd-header-title">R#BD</div>
+        <div class="rscd-header-meta" id="rscd-header-meta">© 2026 APPLETON - RTE R#CONTROLE</div>
     </div>
-    <div class="header-divider"></div>
-    <nav class="guide-nav">
-        <a class="nav-button" href="../../" data-page="home">
-            <span class="nav-icon">🏠</span>
-            <span>Accueil</span>
-        </a>
-        <a class="nav-button" href="./web/pages/templates-essais.html" data-page="templates-essais">
-            <span class="nav-icon">🧪</span>
-            <span>Template Essais</span>
-        </a>
-        <a class="nav-button" href="#" aria-disabled="true" data-page="templates-visite">
-            <span class="nav-icon">🕵️</span>
-            <span>Templates Visite</span>
-        </a>
-        <a class="nav-button" href="./web/pages/icd.html" data-page="icd">
-            <span class="nav-icon">📃</span>
-            <span>Gestion ICD</span>
-        </a>
-        <a class="nav-button" href="./web/pages/isa.html" data-page="isa">
-            <span class="nav-icon">ℹ️</span>
-            <span>Fichiers ISA</span>
-        </a>
-        <a class="nav-button" href="#" aria-disabled="true" data-page="parametres">
-            <span class="nav-icon">⚙️</span>
-            <span>Paramètres</span>
-        </a>
+
+    <div class="rscd-header-subtitle" id="rscd-header-subtitle">
+        Base de données IEC 61850
+    </div>
+
+    <div class="rscd-header-divider"></div>
+
+    <nav id="nav-main" class="rscd-nav" aria-label="Navigation principale R#BD">
+        <button class="rscd-tab active" data-view="home" type="button">🏠 Accueil</button>
+        <button class="rscd-tab" data-view="icd" type="button">📃 IED / ICD</button>
+        <button class="rscd-tab" data-view="isa" type="button">📂 Fichiers ISA</button>
+        <button class="rscd-tab" data-view="essais" type="button">🧪 Essais</button>
+        <button class="rscd-tab" data-view="fcs" type="button">📋 FCS</button>
+        <button class="rscd-tab" data-view="rac" type="button">📎 Fichiers RAC</button>
     </nav>
 </header>

@@ -1,8 +1,7 @@
 """
-templates_api.py — API REST pour les templates d'essais (RU, CVS, MVS)
+router_templates.py — API REST pour les templates d'essais (RU, CVS, MVS)
 
-PHASE 1 FIX (27 mars 2026):
-  Endpoint requis par R#GUIDE pour débloquer workflow d'essais.
+Endpoint requis par R#GUIDE pour débloquer workflow d'essais.
   
 Endpoints:
   GET  /api/v1/templates/ru       → Liste templates RU
@@ -24,94 +23,20 @@ from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+
+# Import centralisé depuis shared.py
+from api.shared import (
+    TEMPLATES_DATA_DIR as TEMPLATES_DIR,
+    VALID_TEMPLATE_TYPES as VALID_TYPES,
+    TemplateModel,
+    TemplateStep,
+    TemplateFile,
+    TemplateAlarm,
+    TemplateCreateRequest,
+    logger,
+)
 
 router = APIRouter(prefix="/api/v1/templates", tags=["templates"])
-
-# Configuration des répertoires
-BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = BASE_DIR / "data"
-TEMPLATES_DIR = DATA_DIR / "templates"
-TEMPLATES_DIR.mkdir(parents=True, exist_ok=True)
-
-# Types valides
-VALID_TYPES = ("ru", "cvs", "mvs")
-
-
-# ============================================================================
-# MODÈLES PYDANTIC
-# ============================================================================
-
-class TemplateStep(BaseModel):
-    """Étape d'un test (pré-condition, action, post-condition)."""
-    id: str = ""
-    type: str    # "setup", "test", "verify", "cleanup"
-    description: str
-    expected_result: str = ""
-    
-    class Config:
-        extra = "allow"  # Accepter champs additionnels
-
-
-class TemplateFile(BaseModel):
-    """Fichier attaché au test (SCD, ICD, config, etc)."""
-    id: str = ""
-    name: str
-    path: str
-    type: str  # "scd", "icd", "config", "data", "other"
-
-
-class TemplateAlarm(BaseModel):
-    """Alarme déclenchée durant le test."""
-    id: str = ""
-    source: str  # IED/LD/LN path
-    severity: str = "info"  # "info", "warning", "error", "critical"
-    message: str
-
-
-class TemplateModel(BaseModel):
-    """Modèle complet d'un template d'essai."""
-    id: str = ""
-    name: str
-    type: str  # "ru", "cvs", "mvs"
-    description: str = ""
-    
-    # Contexte IEC 61850
-    ied: str = ""
-    ld: str = ""
-    ln: str = ""
-    lninst: str = ""
-    
-    # Contenu technique
-    preconditions: List[TemplateStep] = []
-    steps: List[TemplateStep] = []
-    expected_alarms: List[TemplateAlarm] = []
-    files: List[TemplateFile] = []
-    
-    # Liaisons croisées
-    linked_templates: Dict[str, List[str]] = {}  # {"ru": [...], "cvs": [...], "mvs": [...]}
-    
-    # Métadonnées
-    created_at: str = ""
-    updated_at: str = ""
-    created_by: str = "system"
-    
-    class Config:
-        extra = "allow"
-
-
-class TemplateCreateRequest(BaseModel):
-    """Request pour créer un template."""
-    name: str
-    type: str  # "ru", "cvs", "mvs"
-    description: str = ""
-    ied: str = ""
-    ld: str = ""
-    ln: str = ""
-    lninst: str = ""
-    
-    class Config:
-        extra = "allow"
 
 
 # ============================================================================

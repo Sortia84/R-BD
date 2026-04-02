@@ -1,4 +1,4 @@
-# icd_api.py - API REST pour la gestion des ICD
+# router_icd.py — API REST pour la gestion des ICD
 """
 Endpoints FastAPI pour l'import, listing et gestion des ICD.
 Structure de stockage : data/icd/{filename}.json (1 fichier par ICD)
@@ -13,7 +13,6 @@ Parser complet IEC 61850 avec extraction :
 Inclut aussi la gestion des patterns IED et leurs liaisons.
 """
 
-from pathlib import Path
 from typing import Any
 import shutil
 import uuid
@@ -22,19 +21,20 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from core.icd_parser import ICDParserV2 as ICDParser
-from core.ied_pattern_manager import IEDPatternManager
+# Import centralisé depuis shared.py (plus de chemins/managers locaux)
+from api.shared import (
+    icd_parser as parser,
+    ied_pattern_manager as pattern_manager,
+    DATA_DIR,
+    UPLOADS_DIR,
+    logger,
+)
 
 router = APIRouter(prefix="/api/icd", tags=["ICD"])
 
-# Parser et managers partagés
-BASE_DIR = Path(__file__).parent.parent
-DATA_DIR = BASE_DIR / "data"
-UPLOADS_DIR = BASE_DIR / "uploads" / "ICD"
-UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
-
-parser = ICDParser(data_dir=DATA_DIR)
-pattern_manager = IEDPatternManager(data_dir=DATA_DIR)
+# Sous-répertoire des uploads ICD
+ICD_UPLOADS_DIR = UPLOADS_DIR / "ICD"
+ICD_UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 @router.get("/")

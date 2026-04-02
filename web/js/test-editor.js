@@ -27,9 +27,9 @@ let stepCounter = 1;
 let isEditing = false;
 
 // Données de référence chargées depuis l'API
-let iedPatterns = [];      // Liste des patterns IED depuis liste_ied.json
-let icdCatalog = [];       // Catalogue des ICD depuis index.json
-let icdDetailsCache = {};  // Cache des détails ICD (LDs, LNs)
+let editorIedPatterns = [];      // Liste des patterns IED depuis liste_ied.json
+let editorIcdCatalog = [];       // Catalogue des ICD depuis index.json
+let editorIcdDetailsCache = {};  // Cache des détails ICD (LDs, LNs)
 
 const TYPE_PREFIX = {
     ru: 'RU',
@@ -55,9 +55,207 @@ function buildStateOptions(selectedValue = '', placeholder = 'État') {
     return `<option value="" ${placeholderSelected}>${placeholder}</option>${options}`;
 }
 
-const queryParams = new URLSearchParams(window.location.search);
-let selectedType = (queryParams.get('type') || 'ru').toLowerCase();
+// SPA : le type et l'ID du test sont passés par openEditor() au lieu de query params
+let selectedType = 'ru';
 let originalType = selectedType;
+
+
+// ============================================================
+// RENDU DU LAYOUT — Génération HTML de l'éditeur
+// ============================================================
+
+/**
+ * Générer et injecter le layout HTML complet de l'éditeur de test.
+ *
+ * Appelée par renderEssaisLayout() dans templates-essais.js.
+ * Injecte le formulaire dans #essais-editor-view.
+ *
+ * Sections : identification, description/préconditions/éléments liés,
+ * étapes, chronogramme, infos complémentaires (CDE/alarmes/TCD), sauvegarde.
+ */
+function renderEditorLayout() {
+    const container = document.getElementById("essais-editor-view");
+    if (!container) return;
+
+    container.innerHTML = `
+        <!-- Bandeau éditeur -->
+        <section class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <h2 id="editor-title" style="margin: 0;">Éditeur de test</h2>
+                        <select id="test-type" class="form-input" style="width: 90px; padding: 6px 10px;">
+                            <option value="ru">RU</option>
+                            <option value="cvs">CVS</option>
+                            <option value="mvs">MVS</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-secondary" onclick="closeEditor()">← Retour</button>
+                    <button class="btn btn-primary" onclick="saveTest()">💾 Sauvegarder</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Identification -->
+        <section class="card">
+            <div class="card-header"><h3 style="margin: 0;">Identification du test</h3></div>
+            <div class="divider"></div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>ID (auto)</label>
+                    <input type="text" id="test-id" class="form-input" placeholder="Auto: RU-XXXXXX" readonly>
+                    <div class="field-hint">Généré automatiquement (ID aléatoire)</div>
+                </div>
+                <div class="form-group">
+                    <label>Nom du test</label>
+                    <input type="text" id="test-name" class="form-input" placeholder="Nom du test">
+                </div>
+                <div class="form-group">
+                    <label>IED</label>
+                    <select id="test-ied" class="form-input"><option value="">Sélectionner un IED</option></select>
+                </div>
+                <div class="form-group">
+                    <label>Variant</label>
+                    <select id="test-variant" class="form-input"><option value="">— Aucun —</option></select>
+                </div>
+                <div class="form-group">
+                    <label>LD</label>
+                    <select id="test-ld" class="form-input"><option value="">Sélectionner un LD</option></select>
+                </div>
+                <div class="form-group">
+                    <label>LN</label>
+                    <select id="test-ln" class="form-input"><option value="">Sélectionner un LN</option></select>
+                </div>
+                <div class="form-group">
+                    <label>LNinst</label>
+                    <select id="test-lninst" class="form-input"><option value="">Sélectionner LNinst</option></select>
+                </div>
+            </div>
+        </section>
+
+        <!-- Description / Préconditions / Éléments liés -->
+        <section class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0;">Description, préconditions &amp; éléments liés</h3>
+            </div>
+            <div class="divider"></div>
+            <div class="compact-row">
+                <div class="compact-col">
+                    <label class="form-label">Description</label>
+                    <textarea id="test-description" class="form-input description-input" rows="6" placeholder="Description détaillée du test"></textarea>
+                </div>
+                <div class="compact-col">
+                    <label class="form-label">Préconditions</label>
+                    <div class="compact-actions">
+                        <button class="btn-icon-add" onclick="addPrecondition()">➕ Précondition</button>
+                    </div>
+                    <div id="preconditions-container" class="compact-list">
+                        <p class="text-muted precondition-empty" id="no-preconditions">Aucune précondition</p>
+                    </div>
+                </div>
+                <div class="compact-col">
+                    <label class="form-label">Éléments liés</label>
+                    <div class="linked-tests-zone compact-links">
+                        <div class="compact-links-row">
+                            <div class="file-upload-zone compact-upload" onclick="document.getElementById('file-input').click()">
+                                <div class="compact-upload-content">
+                                    <span class="compact-upload-icon">📁</span>
+                                    <span>Fichier</span>
+                                </div>
+                            </div>
+                            <button class="btn-link-test" onclick="linkTestRU()">➕ RU</button>
+                            <button class="btn-link-test" onclick="linkTestMVS()">➕ MVS</button>
+                            <button class="btn-link-test" onclick="linkTestCVS()">➕ CVS</button>
+                        </div>
+                        <input type="file" id="file-input" multiple style="display: none;" onchange="handleFileUpload(event)">
+                        <div id="files-list" class="compact-list"></div>
+                        <div id="tests-ru-list" class="compact-list"></div>
+                        <div id="tests-mvs-list" class="compact-list"></div>
+                        <div id="tests-cvs-list" class="compact-list"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Étapes -->
+        <section class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0;">Étapes du test</h3>
+                <button class="btn-icon-add" onclick="addStep()">➕ Étape</button>
+            </div>
+            <div class="divider"></div>
+            <div id="steps-container">
+                <p class="text-muted" id="no-steps">Aucune étape. Cliquez sur "➕ Étape" pour en ajouter.</p>
+            </div>
+        </section>
+
+        <!-- Chronogramme -->
+        <section class="card">
+            <div class="card-header">
+                <h3 style="margin: 0;">Chronogramme</h3>
+                <p class="muted" style="margin: 4px 0 0 0;">Généré automatiquement à partir des étapes</p>
+            </div>
+            <div class="divider"></div>
+            <div id="chronogram-container" style="min-height: 200px; background: #f8f9fa; border-radius: 8px; padding: 20px; text-align: center; color: var(--muted);">
+                <p style="margin: 0;">Le chronogramme sera généré automatiquement dès que vous ajouterez des étapes</p>
+            </div>
+        </section>
+
+        <!-- Informations complémentaires -->
+        <section class="card">
+            <div class="card-header"><h3 style="margin: 0;">Informations complémentaires</h3></div>
+            <div class="divider"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+                <!-- CDE -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <label class="form-label">📊 Informations CDE</label>
+                        <div style="display: flex; gap: 4px;">
+                            <button class="btn-db-picker" onclick="openCDEPicker()" title="Sélectionner depuis la base ISA">🗄️</button>
+                            <button class="btn-icon-small" onclick="addCDE()" title="Ajout manuel">➕</button>
+                        </div>
+                    </div>
+                    <div id="cde-container"><p class="text-muted-small">Aucun CDE ajouté</p></div>
+                </div>
+                <!-- Alarmes -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <label class="form-label">⚠️ Alarmes</label>
+                        <div style="display: flex; gap: 4px;">
+                            <button class="btn-db-picker" onclick="openAlarmesPicker()" title="Sélectionner depuis la base ISA">🗄️</button>
+                            <button class="btn-icon-small" onclick="addAlarme()" title="Ajout manuel">➕</button>
+                        </div>
+                    </div>
+                    <div id="alarmes-container"><p class="text-muted-small">Aucune alarme ajoutée</p></div>
+                </div>
+                <!-- TCD -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <label class="form-label">ℹ️ Informations TCD</label>
+                        <div style="display: flex; gap: 4px;">
+                            <button class="btn-db-picker" onclick="openTCDPicker()" title="Sélectionner depuis la base ISA">🗄️</button>
+                            <button class="btn-icon-small" onclick="addTCD()" title="Ajout manuel">➕</button>
+                        </div>
+                    </div>
+                    <div id="tcd-container"><p class="text-muted-small">Aucune information TCD</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sauvegarde éditeur -->
+        <section class="card" style="display: flex; justify-content: space-between; align-items: center;">
+            <button class="btn btn-secondary" onclick="closeEditor()">← Annuler</button>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-secondary" onclick="previewTest()">👁️ Prévisualiser</button>
+                <button class="btn btn-primary" onclick="saveTest()">💾 Sauvegarder le test</button>
+            </div>
+        </section>
+    `;
+
+    console.info("[EDITOR][Init] Layout éditeur généré");
+}
 
 function getSavedTests(type = selectedType) {
     return JSON.parse(localStorage.getItem(`tests_${type}`) || '[]');
@@ -73,16 +271,16 @@ function setSavedTests(type, tests) {
 async function initEditor() {
     // Charger les IEDs depuis le SCD si disponible
     // ⚠️ DOIT être await pour que les <select> soient peuplés AVANT loadTest
-    await loadReferenceLists();
+    await loadEditorReferenceLists();
 
     setupTypeSelector();
     ensureRandomId();
     refreshTypeLabels();
 
     // Si on édite un test existant, charger ses données
-    const testId = new URLSearchParams(window.location.search).get('id');
-    if (testId) {
-        await loadTest(testId);
+    // SPA : l'ID est passé via la variable _editorTestId définie par openEditor()
+    if (typeof _editorTestId !== 'undefined' && _editorTestId) {
+        await loadTest(_editorTestId);
     }
 }
 
@@ -119,7 +317,7 @@ function refreshTypeLabels() {
 /**
  * Charge les IEDs depuis l'API et configure les sélecteurs liés
  */
-async function loadReferenceLists() {
+async function loadEditorReferenceLists() {
     const iedSelect = document.getElementById('test-ied');
     const variantSelect = document.getElementById('test-variant');
     const ldSelect = document.getElementById('test-ld');
@@ -128,8 +326,8 @@ async function loadReferenceLists() {
 
     // Charger les patterns IED et le catalogue ICD
     await Promise.all([
-        loadIedPatterns(),
-        loadIcdCatalog()
+        loadEditorIedPatterns(),
+        loadEditorIcdCatalog()
     ]);
 
     // Remplir la liste des IED (patterns parents uniquement)
@@ -151,46 +349,46 @@ async function loadReferenceLists() {
 /**
  * Charge les patterns IED depuis liste_ied.json
  */
-async function loadIedPatterns() {
+async function loadEditorIedPatterns() {
     try {
         const response = await fetch('/data/ied/liste_ied.json');
         if (!response.ok) return;
         const data = await response.json();
-        iedPatterns = data.ied_patterns || [];
-        console.log(`📋 ${iedPatterns.length} patterns IED chargés`);
+        editorIedPatterns = data.ied_patterns || [];
+        console.log(`📋 ${editorIedPatterns.length} patterns IED chargés`);
     } catch (error) {
         console.warn('Impossible de charger les patterns IED', error);
-        iedPatterns = [];
+        editorIedPatterns = [];
     }
 }
 
 /**
  * Charge le catalogue ICD depuis index.json
  */
-async function loadIcdCatalog() {
+async function loadEditorIcdCatalog() {
     try {
         const response = await fetch('/data/icd/index.json');
         if (!response.ok) return;
         const data = await response.json();
-        icdCatalog = data.icd_list || [];
-        console.log(`📦 ${icdCatalog.length} ICD dans le catalogue`);
+        editorIcdCatalog = data.icd_list || [];
+        console.log(`📦 ${editorIcdCatalog.length} ICD dans le catalogue`);
     } catch (error) {
         console.warn('Impossible de charger le catalogue ICD', error);
-        icdCatalog = [];
+        editorIcdCatalog = [];
     }
 }
 
 /**
  * Charge les détails d'un ICD (LDs et LNs)
  */
-async function loadIcdDetails(icdId) {
+async function loadEditorIcdDetails(icdId) {
     // Vérifier le cache
-    if (icdDetailsCache[icdId]) {
-        return icdDetailsCache[icdId];
+    if (editorIcdDetailsCache[icdId]) {
+        return editorIcdDetailsCache[icdId];
     }
 
     // Trouver le chemin du fichier JSON
-    const icdEntry = icdCatalog.find(i => i.icd_id === icdId);
+    const icdEntry = editorIcdCatalog.find(i => i.icd_id === icdId);
     if (!icdEntry || !icdEntry.path) {
         console.warn(`ICD non trouvé: ${icdId}`);
         return null;
@@ -200,7 +398,7 @@ async function loadIcdDetails(icdId) {
         const response = await fetch(`/data/icd/${icdEntry.path}`);
         if (!response.ok) return null;
         const data = await response.json();
-        icdDetailsCache[icdId] = data;
+        editorIcdDetailsCache[icdId] = data;
         return data;
     } catch (error) {
         console.warn(`Impossible de charger les détails ICD: ${icdId}`, error);
@@ -215,7 +413,7 @@ function populateIedSelect(selectElement) {
     if (!selectElement) return;
 
     // Ne garder que les patterns parents (sans parent défini)
-    const parentPatterns = iedPatterns.filter(p => !p.parent);
+    const parentPatterns = editorIedPatterns.filter(p => !p.parent);
 
     // Trier par display_name
     parentPatterns.sort((a, b) =>
@@ -269,14 +467,14 @@ async function onIedChange() {
     }
 
     // Trouver le pattern parent
-    const pattern = iedPatterns.find(p => p.id === patternId);
+    const pattern = editorIedPatterns.find(p => p.id === patternId);
     if (!pattern) {
         resetSelect(ldSelect, 'Aucun LD disponible');
         return;
     }
 
     // Peupler la liste des variants (enfants de ce pattern)
-    const variants = iedPatterns.filter(p => p.parent === patternId);
+    const variants = editorIedPatterns.filter(p => p.parent === patternId);
     if (variants.length > 0) {
         variants.sort((a, b) => a.display_name.localeCompare(b.display_name, 'fr'));
         for (const variant of variants) {
@@ -316,7 +514,7 @@ async function onVariantChange() {
         return;
     }
 
-    const pattern = iedPatterns.find(p => p.id === patternId);
+    const pattern = editorIedPatterns.find(p => p.id === patternId);
     if (!pattern) {
         resetSelect(ldSelect, 'Aucun LD disponible');
         return;
@@ -341,7 +539,7 @@ async function loadLdsForPattern(pattern) {
     const allLds = new Map(); // nom -> { ldName, icdId, lns }
 
     for (const icdId of icdRefs) {
-        const icdDetails = await loadIcdDetails(icdId);
+        const icdDetails = await loadEditorIcdDetails(icdId);
         if (!icdDetails || !icdDetails.ieds) continue;
 
         for (const ied of icdDetails.ieds) {
@@ -1437,6 +1635,77 @@ async function saveTest() {
     }
 
     alert('✅ Test sauvegardé avec succès !');
-    const targetPage = './templates-essais.html';
-    window.location.href = targetPage;
+    // SPA : fermer l'éditeur et revenir à la liste des essais
+    closeEditor();
+}
+
+
+// ============================================================================
+// FONCTIONS SPA — Ouverture / fermeture de l'éditeur intégré
+// ============================================================================
+
+/**
+ * Variable globale pour passer l'ID du test à éditer.
+ * Définie par openEditor(), lue par initEditor().
+ */
+let _editorTestId = null;
+
+/**
+ * Ouvrir l'éditeur de test dans la vue essais (SPA).
+ *
+ * Bascule de la sous-vue "liste" vers la sous-vue "éditeur"
+ * sans recharger la page.
+ *
+ * @param {string|null} testId - ID du test à éditer (null = nouveau test)
+ * @param {string} [type="ru"] - Type d'essai (ru, cvs, mvs)
+ */
+async function openEditor(testId = null, type = "ru") {
+    console.info(`[EDITOR] Ouverture éditeur — testId=${testId}, type=${type}`);
+
+    // Passer les paramètres via des variables globales
+    _editorTestId = testId;
+    selectedType = (type || "ru").toLowerCase();
+    originalType = selectedType;
+    isEditing = !!testId;
+
+    // Basculer les sous-vues
+    const listView = document.getElementById("essais-list-view");
+    const editorView = document.getElementById("essais-editor-view");
+    if (listView) listView.style.display = "none";
+    if (editorView) editorView.style.display = "block";
+
+    // Réinitialiser le test courant
+    currentTest = {
+        id: '', name: '', ied: '', ld: '', ln: '', lninst: '',
+        description: '', preconditions: [], files: [],
+        linked_tests_ru: [], linked_tests_mvs: [], linked_tests_cvs: [],
+        steps: [], cde: [], alarmes: [], tcd: []
+    };
+    stepCounter = 1;
+
+    // Initialiser l'éditeur
+    await initEditor();
+}
+
+/**
+ * Fermer l'éditeur et revenir à la liste des essais.
+ *
+ * Recharge la liste des templates pour refléter les modifications.
+ */
+function closeEditor() {
+    console.info("[EDITOR] Fermeture éditeur, retour à la liste");
+
+    // Réinitialiser l'état de l'éditeur
+    _editorTestId = null;
+
+    // Basculer les sous-vues
+    const listView = document.getElementById("essais-list-view");
+    const editorView = document.getElementById("essais-editor-view");
+    if (editorView) editorView.style.display = "none";
+    if (listView) listView.style.display = "block";
+
+    // Recharger la liste des essais
+    if (typeof loadTemplatesList === "function") {
+        loadTemplatesList();
+    }
 }

@@ -1,4 +1,4 @@
-# essais_api.py — CRUD essais R#BD avec persistance JSON serveur
+# router_essais.py — CRUD essais R#BD avec persistance JSON serveur
 """
 Endpoints pour gérer les essais (tests) RU / CVS / MVS.
 Stockage : data/essais/essais_{type}.json
@@ -13,15 +13,17 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+
+# Import centralisé depuis shared.py
+from api.shared import (
+    ESSAIS_DATA_DIR as DATA_DIR,
+    VALID_ESSAI_TYPES as VALID_TYPES,
+    EssaiPayload,
+    SyncPayload,
+    logger,
+)
 
 router = APIRouter(prefix="/api/essais", tags=["essais"])
-
-# Répertoire de stockage
-DATA_DIR = Path(__file__).resolve().parent.parent / "data" / "essais"
-DATA_DIR.mkdir(parents=True, exist_ok=True)
-
-VALID_TYPES = ("ru", "cvs", "mvs")
 
 
 # ---------- helpers ----------
@@ -50,36 +52,6 @@ def _save(essai_type: str, essais: List[Dict[str, Any]]) -> None:
     path = _file_for_type(essai_type)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(essais, f, indent=2, ensure_ascii=False)
-
-
-# ---------- modèles ----------
-
-class EssaiPayload(BaseModel):
-    """Payload pour créer / mettre à jour un essai."""
-    id: str
-    name: str
-    type: str = "ru"
-    ied: str = ""
-    variant: str = ""
-    ld: str = ""
-    ln: str = ""
-    lninst: str = ""
-    description: str = ""
-    preconditions: List[Any] = []
-    files: List[Any] = []
-    linked_tests_ru: List[Any] = []
-    linked_tests_mvs: List[Any] = []
-    linked_tests_cvs: List[Any] = []
-    steps: List[Any] = []
-    cde: List[Any] = []
-    alarmes: List[Any] = []
-    tcd: List[Any] = []
-
-
-class SyncPayload(BaseModel):
-    """Payload pour synchroniser tous les essais d'un type depuis le localStorage."""
-    type: str = "ru"
-    essais: List[Dict[str, Any]]
 
 
 # ---------- endpoints ----------

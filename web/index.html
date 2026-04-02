@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>R#BD — Base de données IEC 61850</title>
+
+    <!-- ================================================================
+         CSS — Chargement hiérarchique
+         1. UI Kit tokens communs (variables --rc-*)
+         2. Aliases locaux R#BD (--bg, --card, etc.)
+         3. Header mutualisé (rscd-* classes)
+         4. Styles communs R#BD (rbd-* classes)
+         5. Styles par vue
+         6. Ancien main.css (transition progressive)
+         ================================================================ -->
+
+    <!-- UI Kit commun -->
+    <link rel="stylesheet" href="/ui-kit/css/tokens.css" />
+    <link rel="stylesheet" href="/ui-kit/css/base.css" />
+
+    <!-- Aliases R#BD -->
+    <link rel="stylesheet" href="/css/rbd-tokens.css" />
+
+    <!-- Header mutualisé -->
+    <link rel="stylesheet" href="/css/header-common.css" />
+    <link rel="stylesheet" href="/css/rscd-common.css" />
+
+    <!-- Styles communs R#BD -->
+    <link rel="stylesheet" href="/css/rbd-common.css" />
+
+    <!-- Ancien main.css (compatibilité — classes .card, .btn, .guide-main etc.) -->
+    <link rel="stylesheet" href="/css/main.css" />
+
+    <!-- Styles par vue -->
+    <link rel="stylesheet" href="/css/icd.css" />
+    <link rel="stylesheet" href="/css/isa.css" />
+    <link rel="stylesheet" href="/css/templates.css" />
+    <link rel="stylesheet" href="/css/editor.css" />
+</head>
+
+<body>
+    <!--
+      Le header est injecté dynamiquement par /js/header-loader.js.
+      Il contient la navigation SPA (boutons data-view).
+    -->
+
+    <!-- ================================================================
+         CONTENEUR PRINCIPAL SPA — SQUELETTE
+         Chaque vue est un <div class="rbd-view"> vide.
+         Son contenu HTML est généré par le JavaScript associé
+         (renderXxxLayout() appelé par initXxxPage()).
+         Une seule vue est visible à la fois (class="active").
+         ================================================================ -->
+    <div id="app" class="rbd-app">
+        <main class="rbd-container">
+
+            <!-- VUE : Accueil   → home.js            / renderHomeLayout()   -->
+            <div id="view-home" class="rbd-view active"></div>
+
+            <!-- VUE : IED / ICD → ied-icd-manager.js / renderIcdLayout()    -->
+            <div id="view-icd" class="rbd-view"></div>
+
+            <!-- VUE : ISA       → isa-manager.js     / renderIsaLayout()    -->
+            <div id="view-isa" class="rbd-view"></div>
+
+            <!-- VUE : Essais    → templates-essais.js / renderEssaisLayout() -->
+            <div id="view-essais" class="rbd-view"></div>
+
+            <!-- VUE : FCS       → fcs.js             / renderFcsLayout()    -->
+            <div id="view-fcs" class="rbd-view"></div>
+
+            <!-- VUE : RAC       → rac.js             / renderRacLayout()    -->
+            <div id="view-rac" class="rbd-view"></div>
+
+        </main>
+    </div>
+
+
+    <!-- ================================================================
+         SCRIPTS — Chargement hiérarchique
+         1. api.js         → couche API centralisée (fetch)
+         2. header-loader  → header dynamique
+         3. app.js         → bootstrap SPA + switchView
+         4. home.js        → vue accueil (dashboard)
+         5. Modules de vue → logique spécifique à chaque vue
+         ================================================================ -->
+    <script src="/js/api.js"></script>
+    <script src="/js/header-loader.js"></script>
+    <script src="/js/app.js"></script>
+
+    <!-- Module accueil -->
+    <script src="/js/home.js"></script>
+
+    <!-- Modules de vue -->
+    <script src="/js/ied-icd-manager.js"></script>
+    <script src="/js/isa-manager.js"></script>
+    <script src="/js/template-manager.js"></script>
+    <script src="/js/templates-essais.js"></script>
+    <script src="/js/test-editor.js"></script>
+    <script src="/js/fcs.js"></script>
+    <script src="/js/rac.js"></script>
+</body>
+</html>

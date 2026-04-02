@@ -24,8 +24,113 @@ function normalizeTests() {
     });
 }
 
+
+// ============================================================
+// RENDU DU LAYOUT — Génération HTML de la vue Essais
+// ============================================================
+
+/**
+ * Générer et injecter le layout HTML complet de la vue Essais.
+ *
+ * Crée les deux sous-vues dans le conteneur #view-essais :
+ *   1. essais-list-view  → bandeau, filtres, grille des essais
+ *   2. essais-editor-view → éditeur complet de test (masqué par défaut)
+ *
+ * L'éditeur est généré par renderEditorLayout() (dans test-editor.js).
+ */
+function renderEssaisLayout() {
+    const container = document.getElementById("view-essais");
+    if (!container) return;
+
+    container.innerHTML = `
+        <!-- Sous-vue : Liste des essais -->
+        <div id="essais-list-view">
+            <!-- Bandeau d'action -->
+            <section class="card">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2 id="tests-title">Template Essais</h2>
+                        <p class="muted" id="tests-subtitle">Centralisez vos essais RU / CVS / MVS dans une seule vue</p>
+                    </div>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <button class="btn btn-primary" onclick="createNewTest()">➕ Nouveau test</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filtres essais -->
+            <section class="card">
+                <div class="card-header">
+                    <h3 style="margin: 0 0 8px 0;">🔎 Filtres</h3>
+                    <p class="muted" style="margin: 0;">Affinez la liste par type, IED, LD ou LN</p>
+                </div>
+                <div class="divider"></div>
+                <div class="filters-bar">
+                    <div class="filter-group">
+                        <label for="filter-type">Type d'essai</label>
+                        <select id="filter-type" class="filter-select">
+                            <option value="all">Tous</option>
+                            <option value="ru">RU</option>
+                            <option value="cvs">CVS</option>
+                            <option value="mvs">MVS</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filter-ied">IED</label>
+                        <select id="filter-ied" class="filter-select"><option value="">Tous</option></select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filter-ld">LD</label>
+                        <select id="filter-ld" class="filter-select"><option value="">Tous</option></select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filter-ln">LN</label>
+                        <select id="filter-ln" class="filter-select"><option value="">Tous</option></select>
+                    </div>
+                    <div class="filter-group">
+                        <label>&nbsp;</label>
+                        <button class="btn btn-secondary" onclick="resetEssaisFilters()">Réinitialiser</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Liste des essais -->
+            <section class="card rbd-section-shell">
+                <div class="card-header">
+                    <h3 style="margin: 0 0 8px 0;">📋 Liste des essais</h3>
+                    <p class="muted" style="margin: 0;">Cliquez sur un essai pour l'éditer</p>
+                </div>
+                <div id="templates-list" class="templates-grid">
+                    <div class="rbd-empty-state">
+                        <div class="rbd-empty-state-icon">📦</div>
+                        <p>Aucun essai disponible</p>
+                        <p style="font-size: 14px;">Cliquez sur "Nouveau test" pour commencer</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Sous-vue : Éditeur de test (masqué par défaut, rendu par test-editor.js) -->
+        <div id="essais-editor-view" style="display: none;"></div>
+    `;
+
+    // Demander à test-editor.js de rendre son layout dans le conteneur éditeur
+    if (typeof renderEditorLayout === "function") {
+        renderEditorLayout();
+    }
+
+    console.info("[ESSAIS][Init] Layout essais généré");
+}
+
+
+// ============================================================
+// Initialisation
+// ============================================================
+
 function initTemplatesPage() {
-    loadReferenceLists();
+    // Générer le layout HTML complet (liste + éditeur)
+    renderEssaisLayout();
+    loadEssaisReferenceLists();
     bindFilters();
     loadTemplatesList();
     // Synchroniser automatiquement le localStorage vers le serveur
@@ -41,7 +146,7 @@ function bindFilters() {
     });
 }
 
-async function loadReferenceLists() {
+async function loadEssaisReferenceLists() {
     await Promise.all([
         loadList('/data/ied/liste_ied.json', document.getElementById('filter-ied')),
         loadList('/data/ld/liste_ld.json', document.getElementById('filter-ld')),
@@ -83,7 +188,7 @@ function getFilters() {
     };
 }
 
-function resetFilters() {
+function resetEssaisFilters() {
     const defaults = {
         'filter-type': 'all',
         'filter-ied': '',
@@ -205,11 +310,13 @@ function renderTestCard(test) {
 
 function createNewTest() {
     const type = document.getElementById('create-type')?.value || 'ru';
-    window.location.href = `./test-editor.html?type=${encodeURIComponent(type)}`;
+    // SPA : ouvrir l'éditeur intégré au lieu de naviguer vers une autre page
+    openEditor(null, type);
 }
 
 function editTest(testId, type) {
-    window.location.href = `./test-editor.html?id=${encodeURIComponent(testId)}&type=${encodeURIComponent(type)}`;
+    // SPA : ouvrir l'éditeur intégré au lieu de naviguer vers une autre page
+    openEditor(testId, type);
 }
 
 function duplicateTest(testId, type) {

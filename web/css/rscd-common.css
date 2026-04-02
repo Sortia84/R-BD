@@ -1,0 +1,422 @@
+/* ============================================================================
+   rscd-common.css — Styles communs R#SCD
+
+   Contient:
+   - Classes réutilisables (cards, buttons, grids, etc.)
+   - Mixins/patterns visuels
+   - Layout global
+   ============================================================================ */
+
+/* ── UTILITY CLASSES ── */
+
+.rscd-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: var(--rc-space-4);
+}
+
+.rscd-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--rc-space-4);
+    box-shadow: var(--shadow);
+    transition: all 0.2s ease;
+}
+
+.rscd-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 167, 222, 0.12);
+}
+
+.rscd-card-highlight {
+    border: 2px solid var(--primary);
+    background: rgba(230, 247, 253, 0.5);
+}
+
+/* Badges */
+.rscd-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.rscd-badge-success {
+    background: rgba(22, 163, 74, 0.1);
+    color: var(--success);
+}
+
+.rscd-badge-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+}
+
+.rscd-badge-danger {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--danger);
+}
+
+.rscd-badge-info {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--info);
+}
+
+/* Boutons */
+.rscd-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.rscd-btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.rscd-btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.rscd-btn-secondary {
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid var(--border);
+}
+
+.rscd-btn-secondary:hover {
+    background: rgba(0, 167, 222, 0.05);
+}
+
+.rscd-btn-danger {
+    background: #dc2626;
+    color: #fff;
+}
+
+.rscd-btn-danger:hover {
+    background: #b91c1c;
+}
+
+.rscd-btn-sm {
+    padding: 7px 12px;
+    font-size: 13px;
+}
+
+.rscd-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.rscd-btn-icon:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* Tableaux */
+.rscd-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.rscd-table th {
+    background: rgba(0, 167, 222, 0.05);
+    color: var(--text);
+    font-weight: 600;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+}
+
+.rscd-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.rscd-table tr:hover {
+    background: rgba(0, 167, 222, 0.02);
+}
+
+/* Grille générique */
+.rscd-grid {
+    display: grid;
+    gap: var(--rc-space-4);
+}
+
+.rscd-grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.rscd-grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* Tabs */
+.rscd-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: var(--rc-space-4);
+}
+
+.rscd-tab {
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.rscd-tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.rscd-tab:hover:not(.active) {
+    color: var(--text);
+}
+
+/* Progress */
+.rscd-progress {
+    width: 100%;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.rscd-progress-bar {
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.3s ease;
+}
+
+/* Spinners */
+.rscd-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Messages */
+.rscd-alert {
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    margin: var(--rc-space-3) 0;
+}
+
+.rscd-alert-success {
+    background: rgba(22, 163, 74, 0.1);
+    color: var(--success);
+    border-left: 4px solid var(--success);
+}
+
+.rscd-alert-error {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--danger);
+    border-left: 4px solid var(--danger);
+}
+
+.rscd-alert-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+    border-left: 4px solid var(--warning);
+}
+
+/* Notifications toast (popup non bloquant en bas à droite) */
+#rscd-toast-stack {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 2000;
+    pointer-events: none; /* ne bloque pas les clics de la page */
+    max-width: min(420px, calc(100vw - 24px));
+}
+
+.rscd-toast {
+    pointer-events: auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18);
+    min-width: 280px;
+    animation: rscd-toast-in 0.18s ease-out;
+}
+
+.rscd-toast.is-leaving {
+    animation: rscd-toast-out 0.18s ease-in forwards;
+}
+
+.rscd-toast-icon {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.15);
+    font-size: 13px;
+}
+
+.rscd-toast-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.rscd-toast-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.25;
+}
+
+.rscd-toast-message {
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+.rscd-toast-actions {
+    margin-top: 8px;
+}
+
+.rscd-toast-action-btn {
+    border: 1px solid rgba(var(--primary-rgb), 0.35);
+    background: rgba(var(--primary-rgb), 0.08);
+    color: var(--primary);
+    border-radius: 999px;
+    padding: 5px 11px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.rscd-toast-action-btn:hover {
+    background: rgba(var(--primary-rgb), 0.14);
+    border-color: rgba(var(--primary-rgb), 0.5);
+}
+
+.rscd-toast-action-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.rscd-toast-close {
+    flex: 0 0 auto;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 2px;
+}
+
+.rscd-toast-close:hover {
+    color: var(--text);
+}
+
+.rscd-toast-success {
+    border-left: 4px solid var(--success);
+}
+
+.rscd-toast-error {
+    border-left: 4px solid var(--danger);
+}
+
+.rscd-toast-warning {
+    border-left: 4px solid var(--warning);
+}
+
+.rscd-toast-info,
+.rscd-toast-loading {
+    border-left: 4px solid var(--primary);
+}
+
+.rscd-toast-loading .rscd-toast-icon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes rscd-toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes rscd-toast-out {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .rscd-grid-2,
+    .rscd-grid-3 {
+        grid-template-columns: 1fr;
+    }
+    
+    .rscd-container {
+        padding: var(--rc-space-2);
+    }
+
+    #rscd-toast-stack {
+        right: 10px;
+        left: 10px;
+        bottom: 10px;
+        max-width: none;
+    }
+
+    .rscd-toast {
+        min-width: 0;
+        width: 100%;
+    }
+}

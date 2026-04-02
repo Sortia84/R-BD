@@ -1,0 +1,55 @@
+/* ============================================================================
+   rbd-tokens.css — Pont de compatibilité R#BD ↔ R-CONTROL UI Kit
+
+   Rôle:
+   Aligner les conventions CSS R#BD avec les design tokens centraux
+   définis dans _ui_kit/css/tokens.css.
+
+   Utilisation :
+   Tous les HTML R#BD doivent charger :
+     1. /ui-kit/css/tokens.css     (--rc-* tokens)
+     2. /ui-kit/css/base.css       (reset + base)
+     3. /css/rbd-tokens.css        (ce fichier - aliases locaux)
+     4. /css/header-common.css     (header mutualisé)
+     5. /css/rbd-common.css        (classes réutilisables)
+     6. /css/rbd-*.css             (spécifiques à chaque vue)
+   ============================================================================ */
+
+:root {
+    /* ── Mapping tokens → noms locaux R#BD ── */
+
+    /* Couleurs de surface */
+    --bg: var(--rc-color-bg);
+    --card: var(--rc-color-surface);
+
+    /* Texte */
+    --text: var(--rc-color-text);
+    --muted: var(--rc-color-text-muted);
+
+    /* Accentuation (bleu R-CONTROL) */
+    --primary: var(--rc-color-primary);
+    --primary-dark: var(--rc-color-primary-dark);
+    --accent: var(--rc-color-primary);
+    --accent-dark: var(--rc-color-primary-dark);
+
+    /* Composantes RGB de la couleur primaire pour rgba() */
+    --primary-rgb: var(--rc-color-primary-rgb);
+
+    /* Bordures */
+    --border: var(--rc-color-border);
+
+    /* États */
+    --success: var(--rc-color-success);
+    --warning: var(--rc-color-warning);
+    --danger: var(--rc-color-danger);
+    --info: #2563eb;
+
+    /* Espace et forme */
+    --radius: var(--rc-radius-md);
+    --shadow: var(--rc-shadow-md);
+
+    /* Icônes */
+    --icon-size-sm: var(--rc-icon-size-sm);
+    --icon-size-md: var(--rc-icon-size-md);
+    --icon-size-lg: var(--rc-icon-size-lg);
+}

@@ -1,0 +1,135 @@
+/* ============================================================================
+   header-common.css — Header/NAV mutualisé R#SCD
+
+   Objectif:
+   - Remplacer les styles inline de index.html.
+   - Centraliser le rendu du header dans un fichier dédié.
+   - Aligner la maintenance avec la logique de factorisation R#GUIDE.
+   ============================================================================ */
+
+/* Header principal */
+.rscd-header {
+    position: relative;
+    min-height: 160px;
+    background: var(--accent);
+    color: #fff;
+    padding: 20px 24px 12px;
+    overflow: hidden;
+}
+
+/* Logo de marque */
+.rscd-logo {
+    position: absolute;
+    left: 20px;
+    top: -30px;
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+}
+
+/* Ligne du titre + méta */
+.rscd-header-title-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+}
+
+.rscd-header-title {
+    margin: 0;
+    color: #fff;
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.rscd-header-meta {
+    position: absolute;
+    right: 0;
+    font-size: 11px;
+    opacity: 0.9;
+}
+
+.rscd-header-subtitle {
+    margin-top: 4px;
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.rscd-header-divider {
+    margin-top: 10px;   /* aligné avec R#GUIDE (était 12px) */
+    height: 1px;
+    background: rgba(255, 255, 255, 0.75);
+}
+
+/* Navigation principale de l'application */
+.rscd-nav {
+    margin-top: 12px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* -----------------------------------------------------------------------
+   Surcharge des .rscd-tab dans le contexte du header.
+   Les styles de rscd-common.css sont prévus pour des onglets sur fond
+   blanc (page courante). Dans le header le fond est bleu, donc il faut
+   forcer le texte en blanc et adapter les états actif / hover.
+   ----------------------------------------------------------------------- */
+
+/* État repos : texte blanc légèrement atténué, forme pill */
+.rscd-header .rscd-tab {
+    color: rgba(255, 255, 255, 0.85);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 999px;               /* forme pill cohérente avec R#GUIDE */
+    border-bottom: 1px solid transparent; /* annule la border-bottom de rscd-common */
+    padding: 10px 16px;                 /* légèrement plus petit (était 12px 16px) */
+}
+
+/* État actif : pill bleu foncé sur fond bleu clair */
+.rscd-header .rscd-tab.active {
+    color: #fff;
+    background: var(--primary-dark);     /* bleu foncé (#007faa) */
+    border-color: var(--primary-dark);
+    border-bottom-color: var(--primary-dark); /* annule la border-bottom de rscd-common */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+
+/* Survol : assombrissement discret, texte toujours blanc */
+.rscd-header .rscd-tab:hover:not(.active) {
+    color: #fff;
+    background: rgba(0, 0, 0, 0.15);
+    border-bottom-color: transparent;
+}
+
+/* État responsive: garder un header lisible sur petits écrans */
+@media (max-width: 768px) {
+    .rscd-logo {
+        width: 90px;
+        height: 90px;
+        top: -18px;
+        left: 10px;
+    }
+
+    .rscd-header {
+        min-height: 170px;
+        padding: 16px 12px 10px;
+    }
+
+    .rscd-header-title {
+        font-size: 22px;
+    }
+
+    .rscd-header-meta {
+        position: static;
+        display: none;
+    }
+
+    .rscd-nav {
+        gap: 8px;
+    }
+}

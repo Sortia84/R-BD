@@ -1,4 +1,4 @@
-# mapping_api.py - API REST pour le mapping IEC 61850
+# router_mapping.py — API REST pour le mapping IEC 61850
 """
 Endpoints FastAPI pour la gestion du mapping normatif IEC 61850.
 - Comparaison mapping vs ICD
@@ -6,20 +6,23 @@ Endpoints FastAPI pour la gestion du mapping normatif IEC 61850.
 - Consultation du mapping
 """
 
-from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 
-from core.mapping_comparator import MappingComparator
-from core.mapping_merger import MappingMerger
+# Import centralisé depuis shared.py
+from api.shared import (
+    mapping_comparator,
+    mapping_merger,
+    DATA_DIR,
+    ISA_DATA_DIR,
+    logger,
+)
 
 router = APIRouter(prefix="/api/mapping", tags=["Mapping IEC 61850"])
 
-BASE_DIR = Path(__file__).parent.parent
-DATA_DIR = BASE_DIR / "data"
-MAPPING_DIR = DATA_DIR / "isa" / "files" / "mapping_etat_61850"
+MAPPING_DIR = ISA_DATA_DIR / "files" / "mapping_etat_61850"
 
 
 @router.get("/")

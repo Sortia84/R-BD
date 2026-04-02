@@ -1,80 +1,59 @@
-# main.py - Point d'entrée R#BD (API FastAPI + fichiers statiques)
+# main.py — Launcher R#BD
 """
-Lance le serveur R#BD avec :
-- API REST pour la gestion des ICD
-- Fichiers statiques (HTML/CSS/JS)
+Point d'entrée du serveur R#BD.
 
-PHASE 0 FIX (27 mars 2026): 
-  Port WEB: 8554 → 8597 (élimination collision avec R#STOCK)
-  Port API: 8654 → 8664 (alignement logique +67 offset)
+Rôle :
+  - Configurer le logging
+  - Ajouter le répertoire courant au sys.path
+  - Lancer uvicorn sur api_web:app
+
+Toute la logique FastAPI (routeurs, static files, CORS) est dans api_web.py.
 """
 
 import sys
+import logging
 from pathlib import Path
 
-# Ajouter le répertoire courant au path pour les imports
+import uvicorn
+
+# ============================================================================
+# CONFIGURATION DU PATH
+# ============================================================================
+# Ajouter le répertoire courant au path Python pour que les imports
+# relatifs (config, api, core) fonctionnent depuis n'importe quel CWD.
 sys.path.insert(0, str(Path(__file__).parent))
 
-import uvicorn
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from config import WEB_PORT
 
-from config import WEB_PORT, API_PORT
-from api.icd_api import router as icd_router
-from api.isa_api import router as isa_router
-from api.mapping_api import router as mapping_router
-from api.essais_api import router as essais_router
-from api.templates_api import router as templates_router
 
-# Configuration
-BASE_DIR = Path(__file__).parent
-WEB_DIR = BASE_DIR / "web"
-DATA_DIR = BASE_DIR / "data"
-UPLOADS_DIR = BASE_DIR / "uploads"
-
-# Application FastAPI
-app = FastAPI(
-    title="R#BD - Base de données R#SPACE",
-    description="API pour la gestion des ICD et templates",
-    version="1.0.0"
+# ============================================================================
+# CONFIGURATION LOGGING
+# ============================================================================
+logging.basicConfig(
+    level=logging.INFO,
+    format='[%(asctime)s] [%(name)s] %(levelname)s: %(message)s',
 )
-
-# Inclure les routes API
-app.include_router(icd_router)
-app.include_router(isa_router)
-app.include_router(mapping_router)
-app.include_router(essais_router)
-app.include_router(templates_router)
-
-# Servir les fichiers statiques
-app.mount("/web", StaticFiles(directory=str(WEB_DIR)), name="web")
-app.mount("/data", StaticFiles(directory=str(DATA_DIR)), name="data")
-app.mount("/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
-app.mount("/assets", StaticFiles(directory=str(BASE_DIR / "assets")), name="assets")
+logger = logging.getLogger("MAIN[r_bd]")
 
 
-@app.get("/")
-async def root():
-    """Redirige vers la page d'accueil."""
-    return FileResponse(str(BASE_DIR / "index.html"))
-
-
-@app.get("/health")
-async def health():
-    """Endpoint de santé."""
-    return {"status": "ok", "app": "R#BD"}
-
+# ============================================================================
+# POINT D'ENTRÉE
+# ============================================================================
 
 def main():
-    """Lance le serveur."""
-    print(f"🚀 R#BD démarré sur http://localhost:{WEB_PORT}")
-    print(f"📚 API disponible sur http://localhost:{WEB_PORT}/docs")
+    """
+    Lance le serveur R#BD via uvicorn.
+
+    Le module api_web.py contient l'application FastAPI complète.
+    """
+    logger.info("[MAIN] 🚀 R#BD démarré sur http://localhost:%d", WEB_PORT)
+    logger.info("[MAIN] 📚 API disponible sur http://localhost:%d/docs", WEB_PORT)
     uvicorn.run(
-        "main:app",
+        "api_web:app",
         host="0.0.0.0",
         port=WEB_PORT,
-        reload=True
+        reload=True,
+        log_level="info",
     )
 
 

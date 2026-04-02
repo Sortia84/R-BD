@@ -1,16 +1,110 @@
 // ied-icd-manager.js - Vue centrée sur les IED avec leurs ICD associés
 
-const API_BASE = '/api/icd';
+const ICD_API_BASE = '/api/icd';
 
 let iedPatterns = [];   // Patterns IED depuis liste_ied.json
 let icdCatalog = [];    // ICD importés
 let icdDefaults = {};   // ICD référents: {pattern_id: {manufacturer: icd_id, ...}, ...}
+
+
+// ============================================================
+// RENDU DU LAYOUT — Génération HTML de la vue ICD
+// ============================================================
+
+/**
+ * Générer et injecter le layout HTML de la vue ICD.
+ *
+ * Crée : panneau orphelins, bandeau d'action, filtres, grille IED.
+ * Tous les éléments DOM référencés par les fonctions suivantes sont
+ * générés ici (orphan-panel, icd-upload, filter-search, ied-cards…).
+ */
+function renderIcdLayout() {
+    const container = document.getElementById("view-icd");
+    if (!container) return;
+
+    container.innerHTML = `
+        <!-- Panneau flottant ICD orphelins -->
+        <aside class="orphan-panel hidden" id="orphan-panel">
+            <div class="orphan-panel-header" onclick="toggleOrphanPanel()">
+                <span class="orphan-panel-title">⚠️ ICD non assignés</span>
+                <span class="orphan-panel-count" id="orphan-count">0</span>
+                <span class="orphan-panel-arrow" id="orphan-arrow">◀</span>
+            </div>
+            <div class="orphan-panel-content" id="orphan-panel-content">
+                <p class="orphan-panel-hint">Glissez-déposez sur une carte IED</p>
+                <div id="orphan-icds" class="orphan-list"></div>
+            </div>
+        </aside>
+
+        <!-- Bandeau d'action -->
+        <section class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2>Gestion IED / ICD</h2>
+                    <p class="muted">Associez les fichiers ICD analysés à vos équipements (patterns IED)</p>
+                </div>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <button class="btn btn-primary" onclick="triggerIcdUpload()">➕ Importer un ICD</button>
+                    <button class="btn" onclick="reanalyzeAll()" title="Relancer toutes les analyses">🔄 Tout ré-analyser</button>
+                </div>
+            </div>
+            <input id="icd-upload" type="file" accept=".icd,.xml" multiple hidden />
+        </section>
+
+        <!-- Filtres ICD -->
+        <section class="card">
+            <div class="card-header">
+                <h3 style="margin: 0 0 8px 0;">🔎 Filtres</h3>
+            </div>
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <label for="filter-search">Recherche</label>
+                    <input type="text" id="filter-search" class="filter-input" placeholder="Nom, pattern..." oninput="renderIedCards()">
+                </div>
+                <div class="filter-group">
+                    <label for="filter-linked">Statut</label>
+                    <select id="filter-linked" class="filter-select" onchange="renderIedCards()">
+                        <option value="">Tous</option>
+                        <option value="linked">Avec ICD</option>
+                        <option value="unlinked">Sans ICD</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-secondary" onclick="resetFilters()">Réinitialiser</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Grille IED -->
+        <section class="card rbd-section-shell">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin: 0 0 8px 0;">🖲️ Équipements IED</h3>
+                    <p class="muted" style="margin: 0;">Chaque carte représente un type d'équipement et ses ICD associés</p>
+                </div>
+                <div class="stats-summary" id="stats-summary"></div>
+            </div>
+            <div id="ied-cards" class="ied-grid">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📂</div>
+                    <p>Chargement...</p>
+                </div>
+            </div>
+        </section>
+    `;
+
+    console.info("[ICD][Init] Layout ICD généré");
+}
+
 
 // ============================================================
 // Initialisation
 // ============================================================
 
 async function initIedIcdPage() {
+    // Générer le layout HTML dans le conteneur vide
+    renderIcdLayout();
     await Promise.all([
         loadIedPatterns(),
         loadIcdCatalog(),
@@ -26,7 +120,7 @@ async function initIedIcdPage() {
 // Charger les ICD référents (par pattern ET manufacturer)
 async function loadIcdDefaults() {
     try {
-        const response = await fetch(`${API_BASE}/default`);
+        const response = await fetch(`${ICD_API_BASE}/default`);
         if (!response.ok) throw new Error('Erreur chargement defaults');
         const data = await response.json();
         // Structure: {pattern_id: {manufacturer: icd_id, ...}, ...}
@@ -62,7 +156,7 @@ async function toggleDefaultIcd(encodedIcdId, encodedPatternId, encodedManufactu
     try {
         if (isCurrentlyDefault) {
             // Supprimer le référent
-            const response = await fetch(`${API_BASE}/default/${encodeURIComponent(patternId)}/${encodeURIComponent(manufacturer)}`, {
+            const response = await fetch(`${ICD_API_BASE}/default/${encodeURIComponent(patternId)}/${encodeURIComponent(manufacturer)}`, {
                 method: 'DELETE'
             });
             if (!response.ok) throw new Error('Erreur suppression référent');
@@ -77,7 +171,7 @@ async function toggleDefaultIcd(encodedIcdId, encodedPatternId, encodedManufactu
             console.log(`⭐ Référent supprimé pour ${patternId}/${manufacturer}`);
         } else {
             // Définir comme référent
-            const response = await fetch(`${API_BASE}/default/${encodeURIComponent(patternId)}/${encodeURIComponent(manufacturer)}/${encodeURIComponent(icdId)}`, {
+            const response = await fetch(`${ICD_API_BASE}/default/${encodeURIComponent(patternId)}/${encodeURIComponent(manufacturer)}/${encodeURIComponent(icdId)}`, {
                 method: 'POST'
             });
             if (!response.ok) throw new Error('Erreur définition référent');
@@ -142,7 +236,7 @@ function updateOrphanPanelVisibility() {
 
 async function loadIedPatterns() {
     try {
-        const response = await fetch(`${API_BASE}/patterns`);
+        const response = await fetch(`${ICD_API_BASE}/patterns`);
         if (!response.ok) throw new Error('Erreur chargement patterns');
         const data = await response.json();
         iedPatterns = data.patterns || [];
@@ -155,7 +249,7 @@ async function loadIedPatterns() {
 
 async function loadIcdCatalog() {
     try {
-        const response = await fetch(`${API_BASE}/`);
+        const response = await fetch(`${ICD_API_BASE}/`);
         if (!response.ok) throw new Error('Erreur chargement ICD');
         const data = await response.json();
         icdCatalog = data.icds || [];
@@ -185,7 +279,7 @@ function setupIcdUpload() {
             try {
                 const formData = new FormData();
                 formData.append('file', file);
-                const response = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
+                const response = await fetch(`${ICD_API_BASE}/upload`, { method: 'POST', body: formData });
                 if (!response.ok) throw new Error((await response.json()).detail || 'Erreur');
                 const result = await response.json();
                 successCount += result.entries.length;
@@ -239,7 +333,7 @@ function setupIcdUploadWithAutoLink() {
             try {
                 const formData = new FormData();
                 formData.append('file', file);
-                const response = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
+                const response = await fetch(`${ICD_API_BASE}/upload`, { method: 'POST', body: formData });
                 if (!response.ok) throw new Error((await response.json()).detail || 'Erreur');
                 const result = await response.json();
                 successCount += result.entries.length;
@@ -877,7 +971,7 @@ async function assignOrphan(icdId) {
 
 async function linkIcd(patternId, icdId) {
     try {
-        await fetch(`${API_BASE}/patterns/${patternId}/link`, {
+        await fetch(`${ICD_API_BASE}/patterns/${patternId}/link`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ icd_id: icdId })
@@ -900,7 +994,7 @@ async function unlinkIcd(patternId, icdId) {
 async function unlinkIcdApi(patternId, icdId) {
     try {
         console.log(`🔓 Envoi unlink: patternId=${patternId}, icdId=${icdId}`);
-        const response = await fetch(`${API_BASE}/patterns/${patternId}/unlink`, {
+        const response = await fetch(`${ICD_API_BASE}/patterns/${patternId}/unlink`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ icd_id: icdId })
@@ -926,7 +1020,7 @@ async function deleteOrphanIcd(icdId) {
     }
 
     try {
-        const response = await fetch(`${API_BASE}/${icdId}`, {
+        const response = await fetch(`${ICD_API_BASE}/${icdId}`, {
             method: 'DELETE'
         });
 
@@ -980,7 +1074,7 @@ async function reanalyzeAll() {
     if (!confirm('Relancer l\'analyse de TOUS les fichiers ICD ?')) return;
 
     try {
-        const response = await fetch(`${API_BASE}/reanalyze-all`, { method: 'POST' });
+        const response = await fetch(`${ICD_API_BASE}/reanalyze-all`, { method: 'POST' });
         const result = await response.json();
         await loadIcdCatalog();
         renderIedCards();

@@ -1,16 +1,85 @@
 // isa-manager.js - Gestion des fichiers ISA (xlsx, xml, csv, json...)
 
-const API_BASE = '/api/isa';
+const ISA_API_BASE = '/api/isa';
 
 let isaTypes = [];      // Types ISA depuis liste_isa.json
 let isaCatalog = [];    // Fichiers ISA importés
 let isaDefaults = {};   // Fichiers référents par type: {type_id: file_entry}
+
+
+// ============================================================
+// RENDU DU LAYOUT — Génération HTML de la vue ISA
+// ============================================================
+
+/**
+ * Générer et injecter le layout HTML de la vue ISA.
+ *
+ * Crée : panneau orphelins ISA, bandeau d'action, grille des types.
+ * Tous les éléments DOM (isa-orphan-panel, isa-upload, isa-cards…)
+ * sont créés ici pour être utilisés par les fonctions suivantes.
+ */
+function renderIsaLayout() {
+    const container = document.getElementById("view-isa");
+    if (!container) return;
+
+    container.innerHTML = `
+        <!-- Panneau flottant ISA orphelins -->
+        <aside class="orphan-panel hidden" id="isa-orphan-panel">
+            <div class="orphan-panel-header" onclick="toggleIsaOrphanPanel()">
+                <span class="orphan-panel-title">⚠️ Fichiers non assignés</span>
+                <span class="orphan-panel-count" id="isa-orphan-count">0</span>
+                <span class="orphan-panel-arrow" id="isa-orphan-arrow">◀</span>
+            </div>
+            <div class="orphan-panel-content" id="isa-orphan-panel-content">
+                <p class="orphan-panel-hint">Glissez-déposez sur une carte de type ISA</p>
+                <div id="orphan-files" class="orphan-list"></div>
+            </div>
+        </aside>
+
+        <!-- Bandeau d'action -->
+        <section class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2>Gestion Fichiers ISA</h2>
+                    <p class="muted">Importez et associez vos fichiers ISA (xlsx, xml, csv...) aux types de données</p>
+                </div>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <button class="btn btn-primary" onclick="triggerIsaUpload()">➕ Importer des fichiers</button>
+                    <button class="btn" onclick="reanalyzeAll()" title="Relancer toutes les analyses">🔄 Tout ré-analyser</button>
+                </div>
+            </div>
+            <input id="isa-upload" type="file" accept=".xlsx,.xls,.xml,.csv,.json" multiple hidden />
+        </section>
+
+        <!-- Grille types ISA -->
+        <section class="card rbd-section-shell">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin: 0 0 8px 0;">📁 Types de données ISA</h3>
+                    <p class="muted" style="margin: 0;">Chaque carte représente un type de données et ses fichiers associés</p>
+                </div>
+                <div class="stats-summary" id="isa-stats-summary"></div>
+            </div>
+            <div id="isa-cards" class="isa-grid">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📂</div>
+                    <p>Chargement...</p>
+                </div>
+            </div>
+        </section>
+    `;
+
+    console.info("[ISA][Init] Layout ISA généré");
+}
+
 
 // ============================================================
 // Initialisation
 // ============================================================
 
 async function initIsaPage() {
+    // Générer le layout HTML dans le conteneur vide
+    renderIsaLayout();
     await Promise.all([
         loadIsaTypes(),
         loadIsaCatalog()
@@ -20,8 +89,8 @@ async function initIsaPage() {
     setupIsaUploadWithAutoLink();
     renderIsaTypeCards();
     renderOrphanFiles();
-    updateStats();
-    initOrphanPanel();
+    updateIsaStats();
+    initIsaOrphanPanel();
 }
 
 // Construire la map des fichiers référents à partir du catalogue
@@ -51,7 +120,7 @@ async function toggleDefaultFile(fileId, typeId) {
     try {
         if (isCurrentlyDefault) {
             // Supprimer le référent
-            const response = await fetch(`${API_BASE}/default/${encodeURIComponent(typeId)}`, {
+            const response = await fetch(`${ISA_API_BASE}/default/${encodeURIComponent(typeId)}`, {
                 method: 'DELETE'
             });
             if (!response.ok) throw new Error('Erreur suppression référent');
@@ -59,7 +128,7 @@ async function toggleDefaultFile(fileId, typeId) {
             console.log(`⭐ Référent supprimé pour ${typeId}`);
         } else {
             // Définir comme référent
-            const response = await fetch(`${API_BASE}/default/${encodeURIComponent(typeId)}/${encodeURIComponent(fileId)}`, {
+            const response = await fetch(`${ISA_API_BASE}/default/${encodeURIComponent(typeId)}/${encodeURIComponent(fileId)}`, {
                 method: 'POST'
             });
             if (!response.ok) throw new Error('Erreur définition référent');
@@ -79,8 +148,8 @@ async function toggleDefaultFile(fileId, typeId) {
 }
 
 // Gestion du panneau flottant orphelins
-function initOrphanPanel() {
-    const panel = document.getElementById('orphan-panel');
+function initIsaOrphanPanel() {
+    const panel = document.getElementById('isa-orphan-panel');
     if (!panel) return;
 
     // Restaurer l'état depuis localStorage
@@ -90,8 +159,8 @@ function initOrphanPanel() {
     }
 }
 
-function toggleOrphanPanel() {
-    const panel = document.getElementById('orphan-panel');
+function toggleIsaOrphanPanel() {
+    const panel = document.getElementById('isa-orphan-panel');
     if (!panel) return;
 
     panel.classList.toggle('collapsed');
@@ -100,8 +169,8 @@ function toggleOrphanPanel() {
     localStorage.setItem('isaOrphanPanelCollapsed', panel.classList.contains('collapsed'));
 }
 
-function updateOrphanPanelVisibility() {
-    const panel = document.getElementById('orphan-panel');
+function updateIsaOrphanPanelVisibility() {
+    const panel = document.getElementById('isa-orphan-panel');
     const orphans = getOrphanFiles();
 
     if (!panel) return;
@@ -112,13 +181,13 @@ function updateOrphanPanelVisibility() {
         panel.classList.remove('hidden');
     }
 
-    const countEl = document.getElementById('orphan-count');
+    const countEl = document.getElementById('isa-orphan-count');
     if (countEl) countEl.textContent = orphans.length;
 }
 
 async function loadIsaTypes() {
     try {
-        const response = await fetch(`${API_BASE}/types`);
+        const response = await fetch(`${ISA_API_BASE}/types`);
         if (!response.ok) throw new Error('Erreur chargement types ISA');
         const data = await response.json();
         isaTypes = data.types || [];
@@ -131,7 +200,7 @@ async function loadIsaTypes() {
 
 async function loadIsaCatalog() {
     try {
-        const response = await fetch(`${API_BASE}/`);
+        const response = await fetch(`${ISA_API_BASE}/`);
         if (!response.ok) throw new Error('Erreur chargement fichiers ISA');
         const data = await response.json();
         isaCatalog = data.files || [];
@@ -179,7 +248,7 @@ function setupIsaUploadWithAutoLink() {
                     formData.append('type_id', pendingTypeForUpload);
                 }
 
-                const response = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
+                const response = await fetch(`${ISA_API_BASE}/upload`, { method: 'POST', body: formData });
                 if (!response.ok) throw new Error((await response.json()).detail || 'Erreur');
                 successCount++;
             } catch (error) {
@@ -190,7 +259,7 @@ function setupIsaUploadWithAutoLink() {
         await loadIsaCatalog();
         renderIsaTypeCards();
         renderOrphanFiles();
-        updateStats();
+        updateIsaStats();
         input.value = '';
         pendingTypeForUpload = null;
 
@@ -346,7 +415,7 @@ function renderOrphanFiles() {
     if (!container) return;
 
     const orphans = getOrphanFiles();
-    updateOrphanPanelVisibility();
+    updateIsaOrphanPanelVisibility();
 
     if (orphans.length === 0) {
         container.innerHTML = '<p class="muted" style="text-align: center; font-size: 12px;">Aucun fichier orphelin</p>';
@@ -436,7 +505,7 @@ function setupOrphanDragEvents() {
 
 async function linkFileToType(fileId, typeId) {
     try {
-        const response = await fetch(`${API_BASE}/link`, {
+        const response = await fetch(`${ISA_API_BASE}/link`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ file_id: fileId, type_id: typeId })
@@ -447,7 +516,7 @@ async function linkFileToType(fileId, typeId) {
         await loadIsaCatalog();
         renderIsaTypeCards();
         renderOrphanFiles();
-        updateStats();
+        updateIsaStats();
 
         showToast('✅ Fichier associé au type');
     } catch (error) {
@@ -460,7 +529,7 @@ async function unlinkFile(fileId, typeId) {
     if (!confirm('Retirer ce fichier du type ?')) return;
 
     try {
-        const response = await fetch(`${API_BASE}/unlink`, {
+        const response = await fetch(`${ISA_API_BASE}/unlink`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ file_id: fileId, type_id: typeId })
@@ -471,7 +540,7 @@ async function unlinkFile(fileId, typeId) {
         await loadIsaCatalog();
         renderIsaTypeCards();
         renderOrphanFiles();
-        updateStats();
+        updateIsaStats();
 
         showToast('✅ Fichier retiré du type');
     } catch (error) {
@@ -484,7 +553,7 @@ async function deleteFile(fileId) {
     if (!confirm('Supprimer définitivement ce fichier ?')) return;
 
     try {
-        const response = await fetch(`${API_BASE}/${fileId}`, {
+        const response = await fetch(`${ISA_API_BASE}/${fileId}`, {
             method: 'DELETE'
         });
 
@@ -493,7 +562,7 @@ async function deleteFile(fileId) {
         await loadIsaCatalog();
         renderIsaTypeCards();
         renderOrphanFiles();
-        updateStats();
+        updateIsaStats();
 
         showToast('✅ Fichier supprimé');
     } catch (error) {
@@ -508,7 +577,7 @@ async function reanalyzeAll() {
     showToast('🔄 Ré-analyse en cours...');
 
     try {
-        const response = await fetch(`${API_BASE}/reanalyze`, {
+        const response = await fetch(`${ISA_API_BASE}/reanalyze`, {
             method: 'POST'
         });
 
@@ -517,7 +586,7 @@ async function reanalyzeAll() {
         await loadIsaCatalog();
         renderIsaTypeCards();
         renderOrphanFiles();
-        updateStats();
+        updateIsaStats();
 
         showToast('✅ Ré-analyse terminée');
     } catch (error) {
@@ -596,7 +665,7 @@ async function confirmSelectFiles(typeId, btn) {
 // Stats
 // ============================================================
 
-function updateStats() {
+function updateIsaStats() {
     const container = document.getElementById('stats-summary');
     if (!container) return;
 

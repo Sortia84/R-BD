@@ -1,0 +1,513 @@
+/* ============================================================================
+   rbd-common.css — Styles communs R#BD
+
+   Contient :
+   - Layout principal (.rbd-container, .rbd-app)
+   - Cartes (.rbd-card)
+   - Boutons (.rbd-btn, .rbd-btn-primary, etc.)
+   - Badges (.rbd-badge)
+   - Tableaux (.rbd-table)
+   - Grilles (.rbd-grid)
+   - Formulaires (.rbd-form-group, .rbd-form-input)
+   - Utilitaires (marges, flex, divider)
+   - Vues SPA (.rbd-view)
+   - Toast / notifications
+   ============================================================================ */
+
+/* ── APP WRAPPER ── */
+
+.rbd-app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── LAYOUT PRINCIPAL ── */
+
+.rbd-container {
+    /* Alignement avec le pattern visuel R#SCD */
+    max-width: 1600px;
+    width: 100%;
+    margin: 0 auto;
+    padding: var(--rc-space-6) var(--rc-space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--rc-space-5);
+    flex: 1;
+}
+
+/* ── VUES SPA ── */
+
+.rbd-view {
+    display: none;
+    flex-direction: column;
+    gap: var(--rc-space-5);
+    width: 100%;
+}
+
+.rbd-view.active {
+    display: flex;
+}
+
+/* ── CARTES ── */
+
+.rbd-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: var(--rc-space-5);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+}
+
+.rbd-card:hover {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
+}
+
+.rbd-card-highlight {
+    border: 2px solid var(--primary);
+    background: rgba(230, 247, 253, 0.5);
+}
+
+/* Carte cliquable (accueil — raccourcis vers les vues) */
+.rbd-card-clickable {
+    cursor: pointer;
+    border: 2px solid var(--border);
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.rbd-card-clickable:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary);
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.12);
+}
+
+/*
+ * Section shell: zone de page sans "fond commun".
+ * Utilisée pour afficher un titre + une grille de cartes indépendantes,
+ * dans l'esprit visuel du manager R#SCD.
+ */
+.rbd-section-shell {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+.rbd-section-shell .divider {
+    display: none;
+}
+
+.rbd-section-shell .card-header {
+    margin-bottom: var(--rc-space-3);
+}
+
+/* Icône dans une carte d'accueil */
+.rbd-card-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--primary);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+/* Description dans une carte */
+.rbd-card-description {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.rbd-badge-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.rbd-badge-muted {
+    background: #eef2f7;
+    color: var(--muted);
+}
+
+.rbd-card-header {
+    margin-bottom: var(--rc-space-4);
+}
+
+.rbd-card-header h2 {
+    margin: 0 0 var(--rc-space-2) 0;
+    font-size: var(--rc-font-size-h2);
+    color: var(--text);
+}
+
+.rbd-card-header h3 {
+    margin: 0 0 var(--rc-space-2) 0;
+    font-size: var(--rc-font-size-h3);
+    color: var(--text);
+}
+
+.rbd-card-header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: var(--rc-font-size-body);
+}
+
+/* ── DIVIDER ── */
+
+.rbd-divider {
+    margin: var(--rc-space-4) 0;
+    height: 1px;
+    background: var(--border);
+}
+
+/* ── BADGES ── */
+
+.rbd-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.rbd-badge-success {
+    background: rgba(22, 163, 74, 0.1);
+    color: var(--success);
+}
+
+.rbd-badge-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+}
+
+.rbd-badge-danger {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--danger);
+}
+
+.rbd-badge-info {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--info);
+}
+
+.rbd-badge-accent {
+    background: #e8f2ff;
+    color: #2563eb;
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+/* ── BOUTONS ── */
+
+.rbd-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.rbd-btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.rbd-btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.rbd-btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.rbd-btn-secondary:hover {
+    background: rgba(0, 167, 222, 0.05);
+}
+
+.rbd-btn-danger {
+    background: #dc2626;
+    color: #fff;
+}
+
+.rbd-btn-danger:hover {
+    background: #b91c1c;
+}
+
+.rbd-btn-success {
+    background: var(--success);
+    color: white;
+}
+
+.rbd-btn-success:hover {
+    background: #15803d;
+}
+
+.rbd-btn-sm {
+    padding: 7px 12px;
+    font-size: 13px;
+}
+
+.rbd-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.rbd-btn-icon:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* ── TABLEAUX ── */
+
+.rbd-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.rbd-table th {
+    background: rgba(0, 167, 222, 0.05);
+    color: var(--text);
+    font-weight: 600;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+}
+
+.rbd-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.rbd-table tr:hover {
+    background: rgba(0, 167, 222, 0.02);
+}
+
+/* ── GRILLES ── */
+
+.rbd-grid {
+    display: grid;
+    /* Grille standard pour les listes de cartes génériques */
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--rc-space-4);
+}
+
+/*
+ * Grille dédiée au dashboard d'accueil.
+ * Objectif : garder des cartes de largeur stable et en afficher davantage
+ * quand la largeur du conteneur augmente.
+ */
+.rbd-grid-dashboard {
+    /* Colonnes fluides : remplissent la largeur disponible */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Les sections principales des vues doivent toujours occuper toute la largeur */
+.rbd-view > section.card {
+    width: 100%;
+}
+
+.rbd-grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.rbd-grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* ── FORMULAIRES ── */
+
+.rbd-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.rbd-form-label {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text);
+}
+
+.rbd-form-input {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--card);
+    color: var(--text);
+    transition: border-color 0.2s;
+}
+
+.rbd-form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15);
+}
+
+.rbd-form-input::placeholder {
+    color: var(--muted);
+}
+
+/* ── FILTRES ── */
+
+.rbd-filters-bar {
+    display: flex;
+    gap: var(--rc-space-4);
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.rbd-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.rbd-filter-group label {
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+/* ── ÉTAT VIDE ── */
+
+.rbd-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+}
+
+.rbd-empty-state-icon {
+    font-size: 48px;
+    margin-bottom: var(--rc-space-3);
+}
+
+/* ── UTILITAIRES ── */
+
+.rbd-text-center { text-align: center; }
+.rbd-text-muted { color: var(--muted); }
+.rbd-text-sm { font-size: 13px; }
+
+.rbd-flex { display: flex; }
+.rbd-flex-col { flex-direction: column; }
+.rbd-flex-between { justify-content: space-between; }
+.rbd-flex-center { align-items: center; }
+.rbd-flex-gap-sm { gap: var(--rc-space-2); }
+.rbd-flex-gap { gap: var(--rc-space-3); }
+.rbd-flex-gap-lg { gap: var(--rc-space-5); }
+
+.rbd-mt-1 { margin-top: var(--rc-space-2); }
+.rbd-mt-2 { margin-top: var(--rc-space-4); }
+.rbd-mt-3 { margin-top: var(--rc-space-6); }
+.rbd-mb-1 { margin-bottom: var(--rc-space-2); }
+.rbd-mb-2 { margin-bottom: var(--rc-space-4); }
+
+/* ── TOAST / NOTIFICATION ── */
+
+.rbd-toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rbd-toast {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    animation: rbd-slide-up 0.3s ease;
+    font-weight: 600;
+    min-width: 260px;
+}
+
+.rbd-toast-success {
+    border-color: var(--success);
+    color: var(--success);
+}
+
+.rbd-toast-warning {
+    border-color: var(--warning);
+    color: var(--warning);
+}
+
+.rbd-toast-error {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.rbd-toast-info {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.rbd-toast-fade {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+@keyframes rbd-slide-up {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* ── STATS SUMMARY ── */
+
+.rbd-stats {
+    display: flex;
+    gap: var(--rc-space-2);
+    flex-wrap: wrap;
+}
+
+.rbd-stat-pill {
+    background: #e8f2ff;
+    color: #2563eb;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ── RESPONSIVE ── */
+
+@media (max-width: 768px) {
+    .rbd-container {
+        padding: var(--rc-space-4) var(--rc-space-3);
+    }
+
+    /* Sur mobile, revenir à une colonne fluide lisible */
+    .rbd-grid-dashboard {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .rbd-filters-bar {
+        flex-direction: column;
+    }
+}

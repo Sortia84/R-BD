@@ -1,4 +1,4 @@
-# isa_api.py - API REST pour la gestion des fichiers ISA
+# router_isa.py — API REST pour la gestion des fichiers ISA
 """
 Endpoints FastAPI pour l'import, listing et gestion des fichiers ISA.
 Structure de stockage :
@@ -7,7 +7,6 @@ Structure de stockage :
 - data/isa/liste_isa.json : types ISA
 """
 
-from pathlib import Path
 from typing import Any
 import uuid
 
@@ -15,17 +14,10 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from core.isa_manager import ISAManager
+# Import centralisé depuis shared.py
+from api.shared import isa_manager as manager, DATA_DIR, UPLOADS_DIR, logger
 
 router = APIRouter(prefix="/api/isa", tags=["ISA"])
-
-# Configuration
-BASE_DIR = Path(__file__).parent.parent
-DATA_DIR = BASE_DIR / "data"
-UPLOADS_DIR = BASE_DIR / "uploads"
-
-# Manager partagé
-manager = ISAManager(data_dir=DATA_DIR, uploads_dir=UPLOADS_DIR)
 
 
 # ============================================================
