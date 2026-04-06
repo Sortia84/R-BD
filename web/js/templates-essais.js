@@ -147,35 +147,102 @@ function bindFilters() {
 }
 
 async function loadEssaisReferenceLists() {
-    await Promise.all([
-        loadList('/data/ied/liste_ied.json', document.getElementById('filter-ied')),
-        loadList('/data/ld/liste_ld.json', document.getElementById('filter-ld')),
-        loadList('/data/ln/liste_ln.json', document.getElementById('filter-ln'))
-    ]);
+    const iedSelect = document.getElementById('filter-ied');
+    const ldSelect = document.getElementById('filter-ld');
+    const lnSelect = document.getElementById('filter-ln');
+
+    if (!iedSelect || !ldSelect || !lnSelect) {
+        return;
+    }
+
+    const iedTypes = await loadArray('/api/icd/types');
+    fillSelect(iedSelect, iedTypes);
+
+    // Construire les listes LD/LN à partir des ICD analysés.
+    const catalog = await loadJson('/api/icd/', {});
+    const icdList = Array.isArray(catalog?.icds) ? catalog.icds : [];
+
+    const ldValues = new Set();
+    const lnValues = new Set();
+
+    const detailsList = await Promise.all(icdList.map(async (entry) => {
+        if (!entry?.icd_id) {
+            return null;
+        }
+        return loadJson(`/api/icd/details/${encodeURIComponent(entry.icd_id)}`, null);
+    }));
+
+    detailsList.forEach(details => collectLdLnValues(details, ldValues, lnValues));
+
+    // Fallback: conserver les valeurs déjà utilisées dans les essais historiques.
+    normalizeTests().forEach(test => {
+        if (test.ld) ldValues.add(test.ld);
+        if (test.ln) lnValues.add(test.ln);
+    });
+
+    fillSelect(ldSelect, [...ldValues]);
+    fillSelect(lnSelect, [...lnValues]);
 }
 
-async function loadList(url, selectElement) {
+async function loadJson(url, fallbackValue) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            return fallbackValue;
+        }
+        return await response.json();
+    } catch (error) {
+        console.warn(`Impossible de charger ${url}`, error);
+        return fallbackValue;
+    }
+}
+
+async function loadArray(url) {
+    const data = await loadJson(url, []);
+    return Array.isArray(data) ? data : [];
+}
+
+function fillSelect(selectElement, values) {
     if (!selectElement) {
         return;
     }
 
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            return;
-        }
-        const items = await response.json();
-        if (!Array.isArray(items)) {
-            return;
-        }
-        items.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item;
-            option.textContent = item;
-            selectElement.appendChild(option);
+    const uniqueSorted = [...new Set(values.filter(Boolean))].sort((a, b) =>
+        String(a).localeCompare(String(b), 'fr', { sensitivity: 'base' })
+    );
+
+    uniqueSorted.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item;
+        option.textContent = item;
+        selectElement.appendChild(option);
+    });
+}
+
+function collectLdLnValues(icdDetails, ldValues, lnValues) {
+    if (!icdDetails || !Array.isArray(icdDetails.ieds)) {
+        return;
+    }
+
+    icdDetails.ieds.forEach(ied => {
+        (ied.lds || []).forEach(ld => {
+            if (ld?.name) {
+                ldValues.add(ld.name);
+            }
+
+            (ld.lns || []).forEach(ln => {
+                if (ln?.ln_class) {
+                    lnValues.add(ln.ln_class);
+                }
+            });
         });
-    } catch (error) {
-        console.warn(`Impossible de charger ${url}`, error);
+    });
+}
+
+function loadList(url, selectElement) {
+    // Fonction conservée pour compatibilité ascendante.
+    if (!selectElement) {
+        return;
     }
 }
 
@@ -319,6 +386,18 @@ function editTest(testId, type) {
     openEditor(testId, type);
 }
 
+function generateDuplicateId(type, tests) {
+    const prefix = String(type || 'ru').toUpperCase();
+
+    // Même logique fonctionnelle que la création d'un nouveau test :
+    // ID court, aléatoire, et unique dans la catégorie.
+    let candidate = `${prefix}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+    while (tests.some(test => String(test.id || '').toUpperCase() === candidate)) {
+        candidate = `${prefix}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+    }
+    return candidate;
+}
+
 function duplicateTest(testId, type) {
     if (!confirm('Voulez-vous vraiment dupliquer ce test ?')) {
         return;
@@ -332,9 +411,11 @@ function duplicateTest(testId, type) {
     }
 
     const copy = JSON.parse(JSON.stringify(original));
-    copy.id = `${testId}_copy_${Date.now()}`;
+    copy.id = generateDuplicateId(type, tests);
     copy.name = `${original.name || 'Test'} (copie)`;
     copy.type = type;
+    copy.created_at = new Date().toISOString();
+    copy.updated_at = copy.created_at;
     tests.push(copy);
     setTestsByType(type, tests);
     syncTypeToServer(type);

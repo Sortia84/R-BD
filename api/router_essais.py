@@ -121,18 +121,45 @@ def sync_essais(payload: SyncPayload) -> Dict[str, Any]:
     """
     essai_type = payload.type.lower()
     now = datetime.now().isoformat()
+    filtered_essais: List[Dict[str, Any]] = []
+    skipped_count = 0
 
     # Ajouter timestamps si absents
     for essai in payload.essais:
+        item_type = str(essai.get("type", essai_type)).lower()
+        item_id = str(essai.get("id", "")).strip().upper()
+
+        # Garde-fou de cohérence: on ne laisse pas un sync RU écrire des CVS/MVS
+        # dans le fichier RU (et inversement).
+        if item_type != essai_type:
+            skipped_count += 1
+            continue
+
+        # Garde-fou additionnel: si l'ID suit la convention RU-/CVS-/MVS-,
+        # il doit être cohérent avec le type de sync cible.
+        if item_id.startswith("RU-") and essai_type != "ru":
+            skipped_count += 1
+            continue
+        if item_id.startswith("CVS-") and essai_type != "cvs":
+            skipped_count += 1
+            continue
+        if item_id.startswith("MVS-") and essai_type != "mvs":
+            skipped_count += 1
+            continue
+
+        essai["type"] = essai_type
         if "updated_at" not in essai:
             essai["updated_at"] = now
         if "created_at" not in essai:
             essai["created_at"] = now
 
-    _save(essai_type, payload.essais)
-    print(f"🔄 Sync {len(payload.essais)} essais (type={essai_type})")
+        filtered_essais.append(essai)
+
+    _save(essai_type, filtered_essais)
+    print(f"🔄 Sync {len(filtered_essais)} essais (type={essai_type}, ignorés={skipped_count})")
     return {
         "success": True,
         "type": essai_type,
-        "synced": len(payload.essais),
+        "synced": len(filtered_essais),
+        "skipped": skipped_count,
     }

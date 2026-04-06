@@ -25,6 +25,12 @@ let currentTest = {
 
 let stepCounter = 1;
 let isEditing = false;
+let linkedPickerState = {
+    type: 'ru',
+    candidates: [],
+    filteredCandidates: []
+};
+let bidirectionalLinksChecked = false;
 
 // Données de référence chargées depuis l'API
 let editorIedPatterns = [];      // Liste des patterns IED depuis liste_ied.json
@@ -58,6 +64,8 @@ function buildStateOptions(selectedValue = '', placeholder = 'État') {
 // SPA : le type et l'ID du test sont passés par openEditor() au lieu de query params
 let selectedType = 'ru';
 let originalType = selectedType;
+let persistedEditorType = selectedType;
+let persistedEditorId = '';
 
 
 // ============================================================
@@ -269,6 +277,11 @@ function setSavedTests(type, tests) {
  * Initialise l'éditeur
  */
 async function initEditor() {
+    if (!bidirectionalLinksChecked) {
+        await repairBidirectionalLinksInStorage();
+        bidirectionalLinksChecked = true;
+    }
+
     // Charger les IEDs depuis le SCD si disponible
     // ⚠️ DOIT être await pour que les <select> soient peuplés AVANT loadTest
     await loadEditorReferenceLists();
@@ -301,6 +314,8 @@ function setupTypeSelector() {
         if (!isEditing) {
             currentTest.id = '';
             ensureRandomId();
+        } else {
+            ensureTypeCoherentIdOnTypeChange();
         }
         refreshTypeLabels();
     });
@@ -312,6 +327,46 @@ function refreshTypeLabels() {
         title.textContent = 'Éditeur de test';
     }
 
+}
+
+function getTypePrefix(type) {
+    return TYPE_PREFIX[String(type || 'ru').toLowerCase()] || 'RU';
+}
+
+function idHasExpectedPrefix(testId, type) {
+    const normalizedId = String(testId || '').trim().toUpperCase();
+    const expectedPrefix = `${getTypePrefix(type)}-`;
+    return normalizedId.startsWith(expectedPrefix);
+}
+
+function generateTypeCoherentId(type) {
+    const prefix = getTypePrefix(type);
+    return makeUniqueId(`${prefix}-${generateRandomId()}`, type);
+}
+
+function setEditorIdValue(newId) {
+    currentTest.id = newId;
+    const idInput = document.getElementById('test-id');
+    if (idInput) {
+        idInput.value = newId;
+    }
+}
+
+function ensureTypeCoherentIdOnTypeChange() {
+    // Cas principal: test existant RU basculé en CVS/MVS (ou inversement).
+    // On force un ID cohérent avec le nouveau type.
+    if (!isEditing || !currentTest.id) {
+        return;
+    }
+
+    if (idHasExpectedPrefix(currentTest.id, selectedType)) {
+        return;
+    }
+
+    const previousId = currentTest.id;
+    const regeneratedId = generateTypeCoherentId(selectedType);
+    setEditorIdValue(regeneratedId);
+    console.info(`[EDITOR][TypeChange] ID régénéré ${previousId} -> ${regeneratedId} (type=${selectedType})`);
 }
 
 /**
@@ -347,14 +402,16 @@ async function loadEditorReferenceLists() {
 }
 
 /**
- * Charge les patterns IED depuis liste_ied.json
+ * Charge les patterns IED depuis l'API backend.
  */
 async function loadEditorIedPatterns() {
     try {
-        const response = await fetch('/data/ied/liste_ied.json');
-        if (!response.ok) return;
+        const response = await fetch('/api/icd/patterns');
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
         const data = await response.json();
-        editorIedPatterns = data.ied_patterns || [];
+        editorIedPatterns = data.patterns || data.ied_patterns || [];
         console.log(`📋 ${editorIedPatterns.length} patterns IED chargés`);
     } catch (error) {
         console.warn('Impossible de charger les patterns IED', error);
@@ -363,14 +420,16 @@ async function loadEditorIedPatterns() {
 }
 
 /**
- * Charge le catalogue ICD depuis index.json
+ * Charge le catalogue ICD depuis l'API backend.
  */
 async function loadEditorIcdCatalog() {
     try {
-        const response = await fetch('/data/icd/index.json');
-        if (!response.ok) return;
+        const response = await fetch('/api/icd/');
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
         const data = await response.json();
-        editorIcdCatalog = data.icd_list || [];
+        editorIcdCatalog = data.icds || data.icd_list || [];
         console.log(`📦 ${editorIcdCatalog.length} ICD dans le catalogue`);
     } catch (error) {
         console.warn('Impossible de charger le catalogue ICD', error);
@@ -387,16 +446,16 @@ async function loadEditorIcdDetails(icdId) {
         return editorIcdDetailsCache[icdId];
     }
 
-    // Trouver le chemin du fichier JSON
-    const icdEntry = editorIcdCatalog.find(i => i.icd_id === icdId);
-    if (!icdEntry || !icdEntry.path) {
-        console.warn(`ICD non trouvé: ${icdId}`);
+    if (!icdId) {
+        console.warn('ICD non fourni');
         return null;
     }
 
     try {
-        const response = await fetch(`/data/icd/${icdEntry.path}`);
-        if (!response.ok) return null;
+        const response = await fetch(`/api/icd/details/${encodeURIComponent(icdId)}`);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
         const data = await response.json();
         editorIcdDetailsCache[icdId] = data;
         return data;
@@ -756,6 +815,87 @@ function makeUniqueId(baseId, type = selectedType) {
     return candidate;
 }
 
+async function migrateLinkedReferencesAcrossStorage(oldId, newId, sourceSnapshot) {
+    const oldNorm = normalizeValueForMatch(oldId);
+    const newNorm = normalizeValueForMatch(newId);
+    if (!oldNorm || !newNorm || oldNorm === newNorm) {
+        return;
+    }
+
+    const types = ['ru', 'mvs', 'cvs'];
+    const fields = ['linked_tests_ru', 'linked_tests_mvs', 'linked_tests_cvs'];
+    const changedTypes = new Set();
+
+    for (const type of types) {
+        const tests = getSavedTests(type);
+        let changed = false;
+
+        tests.forEach(test => {
+            if (!test || typeof test !== 'object') {
+                return;
+            }
+
+            fields.forEach(field => {
+                if (!Array.isArray(test[field])) {
+                    return;
+                }
+
+                let fieldChanged = false;
+                const rewritten = test[field].map(item => {
+                    if (!item || typeof item !== 'object') {
+                        return item;
+                    }
+
+                    if (normalizeValueForMatch(item.testId) !== oldNorm) {
+                        return item;
+                    }
+
+                    fieldChanged = true;
+                    return {
+                        ...item,
+                        testId: newId,
+                        name: sourceSnapshot?.name || item.name || '',
+                        ied: sourceSnapshot?.ied || item.ied || '',
+                        ld: sourceSnapshot?.ld || item.ld || '',
+                        ln: sourceSnapshot?.ln || item.ln || '',
+                        lninst: sourceSnapshot?.lninst || item.lninst || ''
+                    };
+                });
+
+                if (!fieldChanged) {
+                    return;
+                }
+
+                // Déduplication au cas où la référence nouvel ID existe déjà.
+                const dedup = [];
+                const seen = new Set();
+                rewritten.forEach(item => {
+                    const key = normalizeValueForMatch(item?.testId);
+                    if (!key || seen.has(key)) {
+                        return;
+                    }
+                    seen.add(key);
+                    dedup.push(item);
+                });
+
+                test[field] = dedup;
+                changed = true;
+            });
+        });
+
+        if (changed) {
+            setSavedTests(type, tests);
+            changedTypes.add(type);
+        }
+    }
+
+    for (const type of changedTypes) {
+        if (typeof syncTypeToServer === 'function') {
+            await syncTypeToServer(type);
+        }
+    }
+}
+
 /**
  * Charge un test existant
  */
@@ -770,6 +910,8 @@ async function loadTest(testId) {
     isEditing = true;
     selectedType = (test.type || selectedType).toLowerCase();
     originalType = selectedType;
+    persistedEditorType = selectedType;
+    persistedEditorId = test.id || '';
     const typeSelect = document.getElementById('test-type');
     if (typeSelect) {
         typeSelect.value = selectedType;
@@ -781,9 +923,9 @@ async function loadTest(testId) {
         type: selectedType,
         preconditions: test.preconditions || [],
         files: test.files || [],
-        linked_tests_ru: test.linked_tests_ru || [],
-        linked_tests_mvs: test.linked_tests_mvs || [],
-        linked_tests_cvs: test.linked_tests_cvs || [],
+        linked_tests_ru: normalizeLinkedTests('ru', test.linked_tests_ru),
+        linked_tests_mvs: normalizeLinkedTests('mvs', test.linked_tests_mvs),
+        linked_tests_cvs: normalizeLinkedTests('cvs', test.linked_tests_cvs),
         steps: test.steps || [],
         cde: test.cde || [],
         alarmes: test.alarmes || [],
@@ -859,21 +1001,714 @@ function renderFiles() {
     });
 }
 
+function normalizeLinkedTests(type, tests) {
+    if (!Array.isArray(tests)) {
+        return [];
+    }
+
+    return tests
+        .map((item, index) => {
+            if (typeof item === 'string') {
+                const normalized = normalizeValueForMatch(item).replace(/[^A-Z0-9]/g, '_').slice(0, 40);
+                return {
+                    id: `linked_${type}_${normalized || index}`,
+                    testId: item
+                };
+            }
+
+            if (!item || typeof item !== 'object') {
+                return null;
+            }
+
+            const normalized = normalizeValueForMatch(item.testId || item.id || '').replace(/[^A-Z0-9]/g, '_').slice(0, 40);
+            const fallbackId = `linked_${type}_${normalized || index}`;
+            return {
+                ...item,
+                id: item.id || fallbackId,
+                testId: item.testId || item.id || ''
+            };
+        })
+        .filter(item => item && item.testId);
+}
+
+async function repairBidirectionalLinksInStorage() {
+    const types = ['ru', 'mvs', 'cvs'];
+    const store = {
+        ru: getSavedTests('ru'),
+        mvs: getSavedTests('mvs'),
+        cvs: getSavedTests('cvs')
+    };
+
+    const changedTypes = new Set();
+
+    for (const sourceType of types) {
+        const sourceTests = store[sourceType];
+        const sourceField = getLinkedFieldName(sourceType);
+
+        for (const sourceTest of sourceTests) {
+            if (!sourceTest || !sourceTest.id) {
+                continue;
+            }
+
+            const sourceRef = {
+                testId: sourceTest.id,
+                name: sourceTest.name || '',
+                ied: sourceTest.ied || '',
+                ld: sourceTest.ld || '',
+                ln: sourceTest.ln || '',
+                lninst: sourceTest.lninst || ''
+            };
+            const sourceIdNorm = normalizeValueForMatch(sourceRef.testId);
+
+            for (const targetType of types) {
+                const targetFieldOnSource = getLinkedFieldName(targetType);
+                const linkedOnSource = normalizeLinkedTests(targetType, sourceTest[targetFieldOnSource]);
+
+                if ((sourceTest[targetFieldOnSource] || []).length !== linkedOnSource.length) {
+                    sourceTest[targetFieldOnSource] = linkedOnSource;
+                    changedTypes.add(sourceType);
+                } else {
+                    sourceTest[targetFieldOnSource] = linkedOnSource;
+                }
+
+                for (const linkedEntry of linkedOnSource) {
+                    const linkedTargetId = normalizeValueForMatch(linkedEntry.testId);
+                    if (!linkedTargetId) {
+                        continue;
+                    }
+
+                    const targetTest = (store[targetType] || []).find(
+                        candidate => normalizeValueForMatch(candidate?.id) === linkedTargetId
+                    );
+                    if (!targetTest) {
+                        continue;
+                    }
+
+                    if (targetType === sourceType && normalizeValueForMatch(targetTest.id) === sourceIdNorm) {
+                        continue;
+                    }
+
+                    targetTest[sourceField] = normalizeLinkedTests(sourceType, targetTest[sourceField]);
+                    const already = targetTest[sourceField].some(
+                        item => normalizeValueForMatch(item.testId) === sourceIdNorm
+                    );
+
+                    if (!already) {
+                        targetTest[sourceField].push({
+                            id: `linked_${sourceType}_${sourceIdNorm || Date.now()}`,
+                            testId: sourceRef.testId,
+                            name: sourceRef.name,
+                            ied: sourceRef.ied,
+                            ld: sourceRef.ld,
+                            ln: sourceRef.ln,
+                            lninst: sourceRef.lninst
+                        });
+                        changedTypes.add(targetType);
+                    }
+                }
+            }
+        }
+    }
+
+    for (const type of changedTypes) {
+        setSavedTests(type, store[type]);
+        if (typeof syncTypeToServer === 'function') {
+            await syncTypeToServer(type);
+        }
+    }
+}
+
+function getLinkedTestsByType(type) {
+    if (type === 'ru') {
+        return currentTest.linked_tests_ru;
+    }
+    if (type === 'mvs') {
+        return currentTest.linked_tests_mvs;
+    }
+    return currentTest.linked_tests_cvs;
+}
+
+function getLinkedContainerId(type) {
+    if (type === 'ru') {
+        return 'tests-ru-list';
+    }
+    if (type === 'mvs') {
+        return 'tests-mvs-list';
+    }
+    return 'tests-cvs-list';
+}
+
+function getLinkedFieldName(type) {
+    const normalized = String(type || '').toLowerCase();
+    if (normalized === 'ru') return 'linked_tests_ru';
+    if (normalized === 'mvs') return 'linked_tests_mvs';
+    return 'linked_tests_cvs';
+}
+
+function buildCurrentTestLinkedReference() {
+    return {
+        testId: document.getElementById('test-id')?.value || currentTest.id || '',
+        name: document.getElementById('test-name')?.value || currentTest.name || '',
+        ied: document.getElementById('test-ied')?.value || currentTest.ied || '',
+        ld: document.getElementById('test-ld')?.value || currentTest.ld || '',
+        ln: document.getElementById('test-ln')?.value || currentTest.ln || '',
+        lninst: document.getElementById('test-lninst')?.value || currentTest.lninst || ''
+    };
+}
+
+async function syncBidirectionalLinksForCurrentTest() {
+    const sourceType = String(currentTest.type || selectedType || 'ru').toLowerCase();
+    const sourceField = getLinkedFieldName(sourceType);
+    const sourceRef = buildCurrentTestLinkedReference();
+    const sourceIdNorm = normalizeValueForMatch(sourceRef.testId);
+
+    if (!sourceIdNorm) {
+        return;
+    }
+
+    const targetTypes = ['ru', 'mvs', 'cvs'];
+
+    for (const targetType of targetTypes) {
+        const targetTests = getSavedTests(targetType);
+        const linkedIds = new Set(
+            getLinkedTestsByType(targetType).map(item => normalizeValueForMatch(item.testId))
+        );
+
+        let changed = false;
+
+        for (const targetTest of targetTests) {
+            if (!targetTest || !targetTest.id) {
+                continue;
+            }
+
+            const targetIdNorm = normalizeValueForMatch(targetTest.id);
+
+            // Ne pas créer de lien vers soi-même.
+            if (targetType === sourceType && targetIdNorm === sourceIdNorm) {
+                continue;
+            }
+
+            const shouldLink = linkedIds.has(targetIdNorm);
+            const normalizedReverse = normalizeLinkedTests(sourceType, targetTest[sourceField]);
+            targetTest[sourceField] = normalizedReverse;
+
+            const existingIndex = targetTest[sourceField].findIndex(
+                item => normalizeValueForMatch(item.testId) === sourceIdNorm
+            );
+
+            if (shouldLink && existingIndex === -1) {
+                targetTest[sourceField].push({
+                    id: `linked_${sourceType}_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+                    testId: sourceRef.testId,
+                    name: sourceRef.name,
+                    ied: sourceRef.ied,
+                    ld: sourceRef.ld,
+                    ln: sourceRef.ln,
+                    lninst: sourceRef.lninst
+                });
+                changed = true;
+            }
+
+            if (shouldLink && existingIndex >= 0) {
+                const existing = targetTest[sourceField][existingIndex] || {};
+                const updated = {
+                    ...existing,
+                    testId: sourceRef.testId,
+                    name: sourceRef.name,
+                    ied: sourceRef.ied,
+                    ld: sourceRef.ld,
+                    ln: sourceRef.ln,
+                    lninst: sourceRef.lninst
+                };
+
+                const changedSnapshot = (
+                    existing.testId !== updated.testId ||
+                    existing.name !== updated.name ||
+                    existing.ied !== updated.ied ||
+                    existing.ld !== updated.ld ||
+                    existing.ln !== updated.ln ||
+                    existing.lninst !== updated.lninst
+                );
+
+                if (changedSnapshot) {
+                    targetTest[sourceField][existingIndex] = updated;
+                    changed = true;
+                }
+            }
+
+            if (!shouldLink && existingIndex >= 0) {
+                targetTest[sourceField].splice(existingIndex, 1);
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            setSavedTests(targetType, targetTests);
+            if (typeof syncTypeToServer === 'function') {
+                await syncTypeToServer(targetType);
+            }
+        }
+    }
+}
+
+function getCurrentSelectionForLinkedScore() {
+    return {
+        id: document.getElementById('test-id')?.value || currentTest.id || '',
+        name: document.getElementById('test-name')?.value || currentTest.name || '',
+        ied: document.getElementById('test-ied')?.value || currentTest.ied || '',
+        ld: document.getElementById('test-ld')?.value || currentTest.ld || '',
+        ln: document.getElementById('test-ln')?.value || currentTest.ln || '',
+        lninst: document.getElementById('test-lninst')?.value || currentTest.lninst || ''
+    };
+}
+
+function normalizeValueForMatch(value) {
+    return String(value || '').trim().toUpperCase();
+}
+
+function computeLinkedTestScore(candidate, selection) {
+    const fields = [
+        { key: 'ied', weight: 30, partial: false },
+        { key: 'ld', weight: 30, partial: false },
+        { key: 'ln', weight: 20, partial: false },
+        { key: 'lninst', weight: 20, partial: false }
+    ];
+
+    let score = 0;
+
+    fields.forEach(field => {
+        const source = normalizeValueForMatch(selection[field.key]);
+        const target = normalizeValueForMatch(candidate[field.key]);
+
+        if (!source || !target) {
+            return;
+        }
+
+        if (source === target) {
+            score += field.weight;
+            return;
+        }
+
+        if (field.partial && (target.includes(source) || source.includes(target))) {
+            score += Math.round(field.weight * 0.5);
+        }
+    });
+
+    const matchKeys = ['ied', 'ld', 'ln', 'lninst'];
+    const hasReference = matchKeys.some(key => normalizeValueForMatch(selection[key]));
+    const exactAll = matchKeys.every(
+        key => normalizeValueForMatch(candidate[key]) === normalizeValueForMatch(selection[key])
+    );
+
+    return {
+        score,
+        recommended: hasReference && exactAll
+    };
+}
+
+function buildLinkedCandidates(type) {
+    const selection = getCurrentSelectionForLinkedScore();
+    const linkedIds = new Set(getLinkedTestsByType(type).map(item => normalizeValueForMatch(item.testId)));
+
+    const candidates = getSavedTests(type)
+        .filter(test => test && test.id)
+        .filter(test => normalizeValueForMatch(test.id) !== normalizeValueForMatch(selection.id))
+        .map(test => {
+            const rank = computeLinkedTestScore(test, selection);
+            const alreadyLinked = linkedIds.has(normalizeValueForMatch(test.id));
+
+            return {
+                id: test.id,
+                name: test.name || '',
+                ied: test.ied || '',
+                ld: test.ld || '',
+                ln: test.ln || '',
+                lninst: test.lninst || '',
+                score: rank.score,
+                recommended: rank.recommended,
+                alreadyLinked,
+                searchText: normalizeValueForMatch([
+                    test.id,
+                    test.name,
+                    test.ied,
+                    test.ld,
+                    test.ln,
+                    test.lninst
+                ].join(' '))
+            };
+        });
+
+    candidates.sort((a, b) => {
+        if (a.recommended !== b.recommended) {
+            return a.recommended ? -1 : 1;
+        }
+        if (a.score !== b.score) {
+            return b.score - a.score;
+        }
+        return String(a.id).localeCompare(String(b.id), 'fr', { sensitivity: 'base' });
+    });
+
+    return candidates;
+}
+
+function createLinkedTestPickerPopup() {
+    if (document.getElementById('linked-test-picker-overlay')) {
+        return;
+    }
+
+    const html = `
+        <div id="linked-test-picker-overlay" class="isa-popup-overlay">
+            <div class="isa-popup linked-test-picker-popup">
+                <div class="isa-popup-header">
+                    <h3 id="linked-test-picker-title">🔗 Sélectionner un test lié</h3>
+                    <button class="isa-popup-close" onclick="closeLinkedTestPicker()">&times;</button>
+                </div>
+
+                <div class="isa-popup-search">
+                    <input
+                        type="text"
+                        id="linked-test-picker-search"
+                        placeholder="Rechercher par ID, nom, IED, LD, LN, LNInst..."
+                        oninput="filterLinkedTestPicker(this.value)"
+                    >
+                </div>
+
+                <div class="isa-popup-content" id="linked-test-picker-content"></div>
+
+                <div class="isa-popup-footer">
+                    <span class="selection-count" id="linked-test-picker-count">0 test(s)</span>
+                    <div class="isa-popup-actions">
+                        <button class="btn btn-secondary" onclick="closeLinkedTestPicker()">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function openLinkedTestPicker(type) {
+    createLinkedTestPickerPopup();
+
+    linkedPickerState.type = type;
+    linkedPickerState.candidates = buildLinkedCandidates(type);
+    linkedPickerState.filteredCandidates = [...linkedPickerState.candidates];
+
+    const title = document.getElementById('linked-test-picker-title');
+    if (title) {
+        title.textContent = `🔗 Sélectionner un test ${type.toUpperCase()} à lier`;
+    }
+
+    const searchInput = document.getElementById('linked-test-picker-search');
+    if (searchInput) {
+        searchInput.value = '';
+    }
+
+    renderLinkedTestPicker();
+    document.getElementById('linked-test-picker-overlay')?.classList.add('active');
+}
+
+function closeLinkedTestPicker() {
+    document.getElementById('linked-test-picker-overlay')?.classList.remove('active');
+}
+
+function filterLinkedTestPicker(query) {
+    const normalized = normalizeValueForMatch(query);
+    if (!normalized) {
+        linkedPickerState.filteredCandidates = [...linkedPickerState.candidates];
+    } else {
+        linkedPickerState.filteredCandidates = linkedPickerState.candidates.filter(candidate =>
+            candidate.searchText.includes(normalized)
+        );
+    }
+
+    renderLinkedTestPicker();
+}
+
+function escapeJsArg(value) {
+    return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+function renderLinkedTestPicker() {
+    const content = document.getElementById('linked-test-picker-content');
+    if (!content) {
+        return;
+    }
+
+    const rows = linkedPickerState.filteredCandidates;
+    const count = document.getElementById('linked-test-picker-count');
+    if (count) {
+        count.textContent = `${rows.length} test(s)`;
+    }
+
+    if (!rows.length) {
+        content.innerHTML = `
+            <div class="isa-popup-empty">
+                <div class="empty-icon">📭</div>
+                <p>Aucun test correspondant.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const rowsHtml = rows.map(row => {
+        const badge = row.recommended
+            ? '<span class="linked-picker-badge">Conseillé</span>'
+            : '';
+        const rowClass = row.recommended ? 'linked-picker-row linked-picker-row-recommended' : 'linked-picker-row';
+        const actionLabel = row.alreadyLinked ? 'Déjà lié' : 'Lier';
+        const actionDisabled = row.alreadyLinked ? 'disabled' : '';
+
+        return `
+            <div class="${rowClass}">
+                <div class="linked-picker-col linked-picker-id">
+                    <div class="linked-picker-id-main">${escapeHtml(row.id)}</div>
+                    ${badge}
+                </div>
+                <div class="linked-picker-col">${escapeHtml(row.ied || '—')}</div>
+                <div class="linked-picker-col">${escapeHtml(row.name || '—')}</div>
+                <div class="linked-picker-col">${escapeHtml(row.ld || '—')}</div>
+                <div class="linked-picker-col">${escapeHtml(row.ln || '—')}</div>
+                <div class="linked-picker-col">${escapeHtml(row.lninst || '—')}</div>
+                <div class="linked-picker-col linked-picker-col-score">${row.score}</div>
+                <div class="linked-picker-col linked-picker-col-action">
+                    <button
+                        class="btn btn-secondary linked-picker-add-btn"
+                        ${actionDisabled}
+                        onclick="selectLinkedTestFromPicker('${linkedPickerState.type}', '${escapeJsArg(row.id)}')"
+                    >${actionLabel}</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    content.innerHTML = `
+        <div class="linked-picker-table">
+            <div class="linked-picker-head">
+                <div class="linked-picker-col linked-picker-id">ID</div>
+                <div class="linked-picker-col">IED</div>
+                <div class="linked-picker-col">Nom</div>
+                <div class="linked-picker-col">LD</div>
+                <div class="linked-picker-col">LN</div>
+                <div class="linked-picker-col">LNInst</div>
+                <div class="linked-picker-col linked-picker-col-score">Score</div>
+                <div class="linked-picker-col linked-picker-col-action">Action</div>
+            </div>
+            <div class="linked-picker-body">${rowsHtml}</div>
+        </div>
+    `;
+}
+
+function selectLinkedTestFromPicker(type, testId) {
+    const test = getSavedTests(type).find(item => String(item.id) === String(testId));
+    if (!test) {
+        alert('❌ Test introuvable dans cette catégorie.');
+        return;
+    }
+
+    const added = addLinkedTest(type, test);
+    if (added) {
+        closeLinkedTestPicker();
+    }
+}
+
+function createLinkedReadonlyModal() {
+    if (document.getElementById('linked-test-readonly-overlay')) {
+        return;
+    }
+
+    const html = `
+        <div id="linked-test-readonly-overlay" class="isa-popup-overlay">
+            <div class="isa-popup linked-readonly-popup">
+                <div class="isa-popup-header">
+                    <h3 id="linked-test-readonly-title">👁️ Détail test lié</h3>
+                    <button class="isa-popup-close" onclick="closeLinkedTestReadonly()">&times;</button>
+                </div>
+                <div class="isa-popup-content" id="linked-test-readonly-content"></div>
+                <div class="isa-popup-footer">
+                    <span class="selection-count">Mode visuel (lecture seule)</span>
+                    <div class="isa-popup-actions">
+                        <button class="btn btn-secondary" onclick="closeLinkedTestReadonly()">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function closeLinkedTestReadonly() {
+    document.getElementById('linked-test-readonly-overlay')?.classList.remove('active');
+}
+
+function renderReadonlyItems(title, items, formatter) {
+    const values = Array.isArray(items) ? items : [];
+    if (!values.length) {
+        return `
+            <section class="linked-readonly-section">
+                <h4>${title}</h4>
+                <p class="linked-readonly-empty">Aucune donnée.</p>
+            </section>
+        `;
+    }
+
+    const rows = values.map((item, index) => formatter(item, index)).join('');
+    return `
+        <section class="linked-readonly-section">
+            <h4>${title}</h4>
+            <div class="linked-readonly-list">${rows}</div>
+        </section>
+    `;
+}
+
+function openLinkedTestReadonly(type, testId) {
+    const linkedType = String(type || '').toLowerCase();
+    const normalizedId = String(testId || '').trim();
+    if (!normalizedId) {
+        alert('❌ Test lié introuvable (ID vide).');
+        return;
+    }
+
+    const test = getSavedTests(linkedType).find(item => String(item.id) === normalizedId);
+    if (!test) {
+        alert(`❌ Test ${normalizedId} introuvable dans la catégorie ${linkedType.toUpperCase()}.`);
+        return;
+    }
+
+    createLinkedReadonlyModal();
+
+    const title = document.getElementById('linked-test-readonly-title');
+    if (title) {
+        title.textContent = `👁️ ${test.id || 'Test lié'} — ${test.name || 'Sans nom'} (${linkedType.toUpperCase()})`;
+    }
+
+    const content = document.getElementById('linked-test-readonly-content');
+    if (!content) {
+        return;
+    }
+
+    const preconditionsSection = renderReadonlyItems(
+        'Préconditions',
+        test.preconditions,
+        (item) => {
+            const name = escapeHtml(item?.name || 'Précondition');
+            const state = escapeHtml(item?.state || '—');
+            return `<div class="linked-readonly-item"><strong>${name}</strong><span>État: ${state}</span></div>`;
+        }
+    );
+
+    const stepsSection = renderReadonlyItems(
+        'Étapes',
+        test.steps,
+        (item, index) => {
+            const number = item?.number || (index + 1);
+            const name = escapeHtml(item?.name || `Étape ${number}`);
+            const state = escapeHtml(item?.state || '—');
+            const injection = escapeHtml(item?.injection || 'Sans');
+            const duration = escapeHtml(
+                item?.temporisation === 'Manuel'
+                    ? `${item?.duration || 0} ${item?.unit || 'ms'}`
+                    : 'Auto'
+            );
+            return `
+                <div class="linked-readonly-item">
+                    <strong>${number}. ${name}</strong>
+                    <span>État: ${state} | Injection: ${injection} | Temporisation: ${duration}</span>
+                </div>
+            `;
+        }
+    );
+
+    const cdeSection = renderReadonlyItems(
+        'Informations CDE',
+        test.cde,
+        (item) => {
+            const name = escapeHtml(item?.name || item?.id || String(item || ''));
+            const state = escapeHtml(item?.state || '—');
+            return `<div class="linked-readonly-item"><strong>${name}</strong><span>État: ${state}</span></div>`;
+        }
+    );
+
+    const alarmesSection = renderReadonlyItems(
+        'Alarmes',
+        test.alarmes,
+        (item) => {
+            const name = escapeHtml(item?.name || item?.id || String(item || ''));
+            const state = escapeHtml(item?.state || '—');
+            return `<div class="linked-readonly-item"><strong>${name}</strong><span>État: ${state}</span></div>`;
+        }
+    );
+
+    const tcdSection = renderReadonlyItems(
+        'Informations TCD',
+        test.tcd,
+        (item) => {
+            const name = escapeHtml(item?.name || item?.id || String(item || ''));
+            const state = escapeHtml(item?.state || '—');
+            return `<div class="linked-readonly-item"><strong>${name}</strong><span>État: ${state}</span></div>`;
+        }
+    );
+
+    content.innerHTML = `
+        <section class="linked-readonly-summary">
+            <div><span class="label">ID</span><strong>${escapeHtml(test.id || '—')}</strong></div>
+            <div><span class="label">Type</span><strong>${escapeHtml(String(test.type || linkedType).toUpperCase())}</strong></div>
+            <div><span class="label">IED</span><strong>${escapeHtml(test.ied || '—')}</strong></div>
+            <div><span class="label">LD</span><strong>${escapeHtml(test.ld || '—')}</strong></div>
+            <div><span class="label">LN</span><strong>${escapeHtml(test.ln || '—')}</strong></div>
+            <div><span class="label">LNInst</span><strong>${escapeHtml(test.lninst || '—')}</strong></div>
+        </section>
+
+        <section class="linked-readonly-section">
+            <h4>Description</h4>
+            <div class="linked-readonly-description">${escapeHtml(test.description || 'Aucune description.')}</div>
+        </section>
+
+        ${preconditionsSection}
+        ${stepsSection}
+        ${cdeSection}
+        ${alarmesSection}
+        ${tcdSection}
+    `;
+
+    document.getElementById('linked-test-readonly-overlay')?.classList.add('active');
+}
+
 function renderLinkedTests(type, tests) {
-    const containerId = type === 'ru'
-        ? 'tests-ru-list'
-        : type === 'mvs'
-            ? 'tests-mvs-list'
-            : 'tests-cvs-list';
-    const container = document.getElementById(containerId);
+    const container = document.getElementById(getLinkedContainerId(type));
+    if (!container) {
+        return;
+    }
+
     container.innerHTML = '';
 
     tests.forEach(item => {
+        const linkedTest = getSavedTests(type).find(t => t.id === item.testId);
+        const display = {
+            testId: item.testId || '',
+            name: item.name || linkedTest?.name || '',
+            ied: item.ied || linkedTest?.ied || '',
+            ld: item.ld || linkedTest?.ld || '',
+            ln: item.ln || linkedTest?.ln || '',
+            lninst: item.lninst || linkedTest?.lninst || ''
+        };
+
         const linkedHtml = `
             <div class="linked-test-item" id="${item.id}">
-                <span>🔗 ${escapeHtml(item.testId || '')}</span>
-                <button class="btn-icon-small" style="width: 24px; height: 24px; background: var(--danger);"
-                    onclick="removeLinkedTest('${item.id}', '${type}')">✕</button>
+                <div class="linked-test-item-content">
+                    <div class="linked-test-main">🔗 ${escapeHtml(display.testId)} — ${escapeHtml(display.name || 'Sans nom')}</div>
+                    <div class="linked-test-meta">IED: ${escapeHtml(display.ied || '—')} | LD: ${escapeHtml(display.ld || '—')} | LN: ${escapeHtml(display.ln || '—')} | LNInst: ${escapeHtml(display.lninst || '—')}</div>
+                </div>
+                <div style="display: flex; gap: 6px;">
+                    <button class="btn-icon-small" style="width: 24px; height: 24px; background: var(--accent);"
+                        title="Voir le test lié"
+                        onclick="openLinkedTestReadonly('${type}', '${escapeJsArg(display.testId)}')">👁</button>
+                    <button class="btn-icon-small" style="width: 24px; height: 24px; background: var(--danger);"
+                        title="Supprimer le lien"
+                        onclick="removeLinkedTest('${item.id}', '${type}')">✕</button>
+                </div>
             </div>
         `;
         container.insertAdjacentHTML('beforeend', linkedHtml);
@@ -1112,76 +1947,71 @@ function removeFile(fileId) {
  * Lie un test RU
  */
 function linkTestRU() {
-    const testId = prompt('ID du test RU à lier :');
-    if (testId) {
-        addLinkedTest('ru', testId);
-    }
+    openLinkedTestPicker('ru');
 }
 
 /**
  * Lie un test MVS
  */
 function linkTestMVS() {
-    const testId = prompt('ID du test MVS à lier :');
-    if (testId) {
-        addLinkedTest('mvs', testId);
-    }
+    openLinkedTestPicker('mvs');
 }
 
 /**
  * Lie un test CVS
  */
 function linkTestCVS() {
-    const testId = prompt('ID du test CVS à lier :');
-    if (testId) {
-        addLinkedTest('cvs', testId);
-    }
+    openLinkedTestPicker('cvs');
 }
 
 /**
  * Ajoute un test lié
  */
-function addLinkedTest(type, testId) {
-    const containerId = type === 'ru'
-        ? 'tests-ru-list'
-        : type === 'mvs'
-            ? 'tests-mvs-list'
-            : 'tests-cvs-list';
-    const container = document.getElementById(containerId);
+function addLinkedTest(type, testOrId) {
+    const linkedArray = getLinkedTestsByType(type);
+    const testId = typeof testOrId === 'string'
+        ? testOrId
+        : (testOrId?.id || testOrId?.testId || '');
 
-    const linkedId = `linked_${type}_${Date.now()}`;
-
-    const linkedHtml = `
-        <div class="linked-test-item" id="${linkedId}">
-            <span>🔗 ${testId}</span>
-            <button class="btn-icon-small" style="width: 24px; height: 24px; background: var(--danger);"
-                onclick="removeLinkedTest('${linkedId}', '${type}')">✕</button>
-        </div>
-    `;
-
-    container.insertAdjacentHTML('beforeend', linkedHtml);
-
-    if (type === 'ru') {
-        currentTest.linked_tests_ru.push({ id: linkedId, testId });
-    } else if (type === 'mvs') {
-        currentTest.linked_tests_mvs.push({ id: linkedId, testId });
-    } else {
-        currentTest.linked_tests_cvs.push({ id: linkedId, testId });
+    const normalizedId = normalizeValueForMatch(testId);
+    if (!normalizedId) {
+        return false;
     }
+
+    const exists = linkedArray.some(item => normalizeValueForMatch(item.testId) === normalizedId);
+    if (exists) {
+        alert('⚠️ Ce test est déjà lié.');
+        return false;
+    }
+
+    const linkedId = `linked_${type}_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+    linkedArray.push({
+        id: linkedId,
+        testId: testId,
+        name: typeof testOrId === 'string' ? '' : (testOrId?.name || ''),
+        ied: typeof testOrId === 'string' ? '' : (testOrId?.ied || ''),
+        ld: typeof testOrId === 'string' ? '' : (testOrId?.ld || ''),
+        ln: typeof testOrId === 'string' ? '' : (testOrId?.ln || ''),
+        lninst: typeof testOrId === 'string' ? '' : (testOrId?.lninst || '')
+    });
+
+    renderLinkedTests(type, linkedArray);
+    return true;
 }
 
 /**
  * Supprime un test lié
  */
 function removeLinkedTest(linkedId, type) {
-    document.getElementById(linkedId).remove();
-
     if (type === 'ru') {
         currentTest.linked_tests_ru = currentTest.linked_tests_ru.filter(t => t.id !== linkedId);
+        renderLinkedTests('ru', currentTest.linked_tests_ru);
     } else if (type === 'mvs') {
         currentTest.linked_tests_mvs = currentTest.linked_tests_mvs.filter(t => t.id !== linkedId);
+        renderLinkedTests('mvs', currentTest.linked_tests_mvs);
     } else {
         currentTest.linked_tests_cvs = currentTest.linked_tests_cvs.filter(t => t.id !== linkedId);
+        renderLinkedTests('cvs', currentTest.linked_tests_cvs);
     }
 }
 
@@ -1589,19 +2419,21 @@ async function saveEssaiToServer(essaiData) {
 async function saveTest() {
     const selectedValue = (document.getElementById('test-type')?.value || selectedType).toLowerCase();
     selectedType = selectedValue;
+    const previousPersistedType = persistedEditorType;
+    const previousPersistedId = persistedEditorId;
 
     if (!currentTest.id) {
-        const prefix = TYPE_PREFIX[selectedType] || 'RU';
-        const uniqueId = makeUniqueId(`${prefix}-${generateRandomId()}`, selectedType);
-        currentTest.id = uniqueId;
-        const idInput = document.getElementById('test-id');
-        if (idInput) {
-            idInput.value = uniqueId;
-        }
+        setEditorIdValue(generateTypeCoherentId(selectedType));
+    } else if (!idHasExpectedPrefix(currentTest.id, selectedType)) {
+        // En édition, si la catégorie change, l'ID doit suivre la catégorie.
+        setEditorIdValue(generateTypeCoherentId(selectedType));
     }
 
     collectFormData();
     currentTest.type = selectedType;
+    currentTest.linked_tests_ru = normalizeLinkedTests('ru', currentTest.linked_tests_ru);
+    currentTest.linked_tests_mvs = normalizeLinkedTests('mvs', currentTest.linked_tests_mvs);
+    currentTest.linked_tests_cvs = normalizeLinkedTests('cvs', currentTest.linked_tests_cvs);
 
     // Validation
     if (!currentTest.id || !currentTest.name) {
@@ -1610,7 +2442,10 @@ async function saveTest() {
     }
 
     // Sauvegarder dans localStorage
-    const tests = getSavedTests(selectedType);
+    const previousNormId = normalizeValueForMatch(previousPersistedId);
+    const tests = getSavedTests(selectedType).filter(test =>
+        normalizeValueForMatch(test?.id) !== previousNormId
+    );
     const existingIndex = tests.findIndex(t => t.id === currentTest.id);
 
     if (existingIndex >= 0) {
@@ -1621,12 +2456,38 @@ async function saveTest() {
 
     setSavedTests(selectedType, tests);
 
-    if (originalType && originalType !== selectedType) {
-        const previousTests = getSavedTests(originalType);
-        const updatedPrevious = previousTests.filter(t => t.id !== currentTest.id);
-        setSavedTests(originalType, updatedPrevious);
+    const idChanged = (
+        previousNormId &&
+        previousNormId !== normalizeValueForMatch(currentTest.id)
+    );
+
+    if (idChanged) {
+        await migrateLinkedReferencesAcrossStorage(
+            previousPersistedId,
+            currentTest.id,
+            buildCurrentTestLinkedReference()
+        );
+    }
+
+    // Synchroniser automatiquement les liens bidirectionnels.
+    // Exemple: si RU est lié à CVS, on injecte aussi RU dans linked_tests_ru du CVS.
+    await syncBidirectionalLinksForCurrentTest();
+
+    if (previousPersistedType && previousPersistedType !== selectedType) {
+        const previousTests = getSavedTests(previousPersistedType);
+        const updatedPrevious = previousTests.filter(test =>
+            normalizeValueForMatch(test?.id) !== previousNormId
+        );
+        setSavedTests(previousPersistedType, updatedPrevious);
+        if (typeof syncTypeToServer === 'function') {
+            await syncTypeToServer(previousPersistedType);
+        }
         originalType = selectedType;
     }
+
+    // Mémoriser l'identité désormais persistée.
+    persistedEditorType = selectedType;
+    persistedEditorId = currentTest.id;
 
     // Sauvegarder côté serveur AVANT la redirection
     const serverOk = await saveEssaiToServer({ ...currentTest });
@@ -1667,6 +2528,8 @@ async function openEditor(testId = null, type = "ru") {
     selectedType = (type || "ru").toLowerCase();
     originalType = selectedType;
     isEditing = !!testId;
+    persistedEditorType = selectedType;
+    persistedEditorId = testId || '';
 
     // Basculer les sous-vues
     const listView = document.getElementById("essais-list-view");
