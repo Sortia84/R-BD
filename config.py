@@ -13,10 +13,10 @@ WEB_DIR = BASE_DIR / "web"
 ICD_DIR = UPLOADS_DIR / "ICD"
 
 # Ports
-# PHASE 0 FIX: Port 8554 était en collision avec R#STOCK
-# Nouveau mapping: 8597 (WEB) + 8664 (API)
-WEB_PORT = 8597
-API_PORT = 8664
+# Normalisation ports (phase 1)
+# Application servie en mono-port sur WEB_PORT, API_PORT reservé.
+WEB_PORT = 8551
+API_PORT = 8651
 
 # Cache
 CACHE_EXPIRY_DAYS = 30

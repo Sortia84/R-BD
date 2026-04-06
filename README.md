@@ -17,10 +17,12 @@ L'application suit le modèle **SPA + FastAPI** identique à R#SCD :
 - **Données** : Persistance JSON dans `data/`, fichiers uploadés dans `uploads/`.
 
 ```
-Port : 8597 (WEB_PORT)
-URL  : http://localhost:8597
-Docs : http://localhost:8597/docs (Swagger auto FastAPI)
+Port : 8551 (WEB_PORT)
+URL  : http://localhost:8551
+Docs : http://localhost:8551/docs (Swagger auto FastAPI)
 ```
+
+> Note phase 1 : l'application fonctionne en mono-port sur `8551` (`API_PORT=8651` est reserve pour la separation future).
 
 ## Démarrage
 
@@ -29,7 +31,7 @@ cd apps/r_bd
 python main.py
 ```
 
-Ouvrir ensuite : http://localhost:8597
+Ouvrir ensuite : http://localhost:8551
 
 ## Modules fonctionnels
 
