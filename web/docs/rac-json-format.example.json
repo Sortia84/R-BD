@@ -1,0 +1,117 @@
+{
+  "_comment": "Exemple de structure JSON produite par le parser RAC (R#BD)",
+  "parser_version": "rac_excel_parser_v1",
+  "source": {
+    "filename": "RAC_RSpace_AIP_LIAISON_A1 V15.xlsx",
+    "parsed_at": "2026-04-07T10:12:00",
+    "sheet_name": "RAC Ligne AE HT"
+  },
+  "summary": {
+    "rows_detected": 337,
+    "rows_parsed": 330,
+    "rows_skipped": 7,
+    "max_column_index": 37,
+    "max_column_letter": "AK",
+    "equipment_group_count": 2
+  },
+  "headers": {
+    "line_1": {
+      "A": "CHOIX OBLIGATOIRES",
+      "H": "Borniers procede AIP",
+      "AE": "Equipement",
+      "AF": "SCU INEO",
+      "AI": "PIU EFACEC"
+    },
+    "line_2": {
+      "H": "Nom bornier",
+      "I": "No borne",
+      "J": "Libelle info",
+      "K": "Type",
+      "L": "Polarite",
+      "S": "Origine polarite",
+      "U": "Source",
+      "V": "Libelle",
+      "W": "Type",
+      "X": "Polarite",
+      "Y": "Embase femelle",
+      "Z": "Index embase",
+      "AA": "Borne embase",
+      "AB": "Tag modification"
+    }
+  },
+  "equipment_groups": [
+    {
+      "start_col_index": 32,
+      "start_col_letter": "AF",
+      "header_line_1": "SCU INEO",
+      "line_2": {
+        "AF": "No carte rack",
+        "AG": "Type carte",
+        "AH": "No borne"
+      },
+      "equipment_type": "SCU",
+      "vendor": "INEO"
+    }
+  ],
+  "records": [
+    {
+      "excel_row": 3,
+      "options": [
+        {
+          "column": "B",
+          "label": "Option tranche",
+          "value": "A1"
+        }
+      ],
+      "terminal_board": {
+        "name": "XTB-01",
+        "terminal": "12",
+        "signal_label": "ORDRE OUVERTURE",
+        "signal_type": "TC",
+        "polarity_name": "+",
+        "signal_label_source": "J",
+        "signal_type_source": "K",
+        "polarity_source": "L"
+      },
+      "intermediate_path": {
+        "polarity_origin": "Armoire",
+        "source": "AIP",
+        "female_socket": "DE-SCU1 / DE-SCU2",
+        "socket_index": "1",
+        "socket_terminal": "A12",
+        "embases": [
+          {
+            "name": "DE-SCU1",
+            "position": "1",
+            "index": "1"
+          },
+          {
+            "name": "DE-SCU2",
+            "position": "2",
+            "index": "1"
+          }
+        ]
+      },
+      "target_equipment_types": [
+        "BCU",
+        "SCU1"
+      ],
+      "equipment_connections": [
+        {
+          "equipment_header": "SCU INEO",
+          "equipment_type": "SCU",
+          "vendor": "INEO",
+          "card_number": "1",
+          "card_type": "DO",
+          "card_terminal": "15"
+        }
+      ],
+      "revision_tag": "REV_03",
+      "raw": {
+        "H": "XTB-01",
+        "I": "12",
+        "J": "ORDRE OUVERTURE"
+      }
+    }
+  ]
+}

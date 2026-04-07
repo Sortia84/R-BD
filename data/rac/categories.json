@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "updated_at": "2026-04-07T09:59:28.920312",
+  "categories": [
+    {
+      "id": "rac_ligne_d",
+      "name": "RAC Ligne \"d\"",
+      "description": "Cablage theorique RAC pour lignes d'alimentation et depart."
+    },
+    {
+      "id": "rac_cbo_d",
+      "name": "RAC CBO \"d\"",
+      "description": "Cablage theorique RAC pour armoires CBO."
+    },
+    {
+      "id": "rac_tg_d",
+      "name": "RAC TG \"d\"",
+      "description": "Cablage theorique RAC pour armoires TG."
+    }
+  ]
+}

@@ -84,7 +84,18 @@ const api = {
                 method: "POST",
                 body: formData
             });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            if (!response.ok) {
+                // On tente de récupérer le détail métier renvoyé par FastAPI
+                // (ex: detail explicite sur validation RAC).
+                let detail = `HTTP ${response.status}`;
+                try {
+                    const payload = await response.json();
+                    detail = payload?.detail || payload?.message || detail;
+                } catch (_) {
+                    // Si le backend ne renvoie pas de JSON, on garde le fallback.
+                }
+                throw new Error(detail);
+            }
             return await response.json();
         } catch (error) {
             console.error(`[API][UPLOAD] ${endpoint}:`, error);
@@ -272,14 +283,42 @@ const apiFcs = {
 // ============================================================================
 
 const apiRac = {
+    /** Lister les catégories RAC */
+    categories: () => api.get("/rac/categories"),
+
     /** Lister les fichiers RAC importés */
     list: () => api.get("/rac/list"),
 
+    /** Lister les RAC groupés (catégorie + clé + versions) */
+    grouped: (categoryId = null) => {
+        const suffix = categoryId ? `?category_id=${encodeURIComponent(categoryId)}` : "";
+        return api.get(`/rac/grouped${suffix}`);
+    },
+
+    /** Récupérer les versions d'un groupe RAC */
+    versions: (categoryId, racKey) =>
+        api.get(`/rac/versions/${encodeURIComponent(categoryId)}/${encodeURIComponent(racKey)}`),
+
     /** Importer un fichier RAC */
-    upload: (file) => api.upload("/rac/import", file),
+    upload: (file, categoryId) => api.upload("/rac/import", file, { category_id: categoryId }),
 
     /** Récupérer les détails d'un fichier RAC */
     getDetails: (racId) => api.get(`/rac/${encodeURIComponent(racId)}`),
+
+    /** Récupérer le JSON RAC normalisé */
+    getParsed: (racId) => api.get(`/rac/${encodeURIComponent(racId)}/parsed`),
+
+    /** Récupérer les liens câblage RAC (usage BayView/R#SCD) */
+    getLinks: (params = {}) => {
+        const search = new URLSearchParams();
+        Object.entries(params || {}).forEach(([k, v]) => {
+            if (v !== null && v !== undefined && `${v}` !== "") {
+                search.append(k, `${v}`);
+            }
+        });
+        const suffix = search.toString() ? `?${search.toString()}` : "";
+        return api.get(`/rac/links${suffix}`);
+    },
 
     /** Supprimer un fichier RAC */
     remove: (racId) => api.delete(`/rac/${encodeURIComponent(racId)}`),

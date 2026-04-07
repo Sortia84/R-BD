@@ -495,6 +495,40 @@
     font-weight: 600;
 }
 
+/* ── RAC: résumé de parsing ── */
+
+.rbd-rac-parser-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.rbd-rac-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(0, 167, 222, 0.08);
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.rbd-rac-group-card {
+    min-height: 220px;
+}
+
+.rbd-rac-version-select-wrap {
+    min-width: 320px;
+}
+
+@media (max-width: 768px) {
+    .rbd-rac-version-select-wrap {
+        min-width: 100%;
+    }
+}
+
 /* ── RESPONSIVE ── */
 
 @media (max-width: 768px) {
