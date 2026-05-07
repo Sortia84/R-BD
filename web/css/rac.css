@@ -1,0 +1,1103 @@
+/* ============================================================================
+   rac.css — Vue d'inspection RAC
+
+   Rôle :
+   - compléter le catalogue RAC avec une vraie vue d'inspection JSON ;
+   - reprendre la logique visuelle des borniers vue dans R#SCD ;
+   - conserver les tokens et le style général de R#BD.
+   ============================================================================ */
+
+.rbd-card-highlight {
+    border-color: rgba(var(--primary-rgb), 0.45);
+    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.12), var(--shadow);
+}
+
+.rbd-rac-standalone-shell {
+    padding: 24px;
+}
+
+.rbd-rac-standalone-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.rbd-rac-standalone-header h2 {
+    margin: 0 0 8px 0;
+}
+
+.rbd-rac-inspector {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.rbd-rac-panel {
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.03), rgba(var(--primary-rgb), 0.01) 18%, #fff 18%);
+    padding: 18px;
+}
+
+.rbd-rac-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.rbd-rac-panel-header h4 {
+    margin: 0 0 6px 0;
+    font-size: 18px;
+    color: var(--text);
+}
+
+.rbd-rac-panel-header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.rbd-rac-panel-header-tight {
+    margin-bottom: 10px;
+}
+
+.rbd-rac-panel-counter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary-dark);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.rbd-rac-context-panel {
+    background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.1), rgba(var(--primary-rgb), 0.02));
+}
+
+.rbd-rac-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+}
+
+.rbd-rac-kpi-grid.compact {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.rbd-rac-kpi-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 88px;
+    border: 1px solid rgba(var(--primary-rgb), 0.12);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 14px;
+}
+
+.rbd-rac-kpi-card.is-success {
+    border-color: rgba(22, 163, 74, 0.28);
+    background: rgba(22, 163, 74, 0.08);
+}
+
+.rbd-rac-kpi-card.is-warning {
+    border-color: rgba(245, 158, 11, 0.28);
+    background: rgba(245, 158, 11, 0.08);
+}
+
+.rbd-rac-kpi-label {
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.rbd-rac-kpi-value {
+    font-size: 16px;
+    line-height: 1.35;
+    color: var(--text);
+}
+
+.rbd-rac-empty-state {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    min-height: 180px;
+    padding: 22px;
+    border: 1px dashed var(--border);
+    border-radius: 16px;
+    background: rgba(var(--primary-rgb), 0.03);
+}
+
+.rbd-rac-empty-state.compact {
+    min-height: auto;
+}
+
+.rbd-rac-empty-state.is-loading,
+.rbd-rac-empty-state.is-error {
+    background: rgba(var(--primary-rgb), 0.05);
+}
+
+.rbd-rac-empty-state h4 {
+    margin: 0 0 8px 0;
+    color: var(--text);
+}
+
+.rbd-rac-empty-state p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.rbd-rac-empty-icon {
+    font-size: 34px;
+    line-height: 1;
+}
+
+.rbd-rac-filter-bar {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.rbd-rac-filter-grow {
+    flex: 1 1 320px;
+}
+
+.rbd-rac-view-toggle-row {
+    margin-top: 2px;
+}
+
+.rbd-rac-viewer-panel .rscd-dido-header {
+    margin-bottom: 14px;
+}
+
+.rbd-rac-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #fff;
+}
+
+.rbd-rac-table {
+    min-width: 980px;
+}
+
+.rbd-rac-table tbody tr {
+    cursor: pointer;
+    transition: background-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.rbd-rac-table tbody tr:hover {
+    background: rgba(var(--primary-rgb), 0.06);
+}
+
+.rbd-rac-table tbody tr.is-selected {
+    background: rgba(22, 163, 74, 0.1);
+    box-shadow: inset 4px 0 0 var(--success);
+}
+
+.rbd-rac-detail-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.btn-small {
+    min-height: 34px;
+    padding: 8px 12px;
+    font-size: 12px;
+}
+
+.rbd-rac-detail-hero {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 18px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.08), rgba(255, 255, 255, 0.98));
+    border: 1px solid rgba(var(--primary-rgb), 0.12);
+}
+
+.rbd-rac-detail-caption {
+    margin-bottom: 6px;
+    color: var(--primary-dark);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.rbd-rac-detail-hero h4 {
+    margin: 0 0 6px 0;
+    font-size: 22px;
+    line-height: 1.25;
+}
+
+.rbd-rac-detail-hero p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.rbd-rac-inline-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.rbd-rac-status-reason {
+    padding: 12px 14px;
+    border-left: 4px solid rgba(var(--primary-rgb), 0.4);
+    background: rgba(var(--primary-rgb), 0.05);
+    border-radius: 0 12px 12px 0;
+    color: var(--text);
+    font-size: 14px;
+}
+
+.rbd-rac-detail-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: #fff;
+}
+
+.rbd-rac-detail-section h5 {
+    margin: 0;
+    font-size: 16px;
+    color: var(--text);
+}
+
+.rbd-rac-path-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.rbd-rac-path-step-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid rgba(var(--primary-rgb), 0.14);
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.05), rgba(255, 255, 255, 1));
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.rbd-rac-path-step-editor:hover {
+    border-color: rgba(var(--primary-rgb), 0.28);
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+    transform: translateY(-1px);
+}
+
+.rbd-rac-path-step-editor.is-expanded {
+    border-color: rgba(var(--primary-rgb), 0.34);
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+}
+
+.rbd-rac-path-step-compact {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.rbd-rac-path-step-compact-main {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: min(100%, 280px);
+    flex: 1 1 280px;
+}
+
+.rbd-rac-path-step-compact-title {
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.3;
+}
+
+.rbd-rac-path-step-compact-summary {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.rbd-rac-step-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: rgba(var(--primary-rgb), 0.08);
+    color: var(--primary-dark);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.rbd-rac-path-step-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(var(--primary-rgb), 0.12);
+}
+
+.rbd-rac-path-step-header,
+.rbd-rac-branch-header,
+.rbd-rac-step-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.rbd-rac-path-step-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: min(100%, 320px);
+    flex: 1 1 280px;
+}
+
+.rbd-rac-inline-input {
+    min-width: 180px;
+}
+
+.rbd-rac-branch-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.rbd-rac-branch-grid.has-parallel {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.rbd-rac-branch-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+    border: 1px dashed rgba(var(--primary-rgb), 0.24);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.92);
+    position: relative;
+}
+
+.rbd-rac-branch-grid.has-parallel .rbd-rac-branch-editor::before {
+    content: "//";
+    position: absolute;
+    top: -12px;
+    left: 16px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--primary-dark);
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px solid rgba(var(--primary-rgb), 0.18);
+}
+
+.rbd-rac-field-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.rbd-rac-field-row {
+    display: grid;
+    grid-template-columns: minmax(140px, 0.8fr) minmax(180px, 1.2fr) auto;
+    gap: 8px;
+    align-items: center;
+}
+
+.rbd-rac-modal-content {
+    max-width: 900px;
+    width: min(92vw, 900px);
+}
+
+.rbd-rac-modal-content.is-large {
+    max-width: 1120px;
+    width: min(94vw, 1120px);
+}
+
+.rbd-rac-flow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.rbd-rac-flow-step {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 150px;
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(var(--primary-rgb), 0.14);
+    background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.06), rgba(255, 255, 255, 1));
+}
+
+.rbd-rac-flow-step::after {
+    content: "→";
+    position: absolute;
+    right: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(var(--primary-rgb), 0.55);
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.rbd-rac-flow-step:last-child::after {
+    display: none;
+}
+
+.rbd-rac-flow-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--primary-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.rbd-rac-flow-title {
+    font-size: 16px;
+    color: var(--text);
+}
+
+.rbd-rac-flow-list {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.rbd-rac-flow-list li + li {
+    margin-top: 6px;
+}
+
+.rbd-rac-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.rbd-rac-detail-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg);
+}
+
+.rbd-rac-detail-field span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.rbd-rac-detail-field strong {
+    color: var(--text);
+    font-size: 14px;
+}
+
+.rbd-rac-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.rbd-rac-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: rgba(var(--primary-rgb), 0.08);
+    color: var(--primary-dark);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.rbd-rac-tag.is-success {
+    background: rgba(22, 163, 74, 0.12);
+    color: #166534;
+}
+
+.rbd-rac-entry-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.rbd-rac-entry-status.large {
+    min-height: 38px;
+    padding: 0 14px;
+    font-size: 12px;
+}
+
+.rbd-rac-entry-status.is-success {
+    color: #166534;
+    background: rgba(22, 163, 74, 0.14);
+}
+
+.rbd-rac-entry-status.is-warning {
+    color: #92400e;
+    background: rgba(245, 158, 11, 0.16);
+}
+
+.rbd-rac-entry-status.is-neutral {
+    color: #475569;
+    background: rgba(100, 116, 139, 0.16);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Vue type accordions / tranches reprise depuis R#SCD                         */
+/* -------------------------------------------------------------------------- */
+
+.rscd-dm-tranche-group {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.rscd-dm-tranche-group + .rscd-dm-tranche-group {
+    margin-top: 14px;
+}
+
+.rscd-dm-tranche-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: none;
+    background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.08), rgba(255, 255, 255, 0.95));
+    text-align: left;
+    cursor: pointer;
+}
+
+.rscd-dm-tranche-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.rscd-dm-tranche-chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: var(--primary-dark);
+    font-size: 12px;
+    font-weight: 700;
+    transition: transform 0.18s ease;
+}
+
+.rscd-dm-tranche-group.is-open .rscd-dm-tranche-chevron {
+    transform: rotate(90deg);
+}
+
+.rscd-dm-tranche-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.rscd-dm-tranche-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.rscd-dm-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(var(--primary-rgb), 0.08);
+    color: var(--primary-dark);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.rscd-dm-tranche-body {
+    display: none;
+    padding: 14px;
+    background: #fff;
+}
+
+.rscd-dm-tranche-group.is-open .rscd-dm-tranche-body {
+    display: block;
+}
+
+.rbd-rac-block {
+    border: 1px solid rgba(var(--primary-rgb), 0.12);
+    border-radius: 14px;
+    background: #fbfdff;
+    overflow: hidden;
+}
+
+.rbd-rac-block + .rbd-rac-block {
+    margin-top: 12px;
+}
+
+.rbd-rac-block-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    border: none;
+    background: rgba(var(--primary-rgb), 0.04);
+    padding: 14px 16px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.rbd-rac-block-header strong {
+    display: block;
+    color: var(--text);
+    font-size: 15px;
+}
+
+.rbd-rac-block-header p {
+    margin: 4px 0 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.rbd-rac-block-counter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 88px;
+    min-height: 30px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid rgba(var(--primary-rgb), 0.16);
+    color: var(--primary-dark);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.rbd-rac-block-body {
+    display: none;
+    padding: 14px;
+}
+
+.rbd-rac-block.is-open .rbd-rac-block-body {
+    display: block;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Cartes borniers inspirees de R#SCD                                         */
+/* -------------------------------------------------------------------------- */
+
+.rscd-dido-board-card {
+    border: 1px solid rgba(var(--primary-rgb), 0.12);
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+    overflow: hidden;
+}
+
+.rscd-dido-board-card + .rscd-dido-board-card {
+    margin-top: 14px;
+}
+
+.rscd-dido-board-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(var(--primary-rgb), 0.1);
+    background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.09), rgba(255, 255, 255, 1));
+}
+
+.rscd-dido-board-title {
+    margin: 0;
+    font-size: 15px;
+    color: var(--text);
+}
+
+.rscd-dido-board-subtitle {
+    margin: 5px 0 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.rscd-dido-board-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.rscd-dido-board-entry {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    border: none;
+    border-bottom: 1px solid rgba(var(--primary-rgb), 0.08);
+    background: #fff;
+    padding: 12px 16px;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.rscd-dido-board-entry:last-child {
+    border-bottom: none;
+}
+
+.rscd-dido-board-entry:hover {
+    background: rgba(var(--primary-rgb), 0.06);
+}
+
+.rscd-dido-board-entry.is-selected {
+    background: rgba(22, 163, 74, 0.1);
+    box-shadow: inset 4px 0 0 var(--success);
+}
+
+.rscd-dido-entry-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.rscd-dido-entry-icon.has-borner.di {
+    background: linear-gradient(135deg, #0ea5e9, #0284c7);
+}
+
+.rscd-dido-entry-icon.has-borner.do {
+    background: linear-gradient(135deg, #14b8a6, #0f766e);
+}
+
+.rscd-dido-entry-icon.has-borner.generic {
+    background: linear-gradient(135deg, #64748b, #334155);
+}
+
+.rscd-dido-entry-main {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.rscd-dido-entry-title {
+    display: block;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rscd-dido-entry-subtitle {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 1280px) {
+    .rbd-rac-standalone-shell {
+        padding: 18px;
+    }
+}
+
+@media (max-width: 900px) {
+    .rbd-rac-flow-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rbd-rac-flow-step::after {
+        content: "↓";
+        right: 50%;
+        top: auto;
+        bottom: -16px;
+        transform: translateX(50%);
+    }
+
+    .rbd-rac-field-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 720px) {
+    .rbd-rac-panel,
+    .rbd-rac-detail-section {
+        padding: 14px;
+    }
+
+    .rbd-rac-panel-header,
+    .rbd-rac-detail-hero,
+    .rbd-rac-filter-bar,
+    .rbd-rac-standalone-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .rscd-dido-board-entry {
+        grid-template-columns: 48px minmax(0, 1fr);
+    }
+
+    .rscd-dido-board-entry .rbd-rac-entry-status {
+        grid-column: 1 / -1;
+        justify-self: flex-start;
+    }
+}
+
+/* ============================================================================
+   Editeur canvas du chemin de liaison RAC
+   ----------------------------------------------------------------------------
+   Zone libre dans laquelle chaque etape est un noeud deplacable. Les liens
+   entre noeuds sont rendus en SVG par dessous les cartes, avec un point de
+   connexion gauche (entree) et droite (sortie) sur chaque noeud.
+============================================================================ */
+
+.rbd-rac-canvas-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 8px 4px;
+    flex-wrap: wrap;
+}
+
+.rbd-rac-canvas-hint {
+    color: var(--rbd-text-muted, #6b7280);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.rbd-rac-canvas {
+    position: relative;
+    width: 100%;
+    min-height: 520px;
+    background-color: var(--rbd-surface-soft, #f7f9fc);
+    background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    border: 1px solid var(--rbd-border, #d8dee9);
+    border-radius: 12px;
+    overflow: auto;
+    user-select: none;
+}
+
+.rbd-rac-canvas-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    overflow: visible;
+}
+
+/* Les paths SVG eux-memes captent le clic pour selectionner le lien. */
+.rbd-rac-canvas-svg .rbd-rac-edge,
+.rbd-rac-canvas-svg .rbd-rac-edge-hit {
+    pointer-events: stroke;
+    cursor: pointer;
+    fill: none;
+}
+
+.rbd-rac-edge {
+    stroke: var(--rbd-accent, #2c5282);
+    stroke-width: 2;
+    transition: stroke 120ms ease, stroke-width 120ms ease;
+}
+
+.rbd-rac-edge.is-selected {
+    stroke: #d9534f;
+    stroke-width: 3;
+}
+
+.rbd-rac-edge-hit {
+    stroke: transparent;
+    stroke-width: 14;
+}
+
+.rbd-rac-edge-temp {
+    stroke: var(--rbd-accent, #2c5282);
+    stroke-width: 2;
+    stroke-dasharray: 6 4;
+    pointer-events: none;
+}
+
+.rbd-rac-canvas-nodes {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    pointer-events: none;
+}
+
+/* Chaque noeud est positionne en absolu. pointer-events redevient auto pour
+   permettre le drag & drop et l'interaction avec les inputs internes. */
+.rbd-rac-canvas-node {
+    position: absolute;
+    pointer-events: auto;
+    background-color: var(--rbd-surface, #ffffff);
+    border: 1px solid var(--rbd-border, #d8dee9);
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    padding: 10px 12px 12px 12px;
+    cursor: grab;
+    z-index: 2;
+    transition: box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.rbd-rac-canvas-node:hover {
+    border-color: var(--rbd-accent, #2c5282);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.rbd-rac-canvas-node.is-dragging {
+    cursor: grabbing;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+    z-index: 5;
+}
+
+.rbd-rac-canvas-node-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.rbd-rac-canvas-node-header .rbd-rac-inline-input {
+    flex: 1 1 auto;
+    font-weight: 600;
+}
+
+.rbd-rac-canvas-node-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.rbd-rac-canvas-node-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.rbd-rac-canvas-node-addfield {
+    align-self: flex-start;
+    margin-top: 4px;
+}
+
+/* Points de connexion : petits cercles centres verticalement sur les bords. */
+.rbd-rac-handle {
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background-color: var(--rbd-surface, #ffffff);
+    border: 2px solid var(--rbd-accent, #2c5282);
+    cursor: crosshair;
+    z-index: 3;
+    transition: background-color 120ms ease, transform 120ms ease;
+}
+
+.rbd-rac-handle:hover {
+    background-color: var(--rbd-accent, #2c5282);
+    transform: translate(-50%, -50%) scale(1.25);
+}
+
+.rbd-rac-handle-target {
+    left: 0;
+}
+
+.rbd-rac-handle-source {
+    left: 100%;
+}
+
+/* Popover affichee a la selection d'un lien : rappelle tenant/aboutissant
+   et propose la suppression du lien. Position centree sur le milieu du lien. */
+.rbd-rac-canvas-popover {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background-color: var(--rbd-surface, #ffffff);
+    border: 1px solid var(--rbd-border, #d8dee9);
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+    padding: 10px 12px;
+    z-index: 6;
+    min-width: 220px;
+    pointer-events: auto;
+}
+
+.rbd-rac-canvas-popover[hidden] {
+    display: none;
+}
+
+.rbd-rac-canvas-popover-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 6px;
+}
+
+.rbd-rac-canvas-popover-label {
+    font-size: 11px;
+    color: var(--rbd-text-muted, #6b7280);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.rbd-rac-canvas-popover-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 8px;
+}

@@ -8,6 +8,7 @@ Endpoints :
     GET    /api/rac/grouped             → Lister les RAC groupés (catégorie + rac_key)
     GET    /api/rac/versions/{category_id}/{rac_key} → Historique des versions d'un groupe
     GET    /api/rac/links               → Index de liens câblage (usage R#SCD BayView)
+        GET    /api/rac/{rac_id}/inspection → Payload enrichi pour la vue d'inspection RAC
   GET    /api/rac/{rac_id}    → Détails d'un RAC
     GET    /api/rac/{rac_id}/parsed     → JSON RAC normalisé
   POST   /api/rac/import      → Importer un fichier RAC
@@ -145,6 +146,23 @@ async def get_rac_parsed(rac_id: str):
     payload = rac_manager.get_parsed_payload(rac_id)
     if not payload:
         raise HTTPException(status_code=404, detail=f"JSON RAC introuvable : {rac_id}")
+    return payload
+
+
+@router.get("/{rac_id}/inspection")
+async def get_rac_inspection(rac_id: str):
+    """
+    Retourner un payload enrichi pour la vue d'inspection RAC.
+
+    Ce payload reprend le JSON normalisé, puis ajoute :
+    - les statuts métier de vérification ;
+    - une hiérarchie adaptée à la vue type borniers ;
+    - une liste de lignes synthétiques pour la sélection rapide.
+    """
+    logger.info("[RAC][API] GET /api/rac/%s/inspection", rac_id)
+    payload = rac_manager.get_inspection_payload(rac_id)
+    if not payload:
+        raise HTTPException(status_code=404, detail=f"Inspection RAC introuvable : {rac_id}")
     return payload
 
 

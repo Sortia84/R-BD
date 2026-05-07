@@ -41,6 +41,7 @@ class RACExcelParser:
     NS_MAIN = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
     NS_REL = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}"
     NS_PKG_REL = "{http://schemas.openxmlformats.org/package/2006/relationships}"
+    PARSER_VERSION = "rac_excel_parser_v2"
 
     # Colonnes principales demandées par le métier
     COL_OPTIONS = [2, 3, 4, 5, 7]  # B..E + G
@@ -105,7 +106,7 @@ class RACExcelParser:
         parsed_rows, skipped_rows = self._parse_data_rows(rows, row2, equipment_groups, max_col)
 
         return {
-            "parser_version": "rac_excel_parser_v1",
+            "parser_version": self.PARSER_VERSION,
             "source": {
                 "filename": safe_name,
                 "parsed_at": datetime.now().isoformat(),
@@ -294,7 +295,11 @@ class RACExcelParser:
 
         selected_options = self._extract_selected_options(row, row2_headers)
         equipment_targets = self._split_equipment_targets(row.get(self.COL_EQUIPMENTS, ""))
-        equipment_connections = self._extract_equipment_connections(row, equipment_groups)
+        equipment_connections = self._extract_equipment_connections(
+            row,
+            equipment_groups,
+            equipment_targets,
+        )
 
         female_socket = row.get(self.COL_INTERMEDIATE["female_socket"], "")
         embases = self._build_embases(female_socket, row.get(self.COL_INTERMEDIATE["socket_index"], ""))
@@ -371,8 +376,18 @@ class RACExcelParser:
         self,
         row: Dict[int, str],
         equipment_groups: List[Dict[str, Any]],
+        equipment_targets: List[str],
     ) -> List[Dict[str, str]]:
-        """Extraire les terminaisons vers équipements finaux (groupes de 3 colonnes)."""
+        """
+        Extraire les terminaisons vers équipements finaux (groupes de 3 colonnes).
+
+        Cas métier important :
+        - si la colonne AE contient plusieurs équipements explicites du même type
+          (`SCU1 et SCU2`, `PIU1 et PIU2`) ;
+        - et qu'un seul bloc AF..AH est renseigné ;
+        alors la terminaison décrite par AF..AH s'applique à chacun des
+        équipements cibles et doit être dupliquée pour l'IHM.
+        """
         connections: List[Dict[str, str]] = []
 
         for group in equipment_groups:
@@ -389,13 +404,14 @@ class RACExcelParser:
                     "equipment_header": group["header_line_1"],
                     "equipment_type": group["equipment_type"],
                     "vendor": group["vendor"],
+                    "equipment_target": "",
                     "card_number": card_number,
                     "card_type": card_type,
                     "card_terminal": card_terminal,
                 }
             )
 
-        return connections
+        return self._expand_connections_for_targets(equipment_targets, connections)
 
     def _build_equipment_groups(
         self,
@@ -436,7 +452,15 @@ class RACExcelParser:
         return groups
 
     def _build_embases(self, female_socket: str, socket_index: str) -> List[Dict[str, str]]:
-        """Construire la liste des embases depuis la colonne Y."""
+        """
+        Construire la liste des embases depuis la colonne Y.
+
+        Exemple métier :
+        - Y = `TOR-SCU1 / TOR-SCU2`
+        - Z = `1`
+        alors les connecteurs intermédiaires attendus sont `TOR1-SCU1` et
+        `TOR1-SCU2`.
+        """
         if female_socket == "":
             return []
 
@@ -446,12 +470,34 @@ class RACExcelParser:
         for idx, value in enumerate(values, start=1):
             embases.append(
                 {
-                    "name": value,
+                    "name": self._apply_socket_index_to_socket_name(value, socket_index),
                     "position": str(idx),
                     "index": socket_index,
                 }
             )
         return embases
+
+    def _apply_socket_index_to_socket_name(self, socket_name: str, socket_index: str) -> str:
+        """
+        Injecter l'index Z dans le nom du connecteur intermédiaire si nécessaire.
+
+        Exemples :
+        - `TOR-SCU1` + `1` -> `TOR1-SCU1`
+        - `DE-SCU1` + `` -> `DE-SCU1`
+        """
+        cleaned_name = self._clean(socket_name)
+        cleaned_index = self._clean(socket_index)
+        if cleaned_name == "" or cleaned_index == "":
+            return cleaned_name
+
+        if re.search(rf"\d+\-{re.escape(cleaned_name.split('-', 1)[-1])}$", cleaned_name):
+            return cleaned_name
+
+        match = re.match(r"^(?P<prefix>[A-Za-z]+)-(?P<suffix>.+)$", cleaned_name)
+        if match:
+            return f"{match.group('prefix')}{cleaned_index}-{match.group('suffix')}"
+
+        return f"{cleaned_name}{cleaned_index}"
 
     def _split_equipment_targets(self, cell_value: str) -> List[str]:
         """
@@ -465,6 +511,71 @@ class RACExcelParser:
 
         parts = re.split(r"\s*(?:/|,|;|\bet\b|\bou\b)\s*", text, flags=re.IGNORECASE)
         return [self._clean(part) for part in parts if self._clean(part)]
+
+    def _expand_connections_for_targets(
+        self,
+        equipment_targets: List[str],
+        connections: List[Dict[str, str]],
+    ) -> List[Dict[str, str]]:
+        """
+        Propager une terminaison unique vers plusieurs équipements explicites.
+
+        Quand AE contient `SCU1 et SCU2` et qu'une seule terminaison AF..AH est
+        décrite, cette terminaison est considérée identique pour les deux et
+        dupliquée dans le JSON normalisé avec un `equipment_target` spécifique.
+        """
+        normalized_targets = [target for target in equipment_targets if self._clean(target)]
+        if not connections:
+            return []
+
+        if len(normalized_targets) <= 1:
+            return [self._attach_matching_target(connection, normalized_targets) for connection in connections]
+
+        if len(connections) == 1:
+            family = self._normalize_equipment_family(connections[0].get("equipment_type", ""))
+            target_families = {
+                self._normalize_equipment_family(target)
+                for target in normalized_targets
+                if self._normalize_equipment_family(target)
+            }
+            if family and target_families == {family}:
+                duplicated: List[Dict[str, str]] = []
+                for target in normalized_targets:
+                    duplicated.append(
+                        {
+                            **connections[0],
+                            "equipment_target": target,
+                        }
+                    )
+                return duplicated
+
+        return [self._attach_matching_target(connection, normalized_targets) for connection in connections]
+
+    def _attach_matching_target(
+        self,
+        connection: Dict[str, str],
+        equipment_targets: List[str],
+    ) -> Dict[str, str]:
+        """Associer un équipement explicite AE à une terminaison quand c'est non ambigu."""
+        updated = dict(connection)
+        if updated.get("equipment_target"):
+            return updated
+
+        connection_family = self._normalize_equipment_family(updated.get("equipment_type", ""))
+        matching_targets = [
+            target
+            for target in equipment_targets
+            if self._normalize_equipment_family(target) == connection_family
+        ]
+        if len(matching_targets) == 1:
+            updated["equipment_target"] = matching_targets[0]
+
+        return updated
+
+    def _normalize_equipment_family(self, value: str) -> str:
+        """Normaliser un identifiant équipement en famille métier (`SCU1` -> `SCU`)."""
+        cleaned = self._clean(value).upper()
+        return re.sub(r"\d+$", "", cleaned)
 
     # ------------------------------------------------------------------
     # Helpers colonnes / valeurs

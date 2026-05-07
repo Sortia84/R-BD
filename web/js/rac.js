@@ -1,32 +1,34 @@
 // web/js/rac.js
 // ============================================================================
-// Module : Gestion des fichiers RAC (Raccordements)
+// Module : Catalogue RAC (Raccordements)
 //
-// Fonctionnalités :
-//   - Import RAC avec catégorie obligatoire (Ligne/CBO/TG)
-//   - Affichage groupé par catégorie + clé RAC (rac_key)
-//   - Gestion des versions par groupe (inspiré de la logique ICD)
-//   - Suppression d'une version RAC
+// Responsabilités :
+//   - import de classeurs RAC ;
+//   - affichage du catalogue groupé par catégorie/version ;
+//   - ouverture d'une version dans l'inspecteur RAC ;
+//   - suppression d'une version.
 //
-// Dépendances :
-//   - api.js      → apiRac.categories/grouped/upload/remove
-//   - app.js      → showToast(), _escHtml()
+// La logique détaillée de la vue d'inspection (vue borniers, détail de la
+// liaison, tableau de suivi) est volontairement déportée dans
+// web/js/rac-inspector.js pour conserver un découpage clair.
 // ============================================================================
 
 "use strict";
 
 let racCategories = [];
 let racGroups = [];
+let racViewMode = "catalog";
 
-// Sélection locale de version active par groupe
-// Format: { [groupId]: racId }
+// Sélection locale de version active par groupe.
+// Cette sélection permet de conserver la version choisie dans chaque carte du
+// catalogue même après un rafraîchissement de la liste.
 const racVersionSelection = {};
 
 // ============================================================================
-// RENDU DU LAYOUT — Génération HTML de la vue RAC
+// RENDU DU LAYOUT — Squelette de la vue RAC
 // ============================================================================
 
-function renderRacLayout() {
+function renderRacCatalogLayout() {
     const container = document.getElementById("view-rac");
     if (!container) return;
 
@@ -35,7 +37,7 @@ function renderRacLayout() {
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
                 <div>
                     <h2>Fichiers RAC (Raccordements)</h2>
-                    <p class="muted">Importez des classeurs RAC et gérez les versions par catégorie</p>
+                    <p class="muted">Importez des classeurs RAC et ouvrez une version pour vérifier automatiquement le JSON produit.</p>
                 </div>
 
                 <div class="rbd-flex rbd-flex-center rbd-flex-gap">
@@ -74,7 +76,7 @@ function renderRacLayout() {
         <section class="card rbd-section-shell">
             <div class="card-header">
                 <h3 style="margin: 0 0 8px 0;">📎 Catalogue RAC par groupe/version</h3>
-                <p class="muted" style="margin: 0;">Chaque carte regroupe les versions d'un même RAC (par catégorie + clé logique)</p>
+                <p class="muted" style="margin: 0;">Chaque carte regroupe les versions d'un même RAC. L'action Ouvrir lance l'inspection JSON détaillée.</p>
             </div>
 
             <div id="rac-list" class="rbd-grid">
@@ -84,6 +86,7 @@ function renderRacLayout() {
                 </div>
             </div>
         </section>
+
     `;
 
     const uploadInput = document.getElementById("rac-upload");
@@ -99,6 +102,46 @@ function renderRacLayout() {
     console.info("[RAC][Init] Layout RAC généré");
 }
 
+function renderRacInspectorLayout() {
+    const container = document.getElementById("view-rac");
+    if (!container) return;
+
+    container.innerHTML = `
+        <section class="card rbd-rac-standalone-shell">
+            <div class="rbd-rac-standalone-header">
+                <div>
+                    <h2>Inspecteur RAC</h2>
+                    <p class="muted">Vue standalone de verification JSON, distincte du catalogue RAC.</p>
+                </div>
+
+                <div class="rbd-flex rbd-flex-gap-sm">
+                    <button class="btn btn-secondary" type="button" onclick="showRacInspectionContextModal()">
+                        Contexte
+                    </button>
+                    <button class="btn btn-secondary" type="button" onclick="showRacCatalogView()">
+                        ← Retour au catalogue
+                    </button>
+                </div>
+            </div>
+
+            <div id="rac-inspector-root"></div>
+        </section>
+    `;
+
+    if (typeof resetRacInspectorView === "function") {
+        resetRacInspectorView();
+    }
+}
+
+function renderRacLayout() {
+    if (racViewMode === "inspector") {
+        renderRacInspectorLayout();
+        return;
+    }
+
+    renderRacCatalogLayout();
+}
+
 // ============================================================================
 // INITIALISATION
 // ============================================================================
@@ -106,13 +149,32 @@ function renderRacLayout() {
 async function initRacPage() {
     console.info("[RAC][Init] Initialisation de la page RAC");
 
+    racViewMode = "catalog";
     renderRacLayout();
     await loadRacCategories();
     await loadRacList();
 }
 
+async function showRacCatalogView() {
+    racViewMode = "catalog";
+    renderRacLayout();
+    await loadRacCategories();
+    await loadRacList();
+}
+
+async function showRacInspectorStandaloneView(racId, groupId = "") {
+    if (!racId) return;
+
+    racViewMode = "inspector";
+    renderRacLayout();
+
+    if (typeof loadRacInspectionView === "function") {
+        await loadRacInspectionView(racId, { groupId });
+    }
+}
+
 // ============================================================================
-// CATEGORIES
+// CATÉGORIES
 // ============================================================================
 
 async function loadRacCategories() {
@@ -151,12 +213,12 @@ function renderCategorySelects() {
 }
 
 function getCategoryName(categoryId) {
-    const found = racCategories.find((c) => c.id === categoryId);
+    const found = racCategories.find((category) => category.id === categoryId);
     return found?.name || categoryId || "—";
 }
 
 // ============================================================================
-// CHARGEMENT ET AFFICHAGE
+// CHARGEMENT ET AFFICHAGE DU CATALOGUE
 // ============================================================================
 
 async function loadRacList() {
@@ -180,6 +242,10 @@ async function loadRacList() {
                     <p style="font-size: 14px;">Importez un classeur RAC pour créer une première version.</p>
                 </div>
             `;
+
+            if (typeof clearRacInspectionView === "function") {
+                clearRacInspectionView();
+            }
             return;
         }
 
@@ -193,24 +259,23 @@ async function loadRacList() {
 }
 
 function renderRacGroupCard(group) {
-    const groupId = _escHtml(group.group_id || "");
+    const groupId = group.group_id || "";
     const categoryName = _escHtml(group.category_name || getCategoryName(group.category_id));
     const racKey = _escHtml(group.rac_key || "");
 
     const versions = Array.isArray(group.versions) ? group.versions : [];
-    const selectedRacId = racVersionSelection[group.group_id] || (versions[0]?.id || "");
-
-    const selectedVersion = versions.find((v) => v.id === selectedRacId) || versions[0] || null;
+    const selectedRacId = racVersionSelection[groupId] || (versions[0]?.id || "");
+    const selectedVersion = versions.find((version) => version.id === selectedRacId) || versions[0] || null;
     if (!selectedVersion) {
         return "";
     }
 
-    const versionOptions = versions.map((v) => {
-        const vid = _escHtml(v.id || "");
-        const label = _escHtml(v.version || "vNA");
-        const filename = _escHtml(v.filename || "");
-        const selected = (v.id === selectedVersion.id) ? "selected" : "";
-        return `<option value="${vid}" ${selected}>${label} • ${filename}</option>`;
+    const versionOptions = versions.map((version) => {
+        const versionId = _escHtml(version.id || "");
+        const label = _escHtml(version.version || "vNA");
+        const filename = _escHtml(version.filename || "");
+        const selected = (version.id === selectedVersion.id) ? "selected" : "";
+        return `<option value="${versionId}" ${selected}>${label} • ${filename}</option>`;
     }).join("");
 
     const metadata = selectedVersion.metadata || {};
@@ -219,12 +284,15 @@ function renderRacGroupCard(group) {
     const rowsParsed = Number(metadata.rows_parsed || 0);
     const rowsSkipped = Number(metadata.rows_skipped || 0);
     const groupCount = Number(metadata.equipment_group_count || 0);
-
     const versionLabel = _escHtml(selectedVersion.version || "vNA");
     const versionCount = Number(group.version_count || versions.length);
 
+    const inspectionActive =
+        typeof getActiveRacInspectionId === "function" &&
+        getActiveRacInspectionId() === selectedVersion.id;
+
     return `
-        <div class="card rbd-card-clickable rbd-rac-group-card" data-group-id="${groupId}">
+        <div class="card rbd-card-clickable rbd-rac-group-card ${inspectionActive ? "rbd-card-highlight" : ""}" data-group-id="${_escHtml(groupId)}">
             <div class="card-header">
                 <div class="rbd-flex rbd-flex-between rbd-flex-center" style="gap: 12px; flex-wrap: wrap;">
                     <div>
@@ -237,9 +305,9 @@ function renderRacGroupCard(group) {
                     </div>
 
                     <div class="rbd-rac-version-select-wrap">
-                        <label class="rbd-form-label" for="rac-version-${groupId}">Version</label>
-                        <select id="rac-version-${groupId}" class="rbd-form-input"
-                                onchange="switchRacVersion('${groupId}', this.value)">
+                        <label class="rbd-form-label" for="rac-version-${_escHtml(groupId)}">Version</label>
+                        <select id="rac-version-${_escHtml(groupId)}" class="rbd-form-input"
+                                onchange="switchRacVersion('${_escHtml(groupId)}', this.value)">
                             ${versionOptions}
                         </select>
                     </div>
@@ -259,8 +327,8 @@ function renderRacGroupCard(group) {
             <div class="rbd-flex rbd-flex-between rbd-flex-center" style="gap: 12px; flex-wrap: wrap;">
                 <div class="muted" style="font-size: 13px;">Fichier: ${_escHtml(selectedVersion.filename || "")}</div>
                 <div class="rbd-flex rbd-flex-gap-sm">
-                    <button class="btn btn-secondary" onclick="viewRacParsed('${_escHtml(selectedVersion.id || "")}')">
-                        Voir JSON
+                    <button class="btn btn-secondary" onclick="viewRacParsed('${_escHtml(selectedVersion.id || "")}', '${_escHtml(groupId)}')">
+                        Ouvrir l'inspection
                     </button>
                     <button class="btn btn-danger" onclick="deleteRac('${_escHtml(selectedVersion.id || "")}')">
                         Supprimer version
@@ -273,12 +341,20 @@ function renderRacGroupCard(group) {
 
 function switchRacVersion(groupId, racId) {
     if (!groupId) return;
+
     racVersionSelection[groupId] = racId;
 
     const container = document.getElementById("rac-list");
     if (!container) return;
 
     container.innerHTML = racGroups.map((group) => renderRacGroupCard(group)).join("");
+
+    // Si l'utilisateur change la version d'un groupe déjà ouvert dans
+    // l'inspecteur, on recharge immédiatement cette nouvelle version pour
+    // garder l'IHM synchronisée.
+    if (typeof getActiveRacInspectionGroupId === "function" && getActiveRacInspectionGroupId() === groupId) {
+        void viewRacParsed(racId, groupId);
+    }
 }
 
 // ============================================================================
@@ -334,8 +410,15 @@ async function handleRacFileSelected(event) {
 // ACTIONS
 // ============================================================================
 
-async function viewRacParsed(racId) {
+async function viewRacParsed(racId, groupId = "") {
     if (!racId) return;
+
+    // Le mode nominal passe par l'inspecteur RAC dédié. Le fallback console est
+    // conservé uniquement si le module détaillé n'était pas chargé.
+    if (typeof loadRacInspectionView === "function") {
+        await showRacInspectorStandaloneView(racId, groupId);
+        return;
+    }
 
     try {
         const payload = await apiRac.getParsed(racId);
@@ -345,8 +428,6 @@ async function viewRacParsed(racId) {
             "info",
             3500
         );
-
-        // Affichage simple pour diagnostic local (sans créer de nouvelle fenêtre UI).
         console.info("[RAC][Parsed]", payload);
     } catch (err) {
         console.error("[RAC][Parsed] Erreur:", err);
@@ -362,8 +443,21 @@ async function deleteRac(racId) {
 
     try {
         await apiRac.remove(racId);
+
+        if (typeof getActiveRacInspectionId === "function" && getActiveRacInspectionId() === racId) {
+            if (typeof clearRacInspectionView === "function") {
+                clearRacInspectionView();
+            }
+
+            racViewMode = "catalog";
+        }
+
         showToast("Version RAC supprimée", "success");
-        await loadRacList();
+        if (racViewMode === "catalog") {
+            await loadRacList();
+        } else {
+            await showRacCatalogView();
+        }
     } catch (err) {
         console.error("[RAC][Delete] Erreur:", err);
         showToast("Erreur lors de la suppression", "error");

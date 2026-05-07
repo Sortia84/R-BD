@@ -308,6 +308,9 @@ const apiRac = {
     /** Récupérer le JSON RAC normalisé */
     getParsed: (racId) => api.get(`/rac/${encodeURIComponent(racId)}/parsed`),
 
+    /** Récupérer le payload enrichi pour la vue d'inspection RAC */
+    getInspection: (racId) => api.get(`/rac/${encodeURIComponent(racId)}/inspection`),
+
     /** Récupérer les liens câblage RAC (usage BayView/R#SCD) */
     getLinks: (params = {}) => {
         const search = new URLSearchParams();

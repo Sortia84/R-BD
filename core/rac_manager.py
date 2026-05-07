@@ -361,7 +361,15 @@ class RACManager:
             if parsed_path.exists():
                 try:
                     content = parsed_path.read_text(encoding="utf-8")
-                    return json.loads(content)
+                    parsed_payload = json.loads(content)
+                    if parsed_payload.get("parser_version") == self.parser.PARSER_VERSION:
+                        return parsed_payload
+                    logger.info(
+                        "[RAC][Parsed] Regeneration requise pour %s (version parser %s -> %s)",
+                        rac_id,
+                        parsed_payload.get("parser_version", "inconnue"),
+                        self.parser.PARSER_VERSION,
+                    )
                 except (IOError, json.JSONDecodeError):
                     # On retentera via fallback plus bas.
                     pass
@@ -545,6 +553,330 @@ class RACManager:
             },
             "count": len(filtered),
             "links": filtered,
+        }
+
+    def _extract_equipment_family(
+        self,
+        target_equipment_types: List[str],
+        equipment_connections: List[Dict[str, Any]],
+    ) -> str:
+        """
+        Déduire une famille d'équipement métier stable pour la vue RAC.
+
+        La vue frontend a besoin d'un premier niveau de regroupement lisible.
+        On privilégie les connexions équipements réellement résolues, puis la
+        colonne AE (`target_equipment_types`) si aucune connexion détaillée
+        n'est disponible.
+        """
+        for connection in equipment_connections:
+            equipment_type = str(connection.get("equipment_type", "")).strip()
+            if equipment_type:
+                return equipment_type.upper()
+
+        for target in target_equipment_types:
+            normalized = str(target).strip().upper()
+            if not normalized:
+                continue
+
+            family = re.sub(r"\d+$", "", normalized).strip()
+            if family:
+                return family
+
+        return "SANS_EQUIPEMENT"
+
+    def _build_inspection_status(
+        self,
+        target_equipment_types: List[str],
+        equipment_connections: List[Dict[str, Any]],
+        intermediate_path: Dict[str, Any],
+    ) -> Dict[str, str]:
+        """
+        Calculer un statut métier lisible pour l'inspection d'un record RAC.
+
+        Ce statut ne cherche pas à "corriger" la donnée. Il vise uniquement à
+        aider l'utilisateur à distinguer :
+        - une liaison complète ;
+        - une liaison partielle à vérifier ;
+        - une terminaison explicitement marquée "non traité" ;
+        - une ligne sans terminaison exploitable.
+        """
+        has_targets = bool(target_equipment_types)
+        has_connections = bool(equipment_connections)
+        has_intermediate = any(
+            [
+                intermediate_path.get("source", ""),
+                intermediate_path.get("female_socket", ""),
+                intermediate_path.get("socket_terminal", ""),
+                intermediate_path.get("embases", []),
+            ]
+        )
+
+        has_non_treated = any(
+            str(connection.get(field, "")).strip().lower() == "non traité"
+            for connection in equipment_connections
+            for field in ("card_number", "card_type", "card_terminal")
+        )
+
+        if has_non_treated:
+            return {
+                "code": "non_traite",
+                "label": "Non traité",
+                "tone": "warning",
+                "reason": "Une terminaison équipement est présente mais marquée non traité.",
+            }
+
+        if has_connections:
+            return {
+                "code": "complet",
+                "label": "Complet",
+                "tone": "success",
+                "reason": "Le chemin intermédiaire et la terminaison équipement sont disponibles.",
+            }
+
+        if has_targets or has_intermediate:
+            return {
+                "code": "a_verifier",
+                "label": "À vérifier",
+                "tone": "warning",
+                "reason": "La liaison porte une cible ou un chemin intermédiaire, mais sans terminaison détaillée.",
+            }
+
+        return {
+            "code": "sans_terminaison",
+            "label": "Sans terminaison",
+            "tone": "neutral",
+            "reason": "La ligne est parsée mais ne contient pas de terminaison exploitable côté équipement.",
+        }
+
+    def _safe_numeric_sort_value(self, raw_value: Any) -> int:
+        """Extraire une valeur numérique de tri depuis une chaîne métier."""
+        text = str(raw_value or "").strip()
+        match = re.search(r"\d+", text)
+        if not match:
+            return 999999
+        try:
+            return int(match.group(0))
+        except ValueError:
+            return 999999
+
+    def _build_inspection_record(
+        self,
+        record: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """
+        Normaliser un record RAC pour la vue d'inspection.
+
+        On conserve les blocs métier originaux (`terminal_board`,
+        `intermediate_path`, `equipment_connections`, `raw`), tout en ajoutant
+        des champs de navigation pour l'IHM : regroupement, tri, statut,
+        libellés synthétiques et compteurs.
+        """
+        excel_row = int(record.get("excel_row", 0) or 0)
+        track_id = f"row-{excel_row}"
+
+        terminal_board = record.get("terminal_board", {}) if isinstance(record.get("terminal_board", {}), dict) else {}
+        intermediate_path = record.get("intermediate_path", {}) if isinstance(record.get("intermediate_path", {}), dict) else {}
+        target_equipment_types = [str(item) for item in record.get("target_equipment_types", []) if str(item).strip()]
+        equipment_connections = [
+            item for item in record.get("equipment_connections", [])
+            if isinstance(item, dict)
+        ]
+
+        equipment_family = self._extract_equipment_family(target_equipment_types, equipment_connections)
+        block_label = (
+            str(intermediate_path.get("female_socket", "")).strip()
+            or str(intermediate_path.get("source", "")).strip()
+            or "Sans chemin intermédiaire"
+        )
+        board_name = str(terminal_board.get("name", "")).strip() or "Sans bornier"
+        terminal_number = str(terminal_board.get("terminal", "")).strip()
+        status = self._build_inspection_status(
+            target_equipment_types=target_equipment_types,
+            equipment_connections=equipment_connections,
+            intermediate_path=intermediate_path,
+        )
+
+        # La ligne de suivi synthétique sert à la fois à la vue tableau et à
+        # la mise en forme type "borniers" inspirée de R#SCD.
+        return {
+            "track_id": track_id,
+            "excel_row": excel_row,
+            "equipment_family": equipment_family,
+            "block_label": block_label,
+            "board_name": board_name,
+            "board_key": f"{equipment_family}|{block_label}|{board_name}",
+            "terminal_sort": self._safe_numeric_sort_value(terminal_number),
+            "terminal_board": terminal_board,
+            "intermediate_path": intermediate_path,
+            "target_equipment_types": target_equipment_types,
+            "equipment_connections": equipment_connections,
+            "options": record.get("options", []),
+            "revision_tag": str(record.get("revision_tag", "")).strip(),
+            "raw": record.get("raw", {}),
+            "signal_label": str(terminal_board.get("signal_label", "")).strip(),
+            "signal_type": str(terminal_board.get("signal_type", "")).strip(),
+            "polarity_name": str(terminal_board.get("polarity_name", "")).strip(),
+            "terminal_number": terminal_number,
+            "source_label": str(intermediate_path.get("source", "")).strip(),
+            "female_socket": str(intermediate_path.get("female_socket", "")).strip(),
+            "socket_terminal": str(intermediate_path.get("socket_terminal", "")).strip(),
+            "socket_index": str(intermediate_path.get("socket_index", "")).strip(),
+            "embase_count": len(intermediate_path.get("embases", []) or []),
+            "connection_count": len(equipment_connections),
+            "status": status,
+        }
+
+    def get_inspection_payload(self, rac_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Construire un payload d'inspection orienté IHM pour un RAC.
+
+        Le payload est volontairement plus structuré que le JSON parsé brut.
+        Il conserve les données normalisées, puis ajoute :
+        - des enregistrements enrichis pour la navigation ;
+        - une vue hiérarchique de type "borniers" ;
+        - des compteurs de qualité utiles à la vérification du parser.
+        """
+        entry = self.get_by_id(rac_id)
+        if not entry:
+            return None
+
+        parsed = self.get_parsed_payload(rac_id)
+        if not parsed or not isinstance(parsed, dict):
+            return None
+
+        source = parsed.get("source", {}) if isinstance(parsed.get("source", {}), dict) else {}
+        summary = parsed.get("summary", {}) if isinstance(parsed.get("summary", {}), dict) else {}
+        headers = parsed.get("headers", {}) if isinstance(parsed.get("headers", {}), dict) else {}
+        equipment_groups = parsed.get("equipment_groups", []) if isinstance(parsed.get("equipment_groups", []), list) else []
+        parsed_records = parsed.get("records", []) if isinstance(parsed.get("records", []), list) else []
+
+        inspection_records = [
+            self._build_inspection_record(record)
+            for record in parsed_records
+            if isinstance(record, dict)
+        ]
+
+        groups_map: Dict[str, Dict[str, Any]] = {}
+        complete_count = 0
+        to_check_count = 0
+        non_treated_count = 0
+        without_connection_count = 0
+
+        for record in inspection_records:
+            status_code = record.get("status", {}).get("code", "")
+            if status_code == "complet":
+                complete_count += 1
+            elif status_code == "non_traite":
+                non_treated_count += 1
+            elif status_code == "a_verifier":
+                to_check_count += 1
+            else:
+                without_connection_count += 1
+
+            group_key = str(record.get("equipment_family", "SANS_EQUIPEMENT"))
+            block_key = str(record.get("block_label", "Sans chemin intermédiaire"))
+            board_key = str(record.get("board_key", ""))
+
+            if group_key not in groups_map:
+                groups_map[group_key] = {
+                    "group_key": group_key,
+                    "group_label": group_key.replace("_", " "),
+                    "record_count": 0,
+                    "blocks": {},
+                }
+
+            group_entry = groups_map[group_key]
+            group_entry["record_count"] += 1
+
+            if block_key not in group_entry["blocks"]:
+                group_entry["blocks"][block_key] = {
+                    "block_key": block_key,
+                    "block_label": block_key,
+                    "record_count": 0,
+                    "boards": {},
+                }
+
+            block_entry = group_entry["blocks"][block_key]
+            block_entry["record_count"] += 1
+
+            if board_key not in block_entry["boards"]:
+                block_entry["boards"][board_key] = {
+                    "board_key": board_key,
+                    "board_name": record.get("board_name", "Sans bornier"),
+                    "record_count": 0,
+                    "entries": [],
+                }
+
+            board_entry = block_entry["boards"][board_key]
+            board_entry["record_count"] += 1
+            board_entry["entries"].append(
+                {
+                    "track_id": record.get("track_id", ""),
+                    "excel_row": record.get("excel_row", 0),
+                    "terminal_number": record.get("terminal_number", ""),
+                    "terminal_sort": record.get("terminal_sort", 999999),
+                    "signal_label": record.get("signal_label", ""),
+                    "signal_type": record.get("signal_type", ""),
+                    "ref_label": record.get("socket_terminal", "") or record.get("signal_type", "") or "—",
+                    "info_label": record.get("signal_label", "") or "—",
+                    "status": record.get("status", {}),
+                    "connection_count": record.get("connection_count", 0),
+                }
+            )
+
+        groups: List[Dict[str, Any]] = []
+        for group_key in sorted(groups_map.keys()):
+            group_entry = groups_map[group_key]
+            block_values: List[Dict[str, Any]] = []
+
+            for block_key in sorted(group_entry["blocks"].keys(), key=lambda value: str(value).lower()):
+                block_entry = group_entry["blocks"][block_key]
+                board_values: List[Dict[str, Any]] = []
+
+                for board_key in sorted(block_entry["boards"].keys(), key=lambda value: str(block_entry["boards"][value]["board_name"]).lower()):
+                    board_entry = block_entry["boards"][board_key]
+                    board_entry["entries"] = sorted(
+                        board_entry["entries"],
+                        key=lambda item: (item.get("terminal_sort", 999999), item.get("excel_row", 0)),
+                    )
+                    board_values.append(board_entry)
+
+                block_entry["boards"] = board_values
+                block_entry["board_count"] = len(board_values)
+                block_values.append(block_entry)
+
+            group_entry["blocks"] = block_values
+            group_entry["block_count"] = len(block_values)
+            group_entry["board_count"] = sum(block.get("board_count", 0) for block in block_values)
+            groups.append(group_entry)
+
+        return {
+            "source": {
+                "rac_id": entry.get("id", ""),
+                "category_id": entry.get("category_id", ""),
+                "category_name": self._get_category_name(str(entry.get("category_id", ""))),
+                "rac_key": entry.get("rac_key", ""),
+                "version": entry.get("version", ""),
+                "filename": entry.get("filename", ""),
+                "imported_at": entry.get("imported_at", ""),
+                "sheet_name": source.get("sheet_name", entry.get("metadata", {}).get("sheet_name", "")),
+            },
+            "summary": summary,
+            "headers": headers,
+            "equipment_groups": equipment_groups,
+            "inspection_summary": {
+                "record_count": len(inspection_records),
+                "group_count": len(groups),
+                "board_count": sum(group.get("board_count", 0) for group in groups),
+                "complete_count": complete_count,
+                "to_check_count": to_check_count,
+                "non_treated_count": non_treated_count,
+                "without_connection_count": without_connection_count,
+            },
+            "board_schema": {
+                "groups": groups,
+            },
+            "records": inspection_records,
         }
 
     def add(self, filename: str, file_content: bytes, category_id: str) -> Dict[str, Any]:

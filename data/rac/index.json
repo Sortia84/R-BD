@@ -1,24 +1,25 @@
 [
   {
-    "id": "rac-2de9eb33",
-    "filename": "RAC_RSpace_AIP_LIAISON_A1 V15.xlsx",
-    "stored_path": "rac-2de9eb33_RAC_RSpace_AIP_LIAISON_A1 V15.xlsx",
-    "size_bytes": 115368,
-    "imported_at": "2026-04-04T00:02:24.457888",
-    "metadata": {
-      "category_id": "rac_ligne_d",
-      "rac_key": "rac_rspace_aip_liaison_a1",
-      "version": "v15",
-      "version_rank": 0,
-      "parsed_json_path": "files\\rac-2de9eb33.json",
-      "sheet_name": "RAC Ligne AE HT",
-      "rows_parsed": 335,
-      "rows_skipped": 0,
-      "equipment_group_count": 2
-    },
+    "id": "rac-f696434e",
+    "filename": "rac-2de9eb33_RAC_RSpace_AIP_LIAISON_A1 V15.xlsx",
+    "stored_path": "rac-f696434e_rac-2de9eb33_RAC_RSpace_AIP_LIAISON_A1 V15.xlsx",
+    "size_bytes": 92639,
+    "imported_at": "2026-05-08T00:54:15.496347",
     "category_id": "rac_ligne_d",
-    "rac_key": "rac_rspace_aip_liaison_a1",
+    "rac_key": "rac_2de9eb33_rac_rspace_aip_liaison_a1",
     "version": "v15",
-    "version_rank": 0
+    "version_rank": 15,
+    "metadata": {
+      "sheet_name": "RAC Ligne AE HT",
+      "rows_parsed": 237,
+      "rows_skipped": 0,
+      "equipment_group_count": 2,
+      "parsed_json_path": "files\\rac-f696434e.json",
+      "revision_saved": true,
+      "category_id": "rac_ligne_d",
+      "rac_key": "rac_2de9eb33_rac_rspace_aip_liaison_a1",
+      "version": "v15",
+      "version_rank": 15
+    }
   }
 ]
