@@ -311,6 +311,15 @@ const apiRac = {
     /** Récupérer le payload enrichi pour la vue d'inspection RAC */
     getInspection: (racId) => api.get(`/rac/${encodeURIComponent(racId)}/inspection`),
 
+    /** Récupérer les brouillons enregistrés de l'inspection RAC */
+    getInspectionDrafts: (racId) => api.get(`/rac/${encodeURIComponent(racId)}/inspection-drafts`),
+
+    /** Sauvegarder automatiquement le brouillon graphique d'une liaison RAC */
+    saveInspectionDraft: (racId, trackId, draft) => api.put(
+        `/rac/${encodeURIComponent(racId)}/inspection-drafts/${encodeURIComponent(trackId)}`,
+        draft
+    ),
+
     /** Récupérer les liens câblage RAC (usage BayView/R#SCD) */
     getLinks: (params = {}) => {
         const search = new URLSearchParams();

@@ -1,0 +1,130 @@
+{
+  "version": "1.0",
+  "rac_id": "rac-f696434e",
+  "updated_at": "2026-05-08T02:26:58.053397",
+  "drafts_by_track_id": {
+    "row-3": {
+      "trackId": "row-3",
+      "nodes": [
+        {
+          "id": "node-lvafu78",
+          "title": "Bornier",
+          "x": 44.0,
+          "y": 48.0,
+          "width": 320.0,
+          "fields": [
+            {
+              "label": "Nom bornier",
+              "value": "BAC"
+            },
+            {
+              "label": "Borne",
+              "value": "1"
+            },
+            {
+              "label": "Signal",
+              "value": "Polarité +Td"
+            },
+            {
+              "label": "Type",
+              "value": "POL"
+            },
+            {
+              "label": "Polarite",
+              "value": "+Td"
+            }
+          ],
+          "collapsed": false,
+          "isParallelPath": false,
+          "stage": 0
+        },
+        {
+          "id": "node-h4pmt4b",
+          "title": "Connecteur intermediaire",
+          "x": 494.0,
+          "y": 48.0,
+          "width": 410.0,
+          "fields": [
+            {
+              "label": "Source",
+              "value": "ICPOL vers précâblé TOR"
+            },
+            {
+              "label": "Connecteur brut",
+              "value": ""
+            },
+            {
+              "label": "Index",
+              "value": ""
+            },
+            {
+              "label": "Borne connecteur",
+              "value": ""
+            }
+          ],
+          "collapsed": false,
+          "isParallelPath": false,
+          "stage": 1
+        },
+        {
+          "id": "node-mjw07bi",
+          "title": "Connecteur resolu 1",
+          "x": 1034.0,
+          "y": 49.0,
+          "width": 360.0,
+          "fields": [
+            {
+              "label": "Nom resolu",
+              "value": ""
+            },
+            {
+              "label": "Equipement cible",
+              "value": "Terminaison 1"
+            }
+          ],
+          "collapsed": false,
+          "isParallelPath": false,
+          "stage": 2
+        },
+        {
+          "id": "node-t7ndgu5",
+          "title": "Terminaison 1",
+          "x": 1524.0,
+          "y": 70.0,
+          "width": 320.0,
+          "fields": [
+            {
+              "label": "Reference",
+              "value": ""
+            }
+          ],
+          "collapsed": false,
+          "isParallelPath": false,
+          "stage": 3
+        }
+      ],
+      "edges": [
+        {
+          "id": "edge-oqhnhsy",
+          "sourceNodeId": "node-lvafu78",
+          "targetNodeId": "node-h4pmt4b"
+        },
+        {
+          "id": "edge-cm6dlmy",
+          "sourceNodeId": "node-h4pmt4b",
+          "targetNodeId": "node-mjw07bi"
+        },
+        {
+          "id": "edge-eu3zibf",
+          "sourceNodeId": "node-mjw07bi",
+          "targetNodeId": "node-t7ndgu5"
+        }
+      ],
+      "parallelLaneCount": 1,
+      "hasParallelPaths": false,
+      "layoutLocked": true,
+      "layoutWidth": 2018.0,
+      "layoutHeight": 256.0
+    }
+  }
+}

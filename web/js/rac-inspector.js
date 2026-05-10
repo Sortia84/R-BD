@@ -19,15 +19,42 @@ const racInspectorState = {
     activeGroupId: "",
     payload: null,
     selectedTrackId: null,
-    displayMode: "schema",
+    displayMode: "table",
     statusFilter: "all",
     searchText: "",
+    columnFilters: {},
+    openColumnFilterKey: null,
     draftsByTrackId: {},
+    draftAutosaveTimers: {},
+    draftSaveStateByTrackId: {},
     expandedDraftStepKey: null,
     selectedEdgeId: null,
     expandedGroups: new Set(),
     expandedBlocks: new Set(),
 };
+
+const RAC_DEFAULT_DISPLAY_MODE = "table";
+const RAC_DRAFT_AUTOSAVE_DELAY_MS = 700;
+
+const RAC_TABLE_COLUMNS = [
+    { key: "excel_row", label: "Ligne", placeholder: "Filtrer..." },
+    { key: "status_label", label: "Statut", placeholder: "Filtrer..." },
+    { key: "board_name", label: "Bornier", placeholder: "Filtrer..." },
+    { key: "terminal_number", label: "Borne", placeholder: "Filtrer..." },
+    { key: "signal_label", label: "Information", placeholder: "Filtrer..." },
+    { key: "signal_type", label: "Type", placeholder: "Filtrer..." },
+    { key: "path_label", label: "Chemin intermediaire", placeholder: "Filtrer..." },
+    { key: "targets", label: "Cibles", placeholder: "Filtrer..." },
+    { key: "card_number", label: "Carte", placeholder: "Filtrer..." },
+    { key: "card_terminal", label: "Borne carte", placeholder: "Filtrer..." },
+];
+
+function createEmptyRacColumnFilters() {
+    return RAC_TABLE_COLUMNS.reduce((filters, column) => {
+        filters[column.key] = { select: "", text: "" };
+        return filters;
+    }, {});
+}
 
 function getActiveRacInspectionId() {
     return racInspectorState.activeRacId;
@@ -52,15 +79,37 @@ function resetRacInspectorView() {
     `;
 }
 
+function clearRacDraftAutosaveTimers() {
+    Object.values(racInspectorState.draftAutosaveTimers || {}).forEach((timerId) => {
+        window.clearTimeout(timerId);
+    });
+    racInspectorState.draftAutosaveTimers = {};
+}
+
+async function flushRacDraftAutosaves() {
+    const pendingTrackIds = Object.keys(racInspectorState.draftAutosaveTimers || {});
+    if (pendingTrackIds.length === 0) {
+        return;
+    }
+
+    await Promise.allSettled(
+        pendingTrackIds.map((trackId) => saveRacDraftNow(trackId))
+    );
+}
+
 function clearRacInspectionView() {
+    clearRacDraftAutosaveTimers();
     racInspectorState.activeRacId = null;
     racInspectorState.activeGroupId = "";
     racInspectorState.payload = null;
     racInspectorState.selectedTrackId = null;
-    racInspectorState.displayMode = "schema";
+    racInspectorState.displayMode = RAC_DEFAULT_DISPLAY_MODE;
     racInspectorState.statusFilter = "all";
     racInspectorState.searchText = "";
+    racInspectorState.columnFilters = createEmptyRacColumnFilters();
+    racInspectorState.openColumnFilterKey = null;
     racInspectorState.draftsByTrackId = {};
+    racInspectorState.draftSaveStateByTrackId = {};
     racInspectorState.expandedDraftStepKey = null;
     racInspectorState.selectedEdgeId = null;
     racInspectorState.expandedGroups = new Set();
@@ -75,6 +124,8 @@ async function loadRacInspectionView(racId, options = {}) {
     const root = document.getElementById("rac-inspector-root");
     if (!root) return;
 
+    await flushRacDraftAutosaves();
+
     root.innerHTML = `
         <div class="rbd-rac-empty-state is-loading">
             <div class="rbd-rac-empty-icon">⏳</div>
@@ -87,36 +138,31 @@ async function loadRacInspectionView(racId, options = {}) {
 
     try {
         const payload = await apiRac.getInspection(racId);
+        const draftsPayload = await apiRac.getInspectionDrafts(racId).catch((err) => {
+            console.warn("[RAC][Inspector] Brouillons inspection non charges", err);
+            return null;
+        });
         const records = Array.isArray(payload?.records) ? payload.records : [];
 
         racInspectorState.payload = payload || null;
         racInspectorState.activeRacId = payload?.source?.rac_id || racId;
         racInspectorState.activeGroupId = options.groupId || "";
-        racInspectorState.displayMode = "schema";
+        racInspectorState.displayMode = RAC_DEFAULT_DISPLAY_MODE;
         racInspectorState.statusFilter = "all";
         racInspectorState.searchText = "";
-        racInspectorState.draftsByTrackId = {};
+        racInspectorState.columnFilters = createEmptyRacColumnFilters();
+        racInspectorState.openColumnFilterKey = null;
+        racInspectorState.draftsByTrackId = normalizeRacPersistedDrafts(draftsPayload?.drafts_by_track_id);
+        racInspectorState.draftAutosaveTimers = {};
+        racInspectorState.draftSaveStateByTrackId = {};
         racInspectorState.expandedDraftStepKey = null;
         racInspectorState.selectedEdgeId = null;
 
-        const groups = Array.isArray(payload?.board_schema?.groups) ? payload.board_schema.groups : [];
         racInspectorState.expandedGroups = new Set();
         racInspectorState.expandedBlocks = new Set();
 
-        if (groups.length > 0) {
-            racInspectorState.expandedGroups.add(groups[0].group_key);
-            const firstBlock = Array.isArray(groups[0].blocks) ? groups[0].blocks[0] : null;
-            if (firstBlock?.block_key) {
-                racInspectorState.expandedBlocks.add(buildRacBlockStateKey(groups[0].group_key, firstBlock.block_key));
-            }
-        }
-
         const firstRecord = records[0] || null;
         racInspectorState.selectedTrackId = firstRecord?.track_id || null;
-
-        if (firstRecord) {
-            expandRacInspectorSelection(firstRecord);
-        }
 
         renderRacInspectionView();
 
@@ -169,7 +215,9 @@ function setRacInspectionSelection(trackId) {
     racInspectorState.selectedTrackId = trackId;
     racInspectorState.expandedDraftStepKey = null;
     racInspectorState.selectedEdgeId = null;
-    expandRacInspectorSelection(record);
+    if (racInspectorState.displayMode === "schema") {
+        expandRacInspectorSelection(record);
+    }
     renderRacInspectionView();
 }
 
@@ -217,9 +265,59 @@ function updateRacInspectionStatusFilter(value) {
     renderRacInspectionView();
 }
 
+function updateRacInspectionColumnFilter(columnKey, property, value) {
+    if (!racInspectorState.columnFilters[columnKey]) {
+        racInspectorState.columnFilters[columnKey] = { select: "", text: "" };
+    }
+
+    racInspectorState.columnFilters[columnKey][property] = String(value || "");
+    syncRacInspectorSelectionWithFilters();
+    renderRacInspectionView();
+}
+
+function hasActiveRacInspectionColumnFilter(columnKey) {
+    const filters = racInspectorState.columnFilters[columnKey] || { select: "", text: "" };
+    return Boolean(String(filters.select || "").trim() || String(filters.text || "").trim());
+}
+
+function hasAnyActiveRacInspectionColumnFilter() {
+    return RAC_TABLE_COLUMNS.some((column) => hasActiveRacInspectionColumnFilter(column.key));
+}
+
+function toggleRacInspectionColumnFilterMenu(columnKey) {
+    racInspectorState.openColumnFilterKey = racInspectorState.openColumnFilterKey === columnKey ? null : columnKey;
+    renderRacInspectionView();
+}
+
+function closeRacInspectionColumnFilterMenu() {
+    if (!racInspectorState.openColumnFilterKey) {
+        return;
+    }
+    racInspectorState.openColumnFilterKey = null;
+    renderRacInspectionView();
+}
+
+function handleRacTableWrapMouseDown(event) {
+    if (event.target.closest(".rbd-rac-table-head-cell, .rbd-rac-table-filter-popover")) {
+        return;
+    }
+
+    if (racInspectorState.openColumnFilterKey) {
+        closeRacInspectionColumnFilterMenu();
+    }
+}
+
+function resetRacInspectionColumnFilter(columnKey) {
+    racInspectorState.columnFilters[columnKey] = { select: "", text: "" };
+    syncRacInspectorSelectionWithFilters();
+    renderRacInspectionView();
+}
+
 function resetRacInspectionFilters() {
     racInspectorState.searchText = "";
     racInspectorState.statusFilter = "all";
+    racInspectorState.columnFilters = createEmptyRacColumnFilters();
+    racInspectorState.openColumnFilterKey = null;
     syncRacInspectorSelectionWithFilters();
     renderRacInspectionView();
 }
@@ -233,52 +331,112 @@ function syncRacInspectorSelectionWithFilters() {
     const currentInFilter = filteredRecords.some((record) => record.track_id === racInspectorState.selectedTrackId);
     if (!currentInFilter) {
         racInspectorState.selectedTrackId = filteredRecords[0].track_id;
-        expandRacInspectorSelection(filteredRecords[0]);
+        if (racInspectorState.displayMode === "schema") {
+            expandRacInspectorSelection(filteredRecords[0]);
+        }
     }
 }
 
-function getFilteredRacInspectionRecords() {
-    const records = Array.isArray(racInspectorState.payload?.records) ? racInspectorState.payload.records : [];
-    const statusFilter = racInspectorState.statusFilter;
-    const searchText = racInspectorState.searchText;
+function getBaseFilteredRacInspectionRecords() {
+    return Array.isArray(racInspectorState.payload?.records) ? racInspectorState.payload.records : [];
+}
 
+function getRacInspectionColumnDisplayValue(record, columnKey) {
+    const connections = Array.isArray(record?.equipment_connections) ? record.equipment_connections : [];
+    const firstConnection = connections[0] || null;
+
+    switch (columnKey) {
+    case "excel_row":
+        return String(Number(record?.excel_row || 0));
+    case "status_label":
+        return String(record?.status?.label || "Sans terminaison");
+    case "board_name":
+        return String(record?.board_name || "");
+    case "terminal_number":
+        return String(record?.terminal_number || "");
+    case "signal_label":
+        return [record?.signal_label || "", record?.track_id || ""].filter(Boolean).join(" ");
+    case "signal_type":
+        return String(record?.signal_type || "");
+    case "path_label":
+        return String(record?.female_socket || record?.source_label || "");
+    case "targets":
+        return Array.isArray(record?.target_equipment_types) ? record.target_equipment_types.join(", ") : "";
+    case "card_number":
+        return String(firstConnection?.card_number || "");
+    case "card_terminal":
+        return String(firstConnection?.card_terminal || "");
+    default:
+        return "";
+    }
+}
+
+function getRacInspectionColumnOptions(records, columnKey) {
+    const values = Array.from(new Set(
+        records
+            .map((record) => getRacInspectionColumnDisplayValue(record, columnKey).trim())
+            .filter(Boolean)
+    ));
+
+    return values.sort((left, right) => left.localeCompare(right, "fr", { numeric: true, sensitivity: "base" }));
+}
+
+function applyRacInspectionColumnFilters(records) {
     return records.filter((record) => {
-        if (statusFilter !== "all" && record?.status?.code !== statusFilter) {
-            return false;
-        }
+        return RAC_TABLE_COLUMNS.every((column) => {
+            const filters = racInspectorState.columnFilters[column.key] || { select: "", text: "" };
+            const displayValue = getRacInspectionColumnDisplayValue(record, column.key);
+            const normalizedValue = displayValue.toLowerCase();
 
-        if (!searchText) {
+            if (filters.select && displayValue !== filters.select) {
+                return false;
+            }
+
+            if (filters.text && !normalizedValue.includes(String(filters.text).trim().toLowerCase())) {
+                return false;
+            }
+
             return true;
-        }
-
-        const embases = formatRacEmbases(record?.intermediate_path?.embases || []).join(" ");
-        const connections = Array.isArray(record?.equipment_connections)
-            ? record.equipment_connections.map((connection) => [
-                connection.equipment_type || "",
-                connection.vendor || "",
-                connection.card_number || "",
-                connection.card_terminal || "",
-            ].join(" ")).join(" ")
-            : "";
-
-        const haystack = [
-            record.signal_label,
-            record.signal_type,
-            record.board_name,
-            record.terminal_number,
-            record.source_label,
-            record.female_socket,
-            record.socket_terminal,
-            record.equipment_family,
-            record.block_label,
-            (record.target_equipment_types || []).join(" "),
-            embases,
-            connections,
-            record.revision_tag,
-        ].join(" ").toLowerCase();
-
-        return haystack.includes(searchText);
+        });
     });
+}
+
+function getFilteredRacInspectionRecords() {
+    return applyRacInspectionColumnFilters(getBaseFilteredRacInspectionRecords());
+}
+
+function captureRacInspectorFocusState(root) {
+    const activeElement = document.activeElement;
+    if (!root || !activeElement || !root.contains(activeElement)) {
+        return null;
+    }
+
+    const focusKey = activeElement.getAttribute("data-focus-key");
+    if (!focusKey) {
+        return null;
+    }
+
+    return {
+        key: focusKey,
+        selectionStart: typeof activeElement.selectionStart === "number" ? activeElement.selectionStart : null,
+        selectionEnd: typeof activeElement.selectionEnd === "number" ? activeElement.selectionEnd : null,
+    };
+}
+
+function restoreRacInspectorFocusState(root, focusState) {
+    if (!root || !focusState?.key) {
+        return;
+    }
+
+    const target = root.querySelector(`[data-focus-key="${cssEscapeAttr(focusState.key)}"]`);
+    if (!target) {
+        return;
+    }
+
+    target.focus({ preventScroll: true });
+    if (typeof focusState.selectionStart === "number" && typeof target.setSelectionRange === "function") {
+        target.setSelectionRange(focusState.selectionStart, focusState.selectionEnd ?? focusState.selectionStart);
+    }
 }
 
 function renderRacInspectionView() {
@@ -290,6 +448,8 @@ function renderRacInspectionView() {
         resetRacInspectorView();
         return;
     }
+
+    const focusState = captureRacInspectorFocusState(root);
 
     const selectedRecord = getRacInspectionSelectedRecord();
     const filteredRecords = getFilteredRacInspectionRecords();
@@ -313,15 +473,20 @@ function renderRacInspectionView() {
     // Apres chaque rendu, recalcule la position des liens SVG du canvas en
     // tenant compte de la taille reelle des noeuds dans le DOM. Sans cet appel
     // les aretes restent vides puisqu'elles sont generees apres mesure.
-    if (selectedRecord?.track_id && racInspectorState.draftsByTrackId[selectedRecord.track_id]) {
-        // requestAnimationFrame garantit que la mesure se fait apres layout.
-        window.requestAnimationFrame(() => updateRacCanvasEdges(selectedRecord.track_id));
-    }
+    window.requestAnimationFrame(() => {
+        restoreRacInspectorFocusState(root, focusState);
+
+        if (selectedRecord?.track_id && racInspectorState.draftsByTrackId[selectedRecord.track_id]) {
+            // requestAnimationFrame garantit que la mesure se fait apres layout.
+            updateRacCanvasEdges(selectedRecord.track_id);
+        }
+    });
 }
 
 function renderRacInspectionViewerPanel(payload, selectedRecord, filteredRecords) {
     const totalRecords = Array.isArray(payload?.records) ? payload.records.length : 0;
     const isTableMode = racInspectorState.displayMode === "table";
+    const hasActiveColumnFilters = hasAnyActiveRacInspectionColumnFilter();
 
     return `
         <section class="rbd-rac-panel rbd-rac-viewer-panel">
@@ -342,25 +507,34 @@ function renderRacInspectionViewerPanel(payload, selectedRecord, filteredRecords
                         <span class="rscd-dido-info-icon">📎</span>
                         ${filteredRecords.length} / ${totalRecords} liaisons visibles
                     </span>
-                    <button
-                        class="rscd-dido-view-toggle-btn ${!isTableMode ? "is-schema" : ""}"
-                        type="button"
-                        onclick="updateRacInspectionDisplayMode('schema')"
-                    >
-                        Vue borniers
-                    </button>
-                    <button
-                        class="rscd-dido-view-toggle-btn ${isTableMode ? "is-table" : ""}"
-                        type="button"
-                        onclick="updateRacInspectionDisplayMode('table')"
-                    >
-                        Tableau de suivi
-                    </button>
+                    ${isTableMode && hasActiveColumnFilters ? `
+                        <button class="btn btn-secondary" type="button" onclick="resetRacInspectionFilters()">
+                            Reinitialiser les filtres
+                        </button>
+                    ` : ""}
+                    <div class="rbd-rac-view-switch" role="tablist" aria-label="Mode d'affichage RAC">
+                        <button
+                            class="rbd-rac-view-switch-btn ${isTableMode ? "is-active" : ""}"
+                            type="button"
+                            onclick="updateRacInspectionDisplayMode('table')"
+                        >
+                            <span class="rbd-rac-view-switch-icon">▦</span>
+                            <span class="rbd-rac-view-switch-label">Tableau de suivi</span>
+                        </button>
+                        <button
+                            class="rbd-rac-view-switch-btn ${!isTableMode ? "is-active" : ""}"
+                            type="button"
+                            onclick="updateRacInspectionDisplayMode('schema')"
+                        >
+                            <span class="rbd-rac-view-switch-icon">☷</span>
+                            <span class="rbd-rac-view-switch-label">Vue borniers</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
             ${isTableMode
-                ? `${renderRacInspectionFilters()}${renderRacInspectionTable(filteredRecords, selectedRecord)}`
+                ? renderRacInspectionTable(filteredRecords, selectedRecord)
                 : renderRacBoardSchema(payload, selectedRecord)}
         </section>
     `;
@@ -656,13 +830,234 @@ function formatRacConnectionSummaries(connections) {
 // autre. Les liens sont rendus en SVG par dessus la grille de fond.
 // ============================================================================
 
-// Dimensions par defaut d'un noeud (utilisees pour la mise en page initiale).
-const RAC_CANVAS_NODE_WIDTH = 230;
+// Dimensions du canvas. La largeur des noeuds n'est plus fixe : elle est
+// estimee a partir du contenu pour garder les champs lisibles sans imposer
+// une largeur identique a tous les cas.
+const RAC_CANVAS_NODE_MIN_WIDTH = 320;
+const RAC_CANVAS_NODE_MAX_WIDTH = 760;
+const RAC_CANVAS_NEW_NODE_WIDTH = 360;
 const RAC_CANVAS_NODE_VSPACE = 60;
+const RAC_CANVAS_LEFT_PADDING = 44;
+const RAC_CANVAS_TOP_PADDING = 48;
+const RAC_CANVAS_STAGE_HSPACE = 130;
+const RAC_CANVAS_PARALLEL_VSPACE = 96;
+
+function normalizeRacPersistedDrafts(draftsByTrackId) {
+    if (!draftsByTrackId || typeof draftsByTrackId !== "object") {
+        return {};
+    }
+
+    return Object.entries(draftsByTrackId).reduce((normalized, [trackId, draft]) => {
+        if (!draft || typeof draft !== "object") {
+            return normalized;
+        }
+
+        const safeDraft = {
+            trackId: String(draft.trackId || trackId),
+            nodes: Array.isArray(draft.nodes) ? draft.nodes : [],
+            edges: Array.isArray(draft.edges) ? draft.edges : [],
+            parallelLaneCount: Number(draft.parallelLaneCount || 1),
+            hasParallelPaths: Boolean(draft.hasParallelPaths),
+            layoutLocked: Boolean(draft.layoutLocked),
+            layoutWidth: Number(draft.layoutWidth || 0),
+            layoutHeight: Number(draft.layoutHeight || 0),
+        };
+
+        if (safeDraft.nodes.length > 0) {
+            normalized[String(trackId)] = safeDraft;
+        }
+
+        return normalized;
+    }, {});
+}
+
+function getRacDraftSaveStateLabel(trackId) {
+    const state = racInspectorState.draftSaveStateByTrackId[trackId] || { status: "idle", message: "" };
+
+    if (state.status === "pending") return "Sauvegarde en attente...";
+    if (state.status === "saving") return "Sauvegarde en cours...";
+    if (state.status === "saved") return state.message || "Modifications enregistrees";
+    if (state.status === "error") return state.message || "Erreur de sauvegarde";
+    return "Modifications sauvegardees automatiquement";
+}
+
+function updateRacDraftAutosaveIndicator(trackId) {
+    const indicator = document.querySelector(`[data-rac-draft-save-status="${cssEscapeAttr(trackId)}"]`);
+    if (!indicator) return;
+
+    const state = racInspectorState.draftSaveStateByTrackId[trackId] || { status: "idle" };
+    indicator.textContent = getRacDraftSaveStateLabel(trackId);
+    indicator.dataset.status = state.status || "idle";
+}
+
+function setRacDraftSaveState(trackId, status, message = "") {
+    if (!trackId) return;
+
+    racInspectorState.draftSaveStateByTrackId[trackId] = {
+        status,
+        message,
+        updatedAt: new Date().toISOString(),
+    };
+    updateRacDraftAutosaveIndicator(trackId);
+}
+
+function cloneRacDraftForSave(draft) {
+    return JSON.parse(JSON.stringify(draft));
+}
+
+async function saveRacDraftNow(trackId) {
+    const racId = racInspectorState.activeRacId;
+    const draft = racInspectorState.draftsByTrackId[trackId];
+    if (!racId || !trackId || !draft) {
+        return;
+    }
+
+    if (racInspectorState.draftAutosaveTimers[trackId]) {
+        window.clearTimeout(racInspectorState.draftAutosaveTimers[trackId]);
+        delete racInspectorState.draftAutosaveTimers[trackId];
+    }
+
+    setRacDraftSaveState(trackId, "saving");
+
+    try {
+        await apiRac.saveInspectionDraft(racId, trackId, cloneRacDraftForSave(draft));
+        setRacDraftSaveState(trackId, "saved", "Modifications enregistrees");
+        console.info("[RAC][Inspector] Brouillon sauvegarde", { racId, trackId });
+    } catch (err) {
+        console.error("[RAC][Inspector] Echec sauvegarde brouillon", err);
+        setRacDraftSaveState(trackId, "error", "Erreur de sauvegarde automatique");
+        showToast("Erreur de sauvegarde automatique du chemin RAC", "error");
+    }
+}
+
+function queueRacDraftAutosave(trackId) {
+    if (!trackId || !racInspectorState.activeRacId) {
+        return;
+    }
+
+    if (racInspectorState.draftAutosaveTimers[trackId]) {
+        window.clearTimeout(racInspectorState.draftAutosaveTimers[trackId]);
+    }
+
+    setRacDraftSaveState(trackId, "pending");
+    racInspectorState.draftAutosaveTimers[trackId] = window.setTimeout(() => {
+        saveRacDraftNow(trackId);
+    }, RAC_DRAFT_AUTOSAVE_DELAY_MS);
+}
+
+function commitRacDraftChange(trackId, options = {}) {
+    queueRacDraftAutosave(trackId);
+    if (options.render !== false) {
+        renderRacInspectionView();
+    }
+}
 
 // Genere un identifiant simple pour les noeuds et les aretes.
 function buildRacCanvasId(prefix) {
     return `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
+}
+
+function clampRacCanvasNodeWidth(width) {
+    return Math.max(RAC_CANVAS_NODE_MIN_WIDTH, Math.min(RAC_CANVAS_NODE_MAX_WIDTH, Math.round(width)));
+}
+
+function estimateRacCanvasNodeWidth(node) {
+    const titleLength = String(node?.title || "").trim().length;
+    const fieldLengths = Array.isArray(node?.fields)
+        ? node.fields.map((field) => {
+            const labelLength = String(field?.label || "").trim().length;
+            const valueLength = String(field?.value || "").trim().length;
+            // Le champ valeur pilote davantage la largeur finale car il porte
+            // la donnee metier la plus longue dans la majorite des cas.
+            return Math.max(labelLength * 8, valueLength * 9);
+        })
+        : [];
+
+    const contentWidth = Math.max(titleLength * 10, ...fieldLengths, 0);
+    return clampRacCanvasNodeWidth(contentWidth + 170);
+}
+
+function getRacCanvasNodeWidth(node) {
+    const estimatedWidth = estimateRacCanvasNodeWidth(node);
+    if (!node) {
+        return estimatedWidth;
+    }
+
+    // La largeur reste synchronisee avec le contenu, tout en conservant la
+    // derniere valeur estimee sur le noeud pour le placement des nouveaux noeuds.
+    node.width = estimatedWidth;
+    return estimatedWidth;
+}
+
+function estimateRacCanvasNodeHeight(node) {
+    if (node?.collapsed) {
+        return 54;
+    }
+
+    const fieldCount = Array.isArray(node?.fields) ? node.fields.length : 0;
+    return 74 + fieldCount * 42;
+}
+
+function layoutRacCanvasDraft(draft) {
+    if (!draft || !Array.isArray(draft.nodes) || draft.nodes.length === 0) {
+        return;
+    }
+
+    const stageIndexes = Array.from(new Set(
+        draft.nodes
+            .map((node) => Number.isFinite(Number(node.stage)) ? Number(node.stage) : 0)
+            .sort((left, right) => left - right)
+    ));
+
+    const laneCount = Math.max(1, Number(draft.parallelLaneCount || 1));
+    const branchNodes = draft.nodes.filter((node) => node.lane !== null && node.lane !== undefined && Number.isFinite(Number(node.lane)));
+    const maxBranchHeight = Math.max(
+        160,
+        ...branchNodes.map((node) => estimateRacCanvasNodeHeight(node))
+    );
+    const lanePitch = maxBranchHeight + RAC_CANVAS_PARALLEL_VSPACE;
+    const firstLaneY = RAC_CANVAS_TOP_PADDING;
+    const totalLaneHeight = (laneCount - 1) * lanePitch + maxBranchHeight;
+
+    const stageWidths = new Map();
+    stageIndexes.forEach((stage) => {
+        const nodesInStage = draft.nodes.filter((node) => Number(node.stage || 0) === stage);
+        const maxWidth = Math.max(...nodesInStage.map((node) => getRacCanvasNodeWidth(node)), RAC_CANVAS_NODE_MIN_WIDTH);
+        stageWidths.set(stage, maxWidth);
+    });
+
+    let currentX = RAC_CANVAS_LEFT_PADDING;
+    stageIndexes.forEach((stage) => {
+        const nodesInStage = draft.nodes.filter((node) => Number(node.stage || 0) === stage);
+        const stageWidth = stageWidths.get(stage) || RAC_CANVAS_NODE_MIN_WIDTH;
+
+        nodesInStage.forEach((node) => {
+            const nodeWidth = getRacCanvasNodeWidth(node);
+            const nodeHeight = estimateRacCanvasNodeHeight(node);
+
+            node.x = currentX + Math.max(0, (stageWidth - nodeWidth) / 2);
+
+            if (node.lane !== null && node.lane !== undefined && Number.isFinite(Number(node.lane))) {
+                node.y = firstLaneY + Number(node.lane) * lanePitch;
+            } else {
+                node.y = firstLaneY + Math.max(0, (totalLaneHeight - nodeHeight) / 2);
+            }
+        });
+
+        currentX += stageWidth + RAC_CANVAS_STAGE_HSPACE;
+    });
+
+    draft.layoutWidth = currentX + RAC_CANVAS_LEFT_PADDING;
+    draft.layoutHeight = firstLaneY + totalLaneHeight + RAC_CANVAS_TOP_PADDING;
+}
+
+function refreshRacCanvasAutoLayoutForTrack(trackId) {
+    const draft = racInspectorState.draftsByTrackId[trackId];
+    if (!draft || draft.layoutLocked) {
+        return;
+    }
+
+    layoutRacCanvasDraft(draft);
 }
 
 // Construit le brouillon initial du graphe a partir d'un enregistrement RAC.
@@ -678,66 +1073,8 @@ function buildRacEditableDraft(record) {
     const nodes = [];
     const edges = [];
 
-    // Construit le noeud "Bornier" qui represente le point d'entree de la liaison.
-    const bornierNode = {
-        id: buildRacCanvasId("node"),
-        title: "Bornier",
-        x: 40,
-        y: 40,
-        fields: [
-            { label: "Nom bornier", value: terminalBoard.name || "" },
-            { label: "Borne", value: terminalBoard.terminal || "" },
-            { label: "Signal", value: record?.signal_label || "" },
-            { label: "Type", value: terminalBoard.signal_type || "" },
-            { label: "Polarite", value: terminalBoard.polarity_name || "" },
-        ],
-    };
-    nodes.push(bornierNode);
-
-    // Construit le noeud "Connecteur intermediaire" qui porte la donnee brute Y/Z/AA.
-    const connecteurNode = {
-        id: buildRacCanvasId("node"),
-        title: "Connecteur intermediaire",
-        x: 320,
-        y: 40,
-        fields: [
-            { label: "Source", value: intermediatePath.source || "" },
-            { label: "Connecteur brut", value: intermediatePath.female_socket || "" },
-            { label: "Index", value: intermediatePath.socket_index || "" },
-            { label: "Borne connecteur", value: intermediatePath.socket_terminal || "" },
-        ],
-    };
-    nodes.push(connecteurNode);
-    edges.push({
-        id: buildRacCanvasId("edge"),
-        sourceNodeId: bornierNode.id,
-        targetNodeId: connecteurNode.id,
-    });
-
-    // Construit un noeud par connecteur resolu (ex : TOR1-SCU1, TOR1-SCU2).
-    const resolvedNodes = [];
-    const resolvedSources = embaseLabels.length > 0 ? embaseLabels : [""];
-    resolvedSources.forEach((embase, index) => {
-        const node = {
-            id: buildRacCanvasId("node"),
-            title: `Connecteur resolu ${index + 1}`,
-            x: 600,
-            y: 40 + index * (160 + RAC_CANVAS_NODE_VSPACE),
-            fields: [
-                { label: "Nom resolu", value: embase || "" },
-                { label: "Equipement cible", value: targets[index] || "" },
-            ],
-        };
-        resolvedNodes.push(node);
-        nodes.push(node);
-        edges.push({
-            id: buildRacCanvasId("edge"),
-            sourceNodeId: connecteurNode.id,
-            targetNodeId: node.id,
-        });
-    });
-
-    // Construit un noeud par terminaison equipement detectee.
+    // Les terminaisons sont calculees avant le placement pour identifier le
+    // nombre de branches paralleles a representer dans le diagramme.
     const terminationDescriptors = connections.length > 0
         ? connections.map((connection, index) => ({
             title: connection.equipment_target || `Terminaison ${index + 1}`,
@@ -762,12 +1099,75 @@ function buildRacEditableDraft(record) {
                 fields: [{ label: "Reference", value: record?.socket_terminal || "" }],
             }]);
 
+    const resolvedCount = Math.max(embaseLabels.length, targets.length > 1 ? targets.length : 1, 1);
+    const laneCount = Math.max(resolvedCount, terminationDescriptors.length, 1);
+    const hasParallelPaths = laneCount > 1;
+
+    // Construit le noeud "Bornier" qui represente le point d'entree de la liaison.
+    const bornierNode = {
+        id: buildRacCanvasId("node"),
+        title: "Bornier",
+        stage: 0,
+        fields: [
+            { label: "Nom bornier", value: terminalBoard.name || "" },
+            { label: "Borne", value: terminalBoard.terminal || "" },
+            { label: "Signal", value: record?.signal_label || "" },
+            { label: "Type", value: terminalBoard.signal_type || "" },
+            { label: "Polarite", value: terminalBoard.polarity_name || "" },
+        ],
+    };
+    nodes.push(bornierNode);
+
+    // Construit le noeud "Connecteur intermediaire" qui porte la donnee brute Y/Z/AA.
+    const connecteurNode = {
+        id: buildRacCanvasId("node"),
+        title: "Connecteur intermediaire",
+        stage: 1,
+        fields: [
+            { label: "Source", value: intermediatePath.source || "" },
+            { label: "Connecteur brut", value: intermediatePath.female_socket || "" },
+            { label: "Index", value: intermediatePath.socket_index || "" },
+            { label: "Borne connecteur", value: intermediatePath.socket_terminal || "" },
+        ],
+    };
+    nodes.push(connecteurNode);
+    edges.push({
+        id: buildRacCanvasId("edge"),
+        sourceNodeId: bornierNode.id,
+        targetNodeId: connecteurNode.id,
+    });
+
+    // Construit un noeud par connecteur resolu (ex : TOR1-SCU1, TOR1-SCU2).
+    const resolvedNodes = [];
+    const resolvedSources = Array.from({ length: resolvedCount }, (_, index) => embaseLabels[index] || "");
+    resolvedSources.forEach((embase, index) => {
+        const node = {
+            id: buildRacCanvasId("node"),
+            title: `Connecteur resolu ${index + 1}`,
+            stage: 2,
+            lane: hasParallelPaths ? index : null,
+            isParallelPath: hasParallelPaths,
+            fields: [
+                { label: "Nom resolu", value: embase || "" },
+                { label: "Equipement cible", value: targets[index] || terminationDescriptors[index]?.title || "" },
+            ],
+        };
+        resolvedNodes.push(node);
+        nodes.push(node);
+        edges.push({
+            id: buildRacCanvasId("edge"),
+            sourceNodeId: connecteurNode.id,
+            targetNodeId: node.id,
+        });
+    });
+
     terminationDescriptors.forEach((desc, index) => {
         const node = {
             id: buildRacCanvasId("node"),
             title: desc.title,
-            x: 880,
-            y: 40 + index * (200 + RAC_CANVAS_NODE_VSPACE),
+            stage: 3,
+            lane: hasParallelPaths ? index : null,
+            isParallelPath: hasParallelPaths,
             fields: desc.fields,
         };
         nodes.push(node);
@@ -782,11 +1182,17 @@ function buildRacEditableDraft(record) {
         });
     });
 
-    return {
+    const draft = {
         trackId: record?.track_id || "",
         nodes,
         edges,
+        parallelLaneCount: laneCount,
+        hasParallelPaths,
+        layoutLocked: false,
     };
+
+    layoutRacCanvasDraft(draft);
+    return draft;
 }
 
 // Recupere le brouillon courant pour une liaison, en le construisant si besoin.
@@ -822,7 +1228,8 @@ function updateRacDraftNodeTitle(trackId, nodeId, value) {
     const node = findRacDraftNode(trackId, nodeId);
     if (!node) return;
     node.title = String(value || "");
-    renderRacInspectionView();
+    refreshRacCanvasAutoLayoutForTrack(trackId);
+    commitRacDraftChange(trackId);
 }
 
 function updateRacDraftNodeField(trackId, nodeId, fieldIndex, property, value) {
@@ -830,7 +1237,8 @@ function updateRacDraftNodeField(trackId, nodeId, fieldIndex, property, value) {
     const field = node?.fields?.[fieldIndex];
     if (!field) return;
     field[property] = String(value || "");
-    renderRacInspectionView();
+    refreshRacCanvasAutoLayoutForTrack(trackId);
+    commitRacDraftChange(trackId);
 }
 
 function addRacDraftNodeField(trackId, nodeId) {
@@ -838,14 +1246,16 @@ function addRacDraftNodeField(trackId, nodeId) {
     if (!node) return;
     node.fields = Array.isArray(node.fields) ? node.fields : [];
     node.fields.push({ label: "Champ", value: "" });
-    renderRacInspectionView();
+    refreshRacCanvasAutoLayoutForTrack(trackId);
+    commitRacDraftChange(trackId);
 }
 
 function removeRacDraftNodeField(trackId, nodeId, fieldIndex) {
     const node = findRacDraftNode(trackId, nodeId);
     if (!node || !Array.isArray(node.fields)) return;
     node.fields.splice(fieldIndex, 1);
-    renderRacInspectionView();
+    refreshRacCanvasAutoLayoutForTrack(trackId);
+    commitRacDraftChange(trackId);
 }
 
 function addRacDraftNode(trackId) {
@@ -857,19 +1267,22 @@ function addRacDraftNode(trackId) {
     let maxX = 40;
     let maxY = 40;
     draft.nodes.forEach((node) => {
-        if (node.x > maxX) maxX = node.x;
+        const nodeRight = (Number(node.x) || 0) + getRacCanvasNodeWidth(node);
+        if (nodeRight > maxX) maxX = nodeRight;
         if (node.y > maxY) maxY = node.y;
     });
 
+    draft.layoutLocked = true;
     draft.nodes.push({
         id: buildRacCanvasId("node"),
         title: "Nouvelle etape",
-        x: maxX + RAC_CANVAS_NODE_WIDTH + 30,
+        x: maxX + RAC_CANVAS_STAGE_HSPACE,
         y: maxY,
+        width: RAC_CANVAS_NEW_NODE_WIDTH,
         fields: [{ label: "Champ", value: "" }],
     });
 
-    renderRacInspectionView();
+    commitRacDraftChange(trackId);
 }
 
 function duplicateRacDraftNode(trackId, nodeId) {
@@ -883,14 +1296,16 @@ function duplicateRacDraftNode(trackId, nodeId) {
     copy.x = (node.x || 0) + 40;
     copy.y = (node.y || 0) + 40;
 
+    draft.layoutLocked = true;
     draft.nodes.push(copy);
-    renderRacInspectionView();
+    commitRacDraftChange(trackId);
 }
 
 function removeRacDraftNode(trackId, nodeId) {
     const draft = racInspectorState.draftsByTrackId[trackId];
     if (!draft || draft.nodes.length <= 1) return;
 
+    draft.layoutLocked = true;
     draft.nodes = draft.nodes.filter((node) => node.id !== nodeId);
     // Supprime aussi toutes les aretes connectees au noeud retire pour eviter
     // les liens orphelins qui ne pourraient plus etre relies dans le rendu.
@@ -902,7 +1317,15 @@ function removeRacDraftNode(trackId, nodeId) {
         racInspectorState.selectedEdgeId = null;
     }
 
-    renderRacInspectionView();
+    commitRacDraftChange(trackId);
+}
+
+function toggleRacDraftNodeCollapsed(trackId, nodeId) {
+    const node = findRacDraftNode(trackId, nodeId);
+    if (!node) return;
+
+    node.collapsed = !node.collapsed;
+    commitRacDraftChange(trackId);
 }
 
 function addRacDraftEdge(trackId, sourceNodeId, targetNodeId) {
@@ -917,24 +1340,26 @@ function addRacDraftEdge(trackId, sourceNodeId, targetNodeId) {
     );
     if (exists) return;
 
+    draft.layoutLocked = true;
     draft.edges.push({
         id: buildRacCanvasId("edge"),
         sourceNodeId,
         targetNodeId,
     });
 
-    renderRacInspectionView();
+    commitRacDraftChange(trackId);
 }
 
 function removeRacDraftEdge(trackId, edgeId) {
     const draft = racInspectorState.draftsByTrackId[trackId];
     if (!draft) return;
 
+    draft.layoutLocked = true;
     draft.edges = draft.edges.filter((edge) => edge.id !== edgeId);
     if (racInspectorState.selectedEdgeId === edgeId) {
         racInspectorState.selectedEdgeId = null;
     }
-    renderRacInspectionView();
+    commitRacDraftChange(trackId);
 }
 
 function selectRacDraftEdge(trackId, edgeId) {
@@ -960,13 +1385,20 @@ function renderRacEditablePath(record) {
     }
 
     const trackIdAttr = _escHtml(draft.trackId);
+    const canvasWidth = Math.max(Number(draft.layoutWidth || 0), 1120);
+    const canvasHeight = Math.max(Number(draft.layoutHeight || 0), 520);
     const nodesHtml = draft.nodes.map((node) => renderRacCanvasNode(draft.trackId, node)).join("");
+    const saveState = racInspectorState.draftSaveStateByTrackId[draft.trackId] || { status: "idle" };
 
     return `
         <div class="rbd-rac-canvas-toolbar">
             <span class="rbd-rac-canvas-hint">
                 Glissez les etapes pour les positionner. Reliez deux etapes en glissant
-                d'un point de droite (sortie) vers un point de gauche (entree).
+                depuis un point de connexion vers le point oppose d'une autre etape.
+                ${draft.hasParallelPaths ? "Chemins // detectes : les branches sont alignees par couloir." : ""}
+            </span>
+            <span class="rbd-rac-autosave-status" data-rac-draft-save-status="${trackIdAttr}" data-status="${_escHtml(saveState.status || "idle")}">
+                ${_escHtml(getRacDraftSaveStateLabel(draft.trackId))}
             </span>
             <button class="btn btn-secondary btn-small" type="button"
                 onclick="addRacDraftNode('${escapeJsString(draft.trackId)}')">
@@ -979,7 +1411,11 @@ function renderRacEditablePath(record) {
             onmousedown="handleRacCanvasBackgroundMouseDown(event, '${escapeJsString(draft.trackId)}')"
         >
             <svg class="rbd-rac-canvas-svg" data-canvas-svg="${trackIdAttr}"></svg>
-            <div class="rbd-rac-canvas-nodes" data-canvas-nodes="${trackIdAttr}">
+            <div
+                class="rbd-rac-canvas-nodes"
+                data-canvas-nodes="${trackIdAttr}"
+                style="min-width:${canvasWidth}px; min-height:${canvasHeight}px;"
+            >
                 ${nodesHtml}
             </div>
             <div class="rbd-rac-canvas-popover" data-canvas-popover="${trackIdAttr}" hidden></div>
@@ -992,22 +1428,28 @@ function renderRacEditablePath(record) {
 // drag par le filtre de la fonction startRacNodeDrag.
 function renderRacCanvasNode(trackId, node) {
     const fields = Array.isArray(node.fields) ? node.fields : [];
+    const isCollapsed = Boolean(node.collapsed);
+    const nodeWidth = getRacCanvasNodeWidth(node);
 
     return `
         <article
-            class="rbd-rac-canvas-node"
+            class="rbd-rac-canvas-node ${isCollapsed ? "is-collapsed" : ""} ${node.isParallelPath ? "is-parallel-path" : ""}"
             data-node-id="${_escHtml(node.id)}"
-            style="left:${Number(node.x) || 0}px; top:${Number(node.y) || 0}px; width:${RAC_CANVAS_NODE_WIDTH}px;"
+            style="left:${Number(node.x) || 0}px; top:${Number(node.y) || 0}px; width:${nodeWidth}px;"
             onmousedown="startRacNodeDrag(event, '${escapeJsString(trackId)}', '${escapeJsString(node.id)}')"
         >
             <header class="rbd-rac-canvas-node-header">
                 <input
                     class="rbd-form-input rbd-rac-inline-input"
                     type="text"
+                    data-focus-key="rac-node-title:${_escHtml(trackId)}:${_escHtml(node.id)}"
                     value="${_escHtml(node.title || "") }"
                     oninput="updateRacDraftNodeTitle('${escapeJsString(trackId)}', '${escapeJsString(node.id)}', this.value)"
                 />
                 <div class="rbd-rac-canvas-node-actions">
+                    <button class="btn btn-secondary btn-small" type="button"
+                        onclick="toggleRacDraftNodeCollapsed('${escapeJsString(trackId)}', '${escapeJsString(node.id)}')"
+                        title="${isCollapsed ? "Deplier" : "Replier"} ce noeud">${isCollapsed ? "▸" : "▾"}</button>
                     <button class="btn btn-secondary btn-small" type="button"
                         onclick="duplicateRacDraftNode('${escapeJsString(trackId)}', '${escapeJsString(node.id)}')"
                         title="Dupliquer ce noeud">⎘</button>
@@ -1017,44 +1459,49 @@ function renderRacCanvasNode(trackId, node) {
                 </div>
             </header>
 
-            <div class="rbd-rac-canvas-node-body">
-                ${fields.map((field, fieldIndex) => `
-                    <div class="rbd-rac-field-row">
-                        <input
-                            class="rbd-form-input"
-                            type="text"
-                            value="${_escHtml(field?.label || "") }"
-                            placeholder="Nom du champ"
-                            oninput="updateRacDraftNodeField('${escapeJsString(trackId)}', '${escapeJsString(node.id)}', ${fieldIndex}, 'label', this.value)"
-                        />
-                        <input
-                            class="rbd-form-input"
-                            type="text"
-                            value="${_escHtml(field?.value || "") }"
-                            placeholder="Valeur"
-                            oninput="updateRacDraftNodeField('${escapeJsString(trackId)}', '${escapeJsString(node.id)}', ${fieldIndex}, 'value', this.value)"
-                        />
-                        <button class="btn btn-secondary btn-small" type="button"
-                            onclick="removeRacDraftNodeField('${escapeJsString(trackId)}', '${escapeJsString(node.id)}', ${fieldIndex})">−</button>
-                    </div>
-                `).join("")}
-                <button class="btn btn-secondary btn-small rbd-rac-canvas-node-addfield" type="button"
-                    onclick="addRacDraftNodeField('${escapeJsString(trackId)}', '${escapeJsString(node.id)}')">
-                    + Champ
-                </button>
-            </div>
+            ${isCollapsed ? "" : `
+                <div class="rbd-rac-canvas-node-body">
+                    ${fields.map((field, fieldIndex) => `
+                        <div class="rbd-rac-field-row">
+                            <input
+                                class="rbd-form-input"
+                                type="text"
+                                data-focus-key="rac-node-label:${_escHtml(trackId)}:${_escHtml(node.id)}:${fieldIndex}"
+                                value="${_escHtml(field?.label || "") }"
+                                placeholder="Nom du champ"
+                                oninput="updateRacDraftNodeField('${escapeJsString(trackId)}', '${escapeJsString(node.id)}', ${fieldIndex}, 'label', this.value)"
+                            />
+                            <input
+                                class="rbd-form-input"
+                                type="text"
+                                data-focus-key="rac-node-value:${_escHtml(trackId)}:${_escHtml(node.id)}:${fieldIndex}"
+                                value="${_escHtml(field?.value || "") }"
+                                placeholder="Valeur"
+                                oninput="updateRacDraftNodeField('${escapeJsString(trackId)}', '${escapeJsString(node.id)}', ${fieldIndex}, 'value', this.value)"
+                            />
+                            <button class="btn btn-secondary btn-small" type="button"
+                                onclick="removeRacDraftNodeField('${escapeJsString(trackId)}', '${escapeJsString(node.id)}', ${fieldIndex})">−</button>
+                        </div>
+                    `).join("")}
+                    <button class="btn btn-secondary btn-small rbd-rac-canvas-node-addfield" type="button"
+                        onclick="addRacDraftNodeField('${escapeJsString(trackId)}', '${escapeJsString(node.id)}')">
+                        + Champ
+                    </button>
+                </div>
+            `}
 
             <span
                 class="rbd-rac-handle rbd-rac-handle-target"
                 data-handle-type="target"
                 data-node-id="${_escHtml(node.id)}"
-                title="Point d'entree (cliquez/glissez depuis une sortie)"
+                onmousedown="startRacEdgeDrag(event, '${escapeJsString(trackId)}', '${escapeJsString(node.id)}', 'target')"
+                title="Point d'entree (glissez vers une sortie)"
             ></span>
             <span
                 class="rbd-rac-handle rbd-rac-handle-source"
                 data-handle-type="source"
                 data-node-id="${_escHtml(node.id)}"
-                onmousedown="startRacEdgeDrag(event, '${escapeJsString(trackId)}', '${escapeJsString(node.id)}')"
+                onmousedown="startRacEdgeDrag(event, '${escapeJsString(trackId)}', '${escapeJsString(node.id)}', 'source')"
                 title="Point de sortie (glissez vers une entree)"
             ></span>
         </article>
@@ -1176,6 +1623,42 @@ function cssEscapeAttr(value) {
     return String(value || "").replace(/(["\\])/g, "\\$1");
 }
 
+function getRacCanvasHandlePoint(canvas, nodeId, handleType) {
+    const handle = canvas?.querySelector(`.rbd-rac-handle[data-node-id="${cssEscapeAttr(nodeId)}"][data-handle-type="${cssEscapeAttr(handleType)}"]`);
+    if (!canvas || !handle) {
+        return null;
+    }
+
+    const canvasRect = canvas.getBoundingClientRect();
+    const handleRect = handle.getBoundingClientRect();
+    return {
+        x: handleRect.left + handleRect.width / 2 - canvasRect.left + canvas.scrollLeft,
+        y: handleRect.top + handleRect.height / 2 - canvasRect.top + canvas.scrollTop,
+    };
+}
+
+function findRacHandleAtPoint(canvas, clientX, clientY, expectedType) {
+    if (!canvas) {
+        return null;
+    }
+
+    const directElement = document.elementFromPoint(clientX, clientY);
+    const directHandle = directElement?.closest(`.rbd-rac-handle[data-handle-type="${expectedType}"]`);
+    if (directHandle && canvas.contains(directHandle)) {
+        return directHandle;
+    }
+
+    const tolerance = 12;
+    const handles = Array.from(canvas.querySelectorAll(`.rbd-rac-handle[data-handle-type="${expectedType}"]`));
+    return handles.find((handle) => {
+        const rect = handle.getBoundingClientRect();
+        return clientX >= rect.left - tolerance
+            && clientX <= rect.right + tolerance
+            && clientY >= rect.top - tolerance
+            && clientY <= rect.bottom + tolerance;
+    }) || null;
+}
+
 // ----------------------------------------------------------------------------
 // Gestion souris : drag d'un noeud, drag d'un lien, clic sur fond.
 // Les listeners globaux (mousemove/mouseup) sont attaches a la fenetre puis
@@ -1203,6 +1686,10 @@ function startRacNodeDrag(event, trackId, nodeId) {
     const offsetY = startMouseY - (Number(node.y) || 0);
 
     nodeEl.classList.add("is-dragging");
+    const draft = racInspectorState.draftsByTrackId[trackId];
+    if (draft) {
+        draft.layoutLocked = true;
+    }
 
     function onMove(moveEvent) {
         const x = moveEvent.clientX - canvasRect.left + canvas.scrollLeft - offsetX;
@@ -1219,25 +1706,25 @@ function startRacNodeDrag(event, trackId, nodeId) {
         window.removeEventListener("mousemove", onMove);
         window.removeEventListener("mouseup", onUp);
         nodeEl.classList.remove("is-dragging");
+        queueRacDraftAutosave(trackId);
     }
 
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
 }
 
-function startRacEdgeDrag(event, trackId, sourceNodeId) {
+function startRacEdgeDrag(event, trackId, nodeId, handleType = "source") {
     event.preventDefault();
     event.stopPropagation();
 
+    const startHandleType = handleType === "target" ? "target" : "source";
+    const expectedDropType = startHandleType === "source" ? "target" : "source";
     const canvas = document.querySelector(`.rbd-rac-canvas[data-canvas-id="${cssEscapeAttr(trackId)}"]`);
     const svg = canvas?.querySelector(`svg[data-canvas-svg="${cssEscapeAttr(trackId)}"]`);
-    const sourceEl = canvas?.querySelector(`[data-node-id="${cssEscapeAttr(sourceNodeId)}"]`);
-    if (!canvas || !svg || !sourceEl) return;
+    const startPoint = getRacCanvasHandlePoint(canvas, nodeId, startHandleType);
+    if (!canvas || !svg || !startPoint) return;
 
     const canvasRect = canvas.getBoundingClientRect();
-    const sourceRect = sourceEl.getBoundingClientRect();
-    const sourceX = sourceRect.right - canvasRect.left + canvas.scrollLeft;
-    const sourceY = sourceRect.top + sourceRect.height / 2 - canvasRect.top + canvas.scrollTop;
 
     // Trace temporaire affiche pendant le drag du lien.
     const tempPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -1247,7 +1734,10 @@ function startRacEdgeDrag(event, trackId, sourceNodeId) {
     function onMove(moveEvent) {
         const currentX = moveEvent.clientX - canvasRect.left + canvas.scrollLeft;
         const currentY = moveEvent.clientY - canvasRect.top + canvas.scrollTop;
-        tempPath.setAttribute("d", buildRacBezierPath(sourceX, sourceY, currentX, currentY));
+        const path = startHandleType === "source"
+            ? buildRacBezierPath(startPoint.x, startPoint.y, currentX, currentY)
+            : buildRacBezierPath(currentX, currentY, startPoint.x, startPoint.y);
+        tempPath.setAttribute("d", path);
     }
 
     function onUp(upEvent) {
@@ -1255,12 +1745,16 @@ function startRacEdgeDrag(event, trackId, sourceNodeId) {
         window.removeEventListener("mouseup", onUp);
         tempPath.remove();
 
-        // Detecte si le mouseup tombe sur un point d'entree (target) d'un autre noeud.
-        const dropEl = document.elementFromPoint(upEvent.clientX, upEvent.clientY);
-        const targetHandle = dropEl?.closest('.rbd-rac-handle[data-handle-type="target"]');
-        const targetNodeId = targetHandle?.getAttribute("data-node-id");
-        if (targetNodeId) {
-            addRacDraftEdge(trackId, sourceNodeId, targetNodeId);
+        // Detecte le point oppose avec une tolerance geometrique. Cette methode
+        // reste fiable meme si le SVG ou le bord du noeud se trouve sous la souris.
+        const dropHandle = findRacHandleAtPoint(canvas, upEvent.clientX, upEvent.clientY, expectedDropType);
+        const dropNodeId = dropHandle?.getAttribute("data-node-id");
+        if (dropNodeId) {
+            if (startHandleType === "source") {
+                addRacDraftEdge(trackId, nodeId, dropNodeId);
+            } else {
+                addRacDraftEdge(trackId, dropNodeId, nodeId);
+            }
         }
     }
 
@@ -1343,6 +1837,7 @@ function renderRacInspectionFilters() {
                     id="rac-inspection-search"
                     class="rbd-form-input"
                     type="search"
+                    data-focus-key="rac-search"
                     value="${_escHtml(racInspectorState.searchText || "") }"
                     placeholder="Signal, bornier, prise, equipement..."
                     oninput="updateRacInspectionSearch(this.value)"
@@ -1354,6 +1849,7 @@ function renderRacInspectionFilters() {
                 <select
                     id="rac-inspection-status-filter"
                     class="rbd-form-input"
+                    data-focus-key="rac-status-filter"
                     onchange="updateRacInspectionStatusFilter(this.value)"
                 >
                     ${renderRacStatusOptions(racInspectorState.statusFilter)}
@@ -1383,38 +1879,80 @@ function renderRacStatusOptions(selectedValue) {
     }).join("");
 }
 
-function renderRacInspectionTable(records, selectedRecord) {
-    if (!records || records.length === 0) {
-        return `
-            <div class="rbd-rac-empty-state compact">
-                <div class="rbd-rac-empty-icon">📭</div>
-                <div>
-                    <h4>Aucune liaison pour ce filtre</h4>
-                    <p>Elargissez la recherche ou reinitialisez le filtre de statut.</p>
-                </div>
-            </div>
-        `;
-    }
+function renderRacInspectionTableHeaderCell(records, column) {
+    const filters = racInspectorState.columnFilters[column.key] || { select: "", text: "" };
+    const options = getRacInspectionColumnOptions(records, column.key);
+    const isOpen = racInspectorState.openColumnFilterKey === column.key;
+    const isActive = hasActiveRacInspectionColumnFilter(column.key);
 
     return `
-        <div class="rbd-rac-table-wrap">
+        <th>
+            <div class="rbd-rac-table-head-cell">
+                <button
+                    class="rbd-rac-table-head-trigger ${isActive ? "is-active" : ""} ${isOpen ? "is-open" : ""}"
+                    type="button"
+                    onclick="toggleRacInspectionColumnFilterMenu('${escapeJsString(column.key)}')"
+                >
+                    <span class="rbd-rac-table-head-label">${_escHtml(column.label)}</span>
+                    <span class="rbd-rac-table-head-trigger-icon">${isActive ? "●" : "▾"}</span>
+                </button>
+                ${isOpen ? `
+                    <div class="rbd-rac-table-filter-popover">
+                        <select
+                            class="rbd-form-input rbd-rac-table-filter-select"
+                            data-focus-key="rac-column-select:${_escHtml(column.key)}"
+                            onchange="updateRacInspectionColumnFilter('${escapeJsString(column.key)}', 'select', this.value)"
+                        >
+                            <option value="">Toutes</option>
+                            ${options.map((option) => `
+                                <option value="${_escHtml(option)}" ${filters.select === option ? "selected" : ""}>${_escHtml(option)}</option>
+                            `).join("")}
+                        </select>
+                        <input
+                            class="rbd-form-input rbd-rac-table-filter-input"
+                            type="text"
+                            data-focus-key="rac-column-text:${_escHtml(column.key)}"
+                            value="${_escHtml(filters.text || "") }"
+                            placeholder="${_escHtml(column.placeholder || "Filtrer...") }"
+                            oninput="updateRacInspectionColumnFilter('${escapeJsString(column.key)}', 'text', this.value)"
+                        />
+                        <div class="rbd-rac-table-filter-popover-actions">
+                            <button class="btn btn-secondary btn-small" type="button"
+                                onclick="resetRacInspectionColumnFilter('${escapeJsString(column.key)}')">
+                                Vider
+                            </button>
+                            <button class="btn btn-secondary btn-small" type="button"
+                                onclick="closeRacInspectionColumnFilterMenu()">
+                                Fermer
+                            </button>
+                        </div>
+                    </div>
+                ` : ""}
+            </div>
+        </th>
+    `;
+}
+
+function renderRacInspectionTable(records, selectedRecord) {
+    const baseRecords = getBaseFilteredRacInspectionRecords();
+    const tbodyHtml = records && records.length > 0
+        ? records.map((record) => renderRacInspectionTableRow(record, selectedRecord)).join("")
+        : `
+            <tr class="rbd-rac-table-empty-row">
+                <td colspan="${RAC_TABLE_COLUMNS.length}">Aucune liaison ne correspond aux filtres en cours.</td>
+            </tr>
+        `;
+
+    return `
+        <div class="rbd-rac-table-wrap" onmousedown="handleRacTableWrapMouseDown(event)">
             <table class="rbd-table rbd-rac-table">
                 <thead>
                     <tr>
-                        <th>Ligne</th>
-                        <th>Statut</th>
-                        <th>Bornier</th>
-                        <th>Borne</th>
-                        <th>Information</th>
-                        <th>Type</th>
-                        <th>Chemin intermediaire</th>
-                        <th>Cibles</th>
-                        <th>Carte</th>
-                        <th>Borne carte</th>
+                        ${RAC_TABLE_COLUMNS.map((column) => renderRacInspectionTableHeaderCell(baseRecords, column)).join("")}
                     </tr>
                 </thead>
                 <tbody>
-                    ${records.map((record) => renderRacInspectionTableRow(record, selectedRecord)).join("")}
+                    ${tbodyHtml}
                 </tbody>
             </table>
         </div>

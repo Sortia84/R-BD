@@ -86,6 +86,12 @@ class RACManager:
         self.rac_files_dir = self.rac_data_dir / "files"
         self.rac_files_dir.mkdir(parents=True, exist_ok=True)
 
+        # Répertoire de stockage des brouillons graphiques de l'inspecteur RAC.
+        # Ces fichiers sont volontairement séparés des JSON parsés afin de ne
+        # jamais modifier la donnée source issue du fichier Excel importé.
+        self.rac_drafts_dir = self.rac_data_dir / "drafts"
+        self.rac_drafts_dir.mkdir(parents=True, exist_ok=True)
+
         # Chemin du fichier d'index
         self.index_path = self.rac_data_dir / "index.json"
         self.categories_path = self.rac_data_dir / "categories.json"
@@ -166,6 +172,166 @@ class RACManager:
         except (IOError, json.JSONDecodeError):
             # Fallback robuste
             return self.DEFAULT_CATEGORIES
+
+    def _build_draft_path(self, rac_id: str) -> Path:
+        """
+        Construire le chemin du fichier de brouillon associé à un RAC.
+
+        Le nom de fichier est assaini pour éviter toute interprétation de
+        séparateur de chemin dans un identifiant reçu depuis l'API.
+        """
+        safe_rac_id = re.sub(r"[^A-Za-z0-9_.-]+", "_", str(rac_id or "")).strip("_")
+        return self.rac_drafts_dir / f"{safe_rac_id or 'rac_unknown'}.json"
+
+    def _empty_draft_payload(self, rac_id: str) -> Dict[str, Any]:
+        """Créer la structure JSON standard des brouillons d'inspection RAC."""
+        return {
+            "version": "1.0",
+            "rac_id": rac_id,
+            "updated_at": None,
+            "drafts_by_track_id": {},
+        }
+
+    def _sanitize_inspection_draft(self, track_id: str, draft: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Normaliser un brouillon graphique avant écriture disque.
+
+        Seules les propriétés attendues par l'IHM sont persistées. Cette étape
+        évite de stocker des champs imprévus provenant du navigateur tout en
+        conservant les positions, les nœuds, les champs et les liens modifiés.
+        """
+        nodes: List[Dict[str, Any]] = []
+        for raw_node in draft.get("nodes", []) if isinstance(draft.get("nodes", []), list) else []:
+            if not isinstance(raw_node, dict):
+                continue
+
+            raw_fields = raw_node.get("fields", []) if isinstance(raw_node.get("fields", []), list) else []
+            fields = [
+                {
+                    "label": str(raw_field.get("label", "")) if isinstance(raw_field, dict) else "",
+                    "value": str(raw_field.get("value", "")) if isinstance(raw_field, dict) else "",
+                }
+                for raw_field in raw_fields
+            ]
+
+            node: Dict[str, Any] = {
+                "id": str(raw_node.get("id", "")),
+                "title": str(raw_node.get("title", "")),
+                "x": float(raw_node.get("x", 0) or 0),
+                "y": float(raw_node.get("y", 0) or 0),
+                "width": float(raw_node.get("width", 0) or 0),
+                "fields": fields,
+                "collapsed": bool(raw_node.get("collapsed", False)),
+                "isParallelPath": bool(raw_node.get("isParallelPath", False)),
+            }
+
+            if raw_node.get("stage") is not None:
+                node["stage"] = int(raw_node.get("stage") or 0)
+            if raw_node.get("lane") is not None:
+                node["lane"] = int(raw_node.get("lane") or 0)
+
+            if node["id"]:
+                nodes.append(node)
+
+        edges: List[Dict[str, Any]] = []
+        for raw_edge in draft.get("edges", []) if isinstance(draft.get("edges", []), list) else []:
+            if not isinstance(raw_edge, dict):
+                continue
+
+            edge = {
+                "id": str(raw_edge.get("id", "")),
+                "sourceNodeId": str(raw_edge.get("sourceNodeId", "")),
+                "targetNodeId": str(raw_edge.get("targetNodeId", "")),
+            }
+            if edge["id"] and edge["sourceNodeId"] and edge["targetNodeId"]:
+                edges.append(edge)
+
+        return {
+            "trackId": track_id,
+            "nodes": nodes,
+            "edges": edges,
+            "parallelLaneCount": int(draft.get("parallelLaneCount", 1) or 1),
+            "hasParallelPaths": bool(draft.get("hasParallelPaths", False)),
+            "layoutLocked": bool(draft.get("layoutLocked", True)),
+            "layoutWidth": float(draft.get("layoutWidth", 0) or 0),
+            "layoutHeight": float(draft.get("layoutHeight", 0) or 0),
+        }
+
+    def get_inspection_drafts(self, rac_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Charger les brouillons graphiques de l'inspection RAC.
+
+        Le résultat est un dictionnaire indexé par `track_id`, ce qui permet à
+        l'IHM de restaurer uniquement les chemins déjà modifiés par l'utilisateur.
+        """
+        if not self.get_by_id(rac_id):
+            return None
+
+        draft_path = self._build_draft_path(rac_id)
+        if not draft_path.exists():
+            return self._empty_draft_payload(rac_id)
+
+        try:
+            payload = json.loads(draft_path.read_text(encoding="utf-8"))
+            if not isinstance(payload, dict):
+                return self._empty_draft_payload(rac_id)
+            if not isinstance(payload.get("drafts_by_track_id"), dict):
+                payload["drafts_by_track_id"] = {}
+            payload["rac_id"] = rac_id
+            return payload
+        except (IOError, json.JSONDecodeError) as exc:
+            logger.error("[RAC][Draft] Erreur lecture brouillons %s : %s", rac_id, exc)
+            return self._empty_draft_payload(rac_id)
+
+    def save_inspection_draft(
+        self,
+        rac_id: str,
+        track_id: str,
+        draft: Dict[str, Any],
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Sauvegarder le brouillon graphique d'une liaison RAC.
+
+        La sauvegarde est incrémentale : seul le brouillon de la liaison
+        concernée est remplacé dans le fichier JSON de brouillons du RAC.
+        """
+        if not self.get_by_id(rac_id):
+            return None
+        if not track_id or not isinstance(draft, dict):
+            raise ValueError("Brouillon RAC invalide")
+
+        payload = self.get_inspection_drafts(rac_id) or self._empty_draft_payload(rac_id)
+        drafts_by_track_id = payload.get("drafts_by_track_id", {})
+        if not isinstance(drafts_by_track_id, dict):
+            drafts_by_track_id = {}
+
+        sanitized_draft = self._sanitize_inspection_draft(track_id, draft)
+        updated_at = datetime.now().isoformat()
+
+        drafts_by_track_id[track_id] = sanitized_draft
+        payload.update(
+            {
+                "version": "1.0",
+                "rac_id": rac_id,
+                "updated_at": updated_at,
+                "drafts_by_track_id": drafts_by_track_id,
+            }
+        )
+
+        draft_path = self._build_draft_path(rac_id)
+        draft_path.write_text(
+            json.dumps(payload, indent=2, ensure_ascii=False),
+            encoding="utf-8",
+        )
+
+        logger.info("[RAC][Draft] Brouillon sauvegardé : rac=%s track=%s", rac_id, track_id)
+        return {
+            "status": "ok",
+            "rac_id": rac_id,
+            "track_id": track_id,
+            "updated_at": updated_at,
+            "draft": sanitized_draft,
+        }
 
     def _normalize_catalog_entry(self, entry: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -996,6 +1162,13 @@ class RACManager:
             if parsed_path.exists():
                 parsed_path.unlink()
                 logger.info("[RAC][Delete] JSON parsé supprimé : %s", parsed_path.name)
+
+        # Supprimer le brouillon graphique associé à ce RAC pour éviter de
+        # conserver des modifications utilisateur devenues orphelines.
+        draft_path = self._build_draft_path(rac_id)
+        if draft_path.exists():
+            draft_path.unlink()
+            logger.info("[RAC][Delete] Brouillon inspection supprimé : %s", draft_path.name)
 
         # Retirer de l'index
         self.catalog = [e for e in self.catalog if e.get("id") != rac_id]

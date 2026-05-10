@@ -20,7 +20,7 @@ Les instances partagées sont importées depuis api/shared.py.
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException, Query
 
@@ -164,6 +164,44 @@ async def get_rac_inspection(rac_id: str):
     if not payload:
         raise HTTPException(status_code=404, detail=f"Inspection RAC introuvable : {rac_id}")
     return payload
+
+
+@router.get("/{rac_id}/inspection-drafts")
+async def get_rac_inspection_drafts(rac_id: str):
+    """
+    Retourner les brouillons graphiques enregistrés pour l'inspection RAC.
+
+    Les brouillons sont stockés séparément du JSON parsé pour préserver la
+    donnée d'import et ne persister que les adaptations de l'IHM.
+    """
+    logger.info("[RAC][API] GET /api/rac/%s/inspection-drafts", rac_id)
+    payload = rac_manager.get_inspection_drafts(rac_id)
+    if payload is None:
+        raise HTTPException(status_code=404, detail=f"RAC introuvable : {rac_id}")
+    return payload
+
+
+@router.put("/{rac_id}/inspection-drafts/{track_id}")
+async def save_rac_inspection_draft(
+    rac_id: str,
+    track_id: str,
+    draft: Dict[str, Any],
+):
+    """
+    Sauvegarder automatiquement le brouillon graphique d'une liaison RAC.
+
+    Le corps de requête correspond au graphe édité côté navigateur : nœuds,
+    champs, positions et liens. La normalisation finale reste côté Python.
+    """
+    logger.info("[RAC][API] PUT /api/rac/%s/inspection-drafts/%s", rac_id, track_id)
+    try:
+        result = rac_manager.save_inspection_draft(rac_id, track_id, draft)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    if result is None:
+        raise HTTPException(status_code=404, detail=f"RAC introuvable : {rac_id}")
+    return result
 
 
 @router.post("/import")
