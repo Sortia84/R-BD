@@ -503,34 +503,112 @@ function filterIsaItems(query) {
 }
 
 /**
+ * Recherche les occurrences deja presentes dans le test pour un couple
+ * (identifiant ISA, libelle d'etat). Renvoie la liste des entrees existantes,
+ * ce qui permet d'afficher un badge "Etape N" ou "Ajoute" a cote du bouton
+ * d'etat correspondant dans la modale ISA picker.
+ *
+ * @param {string} type Type d'info courant (cde / alarmes / tcd).
+ * @param {string} isaId Identifiant ISA de l'item visualise.
+ * @param {string} stateLabel Libelle de l'etat associe au bouton.
+ * @returns {Array<object>} Liste des info-items deja ajoutes correspondants.
+ */
+function findExistingInfosForState(type, isaId, stateLabel) {
+    const test = window.currentTest || {};
+    const items = Array.isArray(test[type]) ? test[type] : [];
+    const normalizedIsaId = String(isaId || '').trim();
+    const normalizedState = String(stateLabel || '').trim().toUpperCase();
+
+    return items.filter(info => {
+        const matchIsa = String(info.isa_id || '').trim() === normalizedIsaId;
+        const matchState = String(info.state || '').trim().toUpperCase() === normalizedState;
+        return matchIsa && matchState;
+    });
+}
+
+/**
+ * Construit le badge d'avertissement affiche pres d'un bouton d'etat de la
+ * modale ISA picker. Il sert de retour visuel immediat pour signaler que la
+ * combinaison item+etat est deja presente dans le test, et indiquer (si la
+ * liaison existe) le numero de l'etape associee.
+ *
+ * @param {string} type Type d'info (cde / alarmes / tcd).
+ * @param {string} isaId Identifiant ISA de l'item.
+ * @param {string} stateLabel Libelle de l'etat (ou chaine vide pour "sans etat").
+ * @returns {string} HTML du badge ou chaine vide si aucune correspondance.
+ */
+function buildIsaPickerStateBadge(type, isaId, stateLabel) {
+    const matches = findExistingInfosForState(type, isaId, stateLabel);
+
+    if (!matches.length) {
+        return '';
+    }
+
+    // On privilegie l'affichage du numero d'etape lie a la premiere occurrence
+    // associee a une etape, sinon on signale simplement que l'item est ajoute.
+    const steps = Array.isArray(window.currentTest?.steps) ? window.currentTest.steps : [];
+    const linkedNumbers = matches
+        .map(info => steps.find(step => step.id === info.step_id)?.number)
+        .filter(Boolean);
+
+    if (linkedNumbers.length) {
+        // Si plusieurs etapes sont liees on les concatene pour rester lisible.
+        const uniqueNumbers = [...new Set(linkedNumbers)].sort((a, b) => a - b);
+        const labelText = uniqueNumbers.length === 1
+            ? `Etape ${uniqueNumbers[0]}`
+            : `Etapes ${uniqueNumbers.join(', ')}`;
+        return `<span class="isa-state-badge isa-state-badge-step" title="Deja present dans le test">${escapeHtml(labelText)}</span>`;
+    }
+
+    // Aucun rattachement explicite a une etape, on affiche juste "Ajoute(s)".
+    const countLabel = matches.length > 1 ? `${matches.length} ajouts` : 'Ajoute';
+    return `<span class="isa-state-badge isa-state-badge-added" title="Deja present dans le test">${escapeHtml(countLabel)}</span>`;
+}
+
+/**
  * Affiche la liste des items
  */
 function renderIsaStateButtons(item, itemId) {
     const states = Array.isArray(item.allowed_states) ? item.allowed_states : [];
+    const type = pickerState.type;
+    const isaId = item.id || itemId;
 
     if (!states.length) {
+        // Cas particulier : item sans etat predefini, on propose "Ajouter sans etat"
+        // et on affiche un badge "Ajoute" si un item identique sans etat existe deja.
+        const badgeHtml = buildIsaPickerStateBadge(type, isaId, '');
         return `
             <div class="item-states">
-                <button type="button"
-                    class="isa-state-button is-empty-state"
-                    onclick="addIsaItemState('${escapeJsString(itemId)}', -1); event.stopPropagation();">
-                    Ajouter sans état
-                </button>
+                <div class="isa-state-cell">
+                    <button type="button"
+                        class="isa-state-button is-empty-state"
+                        onclick="addIsaItemState('${escapeJsString(itemId)}', -1); event.stopPropagation();">
+                        Ajouter sans etat
+                    </button>
+                    ${badgeHtml}
+                </div>
             </div>
         `;
     }
 
     const buttons = states.map((state, index) => {
-        const label = escapeHtml(state.label || state.code || 'Etat');
+        const stateLabel = state.label || state.code || 'Etat';
+        const safeLabel = escapeHtml(stateLabel);
         const title = state.value
             ? ` title="${escapeHtml(state.source || state.code)} : ${escapeHtml(state.value)}"`
             : '';
+        // Badge construit avec le libelle reel d'etat (state.label) car c'est
+        // ce libelle qui est stocke dans info.state cote test-editor.
+        const badgeHtml = buildIsaPickerStateBadge(type, isaId, stateLabel);
         return `
-            <button type="button"
-                class="isa-state-button"
-                onclick="addIsaItemState('${escapeJsString(itemId)}', ${index}); event.stopPropagation();"${title}>
-                ${label}
-            </button>
+            <div class="isa-state-cell">
+                <button type="button"
+                    class="isa-state-button"
+                    onclick="addIsaItemState('${escapeJsString(itemId)}', ${index}); event.stopPropagation();"${title}>
+                    ${safeLabel}
+                </button>
+                ${badgeHtml}
+            </div>
         `;
     }).join('');
 
@@ -558,17 +636,20 @@ function renderIsaItems() {
         if (item.niveau) metaHtml.push(`<span>${item.niveau}</span>`);
         if (item.ied) metaHtml.push(`<span>IED: ${item.ied}</span>`);
         if (item.regroupement_label) metaHtml.push(`<span>Regroupement: ${escapeHtml(item.regroupement_label)}</span>`);
-        if (item.entrees_count) metaHtml.push(`<span>${item.entrees_count} entrées</span>`);
+        if (item.entrees_count) metaHtml.push(`<span>${item.entrees_count} entrees</span>`);
         const statesHtml = renderIsaStateButtons(item, itemId);
 
+        // Le bloc "item-states" est sorti du conteneur item-info pour devenir
+        // un sibling direct : il s'affiche sur la droite de la ligne via flex,
+        // ce qui exploite mieux la largeur disponible de la modale.
         return `
             <div class="isa-popup-item">
                 <div class="item-info">
                     <div class="item-libelle">${escapeHtml(item.libelle8 || itemId)}</div>
                     ${item.libelle16 ? `<div class="item-libelle16">${escapeHtml(item.libelle16)}</div>` : ''}
                     ${metaHtml.length ? `<div class="item-meta">${metaHtml.join('')}</div>` : ''}
-                    ${statesHtml}
                 </div>
+                ${statesHtml}
             </div>
         `;
     }).join('');
@@ -599,6 +680,11 @@ function addIsaItemState(itemId, stateIndex) {
 
     pickerState.addedCount += 1;
     document.getElementById('isa-picker-count').textContent = pickerState.addedCount;
+
+    // Re-render de la liste pour rafraichir les badges "Ajoute" / "Etape N" :
+    // l'ajout vient juste d'enrichir window.currentTest, le badge associe
+    // doit donc apparaitre immediatement a cote du bouton declenche.
+    renderIsaItems();
 }
 
 /**

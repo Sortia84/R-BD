@@ -82,8 +82,76 @@ const RbdTestParameters = {
         return suffix ? `${func.name} - ${suffix}` : func.name;
     },
 
+    /**
+     * Libelle court d'une fonction (Nom Fonction uniquement). Utilise pour les
+     * listes deroulantes compactes ou la place est limitee. Le libelle complet
+     * (avec variante / LD) reste disponible via optionLabelForFunction et est
+     * pousse en attribut title pour servir de tooltip natif.
+     */
+    optionLabelForFunctionCompact(func) {
+        return func?.name || "";
+    },
+
     optionLabelForParameter(parameter) {
         return parameter.description ? `${parameter.name} - ${parameter.description}` : parameter.name;
+    },
+
+    /**
+     * Libelle court d'un parametre (name uniquement). La description complete
+     * est destinee a etre exposee via l'attribut title pour ne pas surcharger
+     * la liste deroulante.
+     */
+    optionLabelForParameterCompact(parameter) {
+        return parameter?.name || "";
+    },
+
+    /**
+     * Retourne tous les parametres consideres comme parametres de temporisation
+     * (cf. isTemporisationParameter), regroupes par fonction d'origine. Permet
+     * d'alimenter une liste deroulante de temporisation independamment du type
+     * d'injection actuellement selectionne pour l'etape.
+     *
+     * @returns {Array<{functionId:string, functionName:string, parameter:object}>}
+     */
+    allTemporisationParameters() {
+        const items = [];
+        this.functions().forEach(func => {
+            (func.parameters || []).forEach(parameter => {
+                if (this.isTemporisationParameter(parameter)) {
+                    items.push({
+                        functionId: String(func.id || ""),
+                        functionName: String(func.name || ""),
+                        parameter
+                    });
+                }
+            });
+        });
+        return items;
+    },
+
+    /**
+     * Resout un parametre de temporisation a partir d'une valeur composite
+     * "functionId::parameterId". Renvoie null si la valeur est vide ou
+     * introuvable.
+     */
+    findTemporisationParameterByComposite(compositeValue) {
+        const raw = String(compositeValue || "");
+        if (!raw) {
+            return null;
+        }
+        const [functionId, parameterId] = raw.split("::");
+        if (!functionId || !parameterId) {
+            return null;
+        }
+        const func = this.functionById(functionId);
+        if (!func) {
+            return null;
+        }
+        const parameter = (func.parameters || []).find(item => item.id === parameterId || item.name === parameterId) || null;
+        if (!parameter) {
+            return null;
+        }
+        return { functionId: String(func.id), functionName: String(func.name || ""), parameter };
     },
 
     isTemporisationParameter(parameter) {
@@ -174,6 +242,7 @@ function escapeParameterHtml(value) {
 function renderParameterOptions(functionId, selectedValue = "", options = {}) {
     const selected = String(selectedValue || "");
     const onlyTemporisation = Boolean(options.onlyTemporisation);
+    const compact = Boolean(options.compact);
     const parameters = RbdTestParameters.parametersFor(functionId).filter(parameter =>
         !onlyTemporisation || RbdTestParameters.isTemporisationParameter(parameter)
     );
@@ -184,16 +253,30 @@ function renderParameterOptions(functionId, selectedValue = "", options = {}) {
 
     return [
         '<option value="">Selectionner un parametre</option>',
-        ...parameters.map(parameter => `
-            <option value="${escapeParameterHtml(parameter.id)}" ${selected === parameter.id || selected === parameter.name ? "selected" : ""}>
-                ${escapeParameterHtml(RbdTestParameters.optionLabelForParameter(parameter))}
-            </option>
-        `)
+        ...parameters.map(parameter => {
+            // En mode compact, on affiche uniquement le nom court du parametre
+            // et on pousse la description complete dans l'attribut title pour
+            // qu'elle reste accessible en infobulle native.
+            const isSelected = selected === parameter.id || selected === parameter.name;
+            const visibleLabel = compact
+                ? RbdTestParameters.optionLabelForParameterCompact(parameter)
+                : RbdTestParameters.optionLabelForParameter(parameter);
+            const fullLabel = RbdTestParameters.optionLabelForParameter(parameter);
+            const titleAttr = compact && fullLabel && fullLabel !== visibleLabel
+                ? ` title="${escapeParameterHtml(fullLabel)}"`
+                : "";
+            return `
+                <option value="${escapeParameterHtml(parameter.id)}" ${isSelected ? "selected" : ""}${titleAttr}>
+                    ${escapeParameterHtml(visibleLabel)}
+                </option>
+            `;
+        })
     ].join("");
 }
 
-function renderFunctionOptions(selectedValue = "") {
+function renderFunctionOptions(selectedValue = "", options = {}) {
     const selected = String(selectedValue || "");
+    const compact = Boolean(options.compact);
     const functions = RbdTestParameters.functions();
 
     if (!functions.length) {
@@ -202,12 +285,68 @@ function renderFunctionOptions(selectedValue = "") {
 
     return [
         "<option value=\"\">Selectionner un type d'injection</option>",
-        ...functions.map(func => `
-            <option value="${escapeParameterHtml(func.id)}" ${selected === func.id || selected === func.name ? "selected" : ""}>
-                ${escapeParameterHtml(RbdTestParameters.optionLabelForFunction(func))}
-            </option>
-        `)
+        ...functions.map(func => {
+            // Mode compact : on n'affiche que le nom de la fonction, le libelle
+            // complet (incluant variante et LD) est pousse en infobulle.
+            const isSelected = selected === func.id || selected === func.name;
+            const visibleLabel = compact
+                ? RbdTestParameters.optionLabelForFunctionCompact(func)
+                : RbdTestParameters.optionLabelForFunction(func);
+            const fullLabel = RbdTestParameters.optionLabelForFunction(func);
+            const titleAttr = compact && fullLabel && fullLabel !== visibleLabel
+                ? ` title="${escapeParameterHtml(fullLabel)}"`
+                : "";
+            return `
+                <option value="${escapeParameterHtml(func.id)}" ${isSelected ? "selected" : ""}${titleAttr}>
+                    ${escapeParameterHtml(visibleLabel)}
+                </option>
+            `;
+        })
     ].join("");
+}
+
+/**
+ * Construit les options du selecteur de parametre de temporisation a partir
+ * de TOUTES les fonctions du catalogue (pas seulement celle liee au type
+ * d'injection courant). La valeur de chaque option est composite et encode
+ * la fonction d'origine et le parametre sous la forme "functionId::parameterId".
+ *
+ * @param {string} selectedComposite Valeur composite courante (ou "").
+ * @returns {string} HTML des options a inserer dans le select.
+ */
+function renderTemporisationParameterOptionsAllFunctions(selectedComposite = "") {
+    const items = RbdTestParameters.allTemporisationParameters();
+
+    if (!items.length) {
+        return '<option value="">Aucun parametre de temporisation disponible</option>';
+    }
+
+    const selected = String(selectedComposite || "");
+
+    const optionsHtml = items.map(({ functionId, functionName, parameter }) => {
+        const composite = `${functionId}::${parameter.id}`;
+        const isSelected = selected === composite;
+        // Libelle visible : nom du parametre uniquement, pour ne pas saturer
+        // la liste deroulante. La fonction d'origine et la description sont
+        // poussees en infobulle pour rester consultables.
+        const visibleLabel = RbdTestParameters.optionLabelForParameterCompact(parameter);
+        const tooltipParts = [];
+        if (functionName) {
+            tooltipParts.push(functionName);
+        }
+        if (parameter.description) {
+            tooltipParts.push(parameter.description);
+        }
+        const tooltip = tooltipParts.join(" - ");
+        const titleAttr = tooltip ? ` title="${escapeParameterHtml(tooltip)}"` : "";
+        return `
+            <option value="${escapeParameterHtml(composite)}" ${isSelected ? "selected" : ""}${titleAttr}>
+                ${escapeParameterHtml(visibleLabel)}
+            </option>
+        `;
+    }).join("");
+
+    return `<option value="">Selectionner un parametre de temporisation</option>${optionsHtml}`;
 }
 
 async function openTestParameters() {

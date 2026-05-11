@@ -1919,50 +1919,89 @@ function getStepInjectionParameterId(step) {
     return step?.injection_parameter_id || step?.injection_parameter || '';
 }
 
+/**
+ * Identifiant de la fonction d'origine du parametre de temporisation.
+ *
+ * Le parametre de temporisation est desormais independant du type d'injection :
+ * on memorise donc explicitement la fonction du catalogue dont il est issu
+ * pour pouvoir le restituer correctement au prochain rendu, meme si l'etape
+ * n'a aucune injection associee.
+ */
+function getStepTemporisationFunctionId(step) {
+    return step?.temporisation_function_id || '';
+}
+
 function getStepTemporisationParameterId(step) {
     return step?.temporisation_parameter_id || step?.temporisation_parameter || '';
+}
+
+/**
+ * Construit la valeur composite "functionId::parameterId" attendue par le
+ * selecteur global de parametre de temporisation. Renvoie une chaine vide
+ * si l'une des deux informations est absente sur l'etape.
+ */
+function getStepTemporisationCompositeId(step) {
+    const functionId = getStepTemporisationFunctionId(step);
+    const parameterId = getStepTemporisationParameterId(step);
+    if (!functionId || !parameterId) {
+        return '';
+    }
+    return `${functionId}::${parameterId}`;
 }
 
 function buildInjectionFunctionOptions(selectedValue) {
     if (!window.RbdTestParameters) {
         return '<option value="">Parametrage indisponible</option>';
     }
-    return renderFunctionOptions(selectedValue);
+    // Mode compact : on n'affiche que le nom de la fonction, le libelle
+    // complet (variante / LD) est pousse dans l'attribut title des options.
+    return renderFunctionOptions(selectedValue, { compact: true });
 }
 
 function buildInjectionParameterOptions(functionId, selectedValue) {
     if (!window.RbdTestParameters || !functionId) {
         return "<option value=\"\">Selectionner un type d'injection</option>";
     }
-    return renderParameterOptions(functionId, selectedValue);
+    // Mode compact : seul le nom du parametre est visible, la description
+    // longue reste accessible via l'infobulle native du select.
+    return renderParameterOptions(functionId, selectedValue, { compact: true });
 }
 
-function buildTemporisationParameterOptions(functionId, selectedValue) {
-    if (!window.RbdTestParameters || !functionId) {
-        return "<option value=\"\">Selectionner un type d'injection</option>";
+function buildTemporisationParameterOptions(selectedComposite) {
+    if (!window.RbdTestParameters) {
+        return '<option value="">Parametrage indisponible</option>';
     }
-    return renderParameterOptions(functionId, selectedValue, { onlyTemporisation: true });
+    // Le parametre de temporisation est independant du type d'injection :
+    // on alimente la liste a partir de toutes les fonctions disponibles, en
+    // utilisant une valeur composite "functionId::parameterId" pour preserver
+    // l'origine de chaque parametre.
+    return renderTemporisationParameterOptionsAllFunctions(selectedComposite);
 }
 
 function renderStepItemHtml(step, stepNum) {
+    // Identifiants techniques utilises pour cibler le DOM des sous-zones.
     const stepId = step.id;
+
+    // Modes courants de l'etape (avec normalisation defensive sur les valeurs).
     const injectionMode = step.injection === 'Avec' ? 'Avec' : 'Sans';
     const temporisationMode = step.temporisation === 'Auto' ? 'Auto' : 'Manuel';
+
+    // Identifiants metier extraits de l'etape.
     const injectionFunctionId = getStepInjectionFunctionId(step);
     const injectionParameterId = getStepInjectionParameterId(step);
-    const temporisationParameterId = getStepTemporisationParameterId(step);
-    const hasInjectionParameter = injectionMode === 'Avec' && Boolean(injectionFunctionId);
-    const stepFieldClasses = [
-        'step-fields',
-        `step-fields-${injectionMode.toLowerCase()}`,
-        hasInjectionParameter ? 'step-fields-with-injection-parameter' : 'step-fields-no-injection-parameter',
-    ].join(' ');
+    const temporisationCompositeId = getStepTemporisationCompositeId(step);
 
+    // Le bloc "Parametre d'injection" n'est affiche que si une fonction
+    // d'injection est selectionnee (sinon il n'y a rien a parametrer).
+    const hasInjectionParameter = injectionMode === 'Avec' && Boolean(injectionFunctionId);
+
+    // Tous les champs sont desormais aligns sur une seule ligne flex. Le
+    // masquage conditionnel se fait via la classe utilitaire .inline-hidden.
     return `
         <div class="step-item" id="${stepId}">
             <div class="step-row">
                 <div class="step-number">${stepNum}</div>
-                <div class="${stepFieldClasses}">
+                <div class="step-fields">
                     <div class="form-group step-field-name">
                         <label>Nom</label>
                         <input type="text" class="form-input" placeholder="Nom de l'etape"
@@ -2000,7 +2039,7 @@ function renderStepItemHtml(step, stepNum) {
                                 <option value="Auto" ${temporisationMode === 'Auto' ? 'selected' : ''}>Auto</option>
                             </select>
                             <div class="step-inline step-duration-fields ${temporisationMode === 'Manuel' ? '' : 'inline-hidden'}" id="${stepId}_duration">
-                                <input type="number" class="form-input step-duration-input" placeholder="0" min="0"
+                                <input type="number" class="form-input step-duration-input" placeholder="0" min="0" max="99999" maxlength="5"
                                     value="${Number(step.duration) || 0}"
                                     onchange="updateStep('${stepId}', 'duration', this.value)">
                                 <select class="form-input step-unit-select" onchange="updateStep('${stepId}', 'unit', this.value)">
@@ -2011,7 +2050,7 @@ function renderStepItemHtml(step, stepNum) {
                             </div>
                             <div class="step-inline step-auto-parameter ${temporisationMode === 'Auto' ? '' : 'inline-hidden'}" id="${stepId}_auto_duration">
                                 <select class="form-input step-auto-parameter-select" onchange="updateStepTemporisationParameter('${stepId}', this.value)">
-                                    ${buildTemporisationParameterOptions(injectionFunctionId, temporisationParameterId)}
+                                    ${buildTemporisationParameterOptions(temporisationCompositeId)}
                                 </select>
                             </div>
                         </div>
@@ -2119,6 +2158,11 @@ function buildInfoStepOptions(selectedStepId = '') {
 
 function renderInfoItemHtml(type, info, label) {
     const infoId = info.id;
+
+    // Le badge \"Etape liee\" n'est plus affiche sur la ligne d'info elle-meme :
+    // il a ete deplace dans la modale ISA picker, a cote des boutons d'etat,
+    // pour signaler qu'une combinaison item+etat est deja presente dans le test.
+
     return `
         <div class="info-item" id="${infoId}">
             <input type="text" placeholder="Nom ${label}" value="${escapeHtml(info.name || '')}"
@@ -2129,8 +2173,8 @@ function renderInfoItemHtml(type, info, label) {
             <select class="info-step-select" onchange="updateInfo('${type}', '${infoId}', 'step_id', this.value)">
                 ${buildInfoStepOptions(info.step_id)}
             </select>
-            <button class="btn-icon-small" style="width: 24px; height: 24px; background: var(--danger);"
-                onclick="removeInfo('${type}', '${infoId}')">✕</button>
+            <button class="info-item-remove" title="Supprimer cette ligne"
+                onclick="removeInfo('${type}', '${infoId}')">\u2715</button>
         </div>
     `;
 }
@@ -2357,6 +2401,10 @@ function addStep() {
         injection_parameter: '',
         state: '',
         temporisation: 'Manuel',
+        // Le parametre de temporisation est independant du type d'injection :
+        // on memorise donc la fonction d'origine ET l'identifiant du parametre.
+        temporisation_function_id: '',
+        temporisation_function_name: '',
         temporisation_parameter_id: '',
         temporisation_parameter: '',
         duration: 0,
@@ -2370,7 +2418,12 @@ function addStep() {
 }
 
 /**
- * Active/désactive l'injection
+ * Active/desactive l'injection d'une etape.
+ *
+ * Lorsque l'injection passe a "Sans" on nettoie uniquement les champs lies
+ * a l'injection elle-meme (fonction et parametre d'injection). Le parametre
+ * de temporisation est volontairement preserve : il est desormais independant
+ * du type d'injection courant.
  */
 function toggleInjection(stepId, value) {
     const step = currentTest.steps.find(s => s.id === stepId);
@@ -2380,8 +2433,6 @@ function toggleInjection(stepId, value) {
         step.fault_type = '';
         step.injection_parameter_id = '';
         step.injection_parameter = '';
-        step.temporisation_parameter_id = '';
-        step.temporisation_parameter = '';
     }
     updateStep(stepId, 'injection', value);
     renderSteps();
@@ -2389,11 +2440,17 @@ function toggleInjection(stepId, value) {
 }
 
 /**
- * Active/désactive la temporisation manuelle
+ * Bascule entre temporisation Manuel et Auto.
+ *
+ * En Manuel : on remet a zero le parametre de temporisation associe (puisque
+ *   la duree est saisie a la main) et on garantit la presence d'une unite.
+ * En Auto   : on remet a zero la duree et l'unite manuelle.
  */
 function toggleTemporisation(stepId, value) {
     const step = currentTest.steps.find(s => s.id === stepId);
     if (step && value === 'Manuel') {
+        step.temporisation_function_id = '';
+        step.temporisation_function_name = '';
         step.temporisation_parameter_id = '';
         step.temporisation_parameter = '';
         step.unit = step.unit || 'ms';
@@ -2420,8 +2477,8 @@ function updateStepInjectionFunction(stepId, functionId) {
     step.fault_type = selectedFunction?.name || '';
     step.injection_parameter_id = '';
     step.injection_parameter = '';
-    step.temporisation_parameter_id = '';
-    step.temporisation_parameter = '';
+    // Le parametre de temporisation est independant du type d'injection : on
+    // ne le reinitialise plus quand la fonction d'injection change.
     renderSteps();
     updateChronogram();
 }
@@ -2438,14 +2495,34 @@ function updateStepInjectionParameter(stepId, parameterId) {
     updateChronogram();
 }
 
-function updateStepTemporisationParameter(stepId, parameterId) {
+/**
+ * Met a jour le parametre de temporisation depuis une valeur composite
+ * "functionId::parameterId" emise par le selecteur global. La fonction
+ * d'origine est memorisee sur l'etape pour pouvoir restituer la selection
+ * lors du prochain rendu, meme en l'absence de type d'injection.
+ */
+function updateStepTemporisationParameter(stepId, compositeValue) {
     const step = currentTest.steps.find(s => s.id === stepId);
     if (!step) {
         return;
     }
-    const parameter = window.RbdTestParameters?.parameterById(getStepInjectionFunctionId(step), parameterId);
-    step.temporisation_parameter_id = parameter?.id || '';
-    step.temporisation_parameter = parameter?.name || '';
+
+    const resolved = window.RbdTestParameters?.findTemporisationParameterByComposite(compositeValue);
+
+    if (!resolved) {
+        // Valeur vide ou parametre introuvable : on remet l'etape a un etat
+        // "aucun parametre selectionne" sans bloquer la saisie.
+        step.temporisation_function_id = '';
+        step.temporisation_function_name = '';
+        step.temporisation_parameter_id = '';
+        step.temporisation_parameter = '';
+    } else {
+        step.temporisation_function_id = resolved.functionId;
+        step.temporisation_function_name = resolved.functionName || '';
+        step.temporisation_parameter_id = resolved.parameter?.id || '';
+        step.temporisation_parameter = resolved.parameter?.name || '';
+    }
+
     renderSteps();
     updateChronogram();
 }

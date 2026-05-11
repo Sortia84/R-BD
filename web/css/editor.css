@@ -284,166 +284,238 @@ textarea.form-input {
     background: var(--text);
 }
 
+/* Conteneur des champs d'une etape : tous les champs sont alignes sur une seule
+   ligne, alignes en bas pour preserver la coherence visuelle des labels.
+   flex-wrap: wrap reste actif comme securite : si la largeur disponible est
+   trop reduite (petite fenetre), Etat passera proprement a la ligne suivante
+   au lieu de chevaucher les champs precedents. */
 .step-fields {
     flex: 1;
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
     align-items: flex-end;
     gap: 10px;
-    justify-content: start;
     min-width: 0;
 }
 
-.step-fields-sans {
-    grid-template-areas: "name injection temporisation state";
-    grid-template-columns: minmax(120px, 150px) max-content max-content max-content;
-}
-
-.step-fields-avec.step-fields-no-injection-parameter {
-    grid-template-areas:
-        "name injection temporisation state"
-        "injectionType injectionType injectionType injectionType";
-    grid-template-columns: minmax(120px, 150px) max-content max-content max-content;
-}
-
-.step-fields-avec.step-fields-with-injection-parameter {
-    grid-template-areas:
-        "name injection temporisation state"
-        "injectionType injectionType injectionParameter injectionParameter";
-    grid-template-columns: minmax(120px, 150px) max-content max-content max-content;
-}
-
+/* Chaque champ controle sa propre largeur via flex-basis. min-width: 0 est
+   pose pour autoriser un eventuel ajustement, mais flex-shrink: 0 ci-dessous
+   garantit qu'aucun champ ne sera ecrase par les autres. */
 .step-fields .form-group {
     margin-bottom: 0;
     min-width: 0;
+    flex-shrink: 0;
 }
 
+/* Champ Nom : largeur fixe ergonomique pour saisir un libelle court. */
 .step-field-name {
-    grid-area: name;
-    max-width: 150px;
+    flex: 0 0 150px;
+    width: 150px;
 }
 
+/* Champ Injection (Avec / Sans) : largeur calee sur le contenu. */
 .step-field-injection {
-    grid-area: injection;
+    flex: 0 0 auto;
+    width: max-content;
 }
 
+/* Champs Type d'injection et Parametre d'injection :
+   largeur bornee pour rester compacts. Le libelle complet reste accessible
+   via l'attribut title de chaque option (tooltip natif). */
 .step-field-injection-type {
-    grid-area: injectionType;
-    min-width: 0;
+    flex: 0 0 180px;
+    width: 180px;
 }
 
 .step-field-injection-parameter {
-    grid-area: injectionParameter;
-    min-width: 0;
+    flex: 0 0 180px;
+    width: 180px;
 }
 
+/* Champ Temporisation : largeur calee sur le contenu reel des sous-champs.
+   width: max-content est CRUCIAL : sans lui, le bloc se ferait ecraser par
+   le label "Temporisation" et les sous-champs (valeur+unite OU parametre auto)
+   debordaient sous le champ Etat. */
 .step-field-temporisation {
-    grid-area: temporisation;
+    flex: 0 0 auto;
+    width: max-content;
     min-width: 0;
-    width: auto;
-    max-width: none;
-    justify-self: start;
 }
 
+/* Champ Etat : place en fin de ligne, jamais ecrase par les voisins. */
 .step-field-state {
-    grid-area: state;
-    justify-self: start;
+    flex: 0 0 auto;
+    width: max-content;
     margin-left: 0;
 }
 
+/* Selects compacts (Injection, Temporisation, Etat, Unite) :
+   largeur automatique pour s'adapter au libelle le plus long. */
 .step-select-compact,
 .step-field-injection select,
 .step-field-state select {
     width: auto;
-    min-width: 76px;
+    min-width: 0;
     white-space: nowrap;
 }
 
+/* Sous-conteneur generique pour aligner plusieurs sous-champs sur une ligne.
+   width: max-content evite que le conteneur soit etire par son parent column
+   et que ses enfants debordent silencieusement. */
 .step-inline {
     display: flex;
     align-items: center;
     gap: 8px;
-    min-width: 0;
+    width: max-content;
+    max-width: none;
 }
 
 .step-inline .form-input {
     min-width: 0;
 }
 
+/* Bloc Temporisation : tous les sous-champs (mode + valeurs) restent en ligne. */
 .step-temporisation-controls {
     flex-wrap: nowrap;
-    width: auto;
+    width: max-content;
     max-width: none;
 }
 
+/* Liste deroulante du mode de temporisation : largeur sur contenu Manuel/Auto. */
 .step-temporisation-mode {
     flex: 0 0 auto;
-    min-width: 86px;
+    width: auto;
+    min-width: 0;
 }
 
+/* Champ valeur du mode Manuel : prevu pour 5 chiffres maximum. */
 .step-duration-input {
     flex: 0 0 72px;
     width: 72px;
 }
 
+/* Selecteur d'unite : largeur sur contenu (ms / s / min). */
 .step-unit-select {
-    flex: 0 0 64px;
-    width: 64px;
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 0;
 }
 
+/* Selecteur du parametre de temporisation (mode Auto) :
+   largeur suffisante pour afficher un libelle metier lisible. */
 .step-auto-parameter-select {
-    flex: 0 1 190px;
-    width: 190px;
-    min-width: 170px;
-    max-width: 210px;
+    flex: 0 0 240px;
+    width: 240px;
 }
 
+/* Selects type d'injection et parametre d'injection : occupent toute la
+   largeur de leur conteneur tout en restant bornes. */
 .step-field-injection-type select,
 .step-field-injection-parameter select {
     width: 100%;
     max-width: 100%;
 }
 
+/* Classe utilitaire pour masquer un champ tout en preservant le DOM.
+   Les selects masques ne participent plus au calcul de largeur. */
 .inline-hidden {
     display: none !important;
 }
 
-/* Informations complémentaires (CDE, Alarmes, TCD) */
+/* ============================================================
+   Informations complementaires (CDE, Alarmes, TCD)
+   ------------------------------------------------------------
+   Chaque ligne occupe toute la largeur disponible et place les
+   actions (badge etape + bouton supprimer) cote droit.
+   ============================================================ */
 .info-item {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     align-items: center;
-    padding: 8px;
+    padding: 10px 12px;
     background: var(--bg);
-    border-radius: 6px;
-    margin-bottom: 6px;
+    border-radius: 8px;
+    margin-bottom: 8px;
     font-size: 13px;
     min-width: 0;
 }
 
+/* Badge "Etape N" affiche uniquement quand l'item est associe a une etape.
+   Sert de retour visuel immediat sur la liaison etape/donnee. */
+.info-step-badge {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 64px;
+    padding: 4px 10px;
+    background: var(--accent);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+/* Variante neutre quand aucune etape n'est associee (placeholder discret). */
+.info-step-badge.is-empty {
+    background: transparent;
+    color: var(--muted);
+    border: 1px dashed var(--border);
+    font-weight: 600;
+}
+
+/* Champ texte principal : occupe toute la largeur restante. */
 .info-item input {
-    flex: 1;
-    padding: 6px 10px;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 8px 12px;
     border: 1px solid var(--border);
     border-radius: 6px;
     font-size: 13px;
 }
 
+/* Selects communs : taille calee sur le contenu. */
 .info-item select {
-    width: 100px;
-    padding: 6px 10px;
+    flex: 0 0 auto;
+    padding: 8px 10px;
     border: 1px solid var(--border);
     border-radius: 6px;
     font-size: 13px;
+    background: var(--card);
+    color: var(--text);
 }
 
 .info-item .info-state-select {
-    width: 92px;
-    flex: 0 0 92px;
+    width: auto;
+    min-width: 96px;
 }
 
 .info-item .info-step-select {
-    width: 150px;
-    flex: 0 0 150px;
+    width: auto;
+    min-width: 160px;
+    max-width: 220px;
+}
+
+/* Bouton supprimer : taille generique des boutons d'action (32x32). */
+.info-item .info-item-remove {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    background: var(--danger);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.info-item .info-item-remove:hover {
+    background: #b91c1c;
 }
 
 /* Textes helpers */
@@ -800,13 +872,18 @@ textarea.form-input {
     gap: 4px;
 }
 
+/* Ligne d'item dans la modale ISA picker :
+   layout en deux colonnes (info a gauche, actions d'etat a droite) qui exploite
+   toute la largeur disponible du popup. align-items: center pour aligner
+   visuellement les libelles et les boutons. */
 .isa-popup-item {
     display: flex;
     align-items: center;
     padding: 10px 12px;
     border-radius: 8px;
     transition: background 0.15s;
-    gap: 12px;
+    gap: 16px;
+    border: 1px solid transparent;
 }
 
 .isa-popup-item:hover {
@@ -836,8 +913,10 @@ textarea.form-input {
     color: white;
 }
 
+/* Bloc info (libelle + meta) : occupe l'espace restant a gauche. */
 .isa-popup-item .item-info {
-    flex: 1;
+    flex: 1 1 auto;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -858,6 +937,7 @@ textarea.form-input {
     color: var(--muted);
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
 }
 
 .isa-popup-item .item-meta span {
@@ -866,11 +946,28 @@ textarea.form-input {
     border-radius: 4px;
 }
 
+/* Bloc des actions d'etat : sibling direct de item-info, aligne a droite.
+   flex-wrap: wrap permet de gerer un grand nombre d'etats (>4 boutons) sans
+   casser la largeur de la modale. justify-content: flex-end pousse les boutons
+   contre le bord droit pour bien marquer la zone d'action. */
 .isa-popup-item .item-states {
+    flex: 0 1 auto;
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 6px;
+    gap: 8px;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 0;
+    max-width: 60%;
+}
+
+/* Cellule "bouton + badge" : empile verticalement le bouton d'etat et son
+   badge "Etape N" / "Ajoute" pour qu'ils restent solidaires meme en wrap. */
+.isa-state-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
 }
 
 .isa-state-button {
@@ -878,11 +975,12 @@ textarea.form-input {
     background: rgba(0, 167, 222, 0.08);
     color: var(--accent);
     border-radius: 6px;
-    padding: 4px 8px;
-    font-size: 12px;
+    padding: 6px 12px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.15s, color 0.15s, border-color 0.15s;
+    white-space: nowrap;
 }
 
 .isa-state-button:hover {
@@ -894,6 +992,32 @@ textarea.form-input {
     border-color: var(--border);
     background: var(--bg);
     color: var(--muted);
+}
+
+/* Badges affiches sous un bouton d'etat pour signaler que la combinaison
+   item+etat est deja presente dans le test. Le style change selon que le
+   couple est rattache ou non a une etape du test. */
+.isa-state-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.isa-state-badge-step {
+    background: var(--accent);
+    color: white;
+}
+
+.isa-state-badge-added {
+    background: var(--bg);
+    color: var(--muted);
+    border: 1px solid var(--border);
 }
 
 .isa-popup-footer {
@@ -920,31 +1044,9 @@ textarea.form-input {
     gap: 8px;
 }
 
-/* Bouton base de données dans les champs info */
-.info-item {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    margin-bottom: 8px;
-    min-width: 0;
-}
-
-.info-item input {
-    flex: 1;
-    padding: 8px 10px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    font-size: 13px;
-}
-
-.info-item select {
-    padding: 8px 10px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    font-size: 13px;
-    min-width: 80px;
-}
-
+/* Bouton base de donnees dans les champs info :
+   les regles principales de .info-item sont definies plus haut, on conserve
+   uniquement le style specifique du bouton picker base de donnees ici. */
 .btn-db-picker {
     background: var(--bg);
     border: 1px solid var(--border);
