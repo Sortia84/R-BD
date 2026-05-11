@@ -131,10 +131,6 @@ function renderEssaisLayout() {
 
             <!-- Liste des essais -->
             <section class="card rbd-section-shell">
-                <div class="card-header">
-                    <h3 style="margin: 0 0 8px 0;">📋 Liste des essais</h3>
-                    <p class="muted" style="margin: 0;">Cliquez sur un essai pour l'éditer</p>
-                </div>
                 <div id="templates-list" class="templates-grid">
                     <div class="rbd-empty-state">
                         <div class="rbd-empty-state-icon">📦</div>

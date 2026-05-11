@@ -335,14 +335,29 @@ textarea.form-input {
 /* Champ Temporisation : largeur calee sur le contenu reel des sous-champs.
    width: max-content est CRUCIAL : sans lui, le bloc se ferait ecraser par
    le label "Temporisation" et les sous-champs (valeur+unite OU parametre auto)
-   debordaient sous le champ Etat. */
+   debordaient. */
 .step-field-temporisation {
     flex: 0 0 auto;
     width: max-content;
-    min-width: 0;
 }
 
-/* Champ Etat : place en fin de ligne, jamais ecrase par les voisins. */
+/* Champ Valeur (mode Manuel) : input numerique + unite sur une largeur
+   strictement adaptee au contenu. */
+.step-field-duration {
+    flex: 0 0 auto;
+    width: max-content;
+}
+
+/* Champ Parametre tempo (mode Auto) : largeur bornee pour rester compact
+   tout en gardant un libelle lisible. */
+.step-field-auto-parameter {
+    flex: 0 0 180px;
+    width: 180px;
+}
+
+/* Champ Etat : place en fin de ligne, jamais ecrase par les voisins.
+   Desormais positionne entre Nom et Injection pour plus de clarte logique
+   et pour eviter tout chevauchement avec Temporisation. */
 .step-field-state {
     flex: 0 0 auto;
     width: max-content;
@@ -374,11 +389,23 @@ textarea.form-input {
     min-width: 0;
 }
 
-/* Bloc Temporisation : tous les sous-champs (mode + valeurs) restent en ligne. */
-.step-temporisation-controls {
-    flex-wrap: nowrap;
+/* Libelle inline utilise dans la temporisation manuelle pour clarifier la
+   signification du select d'unite sans agrandir excessivement la ligne. */
+.step-inline-caption {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+/* Sous-blocs de la temporisation (manuel / auto) : largeur compacte stricte
+   pour eviter toute projection visuelle sur le champ Etat voisin. */
+.step-duration-fields {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 8px;
     width: max-content;
-    max-width: none;
 }
 
 /* Liste deroulante du mode de temporisation : largeur sur contenu Manuel/Auto. */
@@ -404,9 +431,11 @@ textarea.form-input {
 /* Selecteur du parametre de temporisation (mode Auto) :
    largeur suffisante pour afficher un libelle metier lisible. */
 .step-auto-parameter-select {
-    flex: 0 0 240px;
-    width: 240px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
 }
+
 
 /* Selects type d'injection et parametre d'injection : occupent toute la
    largeur de leur conteneur tout en restant bornes. */
@@ -575,8 +604,10 @@ textarea.form-input {
 
     .step-field-name,
     .step-field-temporisation,
+    .step-field-duration,
+    .step-field-auto-parameter,
     .step-field-state,
-    .step-temporisation-controls {
+    .step-duration-fields {
         width: 100%;
         max-width: none;
     }

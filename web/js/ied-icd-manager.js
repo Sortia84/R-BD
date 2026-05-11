@@ -79,10 +79,6 @@ function renderIcdLayout() {
         <!-- Grille IED -->
         <section class="card rbd-section-shell">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h3 style="margin: 0 0 8px 0;">🖲️ Équipements IED</h3>
-                    <p class="muted" style="margin: 0;">Chaque carte représente un type d'équipement et ses ICD associés</p>
-                </div>
                 <div class="stats-summary" id="stats-summary"></div>
             </div>
             <div id="ied-cards" class="ied-grid">
@@ -749,16 +745,9 @@ function updateStats() {
     const container = document.getElementById('stats-summary');
     if (!container) return;
 
-    // Ne compter que les patterns parents (sans parent défini)
-    const parentPatterns = iedPatterns.filter(p => !p.parent);
-    const totalPatterns = parentPatterns.length;
-    const patternsWithIcd = parentPatterns.filter(p => (p.icd_refs || []).length > 0).length;
-    const orphanCount = getOrphanIcds().length;
-
-    container.innerHTML = `
-        <span class="stat-item">${patternsWithIcd}/${totalPatterns} équipés</span>
-        ${orphanCount > 0 ? `<span class="stat-item warning">${orphanCount} ICD orphelin(s)</span>` : ''}
-    `;
+    // Les compteurs de synthese sont volontairement masques dans l'IHM
+    // pour eviter un doublon d'information dans l'entete de section.
+    container.innerHTML = '';
 }
 
 // ============================================================

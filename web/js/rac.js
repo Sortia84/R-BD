@@ -74,11 +74,6 @@ function renderRacCatalogLayout() {
         </section>
 
         <section class="card rbd-section-shell">
-            <div class="card-header">
-                <h3 style="margin: 0 0 8px 0;">📎 Catalogue RAC par groupe/version</h3>
-                <p class="muted" style="margin: 0;">Chaque carte regroupe les versions d'un même RAC. L'action Ouvrir lance l'inspection JSON détaillée.</p>
-            </div>
-
             <div id="rac-list" class="rbd-grid">
                 <div class="rbd-empty-state">
                     <div class="rbd-empty-state-icon">📎</div>

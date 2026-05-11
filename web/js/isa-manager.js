@@ -54,10 +54,6 @@ function renderIsaLayout() {
         <!-- Grille types ISA -->
         <section class="card rbd-section-shell">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h3 style="margin: 0 0 8px 0;">📁 Types de données ISA</h3>
-                    <p class="muted" style="margin: 0;">Chaque carte représente un type de données et ses fichiers associés</p>
-                </div>
                 <div class="stats-summary" id="isa-stats-summary"></div>
             </div>
             <div id="isa-cards" class="isa-grid">
@@ -669,15 +665,9 @@ function updateIsaStats() {
     const container = document.getElementById('stats-summary');
     if (!container) return;
 
-    const totalFiles = isaCatalog.length;
-    const orphanCount = getOrphanFiles().length;
-    const linkedCount = totalFiles - orphanCount;
-
-    container.innerHTML = `
-        <span class="stat-item">${totalFiles} fichiers</span>
-        <span class="stat-item">${linkedCount} associés</span>
-        ${orphanCount > 0 ? `<span class="stat-item warning">${orphanCount} orphelins</span>` : ''}
-    `;
+    // Les compteurs de synthese sont volontairement masques dans l'IHM
+    // pour eviter un doublon d'information dans l'entete de section.
+    container.innerHTML = '';
 }
 
 // ============================================================

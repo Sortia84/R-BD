@@ -2009,6 +2009,13 @@ function renderStepItemHtml(step, stepNum) {
                             onchange="updateStep('${stepId}', 'name', this.value)">
                     </div>
 
+                    <div class="form-group step-field-state">
+                        <label>Etat</label>
+                        <select class="form-input step-select-compact" onchange="updateStep('${stepId}', 'state', this.value)">
+                            ${buildStateOptions(step.state, 'Selectionner')}
+                        </select>
+                    </div>
+
                     <div class="form-group step-field-injection">
                         <label>Injection</label>
                         <select class="form-input step-select-compact" onchange="toggleInjection('${stepId}', this.value)">
@@ -2033,33 +2040,31 @@ function renderStepItemHtml(step, stepNum) {
 
                     <div class="form-group step-field-temporisation">
                         <label>Temporisation</label>
-                        <div class="step-inline step-temporisation-controls">
-                            <select class="form-input step-select-compact step-temporisation-mode" onchange="toggleTemporisation('${stepId}', this.value)">
-                                <option value="Manuel" ${temporisationMode === 'Manuel' ? 'selected' : ''}>Manuel</option>
-                                <option value="Auto" ${temporisationMode === 'Auto' ? 'selected' : ''}>Auto</option>
+                        <select class="form-input step-select-compact step-temporisation-mode" onchange="toggleTemporisation('${stepId}', this.value)">
+                            <option value="Manuel" ${temporisationMode === 'Manuel' ? 'selected' : ''}>Manuel</option>
+                            <option value="Auto" ${temporisationMode === 'Auto' ? 'selected' : ''}>Auto</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group step-field-duration ${temporisationMode === 'Manuel' ? '' : 'inline-hidden'}" id="${stepId}_duration">
+                        <label>Valeur</label>
+                        <div class="step-inline step-duration-fields">
+                            <input type="number" class="form-input step-duration-input" placeholder="0" min="0" max="99999" maxlength="5"
+                                value="${Number(step.duration) || 0}"
+                                onchange="updateStep('${stepId}', 'duration', this.value)">
+                            <span class="step-inline-caption">Unite</span>
+                            <select class="form-input step-unit-select" onchange="updateStep('${stepId}', 'unit', this.value)">
+                                <option value="ms" ${step.unit === 'ms' || !step.unit ? 'selected' : ''}>ms</option>
+                                <option value="s" ${step.unit === 's' ? 'selected' : ''}>s</option>
+                                <option value="min" ${step.unit === 'min' ? 'selected' : ''}>min</option>
                             </select>
-                            <div class="step-inline step-duration-fields ${temporisationMode === 'Manuel' ? '' : 'inline-hidden'}" id="${stepId}_duration">
-                                <input type="number" class="form-input step-duration-input" placeholder="0" min="0" max="99999" maxlength="5"
-                                    value="${Number(step.duration) || 0}"
-                                    onchange="updateStep('${stepId}', 'duration', this.value)">
-                                <select class="form-input step-unit-select" onchange="updateStep('${stepId}', 'unit', this.value)">
-                                    <option value="ms" ${step.unit === 'ms' || !step.unit ? 'selected' : ''}>ms</option>
-                                    <option value="s" ${step.unit === 's' ? 'selected' : ''}>s</option>
-                                    <option value="min" ${step.unit === 'min' ? 'selected' : ''}>min</option>
-                                </select>
-                            </div>
-                            <div class="step-inline step-auto-parameter ${temporisationMode === 'Auto' ? '' : 'inline-hidden'}" id="${stepId}_auto_duration">
-                                <select class="form-input step-auto-parameter-select" onchange="updateStepTemporisationParameter('${stepId}', this.value)">
-                                    ${buildTemporisationParameterOptions(temporisationCompositeId)}
-                                </select>
-                            </div>
                         </div>
                     </div>
 
-                    <div class="form-group step-field-state">
-                        <label>Etat</label>
-                        <select class="form-input step-select-compact" onchange="updateStep('${stepId}', 'state', this.value)">
-                            ${buildStateOptions(step.state, 'Selectionner')}
+                    <div class="form-group step-field-auto-parameter ${temporisationMode === 'Auto' ? '' : 'inline-hidden'}" id="${stepId}_auto_duration">
+                        <label>Parametre tempo</label>
+                        <select class="form-input step-auto-parameter-select" onchange="updateStepTemporisationParameter('${stepId}', this.value)">
+                            ${buildTemporisationParameterOptions(temporisationCompositeId)}
                         </select>
                     </div>
                 </div>
@@ -2083,14 +2088,17 @@ function renderSteps() {
         return;
     }
 
-    currentTest.steps.forEach(step => {
+    currentTest.steps.forEach((step, index) => {
         const stepId = step.id || `step_${Date.now()}_${Math.random().toString(36).slice(2)}`;
         step.id = stepId;
-        const stepNum = step.number || stepCounter++;
+        // La numerotation est toujours recalculee depuis l'ordre courant
+        // du tableau pour garantir la coherence apres un deplacement.
+        const stepNum = index + 1;
         step.number = stepNum;
         container.insertAdjacentHTML('beforeend', renderStepItemHtml(step, stepNum));
-        stepCounter = Math.max(stepCounter, stepNum + 1);
     });
+
+    stepCounter = (currentTest.steps?.length || 0) + 1;
 }
 
 function renderInfo(type, items, label) {
@@ -2554,24 +2562,24 @@ function updateStep(stepId, field, value) {
  * Déplace une étape
  */
 function moveStep(stepId, direction) {
-    const container = document.getElementById('steps-container');
-    const stepElement = document.getElementById(stepId);
-    const steps = Array.from(container.children).filter(el => el.classList.contains('step-item'));
-    const currentIndex = steps.indexOf(stepElement);
+    const currentIndex = currentTest.steps.findIndex(step => step.id === stepId);
     const newIndex = currentIndex + direction;
 
-    if (newIndex >= 0 && newIndex < steps.length) {
-        if (direction === -1) {
-            container.insertBefore(stepElement, steps[newIndex]);
-        } else {
-            container.insertBefore(stepElement, steps[newIndex].nextSibling);
-        }
+    if (currentIndex < 0) {
+        return;
+    }
 
+    if (newIndex >= 0 && newIndex < currentTest.steps.length) {
         // Réorganiser dans le tableau
         const step = currentTest.steps[currentIndex];
         currentTest.steps.splice(currentIndex, 1);
         currentTest.steps.splice(newIndex, 0, step);
 
+        // Rerendu complet pour mettre a jour :
+        // 1) les numeros d'etapes visibles
+        // 2) les options "Etape N" dans Informations complementaires
+        renderSteps();
+        renderComplementaryInfos();
         updateChronogram();
     }
 }
