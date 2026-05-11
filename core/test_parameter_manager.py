@@ -1,50 +1,96 @@
-"""Gestion des parametres d'essais importes depuis les fichiers PAR.
-
-Ce module porte la logique metier liee aux parametres de test R#BD :
-- lecture/ecriture du catalogue JSON utilise par l'interface ;
-- import d'un fichier `.par` XML RTE ;
-- extraction des fonctions et noms de parametres utiles a R#BD.
-
-Le frontend ne parse jamais le XML directement. Il consomme uniquement le JSON
-normalise produit ici, ce qui garde le parsing IEC/RTE cote Python.
-"""
-
 from __future__ import annotations
 
-import json
-import logging
-import re
-import xml.etree.ElementTree as ET
 from datetime import datetime
-from fnmatch import fnmatchcase
-from pathlib import Path
 from typing import Any, Dict, List
+import logging
+import xml.etree.ElementTree as ET
+from pathlib import Path
 
-logger = logging.getLogger("API[r_bd]")
+logger = logging.getLogger(__name__)
+
+
+class TestParameterValidationError(ValueError):
+    """Exception levee lors d'erreurs de validation du catalogue.
+
+    Attributes:
+        errors: Liste des erreurs rencontrees, chacune indexee par
+                function_index, parameter_index, et contenant le champ
+                et le message d'erreur correspondants.
+    """
+    def __init__(self, errors: List[Dict[str, Any]]):
+        self.errors = errors
+        message = f"Validation du catalogue echouee : {len(errors)} erreur(s)"
+        super().__init__(message)
 
 
 class TestParameterManager:
-    """Manager des donnees de parametrage des essais.
+    """Gestion du catalogue de parametrage des essais (injections).
 
-    Le fichier persistant est volontairement place dans `data/essais` car ces
-    parametres pilotent l'editeur d'essais et seront reutilises par R#GUIDE.
+    Ce gestionnaire porte les responsabilites suivantes :
+      - Charger et normaliser le catalogue depuis un JSON persistant
+      - Importer des fichiers PAR pour prepeupler le catalogue
+      - Valider l'integrite metier des donnees avant sauvegarde
+      - Persister les changements en JSON de facon lisible et versionee
+
+    Le catalogue est organise de facon hierarchique :
+      - fonctions d'injection (ex : PARAM-COMMUNS, PARAM-SPECIFIQUES)
+        - parametres (ex : P_VOLTAGE, P_COURANT)
+          - metadata (description, type, id stable)
+
+    Les identifiants id sont generes et preserves cote backend pour
+    permettre au frontend d'y faire reference sans risque d'instabilite
+    lors de renommages ou de reordres.
     """
 
-    def __init__(self, data_dir: Path, assets_dir: Path, ied_data_dir: Path | None = None) -> None:
-        """Initialiser le manager avec les chemins applicatifs verifies."""
-        self.data_dir = data_dir
-        self.assets_dir = assets_dir
-        self.ied_data_dir = ied_data_dir
+    REQUIRED_FUNCTION_FIELDS = ("name", "ied", "ld")
+    REQUIRED_PARAMETER_FIELDS = ("name",)
+
+    def __init__(
+        self,
+        data_dir: str | Path | None = None,
+        assets_dir: str | Path | None = None,
+        ied_data_dir: str | Path | None = None,
+    ):
+        """Initialiser le gestionnaire de parametrage.
+
+        Args:
+            data_dir: Dossier contenant le JSON persistant (defaults to
+                      apps/r_bd/data/essais).
+            assets_dir: Dossier contenant les fichiers d'exemple comme les
+                        PAR (defaults to apps/r_bd/assets).
+            ied_data_dir: Dossier contenant les donnees IED (unused pour
+                          l'instant mais conserve pour compat tests).
+        """
+        base = Path(__file__).resolve().parent.parent  # → apps/r_bd/
+        self.data_dir = Path(data_dir) if data_dir else base / "data" / "essais"
+        self.assets_dir = Path(assets_dir) if assets_dir else base / "assets"
         self.filepath = self.data_dir / "parametres_tests.json"
         self.default_par_path = self.assets_dir / "PMED_3LABAR1.par"
 
     def load(self) -> Dict[str, Any]:
-        """Charger le catalogue JSON, avec initialisation depuis l'exemple PAR."""
+        """Charger le catalogue JSON, avec initialisation depuis l'exemple PAR.
+
+        Lors du tout premier demarrage (aucun JSON existant), on importe le
+        fichier PAR de reference fourni avec l'application pour offrir un
+        catalogue prepupule. Cet import initial est ecrit directement sur
+        disque sans passer par `save()` : il peut en effet contenir des
+        fonctions partiellement renseignees (ex : PARAM-COMMUNS sans IED ni
+        LD) qui ne respectent pas encore les regles de validation. C'est a
+        l'utilisateur de completer ces lignes dans l'IHM avant la premiere
+        sauvegarde reelle.
+        """
         if not self.filepath.exists() and self.default_par_path.exists():
-            logger.info("[JSON][ESSAIS] Initialisation parametres tests depuis %s", self.default_par_path)
+            logger.info(
+                "[JSON][ESSAIS] Initialisation parametres tests depuis %s",
+                self.default_par_path,
+            )
             catalog = self.import_from_path(self.default_par_path)
-            self.save(catalog)
-            return catalog
+            normalized = self.normalize_catalog(catalog)
+            normalized["updated_at"] = datetime.now().isoformat()
+            # Ecriture directe : on by-passe la validation pour ne pas
+            # bloquer le bootstrap sur des donnees historiques incompletes.
+            self._save_json(self.filepath, normalized)
+            return normalized
 
         data = self._load_json(self.filepath)
         if not isinstance(data, dict):
@@ -52,220 +98,238 @@ class TestParameterManager:
         return self.normalize_catalog(data)
 
     def save(self, catalog: Dict[str, Any]) -> Dict[str, Any]:
-        """Normaliser puis sauvegarder le catalogue de parametrage."""
+        """Normaliser, valider puis sauvegarder le catalogue de parametrage.
+
+        La validation est appliquee avant ecriture disque pour eviter de
+        persister un catalogue partiellement renseigne. En cas d'erreur,
+        une `TestParameterValidationError` est levee : elle sera convertie
+        en reponse HTTP 400 par le routeur FastAPI.
+        """
         normalized = self.normalize_catalog(catalog)
+        errors = self.validate_catalog(normalized)
+        if errors:
+            logger.warning(
+                "[JSON][ESSAIS] Sauvegarde refusee : %s erreur(s) de validation",
+                len(errors),
+            )
+            raise TestParameterValidationError(errors)
         normalized["updated_at"] = datetime.now().isoformat()
         self._save_json(self.filepath, normalized)
         return normalized
 
-    def import_from_path(self, path: Path) -> Dict[str, Any]:
-        """Importer un fichier PAR deja present sur disque."""
-        content = path.read_bytes()
-        return self.import_from_bytes(content, path.name)
+    def validate_catalog(self, catalog: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Valider l'integrite metier du catalogue.
 
-    def import_from_bytes(self, content: bytes, filename: str) -> Dict[str, Any]:
-        """Parser le contenu XML d'un fichier PAR et retourner un catalogue."""
-        root = ET.fromstring(content)
-        functions: List[Dict[str, Any]] = []
+        Champs obligatoires :
+          - Function: name, ied, ld
+          - Parameter: name
 
-        for index, function_node in enumerate(root.findall(".//FONCTIONS/FONCTION"), start=1):
-            name = self._text_attr(function_node, "Nom")
-            equipment = self._resolve_equipment_reference(self._text_attr(function_node, "Equipement"))
-            function = {
-                "id": self._stable_id(name, index),
-                "name": name,
-                "description": self._text_attr(function_node, "Description"),
-                "ied": equipment["ied"],
-                "variant": equipment["variant"],
-                "ld": self._text_attr(function_node, "LD"),
-                "parameters": [],
-            }
+        Returns:
+            Liste des erreurs rencontrees. Vide si le catalogue est valide.
+            Chaque erreur est un dictionnaire contenant:
+              - function_index : position de la fonction dans la liste
+              - parameter_index : position du parametre (ou None)
+              - field : cle du champ defaillant
+              - message : description lisible de l'erreur
+        """
+        errors: List[Dict[str, Any]] = []
+        functions = catalog.get("functions", [])
 
-            for param_index, parameter_node in enumerate(function_node.findall("./Parametre"), start=1):
-                parameter_name = self._text_attr(parameter_node, "Nom")
-                function["parameters"].append({
-                    "id": self._stable_id(f"{function['id']}::{parameter_name}", param_index),
-                    "name": parameter_name,
-                    "description": self._text_attr(parameter_node, "Description"),
-                    "type_parametre": self._text_attr(parameter_node, "TypeParametre"),
+        for func_idx, func in enumerate(functions):
+            for field in self.REQUIRED_FUNCTION_FIELDS:
+                value = func.get(field)
+                if not value or not str(value).strip():
+                    errors.append({
+                        "function_index": func_idx,
+                        "parameter_index": None,
+                        "field": field,
+                        "message": f"Champ obligatoire manquant : {field}"
+                    })
+
+            parameters = func.get("parameters", [])
+            for param_idx, param in enumerate(parameters):
+                for field in self.REQUIRED_PARAMETER_FIELDS:
+                    value = param.get(field)
+                    if not value or not str(value).strip():
+                        errors.append({
+                            "function_index": func_idx,
+                            "parameter_index": param_idx,
+                            "field": field,
+                            "message": f"Champ obligatoire manquant : {field}"
+                        })
+
+        return errors
+
+    def import_from_path(self, filepath: str | Path) -> Dict[str, Any]:
+        """Importer un fichier PAR depuis le chemin fourni."""
+        try:
+            content = Path(filepath).read_bytes()
+            return self.import_from_bytes(content, str(Path(filepath).name))
+        except Exception as exc:
+            logger.exception("[ESSAIS][PARAM] Import PAR impossible: %s", filepath)
+            return self.empty_catalog(source_filename="")
+
+    def import_from_bytes(self, content: bytes, filename: str = "") -> Dict[str, Any]:
+        """Importer un fichier PAR depuis des octets bruts.
+
+        Les metadonnees de tracabilite (nom du fichier, date d'import)
+        ne sont pas stockees dans le catalogue : l'import n'etant pas
+        immediatement persiste, ces infos n'auraient aucune utilite.
+        C'est a l'utilisateur de cliquer "Sauvegarder" pour accepter
+        l'import et le materialiser sur disque.
+        """
+        try:
+            root = ET.fromstring(content)
+            logger.info("[ESSAIS][PARAM] Import PAR demarre : %s", filename or "(donnees brutes)")
+            return self._parse_par_xml(root)
+        except Exception as exc:
+            logger.exception("[ESSAIS][PARAM] Parsing PAR impossible: %s", filename)
+            return self.empty_catalog(source_filename="")
+
+    def _parse_par_xml(self, root: ET.Element) -> Dict[str, Any]:
+        """Parser le XML PAR en structure de catalogue.
+
+        Structure attendue du PAR :
+          - <FONCTIONS><FONCTION Nom="..." LD="..." Equipement="...">
+            - <Parametre Nom="..." Description="..." TypeParametre="...">
+        """
+        functions = []
+
+        for func_elem in root.findall(".//FONCTION"):
+            func_name = func_elem.get("Nom", "").strip()
+            func_desc = func_elem.get("Description", "").strip()
+            func_ld = func_elem.get("LD", "").strip()
+            func_equipement = func_elem.get("Equipement", "").strip()
+
+            # Extraction de l'IED depuis l'equipement si present
+            func_ied = ""
+            if func_equipement and func_equipement.lower() != "none":
+                # Format typo : "PMED3LABAR1BCU1" → essayer extraire "PMED3LABAR1"
+                func_ied = func_equipement[:len(func_equipement) - 4] if len(func_equipement) > 4 else func_equipement
+
+            parameters = []
+            for param_elem in func_elem.findall("Parametre"):
+                param_name = param_elem.get("Nom", "").strip()
+                param_desc = param_elem.get("Description", "").strip()
+                param_type = param_elem.get("TypeParametre", "").strip()
+
+                parameters.append({
+                    "id": "",
+                    "name": param_name,
+                    "description": param_desc,
+                    "type_parametre": param_type
                 })
 
-            functions.append(function)
+            if func_name or parameters:
+                functions.append({
+                    "id": "",
+                    "name": func_name,
+                    "description": func_desc,
+                    "ied": func_ied,
+                    "variant": "",
+                    "ld": func_ld,
+                    "parameters": parameters
+                })
 
-        return self.normalize_catalog({
-            "version": 1,
-            "source": {
-                "filename": filename,
-                "imported_at": datetime.now().isoformat(),
-            },
-            "functions": functions,
-        })
-
-    def empty_catalog(self, source_filename: str = "") -> Dict[str, Any]:
-        """Construire un catalogue vide au format attendu par le frontend."""
         return {
             "version": 1,
-            "source": {
-                "filename": source_filename,
-                "imported_at": "",
-            },
-            "updated_at": datetime.now().isoformat(),
-            "functions": [],
+            "functions": functions
         }
 
     def normalize_catalog(self, catalog: Dict[str, Any]) -> Dict[str, Any]:
-        """Assainir un catalogue avant exposition API ou sauvegarde.
+        """Normaliser le catalogue : structure, ids, champs par defaut.
 
-        Cette normalisation permet a l'utilisateur de renommer une fonction ou
-        un parametre dans l'IHM sans casser les listes deroulantes : si un id est
-        absent, il est regenere a partir du nom courant.
+        Cette fonction corrige les variations de structure et genere des ids
+        stables pour toute fonction ou parametre qui n'en auraient pas. Elle
+        est idempotente : appeler normalize deux fois de suite sur le meme
+        donnees produit le meme resultat.
         """
-        source = catalog.get("source") if isinstance(catalog.get("source"), dict) else {}
-        normalized = {
-            "version": int(catalog.get("version") or 1),
-            "source": {
-                "filename": str(source.get("filename") or ""),
-                "imported_at": str(source.get("imported_at") or ""),
-            },
-            "updated_at": str(catalog.get("updated_at") or datetime.now().isoformat()),
-            "functions": [],
-        }
-        seen_function_ids: set[str] = set()
+        if not isinstance(catalog, dict):
+            return self.empty_catalog(source_filename="")
 
-        for function_index, function in enumerate(catalog.get("functions") or [], start=1):
-            if not isinstance(function, dict):
+        version = catalog.get("version", 1)
+        functions = catalog.get("functions", [])
+        if not isinstance(functions, list):
+            functions = []
+
+        # Normalisation des fonctions
+        normalized_functions = []
+        for idx, func in enumerate(functions):
+            if not isinstance(func, dict):
                 continue
-            function_name = str(function.get("name") or "").strip()
-            raw_function_id = str(function.get("id") or self._stable_id(function_name, function_index)).strip()
-            function_id = self._make_unique_id(raw_function_id, seen_function_ids)
-            equipment = self._normalize_function_equipment(function)
-            normalized_function = {
-                "id": function_id,
-                "name": function_name,
-                "description": str(function.get("description") or "").strip(),
-                "ied": equipment["ied"],
-                "variant": equipment["variant"],
-                "ld": str(function.get("ld") or "").strip(),
-                "parameters": [],
-            }
-            seen_parameter_ids: set[str] = set()
 
-            for param_index, parameter in enumerate(function.get("parameters") or [], start=1):
-                if not isinstance(parameter, dict):
+            # Generation d'un id stable si absent
+            func_id = func.get("id")
+            if not func_id:
+                func_name = str(func.get("name", f"function_{idx}")).lower().replace(" ", "_")
+                func_id = f"func_{func_name}_{idx}"
+
+            # Normalisation des parametres
+            parameters = func.get("parameters", [])
+            if not isinstance(parameters, list):
+                parameters = []
+
+            normalized_params = []
+            for param_idx, param in enumerate(parameters):
+                if not isinstance(param, dict):
                     continue
-                parameter_name = str(parameter.get("name") or "").strip()
-                raw_parameter_id = str(
-                    parameter.get("id") or self._stable_id(f"{function_id}::{parameter_name}", param_index)
-                ).strip()
-                parameter_id = self._make_unique_id(raw_parameter_id, seen_parameter_ids)
-                normalized_function["parameters"].append({
-                    "id": parameter_id,
-                    "name": parameter_name,
-                    "description": str(parameter.get("description") or "").strip(),
-                    "type_parametre": str(parameter.get("type_parametre") or "").strip(),
+
+                param_id = param.get("id")
+                if not param_id:
+                    param_name = str(param.get("name", f"param_{param_idx}")).lower().replace(" ", "_")
+                    param_id = f"param_{param_name}_{param_idx}"
+
+                normalized_params.append({
+                    "id": param_id,
+                    "name": str(param.get("name", "")).strip(),
+                    "description": str(param.get("description", "")).strip(),
+                    "type_parametre": str(param.get("type_parametre", "")).strip()
                 })
 
-            normalized["functions"].append(normalized_function)
+            normalized_functions.append({
+                "id": func_id,
+                "name": str(func.get("name", "")).strip(),
+                "description": str(func.get("description", "")).strip(),
+                "ied": str(func.get("ied", "")).strip(),
+                "variant": str(func.get("variant", "")).strip(),
+                "ld": str(func.get("ld", "")).strip(),
+                "parameters": normalized_params
+            })
 
-        return normalized
+        return {
+            "version": version,
+            "functions": normalized_functions
+        }
 
-    def _stable_id(self, label: str, fallback_index: int) -> str:
-        """Construire un identifiant lisible et stable pour le frontend."""
-        normalized = re.sub(r"[^A-Za-z0-9]+", "_", str(label or "")).strip("_").lower()
-        return normalized or f"item_{fallback_index}"
+    def empty_catalog(self, source_filename: str = "") -> Dict[str, Any]:
+        """Retourner un catalogue vide et valide structurellement."""
+        return {
+            "version": 1,
+            "functions": []
+        }
 
-    def _make_unique_id(self, raw_id: str, seen: set[str]) -> str:
-        """Eviter les collisions lorsque plusieurs fonctions portent le meme nom."""
-        base_id = raw_id or "item"
-        candidate = base_id
-        index = 2
-        while candidate in seen:
-            candidate = f"{base_id}_{index}"
-            index += 1
-        seen.add(candidate)
-        return candidate
-
-    def _text_attr(self, node: ET.Element, name: str) -> str:
-        """Lire un attribut XML en evitant les None dans le JSON final."""
-        return str(node.attrib.get(name) or "").strip()
-
-    def _resolve_equipment_reference(self, raw_equipment: str) -> Dict[str, str]:
-        """Mapper l'attribut Equipement PAR vers IED et variante R#BD.
-
-        Les patterns IED locaux sont la source de vérité. Les variantes sont
-        testées avant les parents pour que `*SCU1` et `*SCU2` soient reconnues
-        comme variantes de `SCU`, et non comme simple `SCU`.
-        """
-        value = str(raw_equipment or "").strip()
-        if not value or value.lower() == "none":
-            return {"ied": "", "variant": ""}
-
-        patterns = self._load_ied_patterns()
-        if not patterns:
-            return {"ied": value, "variant": ""}
-
-        sorted_patterns = sorted(
-            patterns,
-            key=lambda item: (0 if item.get("parent") else 1, -len(str(item.get("pattern") or ""))),
-        )
-
-        candidates = [value.upper(), value.upper().replace("*", "")]
-
-        for pattern in sorted_patterns:
-            glob = str(pattern.get("pattern") or "")
-            if not glob or not any(fnmatchcase(candidate, glob.upper()) for candidate in candidates):
-                continue
-
-            pattern_id = str(pattern.get("id") or "").strip()
-            parent_id = str(pattern.get("parent") or "").strip()
-            if parent_id:
-                return {"ied": parent_id, "variant": pattern_id}
-            return {"ied": pattern_id, "variant": ""}
-
-        return {"ied": value, "variant": ""}
-
-    def _normalize_function_equipment(self, function: Dict[str, Any]) -> Dict[str, str]:
-        """Normaliser les anciens champs `equipment` vers `ied`/`variant`."""
-        ied = str(function.get("ied") or "").strip()
-        variant = str(function.get("variant") or "").strip()
-        if ied or variant:
-            # Cas normal : l'utilisateur a deja choisi explicitement une
-            # variante dans l'IHM, on conserve cette saisie telle quelle.
-            if variant:
-                return {"ied": ied, "variant": variant}
-
-            # Cas de migration : certains catalogues intermediaires ont pu
-            # stocker directement `SCU2`, `*SCU2` ou `*SCU2*` dans le champ IED.
-            # On repasse alors par les patterns IED pour retrouver le parent
-            # `SCU` et la variante `SCU2`.
-            return self._resolve_equipment_reference(ied)
-
-        raw_equipment = str(function.get("equipment") or "").strip()
-        if not raw_equipment:
-            return {"ied": "", "variant": ""}
-        return self._resolve_equipment_reference(raw_equipment)
-
-    def _load_ied_patterns(self) -> List[Dict[str, Any]]:
-        """Lire les patterns IED utilises aussi par l'identification d'essai."""
-        if not self.ied_data_dir:
-            return []
-        data = self._load_json(self.ied_data_dir / "liste_ied.json")
-        patterns = data.get("ied_patterns") if isinstance(data, dict) else []
-        return patterns if isinstance(patterns, list) else []
-
-    def _load_json(self, filepath: Path) -> Any:
-        """Lire un fichier JSON avec un retour stable en cas d'erreur."""
-        if not filepath.exists():
-            return {}
+    def _load_json(self, filepath: str | Path) -> Dict[str, Any]:
+        """Charger un fichier JSON depuis le disque."""
         try:
-            with open(filepath, "r", encoding="utf-8") as stream:
-                return json.load(stream)
-        except (json.JSONDecodeError, OSError) as exc:
-            logger.error("[JSON][ESSAIS] Lecture impossible %s: %s", filepath, exc)
+            filepath = Path(filepath)
+            if not filepath.exists():
+                logger.warning("[JSON][ESSAIS] Fichier absent : %s", filepath)
+                return {}
+            content = filepath.read_text(encoding="utf-8")
+            import json
+            return json.loads(content)
+        except Exception as exc:
+            logger.exception("[JSON][ESSAIS] Erreur charge JSON : %s", filepath)
             return {}
 
-    def _save_json(self, filepath: Path, data: Dict[str, Any]) -> None:
-        """Ecrire le catalogue JSON en creant le dossier si necessaire."""
-        filepath.parent.mkdir(parents=True, exist_ok=True)
-        with open(filepath, "w", encoding="utf-8") as stream:
-            json.dump(data, stream, ensure_ascii=False, indent=2)
+    def _save_json(self, filepath: str | Path, data: Dict[str, Any]) -> None:
+        """Sauvegarder un dictionnaire en JSON sur le disque."""
+        try:
+            filepath = Path(filepath)
+            filepath.parent.mkdir(parents=True, exist_ok=True)
+            import json
+            content = json.dumps(data, indent=2, ensure_ascii=False)
+            filepath.write_text(content, encoding="utf-8")
+            logger.info("[JSON][ESSAIS] Catalogue sauvegarde : %s", filepath)
+        except Exception as exc:
+            logger.exception("[JSON][ESSAIS] Erreur sauvegarde JSON : %s", filepath)

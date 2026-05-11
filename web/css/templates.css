@@ -224,8 +224,7 @@
     gap: 16px;
 }
 
-.test-param-actions,
-.test-param-row-actions {
+.test-param-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -239,6 +238,8 @@
     color: var(--muted);
     font-size: 13px;
     font-weight: 600;
+    align-items: center;
+    padding: 12px 16px;
 }
 
 .test-param-summary span {
@@ -248,47 +249,174 @@
     background: var(--bg);
 }
 
-.test-param-list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
+/* ===========================================================
+ * Tableau editable a 9 colonnes (Parametre Test)
+ * Inspire du style des tableaux IDRC du module R_SCD :
+ * en-tete sticky, ligne de filtres, hover discret, cellules
+ * editables avec mise en evidence des erreurs.
+ * =========================================================== */
 
-.test-param-function {
+.test-param-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 65vh;
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 14px;
     background: var(--card);
 }
 
-.test-param-function-grid {
-    display: grid;
-    grid-template-columns: minmax(220px, 1.2fr) minmax(240px, 1.6fr) repeat(3, minmax(150px, 1fr));
-    gap: 10px;
-    margin-bottom: 10px;
+.test-param-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13px;
+    color: var(--text);
 }
 
-.test-param-function-grid label {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    color: var(--muted);
-    font-size: 12px;
+.test-param-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--card);
+}
+
+.test-param-table th {
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+    white-space: nowrap;
+}
+
+.test-param-th-sort {
+    cursor: pointer;
+    user-select: none;
+}
+
+.test-param-th-sort:hover {
+    background: var(--bg);
+}
+
+.test-param-sort-arrow {
+    color: var(--accent, #3b82f6);
+    margin-left: 4px;
+    font-size: 11px;
+}
+
+.test-param-required {
+    color: var(--danger, #ef4444);
     font-weight: 700;
+    margin-left: 2px;
 }
 
-.test-param-parameters {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 12px;
+.test-param-th-filter {
+    padding: 4px 6px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
 }
 
-.test-param-parameter {
-    display: grid;
-    grid-template-columns: minmax(180px, 1fr) minmax(260px, 1.6fr) minmax(150px, 0.8fr) auto;
-    gap: 8px;
-    align-items: center;
+.test-param-th-actions {
+    width: 80px;
+    text-align: center;
+}
+
+.test-param-filter-input {
+    width: 100%;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 12px;
+    background: var(--card);
+    color: var(--text);
+}
+
+.test-param-filter-input:focus {
+    outline: none;
+    border-color: var(--accent, #3b82f6);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+}
+
+.test-param-tbody tr:nth-child(even) {
+    background: var(--bg);
+}
+
+.test-param-tbody tr:hover {
+    background: rgba(59, 130, 246, 0.06);
+}
+
+.test-param-cell {
+    padding: 4px 6px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.test-param-cell-input {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-size: 13px;
+    background: transparent;
+    color: var(--text);
+    font-family: inherit;
+}
+
+.test-param-cell-input:hover {
+    border-color: var(--border);
+    background: var(--card);
+}
+
+.test-param-cell-input:focus {
+    outline: none;
+    border-color: var(--accent, #3b82f6);
+    background: var(--card);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+}
+
+.test-param-cell-error {
+    background: rgba(239, 68, 68, 0.08);
+}
+
+.test-param-cell-error .test-param-cell-input {
+    border-color: var(--danger, #ef4444);
+    background: rgba(239, 68, 68, 0.04);
+}
+
+.test-param-actions-cell {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.test-param-actions-cell .btn-icon-small {
+    margin: 0 2px;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.test-param-actions-cell .btn-icon-small:hover {
+    background: var(--bg);
+    border-color: var(--accent, #3b82f6);
+    color: var(--accent, #3b82f6);
+}
+
+.test-param-btn-delete:hover {
+    border-color: var(--danger, #ef4444) !important;
+    color: var(--danger, #ef4444) !important;
+}
+
+.test-param-empty-cell {
+    padding: 24px;
+    text-align: center;
+    color: var(--muted);
+    font-style: italic;
 }
 
 @media (max-width: 900px) {
@@ -296,11 +424,6 @@
     .test-param-actions {
         flex-direction: column;
         align-items: stretch;
-    }
-
-    .test-param-function-grid,
-    .test-param-parameter {
-        grid-template-columns: 1fr;
     }
 }
 
