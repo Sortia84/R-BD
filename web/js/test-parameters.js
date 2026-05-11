@@ -662,9 +662,6 @@ function renderTestParametersView() {
         </section>
 
         <section class="card rbd-section-shell">
-            <div class="card-header">
-                <h3 style="margin: 0;">Tableau des parametres</h3>
-            </div>
             <div class="divider"></div>
             <div class="test-param-table-wrapper">
                 ${_renderTestParameterTable(rows, filteredRows)}
