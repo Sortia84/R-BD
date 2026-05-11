@@ -18,7 +18,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 # ============================================================================
@@ -102,8 +102,11 @@ test_parameter_manager = TestParameterManager(
 # CONSTANTES MÉTIER PARTAGÉES
 # ============================================================================
 
-# Types d'essais valides
-VALID_ESSAI_TYPES = ("ru", "cvs", "mvs")
+# Types d'essais valides.
+#
+# R#GUIDE expose deja un flux MVC. R#BD doit donc accepter ce type au niveau
+# du referentiel d'essais pour que l'API reste coherente avec les guides SCD.
+VALID_ESSAI_TYPES = ("ru", "cvs", "mvs", "mvc")
 
 # Types de templates valides
 VALID_TEMPLATE_TYPES = ("ru", "cvs", "mvs")
@@ -125,6 +128,10 @@ class EssaiPayload(BaseModel):
     lninst: str = ""
     previous_test_id: str = ""
     order_index: Optional[int] = None
+    order_type_number: Optional[int] = None
+    order_ied_number: Optional[int] = None
+    order_ld_number: Optional[int] = None
+    order_scope: Dict[str, str] = Field(default_factory=dict)
     description: str = ""
     steps: List[Dict[str, Any]] = []
     preconditions: List[Any] = []

@@ -63,6 +63,10 @@
     background: linear-gradient(135deg, #f59e0b, #dc2626);
 }
 
+.template-icon-mvc {
+    background: linear-gradient(135deg, #0ea5e9, #7c3aed);
+}
+
 .template-info {
     flex: 1;
     margin-left: 12px;

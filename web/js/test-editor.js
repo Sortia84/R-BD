@@ -41,7 +41,8 @@ let editorIcdDetailsCache = {};  // Cache des détails ICD (LDs, LNs)
 const TYPE_PREFIX = {
     ru: 'RU',
     mvs: 'MVS',
-    cvs: 'CVS'
+    cvs: 'CVS',
+    mvc: 'MVC'
 };
 
 const STATE_OPTIONS = [
@@ -122,6 +123,7 @@ function renderEditorLayout() {
                             <option value="ru">RU</option>
                             <option value="cvs">CVS</option>
                             <option value="mvs">MVS</option>
+                            <option value="mvc">MVC</option>
                         </select>
                     </div>
                 </div>
@@ -226,9 +228,9 @@ function renderEditorLayout() {
         <section class="card">
             <div class="card-header"><h3 style="margin: 0;">Informations complémentaires</h3></div>
             <div class="divider"></div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+            <div class="info-columns">
                 <!-- CDE -->
-                <div>
+                <div class="info-column">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                         <label class="form-label">📊 Informations CDE</label>
                         <div style="display: flex; gap: 4px;">
@@ -236,10 +238,10 @@ function renderEditorLayout() {
                             <button class="btn-icon-small" onclick="addCDE()" title="Ajout manuel">➕</button>
                         </div>
                     </div>
-                    <div id="cde-container"><p class="text-muted-small">Aucun CDE ajouté</p></div>
+                    <div id="cde-container" class="info-list"><p class="text-muted-small">Aucun CDE ajouté</p></div>
                 </div>
                 <!-- Alarmes -->
-                <div>
+                <div class="info-column">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                         <label class="form-label">⚠️ Alarmes</label>
                         <div style="display: flex; gap: 4px;">
@@ -247,10 +249,10 @@ function renderEditorLayout() {
                             <button class="btn-icon-small" onclick="addAlarme()" title="Ajout manuel">➕</button>
                         </div>
                     </div>
-                    <div id="alarmes-container"><p class="text-muted-small">Aucune alarme ajoutée</p></div>
+                    <div id="alarmes-container" class="info-list"><p class="text-muted-small">Aucune alarme ajoutée</p></div>
                 </div>
                 <!-- TCD -->
-                <div>
+                <div class="info-column">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                         <label class="form-label">ℹ️ Informations TCD</label>
                         <div style="display: flex; gap: 4px;">
@@ -258,7 +260,7 @@ function renderEditorLayout() {
                             <button class="btn-icon-small" onclick="addTCD()" title="Ajout manuel">➕</button>
                         </div>
                     </div>
-                    <div id="tcd-container"><p class="text-muted-small">Aucune information TCD</p></div>
+                    <div id="tcd-container" class="info-list"><p class="text-muted-small">Aucune information TCD</p></div>
                 </div>
             </div>
         </section>
@@ -2148,8 +2150,8 @@ function buildInfoStateOptions(info) {
     const options = allowedStates.map(state => {
         const label = state.label;
         const selected = selectedValue === label.toUpperCase() ? 'selected' : '';
-        const title = state.value ? ` title="${escapeHtml(state.source || state.code)} : ${escapeHtml(state.value)}"` : '';
-        return `<option value="${escapeHtml(label)}" ${selected}${title}>${escapeHtml(label)}</option>`;
+        const title = state.value ? ` title="${escapeHtmlAttribute(state.source || state.code)} : ${escapeHtmlAttribute(state.value)}"` : '';
+        return `<option value="${escapeHtmlAttribute(label)}" ${selected}${title}>${escapeHtml(label)}</option>`;
     }).join('');
 
     return `<option value="" ${placeholderSelected}>État ISA</option>${options}`;
@@ -2168,8 +2170,45 @@ function buildInfoStepOptions(selectedStepId = '') {
     return `<option value="" ${selected ? '' : 'selected'}>Sans étape liée</option>${options}`;
 }
 
+function getInfoStateTitle(info) {
+    const stateLabel = String(info?.state || '').trim();
+    if (!stateLabel) {
+        return 'État';
+    }
+
+    const selectedState = normalizeInfoAllowedStates(info)
+        .find(state => state.label.toUpperCase() === stateLabel.toUpperCase());
+    if (!selectedState) {
+        return stateLabel;
+    }
+
+    const stateDetails = selectedState.value
+        ? ` - ${selectedState.source || selectedState.code}: ${selectedState.value}`
+        : '';
+    return `${selectedState.label}${stateDetails}`;
+}
+
+function getInfoStepTitle(selectedStepId = '') {
+    if (!selectedStepId) {
+        return 'Sans étape liée';
+    }
+
+    const stepIndex = (currentTest.steps || []).findIndex(step => step.id === selectedStepId);
+    const step = stepIndex >= 0 ? currentTest.steps[stepIndex] : null;
+    if (!step) {
+        return 'Étape liée introuvable';
+    }
+
+    const number = step.number || (stepIndex + 1);
+    const name = step.name ? ` - ${step.name}` : '';
+    return `Étape ${number}${name}`;
+}
+
 function renderInfoItemHtml(type, info, label) {
     const infoId = info.id;
+    const nameTitle = escapeHtmlAttribute(info.name || '');
+    const stateTitle = escapeHtmlAttribute(getInfoStateTitle(info));
+    const stepTitle = escapeHtmlAttribute(getInfoStepTitle(info.step_id));
 
     // Le badge \"Etape liee\" n'est plus affiche sur la ligne d'info elle-meme :
     // il a ete deplace dans la modale ISA picker, a cote des boutons d'etat,
@@ -2177,12 +2216,15 @@ function renderInfoItemHtml(type, info, label) {
 
     return `
         <div class="info-item" id="${infoId}">
-            <input type="text" placeholder="Nom ${label}" value="${escapeHtml(info.name || '')}"
+            <input type="text" placeholder="Nom ${label}" value="${escapeHtmlAttribute(info.name || '')}"
+                title="${nameTitle}" oninput="this.title = this.value"
                 onchange="updateInfo('${type}', '${infoId}', 'name', this.value)">
-            <select class="info-state-select" onchange="updateInfo('${type}', '${infoId}', 'state', this.value)">
+            <select class="info-state-select" title="${stateTitle}"
+                onchange="this.title = this.selectedOptions[0]?.title || this.selectedOptions[0]?.text || ''; updateInfo('${type}', '${infoId}', 'state', this.value)">
                 ${buildInfoStateOptions(info)}
             </select>
-            <select class="info-step-select" onchange="updateInfo('${type}', '${infoId}', 'step_id', this.value)">
+            <select class="info-step-select" title="${stepTitle}"
+                onchange="this.title = this.selectedOptions[0]?.text || ''; updateInfo('${type}', '${infoId}', 'step_id', this.value)">
                 ${buildInfoStepOptions(info.step_id)}
             </select>
             <button class="info-item-remove" title="Supprimer cette ligne"
@@ -2201,6 +2243,12 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text ?? '';
     return div.innerHTML;
+}
+
+function escapeHtmlAttribute(text) {
+    return escapeHtml(text)
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
 /**

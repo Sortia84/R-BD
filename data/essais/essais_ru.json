@@ -1,1 +1,1172 @@
-[]
+[
+  {
+    "id": "RU-V0P7N1",
+    "type": "ru",
+    "name": "fdfd (copie)",
+    "ied": "BCU",
+    "variant": "",
+    "ld": "LDCMDDJ",
+    "ln": "FXUT",
+    "lninst": "",
+    "previous_test_id": "",
+    "order_index": 10,
+    "description": "fsdfsfsdf",
+    "preconditions": [
+      {
+        "id": "precon_1778498704463",
+        "name": "fds",
+        "state": "DEB"
+      }
+    ],
+    "files": [],
+    "linked_tests_ru": [],
+    "linked_tests_mvs": [],
+    "linked_tests_cvs": [],
+    "steps": [
+      {
+        "id": "step_1778498710179",
+        "number": 1,
+        "name": "sd",
+        "injection": "Avec",
+        "fault_type": "PHASEUR_LDPHAS1",
+        "injection_function_id": "phaseur_ldphas1",
+        "injection_type": "PHASEUR_LDPHAS1",
+        "injection_parameter_id": "phaseur_ldphas1_q_si_transitoire_phas",
+        "injection_parameter": "Q-SI-TRANSITOIRE-PHAS",
+        "state": "DEB",
+        "temporisation": "Auto",
+        "temporisation_function_id": "px1_ldpx",
+        "temporisation_function_name": "PX1_LDPX",
+        "temporisation_parameter_id": "px1_ldpx_t_z1",
+        "temporisation_parameter": "T-Z1",
+        "duration": 0,
+        "unit": ""
+      }
+    ],
+    "cde": [
+      {
+        "id": "cde_1778498729172_lk5hv",
+        "name": "AUT1",
+        "state": "ES",
+        "step_id": "step_1778498710179",
+        "isa_id": "8",
+        "libelle16": "AUTOMATE 1",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          },
+          {
+            "code": "INVALID",
+            "label": "???",
+            "value": "3::test",
+            "source": "ISA.INVALID"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "cde_1778498732315_yaf9i",
+        "name": "AMU",
+        "state": "ES",
+        "step_id": "",
+        "isa_id": "37",
+        "libelle16": "AMU",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "cde_1778498734620_bdwzl",
+        "name": "AR.IC",
+        "state": "ES",
+        "step_id": "step_1778498710179",
+        "isa_id": "41",
+        "libelle16": "AR.INVER.CONSIGN",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "cde_1778498736860_v2bss",
+        "name": "RMU.REB",
+        "state": "ES",
+        "step_id": "",
+        "isa_id": "45",
+        "libelle16": "RMU.REBOUCLAGE",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::REB|5::REB+RVB|6::REB+RVL|7::all",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "2::RVB|3::RVL|4::RVB+L",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::REB|5::REB+RVB|6::REB+RVL|7::all",
+        "state_source": "ISA.DEB"
+      }
+    ],
+    "alarmes": [
+      {
+        "id": "alarmes_1778498749605_h6j44",
+        "name": "ESS.AUT1",
+        "state": "DEB",
+        "step_id": "step_1778498710179",
+        "isa_id": "511",
+        "libelle16": "ESSAI AUTOMATE1",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "DEB",
+            "value": "3::test",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "FIN",
+            "value": "1::on|5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "3::test",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "alarmes_1778498753337_oypu9",
+        "name": "DF.DIE",
+        "state": "DEB",
+        "step_id": "",
+        "isa_id": "1437",
+        "libelle16": "DF.DIESEL.UA",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "DEB",
+            "value": "3::Alarm",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "FIN",
+            "value": "1::Ok",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "3::Alarm",
+        "state_source": "ISA.DEB"
+      }
+    ],
+    "tcd": [
+      {
+        "id": "tcd_1778498761651_xv7yc",
+        "name": "RSE",
+        "state": "ES",
+        "step_id": "step_1778498710179",
+        "isa_id": "40",
+        "libelle16": "RSE",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      }
+    ],
+    "created_at": "2026-05-11T13:36:13.824Z",
+    "updated_at": "2026-05-11T13:36:13.824Z"
+  },
+  {
+    "id": "RU-4XSBPX",
+    "type": "ru",
+    "name": "fdfd (copie) (copie)",
+    "ied": "BCU",
+    "variant": "",
+    "ld": "LDCMDDJ",
+    "ln": "FXUT",
+    "lninst": "",
+    "previous_test_id": "RU-V0P7N1",
+    "order_index": 20,
+    "description": "fsdfsfsdf",
+    "preconditions": [
+      {
+        "id": "precon_1778498704463",
+        "name": "fds",
+        "state": "DEB"
+      }
+    ],
+    "files": [],
+    "linked_tests_ru": [],
+    "linked_tests_mvs": [],
+    "linked_tests_cvs": [],
+    "steps": [
+      {
+        "id": "step_1778498710179",
+        "number": 1,
+        "name": "sd",
+        "injection": "Avec",
+        "fault_type": "PHASEUR_LDPHAS1",
+        "injection_function_id": "phaseur_ldphas1",
+        "injection_type": "PHASEUR_LDPHAS1",
+        "injection_parameter_id": "phaseur_ldphas1_q_si_transitoire_phas",
+        "injection_parameter": "Q-SI-TRANSITOIRE-PHAS",
+        "state": "DEB",
+        "temporisation": "Auto",
+        "temporisation_function_id": "px1_ldpx",
+        "temporisation_function_name": "PX1_LDPX",
+        "temporisation_parameter_id": "px1_ldpx_t_z1",
+        "temporisation_parameter": "T-Z1",
+        "duration": 0,
+        "unit": ""
+      }
+    ],
+    "cde": [
+      {
+        "id": "cde_1778498729172_lk5hv",
+        "name": "AUT1",
+        "state": "ES",
+        "step_id": "step_1778498710179",
+        "isa_id": "8",
+        "libelle16": "AUTOMATE 1",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          },
+          {
+            "code": "INVALID",
+            "label": "???",
+            "value": "3::test",
+            "source": "ISA.INVALID"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "cde_1778498732315_yaf9i",
+        "name": "AMU",
+        "state": "ES",
+        "step_id": "",
+        "isa_id": "37",
+        "libelle16": "AMU",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "cde_1778498734620_bdwzl",
+        "name": "AR.IC",
+        "state": "ES",
+        "step_id": "step_1778498710179",
+        "isa_id": "41",
+        "libelle16": "AR.INVER.CONSIGN",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "cde_1778498736860_v2bss",
+        "name": "RMU.REB",
+        "state": "ES",
+        "step_id": "",
+        "isa_id": "45",
+        "libelle16": "RMU.REBOUCLAGE",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::REB|5::REB+RVB|6::REB+RVL|7::all",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "2::RVB|3::RVL|4::RVB+L",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::REB|5::REB+RVB|6::REB+RVL|7::all",
+        "state_source": "ISA.DEB"
+      }
+    ],
+    "alarmes": [
+      {
+        "id": "alarmes_1778498749605_h6j44",
+        "name": "ESS.AUT1",
+        "state": "DEB",
+        "step_id": "step_1778498710179",
+        "isa_id": "511",
+        "libelle16": "ESSAI AUTOMATE1",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "DEB",
+            "value": "3::test",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "FIN",
+            "value": "1::on|5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "3::test",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "alarmes_1778498753337_oypu9",
+        "name": "DF.DIE",
+        "state": "DEB",
+        "step_id": "",
+        "isa_id": "1437",
+        "libelle16": "DF.DIESEL.UA",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "DEB",
+            "value": "3::Alarm",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "FIN",
+            "value": "1::Ok",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "3::Alarm",
+        "state_source": "ISA.DEB"
+      }
+    ],
+    "tcd": [
+      {
+        "id": "tcd_1778498761651_xv7yc",
+        "name": "RSE",
+        "state": "ES",
+        "step_id": "step_1778498710179",
+        "isa_id": "40",
+        "libelle16": "RSE",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      }
+    ],
+    "created_at": "2026-05-11T13:52:00.282Z",
+    "updated_at": "2026-05-11T13:52:00.282Z"
+  },
+  {
+    "id": "RU-46POQ4",
+    "type": "ru",
+    "name": "fdfd",
+    "ied": "BCU",
+    "variant": "",
+    "ld": "LDCMDDJ",
+    "ln": "FXOT",
+    "lninst": "1",
+    "previous_test_id": "RU-4XSBPX",
+    "order_index": 30,
+    "description": "fsdfsfsdf",
+    "preconditions": [
+      {
+        "id": "precon_1778498704463",
+        "name": "fds",
+        "state": "DEB"
+      }
+    ],
+    "files": [],
+    "linked_tests_ru": [],
+    "linked_tests_mvs": [],
+    "linked_tests_cvs": [],
+    "steps": [
+      {
+        "id": "step_1778498710179",
+        "number": 1,
+        "name": "sd",
+        "injection": "Avec",
+        "fault_type": "PHASEUR_LDPHAS1",
+        "injection_function_id": "phaseur_ldphas1",
+        "injection_type": "PHASEUR_LDPHAS1",
+        "injection_parameter_id": "phaseur_ldphas1_q_si_transitoire_phas",
+        "injection_parameter": "Q-SI-TRANSITOIRE-PHAS",
+        "state": "DEB",
+        "temporisation": "Auto",
+        "temporisation_function_id": "px1_ldpx",
+        "temporisation_function_name": "PX1_LDPX",
+        "temporisation_parameter_id": "px1_ldpx_t_z1",
+        "temporisation_parameter": "T-Z1",
+        "duration": 0,
+        "unit": ""
+      }
+    ],
+    "cde": [
+      {
+        "id": "cde_1778498729172_lk5hv",
+        "name": "AUT1",
+        "state": "ES",
+        "step_id": "step_1778498710179",
+        "isa_id": "8",
+        "libelle16": "AUTOMATE 1",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          },
+          {
+            "code": "INVALID",
+            "label": "???",
+            "value": "3::test",
+            "source": "ISA.INVALID"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "cde_1778498732315_yaf9i",
+        "name": "AMU",
+        "state": "ES",
+        "step_id": "",
+        "isa_id": "37",
+        "libelle16": "AMU",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "cde_1778498734620_bdwzl",
+        "name": "AR.IC",
+        "state": "ES",
+        "step_id": "step_1778498710179",
+        "isa_id": "41",
+        "libelle16": "AR.INVER.CONSIGN",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "cde_1778498736860_v2bss",
+        "name": "RMU.REB",
+        "state": "ES",
+        "step_id": "",
+        "isa_id": "45",
+        "libelle16": "RMU.REBOUCLAGE",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::REB|5::REB+RVB|6::REB+RVL|7::all",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "2::RVB|3::RVL|4::RVB+L",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::REB|5::REB+RVB|6::REB+RVL|7::all",
+        "state_source": "ISA.DEB"
+      }
+    ],
+    "alarmes": [
+      {
+        "id": "alarmes_1778498749605_h6j44",
+        "name": "ESS.AUT1",
+        "state": "DEB",
+        "step_id": "step_1778498710179",
+        "isa_id": "511",
+        "libelle16": "ESSAI AUTOMATE1",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "DEB",
+            "value": "3::test",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "FIN",
+            "value": "1::on|5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "3::test",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "alarmes_1778498753337_oypu9",
+        "name": "DF.DIE",
+        "state": "DEB",
+        "step_id": "",
+        "isa_id": "1437",
+        "libelle16": "DF.DIESEL.UA",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "DEB",
+            "value": "3::Alarm",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "FIN",
+            "value": "1::Ok",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "3::Alarm",
+        "state_source": "ISA.DEB"
+      }
+    ],
+    "tcd": [
+      {
+        "id": "tcd_1778498761651_xv7yc",
+        "name": "RSE",
+        "state": "ES",
+        "step_id": "step_1778498710179",
+        "isa_id": "40",
+        "libelle16": "RSE",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      }
+    ],
+    "updated_at": "2026-05-11T22:51:21.454668",
+    "created_at": "2026-05-11T22:51:21.454668"
+  },
+  {
+    "id": "RU-7RK4JM",
+    "type": "ru",
+    "name": "ds",
+    "ied": "BCU",
+    "variant": "",
+    "ld": "LDCAP1",
+    "ln": "MMXU",
+    "lninst": "0",
+    "previous_test_id": "RU-46POQ4",
+    "order_index": 40,
+    "description": "fsdfsfsdf",
+    "preconditions": [
+      {
+        "id": "precon_1778498704463",
+        "name": "fds",
+        "state": "DEB"
+      }
+    ],
+    "files": [],
+    "linked_tests_ru": [],
+    "linked_tests_mvs": [],
+    "linked_tests_cvs": [],
+    "steps": [
+      {
+        "id": "step_1778498710179",
+        "number": 1,
+        "name": "sd",
+        "injection": "Avec",
+        "fault_type": "PHASEUR_LDPHAS1",
+        "injection_function_id": "phaseur_ldphas1",
+        "injection_type": "PHASEUR_LDPHAS1",
+        "injection_parameter_id": "phaseur_ldphas1_q_si_transitoire_phas",
+        "injection_parameter": "Q-SI-TRANSITOIRE-PHAS",
+        "state": "DEB",
+        "temporisation": "Auto",
+        "temporisation_function_id": "px1_ldpx",
+        "temporisation_function_name": "PX1_LDPX",
+        "temporisation_parameter_id": "px1_ldpx_t_z1",
+        "temporisation_parameter": "T-Z1",
+        "duration": 0,
+        "unit": ""
+      }
+    ],
+    "cde": [
+      {
+        "id": "cde_1778498729172_lk5hv",
+        "name": "AUT1",
+        "state": "ES",
+        "step_id": "step_1778498710179",
+        "isa_id": "8",
+        "libelle16": "AUTOMATE 1",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          },
+          {
+            "code": "INVALID",
+            "label": "???",
+            "value": "3::test",
+            "source": "ISA.INVALID"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "cde_1778498732315_yaf9i",
+        "name": "AMU",
+        "state": "ES",
+        "step_id": "",
+        "isa_id": "37",
+        "libelle16": "AMU",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "cde_1778498734620_bdwzl",
+        "name": "AR.IC",
+        "state": "ES",
+        "step_id": "step_1778498710179",
+        "isa_id": "41",
+        "libelle16": "AR.INVER.CONSIGN",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "cde_1778498736860_v2bss",
+        "name": "RMU.REB",
+        "state": "ES",
+        "step_id": "",
+        "isa_id": "45",
+        "libelle16": "RMU.REBOUCLAGE",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::REB|5::REB+RVB|6::REB+RVL|7::all",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "2::RVB|3::RVL|4::RVB+L",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::REB|5::REB+RVB|6::REB+RVL|7::all",
+        "state_source": "ISA.DEB"
+      }
+    ],
+    "alarmes": [
+      {
+        "id": "alarmes_1778498749605_h6j44",
+        "name": "ESS.AUT1",
+        "state": "DEB",
+        "step_id": "step_1778498710179",
+        "isa_id": "511",
+        "libelle16": "ESSAI AUTOMATE1",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "DEB",
+            "value": "3::test",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "FIN",
+            "value": "1::on|5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "3::test",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "alarmes_1778498753337_oypu9",
+        "name": "DF.DIE",
+        "state": "DEB",
+        "step_id": "",
+        "isa_id": "1437",
+        "libelle16": "DF.DIESEL.UA",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "DEB",
+            "value": "3::Alarm",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "FIN",
+            "value": "1::Ok",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "3::Alarm",
+        "state_source": "ISA.DEB"
+      }
+    ],
+    "tcd": [
+      {
+        "id": "tcd_1778498761651_xv7yc",
+        "name": "RSE",
+        "state": "ES",
+        "step_id": "step_1778498710179",
+        "isa_id": "40",
+        "libelle16": "RSE",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      }
+    ],
+    "created_at": "2026-05-11T20:50:19.054Z",
+    "updated_at": "2026-05-11T20:50:19.054Z"
+  },
+  {
+    "id": "RU-GCQM9D",
+    "type": "ru",
+    "name": "ds (copie)",
+    "ied": "SCU",
+    "variant": "",
+    "ld": "LDSUIED",
+    "ln": "LPDI",
+    "lninst": "1",
+    "previous_test_id": "RU-7RK4JM",
+    "order_index": 50,
+    "description": "fsdfsfsdf",
+    "preconditions": [
+      {
+        "id": "precon_1778498704463",
+        "name": "fds",
+        "state": "DEB"
+      }
+    ],
+    "files": [],
+    "linked_tests_ru": [],
+    "linked_tests_mvs": [],
+    "linked_tests_cvs": [],
+    "steps": [
+      {
+        "id": "step_1778498710179",
+        "number": 1,
+        "name": "sd",
+        "injection": "Avec",
+        "fault_type": "PHASEUR_LDPHAS1",
+        "injection_function_id": "phaseur_ldphas1",
+        "injection_type": "PHASEUR_LDPHAS1",
+        "injection_parameter_id": "phaseur_ldphas1_q_si_transitoire_phas",
+        "injection_parameter": "Q-SI-TRANSITOIRE-PHAS",
+        "state": "DEB",
+        "temporisation": "Auto",
+        "temporisation_function_id": "px1_ldpx",
+        "temporisation_function_name": "PX1_LDPX",
+        "temporisation_parameter_id": "px1_ldpx_t_z1",
+        "temporisation_parameter": "T-Z1",
+        "duration": 0,
+        "unit": ""
+      }
+    ],
+    "cde": [
+      {
+        "id": "cde_1778498729172_lk5hv",
+        "name": "AUT1",
+        "state": "ES",
+        "step_id": "step_1778498710179",
+        "isa_id": "8",
+        "libelle16": "AUTOMATE 1",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          },
+          {
+            "code": "INVALID",
+            "label": "???",
+            "value": "3::test",
+            "source": "ISA.INVALID"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "cde_1778498732315_yaf9i",
+        "name": "AMU",
+        "state": "ES",
+        "step_id": "",
+        "isa_id": "37",
+        "libelle16": "AMU",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "cde_1778498734620_bdwzl",
+        "name": "AR.IC",
+        "state": "ES",
+        "step_id": "step_1778498710179",
+        "isa_id": "41",
+        "libelle16": "AR.INVER.CONSIGN",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "cde_1778498736860_v2bss",
+        "name": "RMU.REB",
+        "state": "ES",
+        "step_id": "",
+        "isa_id": "45",
+        "libelle16": "RMU.REBOUCLAGE",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::REB|5::REB+RVB|6::REB+RVL|7::all",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "2::RVB|3::RVL|4::RVB+L",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::REB|5::REB+RVB|6::REB+RVL|7::all",
+        "state_source": "ISA.DEB"
+      }
+    ],
+    "alarmes": [
+      {
+        "id": "alarmes_1778498749605_h6j44",
+        "name": "ESS.AUT1",
+        "state": "DEB",
+        "step_id": "step_1778498710179",
+        "isa_id": "511",
+        "libelle16": "ESSAI AUTOMATE1",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "DEB",
+            "value": "3::test",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "FIN",
+            "value": "1::on|5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "3::test",
+        "state_source": "ISA.DEB"
+      },
+      {
+        "id": "alarmes_1778498753337_oypu9",
+        "name": "DF.DIE",
+        "state": "DEB",
+        "step_id": "",
+        "isa_id": "1437",
+        "libelle16": "DF.DIESEL.UA",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "DEB",
+            "value": "3::Alarm",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "FIN",
+            "value": "1::Ok",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "3::Alarm",
+        "state_source": "ISA.DEB"
+      }
+    ],
+    "tcd": [
+      {
+        "id": "tcd_1778498761651_xv7yc",
+        "name": "RSE",
+        "state": "ES",
+        "step_id": "step_1778498710179",
+        "isa_id": "40",
+        "libelle16": "RSE",
+        "allowed_states": [
+          {
+            "code": "DEB",
+            "label": "ES",
+            "value": "1::on",
+            "source": "ISA.DEB"
+          },
+          {
+            "code": "FIN",
+            "label": "HS",
+            "value": "5::off",
+            "source": "ISA.FIN"
+          }
+        ],
+        "state_code": "DEB",
+        "state_value": "1::on",
+        "state_source": "ISA.DEB"
+      }
+    ],
+    "created_at": "2026-05-11T20:50:57.687Z",
+    "updated_at": "2026-05-11T20:50:57.687Z"
+  }
+]

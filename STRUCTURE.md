@@ -46,7 +46,7 @@ apps/r_bd/
 │   ├── router_icd.py               # Endpoints ICD, patterns IED et ICD par défaut
 │   ├── router_isa.py               # Endpoints ISA, types, fichiers, analyse et orphelins
 │   ├── router_mapping.py           # Endpoints mapping IEC 61850, comparaison et merge
-│   ├── router_essais.py            # Endpoints essais RU/CVS/MVS
+│   ├── router_essais.py            # Endpoints essais RU/CVS/MVS/MVC et ordres dérivés
 │   ├── router_essais_parameters.py # Endpoints parametres d'essais PAR
 │   ├── router_templates.py         # Endpoints templates /api/v1/templates
 │   └── router_rac.py               # Endpoints RAC
@@ -76,7 +76,7 @@ apps/r_bd/
 │   └── docs/                       # Documentation interne frontend et exemples
 │
 ├── data/                           # Persistance JSON
-│   ├── essais/                     # Essais ru/cvs/mvs et parametres_tests.json
+│   ├── essais/                     # Essais ru/cvs/mvs/mvc et parametres_tests.json
 │   ├── icd/                        # Données ICD analysées et index
 │   ├── ied/                        # Patterns IED
 │   ├── isa/                        # Index ISA, types et fichiers analysés
@@ -139,7 +139,7 @@ dossiers critiques manquants et monte le kit UI commun depuis `apps/_ui_kit`.
 | `router_icd.py` | `/api/icd` | ICD, détails, versions, patterns IED, défauts par fabricant |
 | `router_isa.py` | `/api/isa` | Import ISA, types, fichiers, analyse, orphelins, défauts |
 | `router_mapping.py` | `/api/mapping` | Types, enums, CDC, DA, comparaison, merge et recherche |
-| `router_essais.py` | `/api/essais` | CRUD et synchronisation des essais |
+| `router_essais.py` | `/api/essais` | CRUD, synchronisation et ordres dérivés des essais |
 | `router_essais_parameters.py` | `/api/essais/parameters` | Parametres Injections importes depuis PAR |
 | `router_templates.py` | `/api/v1/templates` | CRUD templates, liens et healthcheck |
 | `router_rac.py` | `/api/rac` | Catégories, liste, versions, liens, import, JSON parsé |
@@ -197,6 +197,7 @@ et `view-rac`.
 | `data/essais/essais_ru.json` | Essais RU |
 | `data/essais/essais_cvs.json` | Essais CVS |
 | `data/essais/essais_mvs.json` | Essais MVS |
+| `data/essais/essais_mvc.json` | Essais MVC si le type est utilisé |
 | `data/essais/parametres_tests.json` | Catalogue Injections issu des fichiers PAR |
 | `data/templates/` | Templates JSON |
 | `data/rac/index.json` | Index RAC |

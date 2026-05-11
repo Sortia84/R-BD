@@ -22,7 +22,7 @@
 **R#BD** est l'application R-CONTROL qui centralise les référentiels et fichiers
 techniques réutilisés par l'écosystème R#SPACE. Elle expose une interface web
 SPA et une API FastAPI pour gérer les fichiers **ICD**, **ISA**, **RAC**,
-les mappings IEC 61850, les templates et les essais **RU/CVS/MVS**.
+les mappings IEC 61850, les templates et les essais **RU/CVS/MVS/MVC**.
 
 Elle sert de socle de données pour les autres applications du monorepo,
 notamment R#GUIDE qui consomme les templates et essais R#BD lors de la création
@@ -51,8 +51,9 @@ de guides opérationnels.
 - Fusion automatique ICD -> mapping quand l'API de merge est appelée.
 
 ### Essais et templates
-- CRUD des essais `ru`, `cvs` et `mvs` via `/api/essais`.
+- CRUD des essais `ru`, `cvs`, `mvs` et `mvc` via `/api/essais`.
 - Synchronisation des essais entre frontend et persistance JSON.
+- Calcul automatique des numéros d'ordre par type, IED et LD à partir de l'ordre global R#BD.
 - Parametrage des injections d'essais via import de fichiers `.par`.
 - CRUD des templates via `/api/v1/templates`.
 - Liaison entre templates de types différents.
@@ -155,7 +156,7 @@ Les routeurs sont montés dans `api_web.py`.
 | ICD | `/api/icd` | Import, catalogue, détails, réanalyse, patterns IED, ICD par défaut |
 | ISA | `/api/isa` | Import, types, fichiers, analyse, orphelins, fichier par défaut |
 | Mapping | `/api/mapping` | Types, enums, CDC, DA, comparaison, merge et recherche |
-| Essais | `/api/essais` | CRUD et synchronisation des essais RU/CVS/MVS |
+| Essais | `/api/essais` | CRUD, synchronisation et ordres dérivés des essais RU/CVS/MVS/MVC |
 | Parametres essais | `/api/essais/parameters` | Catalogue Injections issu des fichiers PAR |
 | Templates | `/api/v1/templates` | CRUD templates et liaisons entre templates |
 | RAC | `/api/rac` | Import, liste, catégories, versions, liens et JSON parsé |
@@ -173,7 +174,7 @@ La documentation OpenAPI complète est générée automatiquement par FastAPI :
 | `data/icd/` | Données ICD analysées et index ICD |
 | `data/ied/` | Patterns et associations IED |
 | `data/isa/` | Index ISA, types et fichiers analysés |
-| `data/essais/` | Essais `ru`, `cvs`, `mvs` et `parametres_tests.json` |
+| `data/essais/` | Essais `ru`, `cvs`, `mvs`, `mvc` et `parametres_tests.json` |
 | `data/templates/` | Templates d'essais |
 | `data/rac/` | Index, catégories et fichiers RAC parsés |
 | `uploads/ICD/` | Fichiers ICD importés |

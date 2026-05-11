@@ -3,13 +3,15 @@
 const TYPE_LABELS = {
     ru: 'Recette Usine',
     mvs: 'MVS',
-    cvs: 'CVS'
+    cvs: 'CVS',
+    mvc: '◇'
 };
 
 const TYPE_ICONS = {
     ru: '🏭',
     cvs: '✓',
-    mvs: '⚡'
+    mvs: '⚡',
+    mvc: 'MVC'
 };
 
 function getTestsByType(type) {
@@ -47,7 +49,7 @@ function recalculateOrderLinks(tests) {
 }
 
 function normalizeTests() {
-    return ['ru', 'cvs', 'mvs'].flatMap(type => {
+    return ['ru', 'cvs', 'mvs', 'mvc'].flatMap(type => {
         const tests = getTestsByType(type);
         return tests.map(test => ({
             ...test,
@@ -108,6 +110,7 @@ function renderEssaisLayout() {
                             <option value="ru">RU</option>
                             <option value="cvs">CVS</option>
                             <option value="mvs">MVS</option>
+                            <option value="mvc">MVC</option>
                         </select>
                     </div>
                     <div class="filter-group">
@@ -573,7 +576,7 @@ function escapeHtml(text) {
  * Appelé au chargement de la page pour garantir la cohérence.
  */
 async function syncAllToServer() {
-    const types = ['ru', 'cvs', 'mvs'];
+    const types = ['ru', 'cvs', 'mvs', 'mvc'];
     for (const type of types) {
         await syncTypeToServer(type);
     }

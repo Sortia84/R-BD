@@ -85,11 +85,11 @@ function renderHomeLayout() {
                             <div class="rbd-card-icon">🧪</div>
                             <div>
                                 <h3 style="margin: 0; color: var(--primary);">Essais</h3>
-                                <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--muted);">RU / CVS / MVS</p>
+                                <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--muted);">RU / CVS / MVS / MVC</p>
                             </div>
                         </div>
                         <p class="rbd-card-description">
-                            Centralisez les essais Recette Usine, CVS et MVS.
+                            Centralisez les essais Recette Usine, CVS, MVS et MVC.
                         </p>
                         <div class="rbd-badge-row">
                             <span class="rbd-badge rbd-badge-info" id="stat-total-tests">0 tests</span>
@@ -97,6 +97,7 @@ function renderHomeLayout() {
                             <span class="rbd-badge rbd-badge-success" id="stat-ru-tests">RU: 0</span>
                             <span class="rbd-badge rbd-badge-warning" id="stat-cvs-tests">CVS: 0</span>
                             <span class="rbd-badge rbd-badge-info" id="stat-mvs-tests">MVS: 0</span>
+                            <span class="rbd-badge rbd-badge-muted" id="stat-mvc-tests">MVC: 0</span>
                         </div>
                     </div>
 
@@ -189,6 +190,7 @@ async function refreshHomeDashboard() {
             ruEssais,
             cvsEssais,
             mvsEssais,
+            mvcEssais,
         ] = await Promise.all([
             apiIcd.getCatalog(),
             apiIcd.getPatterns(),
@@ -198,6 +200,7 @@ async function refreshHomeDashboard() {
             apiEssais.list("ru"),
             apiEssais.list("cvs"),
             apiEssais.list("mvs"),
+            apiEssais.list("mvc"),
         ]);
 
         // --- ICD / Patterns ---
@@ -216,21 +219,24 @@ async function refreshHomeDashboard() {
         const racCount = Number(racCatalog?.count ?? racCatalog?.rac_list?.length ?? 0);
         setText("stat-rac-count", `${racCount} RAC`);
 
-        // --- Essais RU/CVS/MVS ---
+        // --- Essais RU/CVS/MVS/MVC ---
         const ruCount = Number(ruEssais?.count ?? ruEssais?.essais?.length ?? 0);
         const cvsCount = Number(cvsEssais?.count ?? cvsEssais?.essais?.length ?? 0);
         const mvsCount = Number(mvsEssais?.count ?? mvsEssais?.essais?.length ?? 0);
+        const mvcCount = Number(mvcEssais?.count ?? mvcEssais?.essais?.length ?? 0);
 
         const ruSteps = (ruEssais?.essais || []).reduce((sum, t) => sum + ((t?.steps || []).length), 0);
         const cvsSteps = (cvsEssais?.essais || []).reduce((sum, t) => sum + ((t?.steps || []).length), 0);
         const mvsSteps = (mvsEssais?.essais || []).reduce((sum, t) => sum + ((t?.steps || []).length), 0);
+        const mvcSteps = (mvcEssais?.essais || []).reduce((sum, t) => sum + ((t?.steps || []).length), 0);
 
-        const totalTests = ruCount + cvsCount + mvsCount;
-        const totalSteps = ruSteps + cvsSteps + mvsSteps;
+        const totalTests = ruCount + cvsCount + mvsCount + mvcCount;
+        const totalSteps = ruSteps + cvsSteps + mvsSteps + mvcSteps;
 
         setText("stat-ru-tests", `RU: ${ruCount}`);
         setText("stat-cvs-tests", `CVS: ${cvsCount}`);
         setText("stat-mvs-tests", `MVS: ${mvsCount}`);
+        setText("stat-mvc-tests", `MVC: ${mvcCount}`);
         setText("stat-total-tests", `${totalTests} test${totalTests > 1 ? "s" : ""}`);
         setText("stat-total-steps", `${totalSteps} étape${totalSteps > 1 ? "s" : ""}`);
 

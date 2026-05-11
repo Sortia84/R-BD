@@ -20,6 +20,7 @@ if str(APP_DIR) not in sys.path:
 
 from api.router_essais import (  # noqa: E402
     _ensure_order_fields,
+    _file_for_type,
     _validate_previous_reference,
     _would_create_cycle,
 )
@@ -40,6 +41,23 @@ class EssaisOrderingTests(unittest.TestCase):
 
         self.assertEqual([item["id"] for item in ordered], ["RU-A", "RU-B", "RU-C"])
         self.assertEqual([item["order_index"] for item in ordered], [10, 20, 30])
+        self.assertEqual([item["order_type_number"] for item in ordered], [1, 2, 3])
+
+    def test_automatic_order_numbers_are_grouped_by_ied_and_ld(self) -> None:
+        """R_BD calcule les rangs derives sans demander une saisie utilisateur."""
+        essais = [
+            {"id": "RU-A", "type": "ru", "name": "A", "ied": "BCU", "ld": "LD1"},
+            {"id": "RU-B", "type": "ru", "name": "B", "ied": "BCU", "ld": "LD2", "previous_test_id": "RU-A"},
+            {"id": "RU-C", "type": "ru", "name": "C", "ied": "BCU", "ld": "LD1", "previous_test_id": "RU-B"},
+            {"id": "RU-D", "type": "ru", "name": "D", "ied": "GW", "ld": "LD1", "previous_test_id": "RU-C"},
+        ]
+
+        ordered = _ensure_order_fields(essais, "ru")
+
+        self.assertEqual([item["order_type_number"] for item in ordered], [1, 2, 3, 4])
+        self.assertEqual([item["order_ied_number"] for item in ordered], [1, 2, 3, 1])
+        self.assertEqual([item["order_ld_number"] for item in ordered], [1, 1, 2, 1])
+        self.assertEqual(ordered[2]["order_scope"], {"type": "ru", "ied": "BCU", "ld": "LD1"})
 
     def test_missing_previous_reference_is_neutralised(self) -> None:
         """Un precedent supprime ne doit pas bloquer la liste d'essais."""
@@ -65,6 +83,10 @@ class EssaisOrderingTests(unittest.TestCase):
                 essais,
                 {"id": "RU-A", "previous_test_id": "RU-C"},
             )
+
+    def test_mvc_type_is_supported_by_essais_api(self) -> None:
+        """R_BD expose le type MVC attendu par les flux SCD de R#GUIDE."""
+        self.assertEqual(_file_for_type("mvc").name, "essais_mvc.json")
 
 
 if __name__ == "__main__":

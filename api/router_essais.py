@@ -1,6 +1,6 @@
 # router_essais.py — CRUD essais R#BD avec persistance JSON serveur
 """
-Endpoints pour gérer les essais (tests) RU / CVS / MVS.
+Endpoints pour gérer les essais (tests) RU / CVS / MVS / MVC.
 Stockage : data/essais/essais_{type}.json
 Auto-save côté serveur à chaque sauvegarde d'essai.
 """
@@ -59,7 +59,64 @@ def _normalize_test_id(value: Any) -> str:
     return str(value or "").strip()
 
 
-def _ensure_order_fields(essais: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def _normalize_order_scope(value: Any, fallback: str) -> str:
+    """
+    Normalise une valeur de regroupement pour les numeros automatiques.
+
+    Les essais anciens peuvent avoir des champs IED/LD vides ou generiques.
+    On les rattache alors a un groupe lisible au lieu de laisser une cle vide
+    circuler dans l'API consommee par R#GUIDE.
+    """
+    text = str(value or "").strip()
+    if text and text != "*":
+        return text
+    return fallback
+
+
+def _apply_automatic_order_numbers(
+    ordered: List[Dict[str, Any]],
+    essai_type: str = "",
+) -> List[Dict[str, Any]]:
+    """
+    Enrichit les essais avec les numeros derives par type, IED et LD.
+
+    L'utilisateur ne renseigne que l'ordre global du type via R#BD. Les champs
+    ci-dessous sont recalcules a chaque lecture/ecriture pour offrir a R#GUIDE
+    plusieurs organisations possibles sans creer une deuxieme source de verite.
+    """
+    ied_counters: Dict[str, int] = {}
+    ld_counters: Dict[str, int] = {}
+
+    for type_number, essai in enumerate(ordered, start=1):
+        current_type = str(essai.get("type") or essai_type or "").strip().lower()
+        ied_scope = _normalize_order_scope(essai.get("ied"), "GENERAL")
+        ld_scope = _normalize_order_scope(essai.get("ld"), "GENERAL")
+
+        # Le rang par IED est calcule dans le type courant. Le rang par LD est
+        # calcule sous l'IED afin d'eviter de melanger deux LD portant le meme
+        # nom dans des familles d'equipements differentes.
+        ied_key = f"{current_type}::{ied_scope.upper()}"
+        ld_key = f"{ied_key}::{ld_scope.upper()}"
+
+        ied_counters[ied_key] = ied_counters.get(ied_key, 0) + 1
+        ld_counters[ld_key] = ld_counters.get(ld_key, 0) + 1
+
+        essai["order_type_number"] = type_number
+        essai["order_ied_number"] = ied_counters[ied_key]
+        essai["order_ld_number"] = ld_counters[ld_key]
+        essai["order_scope"] = {
+            "type": current_type,
+            "ied": ied_scope,
+            "ld": ld_scope,
+        }
+
+    return ordered
+
+
+def _ensure_order_fields(
+    essais: List[Dict[str, Any]],
+    essai_type: str = "",
+) -> List[Dict[str, Any]]:
     """
     Recalcule l'ordre technique d'une liste d'essais.
 
@@ -118,7 +175,7 @@ def _ensure_order_fields(essais: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     for index, essai in enumerate(ordered, start=1):
         essai["order_index"] = index * 10
 
-    return ordered
+    return _apply_automatic_order_numbers(ordered, essai_type)
 
 
 def _would_create_cycle(essais: List[Dict[str, Any]], essai_id: str, previous_id: str) -> bool:
@@ -177,14 +234,14 @@ def _validate_previous_reference(essais: List[Dict[str, Any]], essai: Dict[str, 
 @router.get("")
 def list_essais(type: str = "ru") -> Dict[str, Any]:
     """Liste les essais d'un type donné."""
-    essais = _ensure_order_fields(_load(type))
+    essais = _ensure_order_fields(_load(type), type)
     return {"type": type, "count": len(essais), "essais": essais}
 
 
 @router.get("/{essai_id}")
 def get_essai(essai_id: str, type: str = "ru") -> Dict[str, Any]:
     """Récupère un essai par son ID."""
-    essais = _ensure_order_fields(_load(type))
+    essais = _ensure_order_fields(_load(type), type)
     for e in essais:
         if e.get("id") == essai_id:
             return e
@@ -213,7 +270,7 @@ def create_or_update_essai(payload: EssaiPayload) -> Dict[str, Any]:
         essais.append(essai_dict)
         action = "created"
 
-    essais = _ensure_order_fields(essais)
+    essais = _ensure_order_fields(essais, essai_type)
     _save(essai_type, essais)
     logger.info("[API][ESSAIS] Essai %s: %s (type=%s)", action, payload.id, essai_type)
     return {"success": True, "action": action, "id": payload.id}
@@ -229,7 +286,7 @@ def delete_essai(essai_id: str, type: str = "ru") -> Dict[str, Any]:
     if len(essais) == initial_count:
         raise HTTPException(status_code=404, detail=f"Essai {essai_id} introuvable")
 
-    essais = _ensure_order_fields(essais)
+    essais = _ensure_order_fields(essais, type)
     _save(type, essais)
     logger.info("[API][ESSAIS] Essai supprime: %s (type=%s)", essai_id, type)
     return {"success": True, "deleted": essai_id}
@@ -251,13 +308,13 @@ def sync_essais(payload: SyncPayload) -> Dict[str, Any]:
         item_type = str(essai.get("type", essai_type)).lower()
         item_id = str(essai.get("id", "")).strip().upper()
 
-        # Garde-fou de cohérence: on ne laisse pas un sync RU écrire des CVS/MVS
+        # Garde-fou de cohérence: on ne laisse pas un sync RU écrire des CVS/MVS/MVC
         # dans le fichier RU (et inversement).
         if item_type != essai_type:
             skipped_count += 1
             continue
 
-        # Garde-fou additionnel: si l'ID suit la convention RU-/CVS-/MVS-,
+        # Garde-fou additionnel: si l'ID suit la convention RU-/CVS-/MVS-/MVC-,
         # il doit être cohérent avec le type de sync cible.
         if item_id.startswith("RU-") and essai_type != "ru":
             skipped_count += 1
@@ -266,6 +323,9 @@ def sync_essais(payload: SyncPayload) -> Dict[str, Any]:
             skipped_count += 1
             continue
         if item_id.startswith("MVS-") and essai_type != "mvs":
+            skipped_count += 1
+            continue
+        if item_id.startswith("MVC-") and essai_type != "mvc":
             skipped_count += 1
             continue
 
@@ -280,7 +340,7 @@ def sync_essais(payload: SyncPayload) -> Dict[str, Any]:
     for essai in filtered_essais:
         _validate_previous_reference(filtered_essais, essai)
 
-    filtered_essais = _ensure_order_fields(filtered_essais)
+    filtered_essais = _ensure_order_fields(filtered_essais, essai_type)
     _save(essai_type, filtered_essais)
     logger.info(
         "[API][ESSAIS] Sync %s essais (type=%s, ignores=%s)",

@@ -187,9 +187,9 @@
             </div>
             <div class="divider"></div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+            <div class="info-columns">
                 <!-- CDE -->
-                <div>
+                <div class="info-column">
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                         <label class="form-label">📊 Informations CDE</label>
@@ -199,13 +199,13 @@
                             <button class="btn-icon-small" onclick="addCDE()" title="Ajout manuel">➕</button>
                         </div>
                     </div>
-                    <div id="cde-container">
+                    <div id="cde-container" class="info-list">
                         <p class="text-muted-small">Aucun CDE ajouté</p>
                     </div>
                 </div>
 
                 <!-- Alarmes -->
-                <div>
+                <div class="info-column">
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                         <label class="form-label">⚠️ Alarmes</label>
@@ -215,13 +215,13 @@
                             <button class="btn-icon-small" onclick="addAlarme()" title="Ajout manuel">➕</button>
                         </div>
                     </div>
-                    <div id="alarmes-container">
+                    <div id="alarmes-container" class="info-list">
                         <p class="text-muted-small">Aucune alarme ajoutée</p>
                     </div>
                 </div>
 
                 <!-- Informations TCD -->
-                <div>
+                <div class="info-column">
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                         <label class="form-label">ℹ️ Informations TCD</label>
@@ -231,7 +231,7 @@
                             <button class="btn-icon-small" onclick="addTCD()" title="Ajout manuel">➕</button>
                         </div>
                     </div>
-                    <div id="tcd-container">
+                    <div id="tcd-container" class="info-list">
                         <p class="text-muted-small">Aucune information TCD</p>
                     </div>
                 </div>
