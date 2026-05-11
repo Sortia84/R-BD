@@ -244,7 +244,7 @@ textarea.form-input {
 
 .step-row {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     gap: 12px;
 }
 
@@ -264,6 +264,8 @@ textarea.form-input {
 .step-controls {
     display: flex;
     gap: 8px;
+    align-self: flex-end;
+    padding-bottom: 1px;
 }
 
 .btn-move {
@@ -285,22 +287,124 @@ textarea.form-input {
 .step-fields {
     flex: 1;
     display: grid;
-    grid-template-columns: 1.4fr 1fr 1fr 1fr 1.4fr;
-    gap: 12px;
+    align-items: flex-end;
+    gap: 10px;
+    justify-content: start;
+    min-width: 0;
 }
 
-.inline-hidden {
-    display: none;
+.step-fields-sans {
+    grid-template-areas: "name injection temporisation state";
+    grid-template-columns: minmax(120px, 150px) max-content max-content max-content;
+}
+
+.step-fields-avec.step-fields-no-injection-parameter {
+    grid-template-areas:
+        "name injection temporisation state"
+        "injectionType injectionType injectionType injectionType";
+    grid-template-columns: minmax(120px, 150px) max-content max-content max-content;
+}
+
+.step-fields-avec.step-fields-with-injection-parameter {
+    grid-template-areas:
+        "name injection temporisation state"
+        "injectionType injectionType injectionParameter injectionParameter";
+    grid-template-columns: minmax(120px, 150px) max-content max-content max-content;
+}
+
+.step-fields .form-group {
+    margin-bottom: 0;
+    min-width: 0;
+}
+
+.step-field-name {
+    grid-area: name;
+    max-width: 150px;
+}
+
+.step-field-injection {
+    grid-area: injection;
+}
+
+.step-field-injection-type {
+    grid-area: injectionType;
+    min-width: 0;
+}
+
+.step-field-injection-parameter {
+    grid-area: injectionParameter;
+    min-width: 0;
+}
+
+.step-field-temporisation {
+    grid-area: temporisation;
+    min-width: 0;
+    width: auto;
+    max-width: none;
+    justify-self: start;
+}
+
+.step-field-state {
+    grid-area: state;
+    justify-self: start;
+    margin-left: 0;
+}
+
+.step-select-compact,
+.step-field-injection select,
+.step-field-state select {
+    width: auto;
+    min-width: 76px;
+    white-space: nowrap;
 }
 
 .step-inline {
     display: flex;
     align-items: center;
     gap: 8px;
+    min-width: 0;
 }
 
 .step-inline .form-input {
-    min-width: 80px;
+    min-width: 0;
+}
+
+.step-temporisation-controls {
+    flex-wrap: nowrap;
+    width: auto;
+    max-width: none;
+}
+
+.step-temporisation-mode {
+    flex: 0 0 auto;
+    min-width: 86px;
+}
+
+.step-duration-input {
+    flex: 0 0 72px;
+    width: 72px;
+}
+
+.step-unit-select {
+    flex: 0 0 64px;
+    width: 64px;
+}
+
+.step-auto-parameter-select {
+    flex: 0 1 190px;
+    width: 190px;
+    min-width: 170px;
+    max-width: 210px;
+}
+
+.step-field-injection-type select,
+.step-field-injection-parameter select {
+    width: 100%;
+    max-width: 100%;
+}
+
+.inline-hidden {
+    display: none !important;
 }
 
 /* Informations complémentaires (CDE, Alarmes, TCD) */
@@ -313,6 +417,7 @@ textarea.form-input {
     border-radius: 6px;
     margin-bottom: 6px;
     font-size: 13px;
+    min-width: 0;
 }
 
 .info-item input {
@@ -329,6 +434,16 @@ textarea.form-input {
     border: 1px solid var(--border);
     border-radius: 6px;
     font-size: 13px;
+}
+
+.info-item .info-state-select {
+    width: 92px;
+    flex: 0 0 92px;
+}
+
+.info-item .info-step-select {
+    width: 150px;
+    flex: 0 0 150px;
 }
 
 /* Textes helpers */
@@ -371,8 +486,31 @@ textarea.form-input {
         grid-template-columns: 1fr;
     }
 
+    .step-row {
+        align-items: flex-start;
+    }
+
     .step-fields {
+        grid-template-areas:
+            "name"
+            "injection"
+            "injectionType"
+            "injectionParameter"
+            "temporisation"
+            "state";
         grid-template-columns: 1fr;
+    }
+
+    .step-field-name,
+    .step-field-temporisation,
+    .step-field-state,
+    .step-temporisation-controls {
+        width: 100%;
+        max-width: none;
+    }
+
+    .step-field-state {
+        justify-self: stretch;
     }
 }
 
@@ -667,7 +805,6 @@ textarea.form-input {
     align-items: center;
     padding: 10px 12px;
     border-radius: 8px;
-    cursor: pointer;
     transition: background 0.15s;
     gap: 12px;
 }
@@ -729,6 +866,36 @@ textarea.form-input {
     border-radius: 4px;
 }
 
+.isa-popup-item .item-states {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.isa-state-button {
+    border: 1px solid var(--accent);
+    background: rgba(0, 167, 222, 0.08);
+    color: var(--accent);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.isa-state-button:hover {
+    background: var(--accent);
+    color: white;
+}
+
+.isa-state-button.is-empty-state {
+    border-color: var(--border);
+    background: var(--bg);
+    color: var(--muted);
+}
+
 .isa-popup-footer {
     display: flex;
     justify-content: space-between;
@@ -759,6 +926,7 @@ textarea.form-input {
     gap: 8px;
     align-items: center;
     margin-bottom: 8px;
+    min-width: 0;
 }
 
 .info-item input {

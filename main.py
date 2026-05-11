@@ -1,60 +1,50 @@
-# main.py — Launcher R#BD
 """
-Point d'entrée du serveur R#BD.
+main.py — Point d'entrée R#BD.
 
-Rôle :
-  - Configurer le logging
-  - Ajouter le répertoire courant au sys.path
-  - Lancer uvicorn sur api_web:app
-
-Toute la logique FastAPI (routeurs, static files, CORS) est dans api_web.py.
+Lance l'application FastAPI (definie dans api_web.py) via uvicorn.
 """
 
-import sys
+from __future__ import annotations
+
 import logging
-from pathlib import Path
 
 import uvicorn
 
-# ============================================================================
-# CONFIGURATION DU PATH
-# ============================================================================
-# Ajouter le répertoire courant au path Python pour que les imports
-# relatifs (config, api, core) fonctionnent depuis n'importe quel CWD.
-sys.path.insert(0, str(Path(__file__).parent))
-
-from config import WEB_PORT
+from config import APP_NAME, APP_VERSION, WEB_PORT
 
 
-# ============================================================================
-# CONFIGURATION LOGGING
-# ============================================================================
 logging.basicConfig(
     level=logging.INFO,
-    format='[%(asctime)s] [%(name)s] %(levelname)s: %(message)s',
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
-logger = logging.getLogger("MAIN[r_bd]")
+logger = logging.getLogger("main[r_bd]")
 
 
-# ============================================================================
-# POINT D'ENTRÉE
-# ============================================================================
+def main() -> None:
+    """Démarre R#BD (FastAPI + frontend statique)."""
+    logger.info("=" * 70)
+    logger.info("Demarrage %s v%s", APP_NAME, APP_VERSION)
+    logger.info("=" * 70)
+    logger.info("Interface web : http://localhost:%d", WEB_PORT)
+    logger.info("API REST      : http://localhost:%d/api/*", WEB_PORT)
+    logger.info("API Docs      : http://localhost:%d/docs", WEB_PORT)
 
-def main():
-    """
-    Lance le serveur R#BD via uvicorn.
-
-    Le module api_web.py contient l'application FastAPI complète.
-    """
-    logger.info("[MAIN] 🚀 R#BD démarré sur http://localhost:%d", WEB_PORT)
-    logger.info("[MAIN] 📚 API disponible sur http://localhost:%d/docs", WEB_PORT)
-    uvicorn.run(
-        "api_web:app",
-        host="0.0.0.0",
-        port=WEB_PORT,
-        reload=True,
-        log_level="info",
-    )
+    try:
+        # workers=1 : la base utilisateurs et le dashboard sont stockes en
+        # JSON local sans verrou inter-process. Un seul worker garantit
+        # la coherence des ecritures.
+        uvicorn.run(
+            "api_web:app",
+            host="0.0.0.0",
+            port=WEB_PORT,
+            reload=False,
+            log_level="info",
+        )
+    except KeyboardInterrupt:
+        logger.info("Arret demande par l'utilisateur")
+    except Exception as exc:
+        logger.error("Erreur fatale au demarrage : %s", exc)
+        raise
 
 
 if __name__ == "__main__":

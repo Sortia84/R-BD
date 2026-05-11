@@ -14,7 +14,7 @@
  * Charger et injecter le header mutualisé.
  *
  * @param {Object} config - Configuration du header
- * @param {string} [config.activeView="home"] - Vue active (home|icd|isa|essais|fcs|rac)
+ * @param {string} [config.activeView="home"] - Vue active (home|icd|isa|essais|rac)
  * @param {string} [config.title="R#BD"] - Titre principal du header
  * @param {string} [config.subtitle="Base de données IEC 61850"] - Sous-titre
  * @returns {Promise<void>}

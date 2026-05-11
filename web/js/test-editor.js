@@ -11,6 +11,8 @@ let currentTest = {
     ld: '',
     ln: '',
     lninst: '',
+    previous_test_id: '',
+    order_index: null,
     description: '',
     preconditions: [],
     files: [],
@@ -30,7 +32,6 @@ let linkedPickerState = {
     candidates: [],
     filteredCandidates: []
 };
-let bidirectionalLinksChecked = false;
 
 // Données de référence chargées depuis l'API
 let editorIedPatterns = [];      // Liste des patterns IED depuis liste_ied.json
@@ -67,6 +68,31 @@ let originalType = selectedType;
 let persistedEditorType = selectedType;
 let persistedEditorId = '';
 
+function buildEmptyTest(type = 'ru') {
+    return {
+        id: '',
+        type: String(type || 'ru').toLowerCase(),
+        name: '',
+        ied: '',
+        variant: '',
+        ld: '',
+        ln: '',
+        lninst: '',
+        previous_test_id: '',
+        order_index: null,
+        description: '',
+        preconditions: [],
+        files: [],
+        linked_tests_ru: [],
+        linked_tests_mvs: [],
+        linked_tests_cvs: [],
+        steps: [],
+        cde: [],
+        alarmes: [],
+        tcd: []
+    };
+}
+
 
 // ============================================================
 // RENDU DU LAYOUT — Génération HTML de l'éditeur
@@ -78,7 +104,7 @@ let persistedEditorId = '';
  * Appelée par renderEssaisLayout() dans templates-essais.js.
  * Injecte le formulaire dans #essais-editor-view.
  *
- * Sections : identification, description/préconditions/éléments liés,
+ * Sections : identification, description/préconditions,
  * étapes, chronogramme, infos complémentaires (CDE/alarmes/TCD), sauvegarde.
  */
 function renderEditorLayout() {
@@ -140,13 +166,19 @@ function renderEditorLayout() {
                     <label>LNinst</label>
                     <select id="test-lninst" class="form-input"><option value="">Sélectionner LNinst</option></select>
                 </div>
+                <div class="form-group">
+                    <label>Test precedent</label>
+                    <select id="test-previous" class="form-input">
+                        <option value="">Aucun test precedent / premier test</option>
+                    </select>
+                    <div class="field-hint">Ordre conseille dans le referentiel R#BD</div>
+                </div>
             </div>
         </section>
-
-        <!-- Description / Préconditions / Éléments liés -->
+        <!-- Description / Préconditions -->
         <section class="card">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="margin: 0;">Description, préconditions &amp; éléments liés</h3>
+                <h3 style="margin: 0;">Description &amp; préconditions</h3>
             </div>
             <div class="divider"></div>
             <div class="compact-row">
@@ -161,27 +193,6 @@ function renderEditorLayout() {
                     </div>
                     <div id="preconditions-container" class="compact-list">
                         <p class="text-muted precondition-empty" id="no-preconditions">Aucune précondition</p>
-                    </div>
-                </div>
-                <div class="compact-col">
-                    <label class="form-label">Éléments liés</label>
-                    <div class="linked-tests-zone compact-links">
-                        <div class="compact-links-row">
-                            <div class="file-upload-zone compact-upload" onclick="document.getElementById('file-input').click()">
-                                <div class="compact-upload-content">
-                                    <span class="compact-upload-icon">📁</span>
-                                    <span>Fichier</span>
-                                </div>
-                            </div>
-                            <button class="btn-link-test" onclick="linkTestRU()">➕ RU</button>
-                            <button class="btn-link-test" onclick="linkTestMVS()">➕ MVS</button>
-                            <button class="btn-link-test" onclick="linkTestCVS()">➕ CVS</button>
-                        </div>
-                        <input type="file" id="file-input" multiple style="display: none;" onchange="handleFileUpload(event)">
-                        <div id="files-list" class="compact-list"></div>
-                        <div id="tests-ru-list" class="compact-list"></div>
-                        <div id="tests-mvs-list" class="compact-list"></div>
-                        <div id="tests-cvs-list" class="compact-list"></div>
                     </div>
                 </div>
             </div>
@@ -273,13 +284,164 @@ function setSavedTests(type, tests) {
     localStorage.setItem(`tests_${type}`, JSON.stringify(tests));
 }
 
+function getTestOrderIndex(test) {
+    const numeric = Number(test?.order_index);
+    return Number.isFinite(numeric) ? numeric : Number.MAX_SAFE_INTEGER;
+}
+
+function sortEditorTestsByManualOrder(tests) {
+    return [...tests].sort((a, b) => (
+        getTestOrderIndex(a) - getTestOrderIndex(b)
+        || String(a.name || '').localeCompare(String(b.name || ''), 'fr', { sensitivity: 'base' })
+        || String(a.id || '').localeCompare(String(b.id || ''), 'fr', { sensitivity: 'base' })
+    ));
+}
+
+function normalizePreviousTestId(value) {
+    return String(value || '').trim();
+}
+
+function getPreviousTestSelection() {
+    return {
+        ied: document.getElementById('test-ied')?.value || currentTest.ied || '',
+        ld: document.getElementById('test-ld')?.value || currentTest.ld || '',
+        ln: document.getElementById('test-ln')?.value || currentTest.ln || '',
+        lninst: document.getElementById('test-lninst')?.value || currentTest.lninst || ''
+    };
+}
+
+function previousCandidateMatchesSelection(test, selection) {
+    // Les champs vides n'excluent pas un candidat : ils permettent de conserver
+    // une liste exploitable pendant la saisie progressive IED / LD / LN / LNInst.
+    return (!selection.ied || test.ied === selection.ied)
+        && (!selection.ld || test.ld === selection.ld)
+        && (!selection.ln || test.ln === selection.ln)
+        && (!selection.lninst || test.lninst === selection.lninst);
+}
+
+function refreshPreviousTestSelect() {
+    const select = document.getElementById('test-previous');
+    if (!select) {
+        return;
+    }
+
+    const currentId = normalizePreviousTestId(document.getElementById('test-id')?.value || currentTest.id);
+    const currentPrevious = normalizePreviousTestId(currentTest.previous_test_id);
+    const selection = getPreviousTestSelection();
+    const tests = sortEditorTestsByManualOrder(getSavedTests(selectedType));
+    const candidates = tests.filter(test => {
+        const candidateId = normalizePreviousTestId(test.id);
+        return candidateId
+            && candidateId !== currentId
+            // En modification d'ordre, un test placé après le test courant doit
+            // rester sélectionnable. Le recalcul final retire d'abord le test
+            // courant de la chaîne, puis le réinsère après le précédent choisi.
+            && previousCandidateMatchesSelection(test, selection);
+    });
+
+    select.innerHTML = '<option value="">Aucun test precedent / premier test</option>';
+    candidates.forEach(test => {
+        const option = document.createElement('option');
+        option.value = test.id;
+        option.textContent = `${test.id} - ${test.name || 'Test sans nom'}`;
+        select.appendChild(option);
+    });
+
+    if (currentPrevious && !candidates.some(test => String(test.id) === currentPrevious)) {
+        const option = document.createElement('option');
+        option.value = currentPrevious;
+        option.textContent = `${currentPrevious} - reference non visible`;
+        select.appendChild(option);
+    }
+
+    select.value = currentPrevious;
+}
+
+function recalculateEditorOrder(tests) {
+    const ordered = [...tests];
+    return ordered.map((test, index) => ({
+        ...test,
+        previous_test_id: index === 0 ? '' : String(ordered[index - 1]?.id || ''),
+        order_index: (index + 1) * 10
+    }));
+}
+
+function applyPreviousPlacement(tests, editedTest) {
+    const editedId = normalizePreviousTestId(editedTest.id);
+    const previousId = normalizePreviousTestId(editedTest.previous_test_id);
+    const ordered = sortEditorTestsByManualOrder(tests).filter(test =>
+        normalizePreviousTestId(test.id) !== editedId
+    );
+
+    if (!previousId) {
+        return [editedTest, ...ordered];
+    }
+
+    const previousIndex = ordered.findIndex(test => normalizePreviousTestId(test.id) === previousId);
+    if (previousIndex < 0) {
+        return [...ordered, { ...editedTest, previous_test_id: '' }];
+    }
+
+    ordered.splice(previousIndex + 1, 0, editedTest);
+    return ordered;
+}
+
 /**
  * Initialise l'éditeur
  */
+function resetEditorFormForNewTest() {
+    // Nouveau test doit repartir d'un formulaire propre. La duplication reste
+    // le seul flux qui reprend volontairement le contenu d'un essai existant.
+    const generatedId = currentTest.id;
+    currentTest = {
+        ...buildEmptyTest(selectedType),
+        id: generatedId
+    };
+    stepCounter = 1;
+
+    const typeSelect = document.getElementById('test-type');
+    const idInput = document.getElementById('test-id');
+    const nameInput = document.getElementById('test-name');
+    const descriptionInput = document.getElementById('test-description');
+    const iedSelect = document.getElementById('test-ied');
+    const variantSelect = document.getElementById('test-variant');
+    const ldSelect = document.getElementById('test-ld');
+    const lnSelect = document.getElementById('test-ln');
+    const lninstSelect = document.getElementById('test-lninst');
+    const previousSelect = document.getElementById('test-previous');
+    const fileInput = document.getElementById('file-input');
+
+    if (typeSelect) typeSelect.value = selectedType;
+    if (idInput) idInput.value = currentTest.id;
+    if (nameInput) nameInput.value = '';
+    if (descriptionInput) descriptionInput.value = '';
+    if (iedSelect) iedSelect.value = '';
+    if (fileInput) fileInput.value = '';
+
+    resetSelect(variantSelect, '— Aucun —');
+    resetSelect(ldSelect, 'Sélectionner un LD');
+    resetSelect(lnSelect, 'Sélectionner un LN');
+    resetSelect(lninstSelect, 'Sélectionner LNinst');
+
+    if (previousSelect) {
+        previousSelect.innerHTML = '<option value="">Aucun test precedent / premier test</option>';
+        previousSelect.value = '';
+    }
+
+    refreshPreviousTestSelect();
+    renderPreconditions();
+    renderSteps();
+    renderComplementaryInfos();
+    updateChronogram();
+}
+
 async function initEditor() {
-    if (!bidirectionalLinksChecked) {
-        await repairBidirectionalLinksInStorage();
-        bidirectionalLinksChecked = true;
+    // Les anciens liens inter-essais ne sont plus entretenus par R_BD.
+    // L'initialisation reste centrée sur les référentiels utiles au test courant.
+
+    if (window.RbdTestParameters) {
+        await RbdTestParameters.load();
+        await RbdTestParameters.loadReferences();
     }
 
     // Charger les IEDs depuis le SCD si disponible
@@ -289,11 +451,14 @@ async function initEditor() {
     setupTypeSelector();
     ensureRandomId();
     refreshTypeLabels();
+    refreshPreviousTestSelect();
 
     // Si on édite un test existant, charger ses données
     // SPA : l'ID est passé via la variable _editorTestId définie par openEditor()
     if (typeof _editorTestId !== 'undefined' && _editorTestId) {
         await loadTest(_editorTestId);
+    } else {
+        resetEditorFormForNewTest();
     }
 }
 
@@ -311,6 +476,7 @@ function setupTypeSelector() {
         }
         selectedType = newType;
         currentTest.type = selectedType;
+        currentTest.previous_test_id = '';
         if (!isEditing) {
             currentTest.id = '';
             ensureRandomId();
@@ -318,6 +484,7 @@ function setupTypeSelector() {
             ensureTypeCoherentIdOnTypeChange();
         }
         refreshTypeLabels();
+        refreshPreviousTestSelect();
     });
 }
 
@@ -378,6 +545,7 @@ async function loadEditorReferenceLists() {
     const ldSelect = document.getElementById('test-ld');
     const lnSelect = document.getElementById('test-ln');
     const lninstSelect = document.getElementById('test-lninst');
+    const previousSelect = document.getElementById('test-previous');
 
     // Charger les patterns IED et le catalogue ICD
     await Promise.all([
@@ -393,6 +561,10 @@ async function loadEditorReferenceLists() {
     variantSelect.addEventListener('change', () => onVariantChange());
     ldSelect.addEventListener('change', () => onLdChange());
     lnSelect.addEventListener('change', () => onLnChange());
+    lninstSelect.addEventListener('change', () => refreshPreviousTestSelect());
+    previousSelect?.addEventListener('change', (event) => {
+        currentTest.previous_test_id = normalizePreviousTestId(event.target.value);
+    });
 
     // Initialiser les listes dépendantes comme vides
     resetSelect(variantSelect, '— Aucun —');
@@ -522,6 +694,7 @@ async function onIedChange() {
 
     if (!patternId) {
         resetSelect(ldSelect, 'Sélectionner un LD');
+        refreshPreviousTestSelect();
         return;
     }
 
@@ -529,6 +702,7 @@ async function onIedChange() {
     const pattern = editorIedPatterns.find(p => p.id === patternId);
     if (!pattern) {
         resetSelect(ldSelect, 'Aucun LD disponible');
+        refreshPreviousTestSelect();
         return;
     }
 
@@ -546,6 +720,7 @@ async function onIedChange() {
 
     // Charger les LDs depuis le pattern parent (par défaut)
     await loadLdsForPattern(pattern);
+    refreshPreviousTestSelect();
 }
 
 /**
@@ -570,16 +745,19 @@ async function onVariantChange() {
     const patternId = variantId || parentId;
     if (!patternId) {
         resetSelect(ldSelect, 'Sélectionner un LD');
+        refreshPreviousTestSelect();
         return;
     }
 
     const pattern = editorIedPatterns.find(p => p.id === patternId);
     if (!pattern) {
         resetSelect(ldSelect, 'Aucun LD disponible');
+        refreshPreviousTestSelect();
         return;
     }
 
     await loadLdsForPattern(pattern);
+    refreshPreviousTestSelect();
 }
 
 /**
@@ -650,15 +828,24 @@ function onLdChange() {
     resetSelect(lnSelect, 'Sélectionner un LN');
     resetSelect(lninstSelect, 'Sélectionner LNinst');
 
-    if (!ldName) return;
+    if (!ldName) {
+        refreshPreviousTestSelect();
+        return;
+    }
 
     // Récupérer les données des LDs
     const ldsDataStr = ldSelect.dataset.ldsData;
-    if (!ldsDataStr) return;
+    if (!ldsDataStr) {
+        refreshPreviousTestSelect();
+        return;
+    }
 
     const ldsData = JSON.parse(ldsDataStr);
     const ldData = ldsData[ldName];
-    if (!ldData || !ldData.lns) return;
+    if (!ldData || !ldData.lns) {
+        refreshPreviousTestSelect();
+        return;
+    }
 
     // Extraire les classes LN uniques
     const lnClasses = [...new Set(ldData.lns.map(ln => ln.ln_class))].sort();
@@ -673,6 +860,7 @@ function onLdChange() {
 
     // Stocker les LNs pour l'événement suivant
     lnSelect.dataset.lnsData = JSON.stringify(ldData.lns);
+    refreshPreviousTestSelect();
 }
 
 /**
@@ -687,11 +875,17 @@ function onLnChange() {
     // Reset la liste LNinst
     resetSelect(lninstSelect, 'Sélectionner LNinst');
 
-    if (!lnClass) return;
+    if (!lnClass) {
+        refreshPreviousTestSelect();
+        return;
+    }
 
     // Récupérer les données des LNs
     const lnsDataStr = lnSelect.dataset.lnsData;
-    if (!lnsDataStr) return;
+    if (!lnsDataStr) {
+        refreshPreviousTestSelect();
+        return;
+    }
 
     const lnsData = JSON.parse(lnsDataStr);
 
@@ -720,6 +914,7 @@ function onLnChange() {
     if (uniqueInstances.length === 1) {
         lninstSelect.value = uniqueInstances[0];
     }
+    refreshPreviousTestSelect();
 }
 
 /**
@@ -922,14 +1117,19 @@ async function loadTest(testId) {
         ...test,
         type: selectedType,
         preconditions: test.preconditions || [],
-        files: test.files || [],
-        linked_tests_ru: normalizeLinkedTests('ru', test.linked_tests_ru),
-        linked_tests_mvs: normalizeLinkedTests('mvs', test.linked_tests_mvs),
-        linked_tests_cvs: normalizeLinkedTests('cvs', test.linked_tests_cvs),
+        // Les fichiers et anciens liens inter-essais ne font plus partie du
+        // formulaire R_BD. Ils sont volontairement remis à zéro à l'ouverture
+        // pour que la prochaine sauvegarde nettoie aussi les anciens essais.
+        files: [],
+        linked_tests_ru: [],
+        linked_tests_mvs: [],
+        linked_tests_cvs: [],
         steps: test.steps || [],
         cde: test.cde || [],
         alarmes: test.alarmes || [],
-        tcd: test.tcd || []
+        tcd: test.tcd || [],
+        previous_test_id: test.previous_test_id || '',
+        order_index: test.order_index ?? null
     };
 
     document.getElementById('test-id').value = currentTest.id || '';
@@ -938,14 +1138,11 @@ async function loadTest(testId) {
 
     // Restaurer les sélecteurs liés (IED → Variant → LD → LN → LNinst)
     await restoreLinkedSelectors(test.ied, test.variant, test.ld, test.ln, test.lninst);
+    refreshPreviousTestSelect();
 
     refreshTypeLabels();
 
     renderPreconditions();
-    renderFiles();
-    renderLinkedTests('ru', currentTest.linked_tests_ru);
-    renderLinkedTests('mvs', currentTest.linked_tests_mvs);
-    renderLinkedTests('cvs', currentTest.linked_tests_cvs);
     renderSteps();
     renderInfo('cde', currentTest.cde, 'CDE');
     renderInfo('alarmes', currentTest.alarmes, 'alarme');
@@ -1563,6 +1760,17 @@ function renderReadonlyItems(title, items, formatter) {
     `;
 }
 
+function renderReadonlyInfoItem(test, item) {
+    const name = escapeHtml(item?.name || item?.id || String(item || ''));
+    const state = escapeHtml(item?.state || '—');
+    const linkedStep = (test.steps || []).find(step => step.id && step.id === item?.step_id);
+    const stepLabel = linkedStep
+        ? ` | Étape: ${escapeHtml(linkedStep.number || '?')}. ${escapeHtml(linkedStep.name || 'Sans nom')}`
+        : '';
+
+    return `<div class="linked-readonly-item"><strong>${name}</strong><span>État: ${state}${stepLabel}</span></div>`;
+}
+
 function openLinkedTestReadonly(type, testId) {
     const linkedType = String(type || '').toLowerCase();
     const normalizedId = String(testId || '').trim();
@@ -1624,31 +1832,19 @@ function openLinkedTestReadonly(type, testId) {
     const cdeSection = renderReadonlyItems(
         'Informations CDE',
         test.cde,
-        (item) => {
-            const name = escapeHtml(item?.name || item?.id || String(item || ''));
-            const state = escapeHtml(item?.state || '—');
-            return `<div class="linked-readonly-item"><strong>${name}</strong><span>État: ${state}</span></div>`;
-        }
+        (item) => renderReadonlyInfoItem(test, item)
     );
 
     const alarmesSection = renderReadonlyItems(
         'Alarmes',
         test.alarmes,
-        (item) => {
-            const name = escapeHtml(item?.name || item?.id || String(item || ''));
-            const state = escapeHtml(item?.state || '—');
-            return `<div class="linked-readonly-item"><strong>${name}</strong><span>État: ${state}</span></div>`;
-        }
+        (item) => renderReadonlyInfoItem(test, item)
     );
 
     const tcdSection = renderReadonlyItems(
         'Informations TCD',
         test.tcd,
-        (item) => {
-            const name = escapeHtml(item?.name || item?.id || String(item || ''));
-            const state = escapeHtml(item?.state || '—');
-            return `<div class="linked-readonly-item"><strong>${name}</strong><span>État: ${state}</span></div>`;
-        }
+        (item) => renderReadonlyInfoItem(test, item)
     );
 
     content.innerHTML = `
@@ -1715,6 +1911,129 @@ function renderLinkedTests(type, tests) {
     });
 }
 
+function getStepInjectionFunctionId(step) {
+    return step?.injection_function_id || step?.injection_type || step?.fault_type || '';
+}
+
+function getStepInjectionParameterId(step) {
+    return step?.injection_parameter_id || step?.injection_parameter || '';
+}
+
+function getStepTemporisationParameterId(step) {
+    return step?.temporisation_parameter_id || step?.temporisation_parameter || '';
+}
+
+function buildInjectionFunctionOptions(selectedValue) {
+    if (!window.RbdTestParameters) {
+        return '<option value="">Parametrage indisponible</option>';
+    }
+    return renderFunctionOptions(selectedValue);
+}
+
+function buildInjectionParameterOptions(functionId, selectedValue) {
+    if (!window.RbdTestParameters || !functionId) {
+        return "<option value=\"\">Selectionner un type d'injection</option>";
+    }
+    return renderParameterOptions(functionId, selectedValue);
+}
+
+function buildTemporisationParameterOptions(functionId, selectedValue) {
+    if (!window.RbdTestParameters || !functionId) {
+        return "<option value=\"\">Selectionner un type d'injection</option>";
+    }
+    return renderParameterOptions(functionId, selectedValue, { onlyTemporisation: true });
+}
+
+function renderStepItemHtml(step, stepNum) {
+    const stepId = step.id;
+    const injectionMode = step.injection === 'Avec' ? 'Avec' : 'Sans';
+    const temporisationMode = step.temporisation === 'Auto' ? 'Auto' : 'Manuel';
+    const injectionFunctionId = getStepInjectionFunctionId(step);
+    const injectionParameterId = getStepInjectionParameterId(step);
+    const temporisationParameterId = getStepTemporisationParameterId(step);
+    const hasInjectionParameter = injectionMode === 'Avec' && Boolean(injectionFunctionId);
+    const stepFieldClasses = [
+        'step-fields',
+        `step-fields-${injectionMode.toLowerCase()}`,
+        hasInjectionParameter ? 'step-fields-with-injection-parameter' : 'step-fields-no-injection-parameter',
+    ].join(' ');
+
+    return `
+        <div class="step-item" id="${stepId}">
+            <div class="step-row">
+                <div class="step-number">${stepNum}</div>
+                <div class="${stepFieldClasses}">
+                    <div class="form-group step-field-name">
+                        <label>Nom</label>
+                        <input type="text" class="form-input" placeholder="Nom de l'etape"
+                            value="${escapeHtml(step.name || '')}"
+                            onchange="updateStep('${stepId}', 'name', this.value)">
+                    </div>
+
+                    <div class="form-group step-field-injection">
+                        <label>Injection</label>
+                        <select class="form-input step-select-compact" onchange="toggleInjection('${stepId}', this.value)">
+                            <option value="Sans" ${injectionMode === 'Sans' ? 'selected' : ''}>Sans</option>
+                            <option value="Avec" ${injectionMode === 'Avec' ? 'selected' : ''}>Avec</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group step-field-injection-type ${injectionMode === 'Avec' ? '' : 'inline-hidden'}" id="${stepId}_fault">
+                        <label>Type d'injection</label>
+                        <select class="form-input" onchange="updateStepInjectionFunction('${stepId}', this.value)">
+                            ${buildInjectionFunctionOptions(injectionFunctionId)}
+                        </select>
+                    </div>
+
+                    <div class="form-group step-field-injection-parameter ${hasInjectionParameter ? '' : 'inline-hidden'}" id="${stepId}_injection_parameter">
+                        <label>Parametre d'injection</label>
+                        <select class="form-input" onchange="updateStepInjectionParameter('${stepId}', this.value)">
+                            ${buildInjectionParameterOptions(injectionFunctionId, injectionParameterId)}
+                        </select>
+                    </div>
+
+                    <div class="form-group step-field-temporisation">
+                        <label>Temporisation</label>
+                        <div class="step-inline step-temporisation-controls">
+                            <select class="form-input step-select-compact step-temporisation-mode" onchange="toggleTemporisation('${stepId}', this.value)">
+                                <option value="Manuel" ${temporisationMode === 'Manuel' ? 'selected' : ''}>Manuel</option>
+                                <option value="Auto" ${temporisationMode === 'Auto' ? 'selected' : ''}>Auto</option>
+                            </select>
+                            <div class="step-inline step-duration-fields ${temporisationMode === 'Manuel' ? '' : 'inline-hidden'}" id="${stepId}_duration">
+                                <input type="number" class="form-input step-duration-input" placeholder="0" min="0"
+                                    value="${Number(step.duration) || 0}"
+                                    onchange="updateStep('${stepId}', 'duration', this.value)">
+                                <select class="form-input step-unit-select" onchange="updateStep('${stepId}', 'unit', this.value)">
+                                    <option value="ms" ${step.unit === 'ms' || !step.unit ? 'selected' : ''}>ms</option>
+                                    <option value="s" ${step.unit === 's' ? 'selected' : ''}>s</option>
+                                    <option value="min" ${step.unit === 'min' ? 'selected' : ''}>min</option>
+                                </select>
+                            </div>
+                            <div class="step-inline step-auto-parameter ${temporisationMode === 'Auto' ? '' : 'inline-hidden'}" id="${stepId}_auto_duration">
+                                <select class="form-input step-auto-parameter-select" onchange="updateStepTemporisationParameter('${stepId}', this.value)">
+                                    ${buildTemporisationParameterOptions(injectionFunctionId, temporisationParameterId)}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group step-field-state">
+                        <label>Etat</label>
+                        <select class="form-input step-select-compact" onchange="updateStep('${stepId}', 'state', this.value)">
+                            ${buildStateOptions(step.state, 'Selectionner')}
+                        </select>
+                    </div>
+                </div>
+                <div class="step-controls">
+                    <button class="btn-move" onclick="moveStep('${stepId}', -1)" title="Monter">↑</button>
+                    <button class="btn-move" onclick="moveStep('${stepId}', 1)" title="Descendre">↓</button>
+                    <button class="btn-remove" onclick="removeStep('${stepId}')">🗑️</button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
 function renderSteps() {
     const container = document.getElementById('steps-container');
     container.innerHTML = '';
@@ -1729,99 +2048,97 @@ function renderSteps() {
         const stepId = step.id || `step_${Date.now()}_${Math.random().toString(36).slice(2)}`;
         step.id = stepId;
         const stepNum = step.number || stepCounter++;
-
-        const stepHtml = `
-            <div class="step-item" id="${stepId}">
-                <div class="step-row">
-                    <div class="step-number">${stepNum}</div>
-                    <div class="step-fields">
-                        <div class="form-group">
-                            <label>Nom</label>
-                            <input type="text" class="form-input" placeholder="Nom de l'étape"
-                                value="${escapeHtml(step.name || '')}"
-                                onchange="updateStep('${stepId}', 'name', this.value)">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Injection</label>
-                            <select class="form-input" onchange="toggleInjection('${stepId}', this.value)">
-                                <option value="Sans" ${step.injection === 'Sans' ? 'selected' : ''}>Sans injection</option>
-                                <option value="Avec" ${step.injection === 'Avec' ? 'selected' : ''}>Avec injection</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group ${step.injection === 'Avec' ? '' : 'inline-hidden'}" id="${stepId}_fault">
-                            <label>Type défaut</label>
-                            <input type="text" class="form-input" placeholder="Type de défaut"
-                                value="${escapeHtml(step.fault_type || '')}"
-                                onchange="updateStep('${stepId}', 'fault_type', this.value)">
-                        </div>
-
-                        <div class="form-group">
-                            <label>État</label>
-                            <select class="form-input" onchange="updateStep('${stepId}', 'state', this.value)">
-                                ${buildStateOptions(step.state, 'Sélectionner')}
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Temporisation</label>
-                            <div class="step-inline">
-                                <select class="form-input" onchange="toggleTemporisation('${stepId}', this.value)">
-                                    <option value="Manuel" ${step.temporisation === 'Manuel' ? 'selected' : ''}>Manuel</option>
-                                    <option value="Auto" ${step.temporisation === 'Auto' ? 'selected' : ''}>Auto</option>
-                                </select>
-                                <div class="step-inline ${step.temporisation === 'Manuel' ? '' : 'inline-hidden'}" id="${stepId}_duration">
-                                    <input type="number" class="form-input" placeholder="0" min="0"
-                                        value="${step.duration || 0}"
-                                        onchange="updateStep('${stepId}', 'duration', this.value)">
-                                    <select class="form-input" onchange="updateStep('${stepId}', 'unit', this.value)">
-                                        <option value="ms" ${step.unit === 'ms' ? 'selected' : ''}>ms</option>
-                                        <option value="s" ${step.unit === 's' ? 'selected' : ''}>s</option>
-                                        <option value="min" ${step.unit === 'min' ? 'selected' : ''}>min</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="step-controls">
-                        <button class="btn-move" onclick="moveStep('${stepId}', -1)" title="Monter">↑</button>
-                        <button class="btn-move" onclick="moveStep('${stepId}', 1)" title="Descendre">↓</button>
-                        <button class="btn-remove" onclick="removeStep('${stepId}')">🗑️</button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        container.insertAdjacentHTML('beforeend', stepHtml);
+        step.number = stepNum;
+        container.insertAdjacentHTML('beforeend', renderStepItemHtml(step, stepNum));
         stepCounter = Math.max(stepCounter, stepNum + 1);
     });
 }
 
 function renderInfo(type, items, label) {
     const container = document.getElementById(`${type}-container`);
+    const safeItems = Array.isArray(items) ? items : [];
     container.innerHTML = '';
 
-    if (!items.length) {
+    if (!safeItems.length) {
         const labels = { cde: 'CDE', alarmes: 'alarme', tcd: 'information TCD' };
         container.innerHTML = `<p class="text-muted-small">Aucun${type === 'alarmes' ? 'e' : ''} ${labels[type]} ajouté${type === 'alarmes' ? 'e' : ''}</p>`;
         return;
     }
 
-    items.forEach(info => {
-        const infoHtml = `
-            <div class="info-item" id="${info.id}">
-                <input type="text" placeholder="Nom ${label}" value="${escapeHtml(info.name || '')}"
-                    onchange="updateInfo('${type}', '${info.id}', 'name', this.value)">
-                <select onchange="updateInfo('${type}', '${info.id}', 'state', this.value)">
-                    ${buildStateOptions(info.state, 'État')}
-                </select>
-                <button class="btn-icon-small" style="width: 24px; height: 24px; background: var(--danger);"
-                    onclick="removeInfo('${type}', '${info.id}')">✕</button>
-            </div>
-        `;
-        container.insertAdjacentHTML('beforeend', infoHtml);
+    safeItems.forEach(info => {
+        container.insertAdjacentHTML('beforeend', renderInfoItemHtml(type, info, label));
     });
+}
+
+function normalizeInfoAllowedStates(info) {
+    if (!Array.isArray(info?.allowed_states)) {
+        return [];
+    }
+
+    return info.allowed_states
+        .map(state => ({
+            code: String(state?.code || '').trim(),
+            label: String(state?.label || state?.code || '').trim(),
+            value: String(state?.value || '').trim(),
+            source: String(state?.source || '').trim()
+        }))
+        .filter(state => state.label);
+}
+
+function buildInfoStateOptions(info) {
+    const allowedStates = normalizeInfoAllowedStates(info);
+
+    if (!allowedStates.length) {
+        return buildStateOptions(info?.state, 'État');
+    }
+
+    const selectedValue = String(info?.state || '').toUpperCase();
+    const placeholderSelected = !selectedValue ? 'selected' : '';
+    const options = allowedStates.map(state => {
+        const label = state.label;
+        const selected = selectedValue === label.toUpperCase() ? 'selected' : '';
+        const title = state.value ? ` title="${escapeHtml(state.source || state.code)} : ${escapeHtml(state.value)}"` : '';
+        return `<option value="${escapeHtml(label)}" ${selected}${title}>${escapeHtml(label)}</option>`;
+    }).join('');
+
+    return `<option value="" ${placeholderSelected}>État ISA</option>${options}`;
+}
+
+function buildInfoStepOptions(selectedStepId = '') {
+    const selected = selectedStepId || '';
+    const options = (currentTest.steps || []).map((step, index) => {
+        const stepId = step.id || '';
+        const number = step.number || (index + 1);
+        const name = step.name ? ` - ${step.name}` : '';
+        const isSelected = selected === stepId ? 'selected' : '';
+        return `<option value="${escapeHtml(stepId)}" ${isSelected}>Étape ${number}${escapeHtml(name)}</option>`;
+    }).join('');
+
+    return `<option value="" ${selected ? '' : 'selected'}>Sans étape liée</option>${options}`;
+}
+
+function renderInfoItemHtml(type, info, label) {
+    const infoId = info.id;
+    return `
+        <div class="info-item" id="${infoId}">
+            <input type="text" placeholder="Nom ${label}" value="${escapeHtml(info.name || '')}"
+                onchange="updateInfo('${type}', '${infoId}', 'name', this.value)">
+            <select class="info-state-select" onchange="updateInfo('${type}', '${infoId}', 'state', this.value)">
+                ${buildInfoStateOptions(info)}
+            </select>
+            <select class="info-step-select" onchange="updateInfo('${type}', '${infoId}', 'step_id', this.value)">
+                ${buildInfoStepOptions(info.step_id)}
+            </select>
+            <button class="btn-icon-small" style="width: 24px; height: 24px; background: var(--danger);"
+                onclick="removeInfo('${type}', '${infoId}')">✕</button>
+        </div>
+    `;
+}
+
+function renderComplementaryInfos() {
+    renderInfo('cde', currentTest.cde, 'CDE');
+    renderInfo('alarmes', currentTest.alarmes, 'alarme');
+    renderInfo('tcd', currentTest.tcd, 'information TCD');
 }
 
 function escapeHtml(text) {
@@ -2028,81 +2345,27 @@ function addStep() {
 
     const stepId = `step_${Date.now()}`;
     const stepNum = stepCounter++;
-
-    const stepHtml = `
-        <div class="step-item" id="${stepId}">
-            <div class="step-row">
-                <div class="step-number">${stepNum}</div>
-                <div class="step-fields">
-                    <div class="form-group">
-                        <label>Nom</label>
-                        <input type="text" class="form-input" placeholder="Nom de l'étape"
-                            onchange="updateStep('${stepId}', 'name', this.value)">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Injection</label>
-                        <select class="form-input" onchange="toggleInjection('${stepId}', this.value)">
-                            <option value="Sans">Sans injection</option>
-                            <option value="Avec">Avec injection</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group inline-hidden" id="${stepId}_fault">
-                        <label>Type défaut</label>
-                        <input type="text" class="form-input" placeholder="Type de défaut"
-                            onchange="updateStep('${stepId}', 'fault_type', this.value)">
-                    </div>
-
-                    <div class="form-group">
-                        <label>État</label>
-                        <select class="form-input" onchange="updateStep('${stepId}', 'state', this.value)">
-                            ${buildStateOptions('', 'Sélectionner')}
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Temporisation</label>
-                        <div class="step-inline">
-                            <select class="form-input" onchange="toggleTemporisation('${stepId}', this.value)">
-                                <option value="Manuel">Manuel</option>
-                                <option value="Auto">Auto</option>
-                            </select>
-                            <div class="step-inline inline-hidden" id="${stepId}_duration">
-                                <input type="number" class="form-input" placeholder="0" min="0"
-                                    onchange="updateStep('${stepId}', 'duration', this.value)">
-                                <select class="form-input" onchange="updateStep('${stepId}', 'unit', this.value)">
-                                    <option value="ms">ms</option>
-                                    <option value="s">s</option>
-                                    <option value="min">min</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="step-controls">
-                    <button class="btn-move" onclick="moveStep('${stepId}', -1)" title="Monter">↑</button>
-                    <button class="btn-move" onclick="moveStep('${stepId}', 1)" title="Descendre">↓</button>
-                    <button class="btn-remove" onclick="removeStep('${stepId}')">🗑️</button>
-                </div>
-            </div>
-        </div>
-    `;
-
-    container.insertAdjacentHTML('beforeend', stepHtml);
-
-    currentTest.steps.push({
+    const step = {
         id: stepId,
         number: stepNum,
         name: '',
         injection: 'Sans',
         fault_type: '',
+        injection_function_id: '',
+        injection_type: '',
+        injection_parameter_id: '',
+        injection_parameter: '',
         state: '',
         temporisation: 'Manuel',
+        temporisation_parameter_id: '',
+        temporisation_parameter: '',
         duration: 0,
         unit: 'ms'
-    });
+    };
 
+    currentTest.steps.push(step);
+    container.insertAdjacentHTML('beforeend', renderStepItemHtml(step, stepNum));
+    renderComplementaryInfos();
     updateChronogram();
 }
 
@@ -2110,11 +2373,18 @@ function addStep() {
  * Active/désactive l'injection
  */
 function toggleInjection(stepId, value) {
-    const faultField = document.getElementById(`${stepId}_fault`);
-    if (faultField) {
-        faultField.classList.toggle('inline-hidden', value !== 'Avec');
+    const step = currentTest.steps.find(s => s.id === stepId);
+    if (step && value !== 'Avec') {
+        step.injection_function_id = '';
+        step.injection_type = '';
+        step.fault_type = '';
+        step.injection_parameter_id = '';
+        step.injection_parameter = '';
+        step.temporisation_parameter_id = '';
+        step.temporisation_parameter = '';
     }
     updateStep(stepId, 'injection', value);
+    renderSteps();
     updateChronogram();
 }
 
@@ -2122,12 +2392,61 @@ function toggleInjection(stepId, value) {
  * Active/désactive la temporisation manuelle
  */
 function toggleTemporisation(stepId, value) {
-    const durationField = document.getElementById(`${stepId}_duration`);
-    const isManual = value === 'Manuel';
-    if (durationField) {
-        durationField.classList.toggle('inline-hidden', !isManual);
+    const step = currentTest.steps.find(s => s.id === stepId);
+    if (step && value === 'Manuel') {
+        step.temporisation_parameter_id = '';
+        step.temporisation_parameter = '';
+        step.unit = step.unit || 'ms';
+    } else if (step && value === 'Auto') {
+        step.duration = 0;
+        step.unit = '';
     }
     updateStep(stepId, 'temporisation', value);
+    renderSteps();
+    updateChronogram();
+}
+
+function updateStepInjectionFunction(stepId, functionId) {
+    const step = currentTest.steps.find(s => s.id === stepId);
+    const selectedFunction = window.RbdTestParameters?.functionById(functionId);
+    if (!step) {
+        return;
+    }
+
+    step.injection_function_id = selectedFunction?.id || '';
+    step.injection_type = selectedFunction?.name || '';
+    // fault_type est conserve comme alias historique pour ne pas casser les
+    // essais deja consommes par d'autres modules.
+    step.fault_type = selectedFunction?.name || '';
+    step.injection_parameter_id = '';
+    step.injection_parameter = '';
+    step.temporisation_parameter_id = '';
+    step.temporisation_parameter = '';
+    renderSteps();
+    updateChronogram();
+}
+
+function updateStepInjectionParameter(stepId, parameterId) {
+    const step = currentTest.steps.find(s => s.id === stepId);
+    if (!step) {
+        return;
+    }
+    const parameter = window.RbdTestParameters?.parameterById(getStepInjectionFunctionId(step), parameterId);
+    step.injection_parameter_id = parameter?.id || '';
+    step.injection_parameter = parameter?.name || '';
+    renderSteps();
+    updateChronogram();
+}
+
+function updateStepTemporisationParameter(stepId, parameterId) {
+    const step = currentTest.steps.find(s => s.id === stepId);
+    if (!step) {
+        return;
+    }
+    const parameter = window.RbdTestParameters?.parameterById(getStepInjectionFunctionId(step), parameterId);
+    step.temporisation_parameter_id = parameter?.id || '';
+    step.temporisation_parameter = parameter?.name || '';
+    renderSteps();
     updateChronogram();
 }
 
@@ -2146,6 +2465,9 @@ function updateStep(stepId, field, value) {
             }
         } else {
             step[field] = value;
+        }
+        if (field === 'name' || field === 'number') {
+            renderComplementaryInfos();
         }
         updateChronogram();
     }
@@ -2183,13 +2505,25 @@ function moveStep(stepId, direction) {
 function removeStep(stepId) {
     document.getElementById(stepId).remove();
     currentTest.steps = currentTest.steps.filter(s => s.id !== stepId);
+    clearInfoStepLinks(stepId);
 
     const container = document.getElementById('steps-container');
     if (container.children.length === 0) {
         container.innerHTML = '<p class="text-muted" id="no-steps">Aucune étape. Cliquez sur "➕ Étape" pour en ajouter.</p>';
     }
 
+    renderComplementaryInfos();
     updateChronogram();
+}
+
+function clearInfoStepLinks(stepId) {
+    ['cde', 'alarmes', 'tcd'].forEach(type => {
+        (currentTest[type] || []).forEach(info => {
+            if (info.step_id === stepId) {
+                info.step_id = '';
+            }
+        });
+    });
 }
 
 /**
@@ -2270,12 +2604,18 @@ function formatDuration(ms) {
 
 function getStepDurationMs(step) {
     if (step.temporisation !== 'Manuel') {
+        // R_BD ne porte pas les valeurs tranche/ligne issues du PAR. Le mode
+        // Auto conserve donc une duree graphique neutre ; R_GUIDE resoudra la
+        // valeur reelle depuis le fichier de parametrage de tranche.
         return 1000;
     }
 
     const value = Number(step.duration) || 0;
     const unit = step.unit || 'ms';
+    return convertDurationToMs(value, unit);
+}
 
+function convertDurationToMs(value, unit) {
     switch (unit) {
         case 's':
             return value * 1000;
@@ -2310,7 +2650,7 @@ function addTCD() {
 /**
  * Ajoute une information (CDE/Alarme/TCD)
  */
-function addInfo(type, label) {
+function addInfo(type, label, initialData = {}) {
     const containerId = `${type}-container`;
     const container = document.getElementById(containerId);
 
@@ -2320,26 +2660,23 @@ function addInfo(type, label) {
         placeholder.remove();
     }
 
-    const infoId = `${type}_${Date.now()}`;
-
-    const infoHtml = `
-        <div class="info-item" id="${infoId}">
-            <input type="text" placeholder="Nom ${label}" onchange="updateInfo('${type}', '${infoId}', 'name', this.value)">
-            <select onchange="updateInfo('${type}', '${infoId}', 'state', this.value)">
-                ${buildStateOptions('', 'État')}
-            </select>
-            <button class="btn-icon-small" style="width: 24px; height: 24px; background: var(--danger);"
-                onclick="removeInfo('${type}', '${infoId}')">✕</button>
-        </div>
-    `;
-
-    container.insertAdjacentHTML('beforeend', infoHtml);
-
-    currentTest[type].push({
+    const infoId = `${type}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+    const info = {
         id: infoId,
-        name: '',
-        state: ''
-    });
+        name: initialData.name || '',
+        state: initialData.state || '',
+        step_id: initialData.step_id || '',
+        isa_id: initialData.isa_id || '',
+        libelle16: initialData.libelle16 || '',
+        allowed_states: Array.isArray(initialData.allowed_states) ? initialData.allowed_states : [],
+        state_code: initialData.state_code || '',
+        state_value: initialData.state_value || '',
+        state_source: initialData.state_source || ''
+    };
+
+    currentTest[type].push(info);
+    container.insertAdjacentHTML('beforeend', renderInfoItemHtml(type, info, label));
+    return info;
 }
 
 /**
@@ -2349,6 +2686,16 @@ function updateInfo(type, infoId, field, value) {
     const info = currentTest[type].find(i => i.id === infoId);
     if (info) {
         info[field] = value;
+
+        // Quand l'etat est modifie apres selection ISA, on garde la trace
+        // technique associee afin que le JSON reste explicite et exploitable.
+        if (field === 'state') {
+            const selectedState = normalizeInfoAllowedStates(info)
+                .find(state => state.label.toUpperCase() === String(value || '').toUpperCase());
+            info.state_code = selectedState?.code || '';
+            info.state_value = selectedState?.value || '';
+            info.state_source = selectedState?.source || '';
+        }
     }
 }
 
@@ -2387,6 +2734,7 @@ function collectFormData() {
     currentTest.ld = document.getElementById('test-ld').value;
     currentTest.ln = document.getElementById('test-ln').value;
     currentTest.lninst = document.getElementById('test-lninst').value;
+    currentTest.previous_test_id = normalizePreviousTestId(document.getElementById('test-previous')?.value);
     currentTest.description = document.getElementById('test-description').value;
 }
 
@@ -2431,9 +2779,13 @@ async function saveTest() {
 
     collectFormData();
     currentTest.type = selectedType;
-    currentTest.linked_tests_ru = normalizeLinkedTests('ru', currentTest.linked_tests_ru);
-    currentTest.linked_tests_mvs = normalizeLinkedTests('mvs', currentTest.linked_tests_mvs);
-    currentTest.linked_tests_cvs = normalizeLinkedTests('cvs', currentTest.linked_tests_cvs);
+    // R_BD ne porte plus les pièces jointes et liens inter-essais.
+    // On neutralise explicitement ces champs pour éviter de conserver une
+    // donnée historique invisible dans l'interface.
+    currentTest.files = [];
+    currentTest.linked_tests_ru = [];
+    currentTest.linked_tests_mvs = [];
+    currentTest.linked_tests_cvs = [];
 
     // Validation
     if (!currentTest.id || !currentTest.name) {
@@ -2454,24 +2806,13 @@ async function saveTest() {
         tests.push(currentTest);
     }
 
-    setSavedTests(selectedType, tests);
+    const orderedTests = recalculateEditorOrder(applyPreviousPlacement(tests, currentTest));
+    setSavedTests(selectedType, orderedTests);
+    currentTest = orderedTests.find(test => test.id === currentTest.id) || currentTest;
 
-    const idChanged = (
-        previousNormId &&
-        previousNormId !== normalizeValueForMatch(currentTest.id)
-    );
-
-    if (idChanged) {
-        await migrateLinkedReferencesAcrossStorage(
-            previousPersistedId,
-            currentTest.id,
-            buildCurrentTestLinkedReference()
-        );
-    }
-
-    // Synchroniser automatiquement les liens bidirectionnels.
-    // Exemple: si RU est lié à CVS, on injecte aussi RU dans linked_tests_ru du CVS.
-    await syncBidirectionalLinksForCurrentTest();
+    // Les liens inter-essais ne sont plus synchronisés depuis R_BD.
+    // L'ancien mécanisme est laissé dans le fichier pour éviter une refonte
+    // large, mais il n'est plus appelé par le flux de sauvegarde.
 
     if (previousPersistedType && previousPersistedType !== selectedType) {
         const previousTests = getSavedTests(previousPersistedType);
@@ -2493,6 +2834,9 @@ async function saveTest() {
     const serverOk = await saveEssaiToServer({ ...currentTest });
     if (!serverOk) {
         console.warn('⚠️ Essai sauvegardé en local uniquement');
+    }
+    if (typeof syncTypeToServer === 'function') {
+        await syncTypeToServer(selectedType);
     }
 
     alert('✅ Test sauvegardé avec succès !');
@@ -2538,12 +2882,7 @@ async function openEditor(testId = null, type = "ru") {
     if (editorView) editorView.style.display = "block";
 
     // Réinitialiser le test courant
-    currentTest = {
-        id: '', name: '', ied: '', ld: '', ln: '', lninst: '',
-        description: '', preconditions: [], files: [],
-        linked_tests_ru: [], linked_tests_mvs: [], linked_tests_cvs: [],
-        steps: [], cde: [], alarmes: [], tcd: []
-    };
+    currentTest = buildEmptyTest(selectedType);
     stepCounter = 1;
 
     // Initialiser l'éditeur

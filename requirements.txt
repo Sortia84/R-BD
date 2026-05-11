@@ -1,0 +1,14 @@
+# R#BD - Dependances Python runtime
+# ----------------------------------------------------------------------------
+# Ce fichier decrit les dependances observees dans le code de l'application.
+# Il est utilise par le Dockerfile local de apps/r_bd.
+# ----------------------------------------------------------------------------
+# API web FastAPI + serveur ASGI uvicorn.
+fastapi>=0.104.0
+uvicorn>=0.24.0
+# Validation et serialisation des modeles de requete/reponse.
+pydantic>=2.4.0
+# Uploads FastAPI via UploadFile/File.
+python-multipart>=0.0.9
+# Parsing XML IEC 61850 des fichiers ICD.
+lxml>=5.0.0

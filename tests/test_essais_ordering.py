@@ -1,0 +1,71 @@
+"""Tests unitaires du classement manuel des essais R#BD.
+
+Ces tests restent volontairement proches des helpers backend : l'IHM peut
+changer, mais le contrat API consomme toujours `previous_test_id` et expose un
+`order_index` technique stable pour R#GUIDE.
+"""
+
+from __future__ import annotations
+
+import sys
+import unittest
+from pathlib import Path
+
+from fastapi import HTTPException
+
+
+APP_DIR = Path(__file__).resolve().parents[1]
+if str(APP_DIR) not in sys.path:
+    sys.path.insert(0, str(APP_DIR))
+
+from api.router_essais import (  # noqa: E402
+    _ensure_order_fields,
+    _validate_previous_reference,
+    _would_create_cycle,
+)
+
+
+class EssaisOrderingTests(unittest.TestCase):
+    """Verifie les invariants d'ordre utilises par R#BD et R#GUIDE."""
+
+    def test_previous_chain_recomputes_order_index(self) -> None:
+        """Une chaine A -> B -> C devient une liste ordonnee et indexee."""
+        essais = [
+            {"id": "RU-C", "name": "C", "previous_test_id": "RU-B"},
+            {"id": "RU-A", "name": "A", "previous_test_id": ""},
+            {"id": "RU-B", "name": "B", "previous_test_id": "RU-A"},
+        ]
+
+        ordered = _ensure_order_fields(essais)
+
+        self.assertEqual([item["id"] for item in ordered], ["RU-A", "RU-B", "RU-C"])
+        self.assertEqual([item["order_index"] for item in ordered], [10, 20, 30])
+
+    def test_missing_previous_reference_is_neutralised(self) -> None:
+        """Un precedent supprime ne doit pas bloquer la liste d'essais."""
+        ordered = _ensure_order_fields([
+            {"id": "RU-A", "name": "A", "previous_test_id": "RU-UNKNOWN"}
+        ])
+
+        self.assertEqual(ordered[0]["previous_test_id"], "")
+        self.assertEqual(ordered[0]["order_index"], 10)
+
+    def test_cycle_is_detected_before_persistence(self) -> None:
+        """La validation refuse une boucle dans la chaine d'ordre manuel."""
+        essais = [
+            {"id": "RU-A", "previous_test_id": ""},
+            {"id": "RU-B", "previous_test_id": "RU-A"},
+            {"id": "RU-C", "previous_test_id": "RU-B"},
+        ]
+
+        self.assertTrue(_would_create_cycle(essais, "RU-A", "RU-C"))
+
+        with self.assertRaises(HTTPException):
+            _validate_previous_reference(
+                essais,
+                {"id": "RU-A", "previous_test_id": "RU-C"},
+            )
+
+
+if __name__ == "__main__":
+    unittest.main()

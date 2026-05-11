@@ -9,8 +9,8 @@
 #     - api/router_isa.py       : Endpoints ISA (import, types, fichiers)
 #     - api/router_mapping.py   : Endpoints Mapping (consultation IEC 61850)
 #     - api/router_essais.py    : Endpoints Essais (CRUD RU/CVS/MVS)
+#     - api/router_essais_parameters.py : Parametres d'essais PAR
 #     - api/router_templates.py : Endpoints Templates (CRUD)
-#     - api/router_fcs.py       : Endpoints FCS (import, comparaison)
 #     - api/router_rac.py       : Endpoints Fichiers RAC
 #
 #   L'état partagé (managers, helpers, config) est centralisé dans api/shared.py.
@@ -34,9 +34,9 @@ from api import (
     icd_router,
     isa_router,
     mapping_router,
+    essais_parameters_router,
     essais_router,
     templates_router,
-    fcs_router,
     rac_router,
 )
 from api.shared import WEB_DIR, ASSETS_DIR, UI_KIT_DIR, DATA_DIR, UPLOADS_DIR
@@ -81,7 +81,7 @@ async def lifespan(app: FastAPI):
 # ============================================================================
 app = FastAPI(
     title="R#BD — Base de données R#SPACE",
-    description="API pour la gestion des ICD, ISA, templates, FCS et fichiers RAC",
+    description="API pour la gestion des ICD, ISA, templates d'essais et fichiers RAC",
     version="2.0.0",
     lifespan=lifespan,
 )
@@ -101,9 +101,9 @@ app.add_middleware(
 app.include_router(icd_router)
 app.include_router(isa_router)
 app.include_router(mapping_router)
+app.include_router(essais_parameters_router)
 app.include_router(essais_router)
 app.include_router(templates_router)
-app.include_router(fcs_router)
 app.include_router(rac_router)
 
 

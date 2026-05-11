@@ -8,25 +8,25 @@ Organisation :
   - router_isa.py       : Endpoints ISA (import, types, fichiers)
   - router_mapping.py   : Endpoints Mapping (consultation IEC 61850)
   - router_essais.py    : Endpoints Essais (CRUD RU/CVS/MVS)
+  - router_essais_parameters.py : Parametres d'essais importes depuis PAR
   - router_templates.py : Endpoints Templates (CRUD)
-  - router_fcs.py       : Endpoints FCS (import, catalogue)
   - router_rac.py       : Endpoints RAC (import, catalogue)
 """
 
 from .router_icd import router as icd_router
 from .router_isa import router as isa_router
 from .router_mapping import router as mapping_router
+from .router_essais_parameters import router as essais_parameters_router
 from .router_essais import router as essais_router
 from .router_templates import router as templates_router
-from .router_fcs import router as fcs_router
 from .router_rac import router as rac_router
 
 __all__ = [
     "icd_router",
     "isa_router",
     "mapping_router",
+    "essais_parameters_router",
     "essais_router",
     "templates_router",
-    "fcs_router",
     "rac_router",
 ]

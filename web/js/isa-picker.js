@@ -35,7 +35,8 @@ let pickerState = {
     selectedItems: new Set(),
     allItems: [],
     filteredItems: [],
-    onConfirm: null
+    onConfirm: null,
+    addedCount: 0
 };
 
 // ============================================================
@@ -111,8 +112,147 @@ async function loadIsaData(isaType) {
 }
 
 /**
+ * Normalise les identifiants ISA pour les comparaisons côté interface.
+ *
+ * Les fichiers CDE/TCD fournissent parfois des UniqueID numériques, tandis
+ * que les clics HTML renvoient des chaînes de caractères.
+ */
+function normalizeIsaItemId(value, fallback = '') {
+    const rawId = value !== undefined && value !== null && value !== '' ? value : fallback;
+    return String(rawId);
+}
+
+/**
+ * Retourne la premiere valeur renseignee parmi plusieurs cles possibles.
+ *
+ * Les donnees ISA analysees peuvent provenir de plusieurs parseurs. Cette
+ * fonction evite de disperser les variantes de cles dans le rendu du picker.
+ */
+function getFirstDefinedValue(source, keys, fallback = '') {
+    if (!source || typeof source !== 'object') {
+        return fallback;
+    }
+
+    for (const key of keys) {
+        const value = source[key];
+        if (value !== undefined && value !== null && value !== '') {
+            return value;
+        }
+    }
+
+    return fallback;
+}
+
+/**
+ * Construit un item standard du picker a partir d'une entree ISA analysee.
+ */
+function buildIsaPickerItem(entry, fallbackId) {
+    const libelle8 = getFirstDefinedValue(
+        entry,
+        ['ISA.Libellé 8 caractères', 'ISA.Libelle 8 caracteres', 'Libelle8', 'libelle8', 'libellecourt', 'name'],
+        ''
+    );
+    const libelle16 = getFirstDefinedValue(
+        entry,
+        ['ISA.Libellé 16 caractères', 'ISA.Libelle 16 caracteres', 'Libelle16', 'libelle16', 'libellelong'],
+        ''
+    );
+    const rawId = getFirstDefinedValue(entry, ['UniqueID', 'id'], fallbackId);
+
+    return {
+        id: normalizeIsaItemId(rawId, fallbackId),
+        libelle8: libelle8,
+        libelle16: libelle16,
+        type: getFirstDefinedValue(entry, ['ISA.type', 'type'], ''),
+        ied: getFirstDefinedValue(entry, ['RTE-IEDType', 'IED'], ''),
+        ld: getFirstDefinedValue(entry, ['LD.inst', 'LD'], ''),
+        idrc: getFirstDefinedValue(entry, ['ISA.IDRC', 'ISA.Gen.IDRC'], ''),
+        allowed_states: extractIsaStateOptions(entry.InfosISA || entry)
+    };
+}
+
+/**
  * Extrait les entrées depuis les données analysées
  */
+function getFirstIsaText(source, keys) {
+    if (!source || typeof source !== 'object') {
+        return '';
+    }
+
+    for (const key of keys) {
+        const value = source[key];
+        if (value !== undefined && value !== null && String(value).trim() !== '') {
+            return String(value).trim();
+        }
+    }
+
+    return '';
+}
+
+function addIsaStateOption(options, seen, source, code, labelKeys, valueKeys) {
+    const value = getFirstIsaText(source, valueKeys);
+    const label = getFirstIsaText(source, labelKeys) || code;
+
+    // Un etat est disponible uniquement si ISA.DEB, ISA.FIN ou ISA.INVALID
+    // porte une valeur. Le libelle seul ne suffit pas a prouver l'etat.
+    if (!value) {
+        return;
+    }
+
+    const uniqueKey = `${code}:${label.toUpperCase()}:${value}`;
+    if (seen.has(uniqueKey)) {
+        return;
+    }
+
+    seen.add(uniqueKey);
+    options.push({
+        code,
+        label,
+        value,
+        source: `ISA.${code}`
+    });
+}
+
+function extractIsaStateOptions(record) {
+    const options = [];
+    const seen = new Set();
+
+    // Les libelles additionnels portent le vocabulaire metier affiche a l'utilisateur.
+    addIsaStateOption(options, seen, record, 'DEB', ['ISA.additionnalLabelForAppearance'], ['ISA.DEB']);
+    addIsaStateOption(options, seen, record, 'FIN', ['ISA.additionnalLabelForDisappearance'], ['ISA.FIN']);
+    addIsaStateOption(options, seen, record, 'INVALID', ['ISA.additionnalLabelForInvalidity'], ['ISA.INVALID']);
+
+    return options;
+}
+
+function extractAlarmGroupStateOptions(group) {
+    const options = [];
+    const seen = new Set();
+
+    (group.entrees || []).forEach(entry => {
+        extractIsaStateOptions(entry).forEach(option => {
+            const key = `${option.code}:${option.label}:${option.value}`;
+            if (!seen.has(key)) {
+                seen.add(key);
+                options.push(option);
+            }
+        });
+
+        // Les alarmes enrichies peuvent porter leurs etats dans les correspondances RISA.
+        (entry.risa_matches || []).forEach(match => {
+            extractIsaStateOptions(match.InfosISA || match).forEach(option => {
+                const key = `${option.code}:${option.label}:${option.value}`;
+                if (!seen.has(key)) {
+                    seen.add(key);
+                    options.push(option);
+                }
+            });
+        });
+    });
+
+    return options;
+}
+
 function extractEntriesFromData(data, isaType) {
     if (!data) return [];
 
@@ -120,16 +260,52 @@ function extractEntriesFromData(data, isaType) {
 
     // Pour les alarmes (structure avec regroupements)
     if (data.regroupements) {
-        data.regroupements.forEach(grp => {
+        data.regroupements.forEach((grp, groupIndex) => {
             // Ajouter le regroupement lui-même
             entries.push({
-                id: grp.id,
+                id: normalizeIsaItemId(grp.id, `regroupement_${entries.length}`),
                 libelle8: grp.libellecourt,
                 libelle16: grp.libellecourt,
                 type: 'regroupement',
                 niveau: grp.niveauregroupement,
                 ldgrp: grp.ldgrp,
-                entrees_count: grp.entrees?.length || 0
+                entrees_count: grp.entrees?.length || 0,
+                allowed_states: extractAlarmGroupStateOptions(grp)
+            });
+
+            // Les alarmes enrichies peuvent porter les etats ISA au niveau des
+            // entrees ou de leurs risa_matches. Ces lignes completent les
+            // regroupements pour permettre un choix d'etat fin dans l'editeur.
+            (grp.entrees || []).forEach((entry, entryIndex) => {
+                const directItem = buildIsaPickerItem(
+                    entry,
+                    `${grp.id || groupIndex}_entree_${entryIndex}`
+                );
+
+                if (directItem.libelle8 || directItem.libelle16) {
+                    entries.push({
+                        ...directItem,
+                        type: directItem.type || 'alarme',
+                        regroupement_id: grp.id || '',
+                        regroupement_label: grp.libellecourt || ''
+                    });
+                }
+
+                (entry.risa_matches || []).forEach((match, matchIndex) => {
+                    const matchItem = buildIsaPickerItem(
+                        match,
+                        `${grp.id || groupIndex}_entree_${entryIndex}_match_${matchIndex}`
+                    );
+
+                    if (matchItem.libelle8 || matchItem.libelle16) {
+                        entries.push({
+                            ...matchItem,
+                            type: matchItem.type || 'risa_match',
+                            regroupement_id: grp.id || '',
+                            regroupement_label: grp.libellecourt || ''
+                        });
+                    }
+                });
             });
         });
     }
@@ -147,14 +323,19 @@ function extractEntriesFromData(data, isaType) {
             // Ne pas ajouter si pas de libellé
             if (!libelle8 && !libelle16) return;
 
+            const rawId = entry.UniqueID !== undefined && entry.UniqueID !== null && entry.UniqueID !== ''
+                ? entry.UniqueID
+                : entry.id;
+
             entries.push({
-                id: entry.UniqueID || entry.id || `entry_${entries.length}`,
+                id: normalizeIsaItemId(rawId, `entry_${entries.length}`),
                 libelle8: libelle8,
                 libelle16: libelle16,
                 type: entryType,
                 ied: iedType,
                 ld: ldInst,
-                idrc: entry['ISA.IDRC'] || entry['ISA.Gen.IDRC'] || ''
+                idrc: entry['ISA.IDRC'] || entry['ISA.Gen.IDRC'] || '',
+                allowed_states: extractIsaStateOptions(entry)
             });
         });
     }
@@ -162,14 +343,16 @@ function extractEntriesFromData(data, isaType) {
     // Si structure index plate (comme dans RISA)
     if (data.index && typeof data.index === 'object') {
         Object.entries(data.index).forEach(([key, value]) => {
-            if (value && typeof value === 'object' && value.UniqueID) {
+            const hasUniqueId = value?.UniqueID !== undefined && value.UniqueID !== null && value.UniqueID !== '';
+            if (value && typeof value === 'object' && hasUniqueId) {
                 entries.push({
-                    id: value.UniqueID,
+                    id: normalizeIsaItemId(value.UniqueID, key),
                     libelle8: value.Libelle8 || key,
                     libelle16: value.Libelle16 || '',
                     type: value.InfosISA?.['ISA.type'] || 'entry',
                     ied: value.IED || '',
-                    ld: value.LD || ''
+                    ld: value.LD || '',
+                    allowed_states: extractIsaStateOptions(value.InfosISA || value)
                 });
             }
         });
@@ -208,13 +391,10 @@ function createPickerPopup() {
 
                 <div class="isa-popup-footer">
                     <span class="selection-count">
-                        <strong id="isa-picker-count">0</strong> élément(s) sélectionné(s)
+                        <strong id="isa-picker-count">0</strong> ajout(s) dans le test
                     </span>
                     <div class="isa-popup-actions">
-                        <button class="btn btn-secondary" onclick="closeIsaPicker()">Annuler</button>
-                        <button class="btn btn-primary" onclick="confirmIsaSelection()">
-                            ➕ Ajouter la sélection
-                        </button>
+                        <button class="btn btn-secondary" onclick="closeIsaPicker()">Fermer</button>
                     </div>
                 </div>
             </div>
@@ -242,7 +422,8 @@ async function openIsaPicker(isaType, onConfirm) {
         selectedItems: new Set(),
         allItems: [],
         filteredItems: [],
-        onConfirm: onConfirm
+        onConfirm: onConfirm,
+        addedCount: 0
     };
 
     // Mettre à jour le titre
@@ -314,7 +495,7 @@ function filterIsaItems(query) {
         pickerState.filteredItems = pickerState.allItems.filter(item =>
             (item.libelle8 || '').toLowerCase().includes(q) ||
             (item.libelle16 || '').toLowerCase().includes(q) ||
-            (item.id || '').toString().toLowerCase().includes(q)
+            normalizeIsaItemId(item.id).toLowerCase().includes(q)
         );
     }
 
@@ -324,6 +505,38 @@ function filterIsaItems(query) {
 /**
  * Affiche la liste des items
  */
+function renderIsaStateButtons(item, itemId) {
+    const states = Array.isArray(item.allowed_states) ? item.allowed_states : [];
+
+    if (!states.length) {
+        return `
+            <div class="item-states">
+                <button type="button"
+                    class="isa-state-button is-empty-state"
+                    onclick="addIsaItemState('${escapeJsString(itemId)}', -1); event.stopPropagation();">
+                    Ajouter sans état
+                </button>
+            </div>
+        `;
+    }
+
+    const buttons = states.map((state, index) => {
+        const label = escapeHtml(state.label || state.code || 'Etat');
+        const title = state.value
+            ? ` title="${escapeHtml(state.source || state.code)} : ${escapeHtml(state.value)}"`
+            : '';
+        return `
+            <button type="button"
+                class="isa-state-button"
+                onclick="addIsaItemState('${escapeJsString(itemId)}', ${index}); event.stopPropagation();"${title}>
+                ${label}
+            </button>
+        `;
+    }).join('');
+
+    return `<div class="item-states">${buttons}</div>`;
+}
+
 function renderIsaItems() {
     const content = document.getElementById('isa-picker-content');
 
@@ -338,23 +551,23 @@ function renderIsaItems() {
     }
 
     const itemsHtml = pickerState.filteredItems.map(item => {
-        const isSelected = pickerState.selectedItems.has(item.id);
-        const selectedClass = isSelected ? 'selected' : '';
-        const checkmark = isSelected ? '✓' : '';
+        const itemId = normalizeIsaItemId(item.id);
 
         const metaHtml = [];
         if (item.type) metaHtml.push(`<span>${item.type}</span>`);
         if (item.niveau) metaHtml.push(`<span>${item.niveau}</span>`);
         if (item.ied) metaHtml.push(`<span>IED: ${item.ied}</span>`);
+        if (item.regroupement_label) metaHtml.push(`<span>Regroupement: ${escapeHtml(item.regroupement_label)}</span>`);
         if (item.entrees_count) metaHtml.push(`<span>${item.entrees_count} entrées</span>`);
+        const statesHtml = renderIsaStateButtons(item, itemId);
 
         return `
-            <div class="isa-popup-item ${selectedClass}" onclick="toggleIsaItem('${item.id}')">
-                <div class="item-checkbox">${checkmark}</div>
+            <div class="isa-popup-item">
                 <div class="item-info">
-                    <div class="item-libelle">${escapeHtml(item.libelle8 || item.id)}</div>
+                    <div class="item-libelle">${escapeHtml(item.libelle8 || itemId)}</div>
                     ${item.libelle16 ? `<div class="item-libelle16">${escapeHtml(item.libelle16)}</div>` : ''}
                     ${metaHtml.length ? `<div class="item-meta">${metaHtml.join('')}</div>` : ''}
+                    ${statesHtml}
                 </div>
             </div>
         `;
@@ -363,14 +576,41 @@ function renderIsaItems() {
     content.innerHTML = `<div class="isa-popup-list">${itemsHtml}</div>`;
 }
 
+function addIsaItemState(itemId, stateIndex) {
+    const normalizedItemId = normalizeIsaItemId(itemId);
+    const item = pickerState.allItems.find(candidate =>
+        normalizeIsaItemId(candidate.id) === normalizedItemId
+    );
+
+    if (!item) {
+        console.warn(`[ISA][Picker] Item introuvable pour l'identifiant ${normalizedItemId}`);
+        return;
+    }
+
+    const states = Array.isArray(item.allowed_states) ? item.allowed_states : [];
+    const selectedState = states[stateIndex] || null;
+
+    if (pickerState.onConfirm) {
+        pickerState.onConfirm([{
+            ...item,
+            selected_state: selectedState
+        }]);
+    }
+
+    pickerState.addedCount += 1;
+    document.getElementById('isa-picker-count').textContent = pickerState.addedCount;
+}
+
 /**
  * Toggle la sélection d'un item
  */
 function toggleIsaItem(itemId) {
-    if (pickerState.selectedItems.has(itemId)) {
-        pickerState.selectedItems.delete(itemId);
+    const normalizedItemId = normalizeIsaItemId(itemId);
+
+    if (pickerState.selectedItems.has(normalizedItemId)) {
+        pickerState.selectedItems.delete(normalizedItemId);
     } else {
-        pickerState.selectedItems.add(itemId);
+        pickerState.selectedItems.add(normalizedItemId);
     }
 
     // Mettre à jour le compteur
@@ -391,7 +631,7 @@ function confirmIsaSelection() {
 
     // Récupérer les items sélectionnés
     const selectedItems = pickerState.allItems.filter(item =>
-        pickerState.selectedItems.has(item.id)
+        pickerState.selectedItems.has(normalizeIsaItemId(item.id))
     );
 
     // Appeler le callback
@@ -412,6 +652,17 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+/**
+ * Echappe une valeur inseree dans un handler onclick.
+ */
+function escapeJsString(text) {
+    return String(text)
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'")
+        .replace(/\r/g, '\\r')
+        .replace(/\n/g, '\\n');
+}
+
 // ============================================================
 // Intégration avec l'éditeur de test
 // ============================================================
@@ -422,37 +673,25 @@ function escapeHtml(text) {
 function addInfoFromIsa(type, isaItem) {
     const labels = { cde: 'CDE', alarmes: 'alarme', tcd: 'information TCD' };
     const label = labels[type] || 'information';
+    const selectedState = isaItem.selected_state || null;
 
     if (typeof addInfo !== 'function') {
         console.error('[ISA][Picker] Fonction addInfo indisponible');
         return;
     }
 
-    // Créer d'abord un item vide via la logique standard.
-    addInfo(type, label);
-
-    // Puis remplacer son contenu avec la donnée ISA choisie.
-    if (!currentTest || !Array.isArray(currentTest[type]) || currentTest[type].length === 0) {
-        return;
-    }
-
-    const index = currentTest[type].length - 1;
-    const created = currentTest[type][index];
-    currentTest[type][index] = {
-        ...created,
+    // Creer l'item via la logique standard pour conserver un seul chemin
+    // d'ajout, que l'information vienne de la base ISA ou d'une saisie manuelle.
+    addInfo(type, label, {
         name: isaItem.libelle8 || isaItem.id || '',
+        state: selectedState?.label || '',
         isa_id: isaItem.id || '',
-        libelle16: isaItem.libelle16 || ''
-    };
-
-    // Synchroniser immédiatement le champ texte affiché dans la ligne créée.
-    const itemElement = document.getElementById(created.id);
-    if (itemElement) {
-        const nameInput = itemElement.querySelector('input[type="text"]');
-        if (nameInput) {
-            nameInput.value = currentTest[type][index].name;
-        }
-    }
+        libelle16: isaItem.libelle16 || '',
+        allowed_states: isaItem.allowed_states || [],
+        state_code: selectedState?.code || '',
+        state_value: selectedState?.value || '',
+        state_source: selectedState?.source || ''
+    });
 }
 
 /**
@@ -487,6 +726,7 @@ window.openIsaPicker = openIsaPicker;
 window.closeIsaPicker = closeIsaPicker;
 window.filterIsaItems = filterIsaItems;
 window.toggleIsaItem = toggleIsaItem;
+window.addIsaItemState = addIsaItemState;
 window.confirmIsaSelection = confirmIsaSelection;
 window.openCDEPicker = openCDEPicker;
 window.openAlarmesPicker = openAlarmesPicker;

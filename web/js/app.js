@@ -3,7 +3,7 @@
  *
  * Gère :
  * - L'initialisation globale de l'application
- * - Le changement de vues (home, icd, isa, essais, fcs, rac)
+ * - Le changement de vues (home, icd, isa, essais, rac)
  * - Le chargement dynamique du header
  * - Les utilitaires globaux (_escHtml, showToast)
  * - Le logging centralisé
@@ -88,7 +88,7 @@ const appState = {
 };
 
 /** Liste des vues valides (correspondant aux data-view du header) */
-const VALID_VIEWS = ["home", "icd", "isa", "essais", "fcs", "rac"];
+const VALID_VIEWS = ["home", "icd", "isa", "essais", "rac"];
 
 
 // ============================================================================
@@ -113,7 +113,6 @@ async function initApp() {
         if (typeof initIedIcdPage === "function") initIedIcdPage();
         if (typeof initIsaPage === "function") initIsaPage();
         if (typeof initTemplatesPage === "function") initTemplatesPage();
-        if (typeof initFcsPage === "function") initFcsPage();
         if (typeof initRacPage === "function") initRacPage();
 
         // Attacher les handlers de navigation sur les boutons du header
@@ -253,11 +252,6 @@ function handleViewSwitch(viewName) {
         case "essais":
             // Recharger les templates essais
             if (typeof loadTemplates === "function") loadTemplates();
-            break;
-
-        case "fcs":
-            // Recharger les FCS
-            if (typeof loadFcsList === "function") loadFcsList();
             break;
 
         case "rac":

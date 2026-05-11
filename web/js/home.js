@@ -3,13 +3,13 @@
 // Module : Dashboard d'accueil R#BD
 //
 // Génère dynamiquement la page d'accueil avec :
-//   - les cartes cliquables vers chaque module (ICD, ISA, Essais, FCS, RAC)
+//   - les cartes cliquables vers chaque module (ICD, ISA, Essais, RAC)
 //   - les statistiques résumées par module
 //   - le guide rapide
 //
 // Dépendances :
 //   - app.js  → switchView(), _escHtml(), showToast()
-//   - api.js  → apiIcd, apiIsa, apiEssais, apiFcs, apiRac
+//   - api.js  → apiIcd, apiIsa, apiEssais, apiRac
 //
 // Convention :
 //   initHomePage()       → appelée par app.js au démarrage
@@ -100,23 +100,6 @@ function renderHomeLayout() {
                         </div>
                     </div>
 
-                    <!-- Card FCS -->
-                    <div class="rbd-card rbd-card-clickable" onclick="switchView('fcs')">
-                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                            <div class="rbd-card-icon">📋</div>
-                            <div>
-                                <h3 style="margin: 0; color: var(--primary);">FCS</h3>
-                                <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--muted);">Fiches de configuration</p>
-                            </div>
-                        </div>
-                        <p class="rbd-card-description">
-                            Importez et consultez les fichiers FCS.
-                        </p>
-                        <div class="rbd-badge-row">
-                            <span class="rbd-badge rbd-badge-muted" id="stat-fcs-count">0 FCS</span>
-                        </div>
-                    </div>
-
                     <!-- Card RAC -->
                     <div class="rbd-card rbd-card-clickable" onclick="switchView('rac')">
                         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
@@ -202,7 +185,6 @@ async function refreshHomeDashboard() {
             icdPatterns,
             isaCatalog,
             isaTypes,
-            fcsCatalog,
             racCatalog,
             ruEssais,
             cvsEssais,
@@ -212,7 +194,6 @@ async function refreshHomeDashboard() {
             apiIcd.getPatterns(),
             apiIsa.getCatalog(),
             apiIsa.getTypes(),
-            apiFcs.list(),
             apiRac.list(),
             apiEssais.list("ru"),
             apiEssais.list("cvs"),
@@ -231,10 +212,8 @@ async function refreshHomeDashboard() {
         setText("stat-isa-count", `${isaFileCount} fichiers`);
         setText("stat-isa-types", `${isaTypeCount} types`);
 
-        // --- FCS / RAC ---
-        const fcsCount = Number(fcsCatalog?.count ?? fcsCatalog?.fcs_list?.length ?? 0);
+        // --- RAC ---
         const racCount = Number(racCatalog?.count ?? racCatalog?.rac_list?.length ?? 0);
-        setText("stat-fcs-count", `${fcsCount} FCS`);
         setText("stat-rac-count", `${racCount} RAC`);
 
         // --- Essais RU/CVS/MVS ---

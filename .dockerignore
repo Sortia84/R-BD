@@ -1,0 +1,23 @@
+# Dependances Python
+__pycache__/
+*.pyc
+*.pyo
+# Donnees locales montees en volumes Docker
+data/
+uploads/
+# Plans et documentation non requis au runtime
+plans/
+web/docs/
+README.md
+*.md
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+*.swo
+Thumbs.db
+.DS_Store
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore

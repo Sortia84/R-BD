@@ -6,6 +6,12 @@ const TYPE_LABELS = {
     cvs: 'CVS'
 };
 
+const TYPE_ICONS = {
+    ru: '🏭',
+    cvs: '✓',
+    mvs: '⚡'
+};
+
 function getTestsByType(type) {
     return JSON.parse(localStorage.getItem(`tests_${type}`) || '[]');
 }
@@ -14,12 +20,40 @@ function setTestsByType(type, tests) {
     localStorage.setItem(`tests_${type}`, JSON.stringify(tests));
 }
 
+let draggedTestId = '';
+let draggedTestType = '';
+
+function getOrderIndex(test) {
+    const numeric = Number(test?.order_index);
+    return Number.isFinite(numeric) ? numeric : Number.MAX_SAFE_INTEGER;
+}
+
+function sortTestsByManualOrder(tests) {
+    return [...tests].sort((a, b) => (
+        getOrderIndex(a) - getOrderIndex(b)
+        || String(a.name || '').localeCompare(String(b.name || ''), 'fr', { sensitivity: 'base' })
+        || String(a.id || '').localeCompare(String(b.id || ''), 'fr', { sensitivity: 'base' })
+    ));
+}
+
+function recalculateOrderLinks(tests) {
+    // previous_test_id represente le lien visible entre deux cards successives.
+    // order_index reste un rang technique espace pour faciliter les insertions.
+    return tests.map((test, index) => ({
+        ...test,
+        previous_test_id: index === 0 ? '' : String(tests[index - 1]?.id || ''),
+        order_index: (index + 1) * 10
+    }));
+}
+
 function normalizeTests() {
     return ['ru', 'cvs', 'mvs'].flatMap(type => {
         const tests = getTestsByType(type);
         return tests.map(test => ({
             ...test,
-            type: (test.type || type).toLowerCase()
+            type: (test.type || type).toLowerCase(),
+            previous_test_id: test.previous_test_id || '',
+            order_index: test.order_index ?? null
         }));
     });
 }
@@ -53,6 +87,7 @@ function renderEssaisLayout() {
                         <p class="muted" id="tests-subtitle">Centralisez vos essais RU / CVS / MVS dans une seule vue</p>
                     </div>
                     <div style="display: flex; gap: 12px; align-items: center;">
+                        <button class="btn btn-secondary" onclick="openTestParameters()">Parametre Test</button>
                         <button class="btn btn-primary" onclick="createNewTest()">➕ Nouveau test</button>
                     </div>
                 </div>
@@ -112,6 +147,9 @@ function renderEssaisLayout() {
 
         <!-- Sous-vue : Éditeur de test (masqué par défaut, rendu par test-editor.js) -->
         <div id="essais-editor-view" style="display: none;"></div>
+
+        <!-- Sous-vue : Parametrage des essais (rendu par test-parameters.js) -->
+        <div id="essais-parameters-view" style="display: none;"></div>
     `;
 
     // Demander à test-editor.js de rendre son layout dans le conteneur éditeur
@@ -133,6 +171,9 @@ function initTemplatesPage() {
     loadEssaisReferenceLists();
     bindFilters();
     loadTemplatesList();
+    if (window.RbdTestParameters) {
+        RbdTestParameters.load();
+    }
     // Synchroniser automatiquement le localStorage vers le serveur
     syncAllToServer();
 }
@@ -300,7 +341,7 @@ function loadTemplatesList() {
     const container = document.getElementById('templates-list');
     const tests = normalizeTests();
     const filters = getFilters();
-    const filtered = applyFilters(tests, filters);
+    const filtered = sortTestsByManualOrder(applyFilters(tests, filters));
 
     if (filtered.length === 0) {
         container.innerHTML = `
@@ -319,17 +360,24 @@ function loadTemplatesList() {
 function renderTestCard(test) {
     const stepCount = (test.steps || []).length;
     const preconCount = (test.preconditions || []).length;
-    const linkedCount = (test.linked_tests_ru || []).length
-        + (test.linked_tests_mvs || []).length
-        + (test.linked_tests_cvs || []).length;
     const identifier = [test.ied, test.ld, test.ln, test.lninst].filter(Boolean).join(' / ');
-    const typeLabel = TYPE_LABELS[(test.type || 'ru').toLowerCase()] || 'Essai';
+    const normalizedType = (test.type || 'ru').toLowerCase();
+    const typeLabel = TYPE_LABELS[normalizedType] || 'Essai';
+    const typeIcon = TYPE_ICONS[normalizedType] || '•';
 
     return `
-        <div class="template-card" onclick="editTest('${test.id}', '${test.type || 'ru'}')">
+        <div class="template-card"
+            draggable="true"
+            data-test-id="${escapeHtml(test.id || '')}"
+            data-test-type="${escapeHtml(test.type || 'ru')}"
+            ondragstart="handleTestCardDragStart(event, '${test.id}', '${test.type || 'ru'}')"
+            ondragover="handleTestCardDragOver(event)"
+            ondrop="handleTestCardDrop(event, '${test.id}', '${test.type || 'ru'}')"
+            ondragend="handleTestCardDragEnd(event)"
+            onclick="editTest('${test.id}', '${test.type || 'ru'}')">
             <div class="template-card-header">
                 <div style="display: flex; align-items: center; flex: 1;">
-                    <div class="template-icon">🧪</div>
+                    <div class="template-icon template-icon-${escapeHtml(normalizedType)}">${escapeHtml(typeIcon)}</div>
                     <div class="template-info">
                         <h3>${escapeHtml(test.name || 'Test sans nom')}</h3>
                         <p>${escapeHtml(identifier || typeLabel)}</p>
@@ -337,6 +385,11 @@ function renderTestCard(test) {
                 </div>
                 <span class="template-badge">${escapeHtml(test.id || '')}</span>
             </div>
+
+            <p class="template-order-info">
+                Ordre ${escapeHtml(test.order_index ?? '-')}
+                ${test.previous_test_id ? ` apres ${escapeHtml(test.previous_test_id)}` : ' premier test'}
+            </p>
 
             <div class="template-tags">
                 <span class="template-tag">${escapeHtml(typeLabel)}</span>
@@ -354,10 +407,6 @@ function renderTestCard(test) {
                     <span class="template-stat-label">Préconditions</span>
                     <span class="template-stat-value">${preconCount}</span>
                 </div>
-                <div class="template-stat">
-                    <span class="template-stat-label">Liens</span>
-                    <span class="template-stat-value">${linkedCount}</span>
-                </div>
             </div>
 
             <div class="template-actions" onclick="event.stopPropagation()">
@@ -373,6 +422,62 @@ function renderTestCard(test) {
             </div>
         </div>
     `;
+}
+
+function handleTestCardDragStart(event, testId, type) {
+    draggedTestId = String(testId || '');
+    draggedTestType = String(type || 'ru').toLowerCase();
+    event.currentTarget.classList.add('is-dragging');
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', draggedTestId);
+}
+
+function handleTestCardDragOver(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    event.currentTarget.classList.add('is-drag-over');
+}
+
+function handleTestCardDragEnd(event) {
+    event.currentTarget.classList.remove('is-dragging');
+    document.querySelectorAll('.template-card.is-drag-over').forEach(card => {
+        card.classList.remove('is-drag-over');
+    });
+    draggedTestId = '';
+    draggedTestType = '';
+}
+
+async function handleTestCardDrop(event, targetId, targetType) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.currentTarget.classList.remove('is-drag-over');
+
+    const normalizedTargetType = String(targetType || 'ru').toLowerCase();
+    if (!draggedTestId || !targetId || draggedTestId === targetId || draggedTestType !== normalizedTargetType) {
+        return;
+    }
+
+    const filters = getFilters();
+    const tests = getTestsByType(normalizedTargetType);
+    const visibleTests = sortTestsByManualOrder(applyFilters(tests, { ...filters, type: normalizedTargetType }));
+    const dragged = visibleTests.find(test => String(test.id) === draggedTestId);
+    const target = visibleTests.find(test => String(test.id) === String(targetId));
+    if (!dragged || !target) {
+        console.warn("[UI][ESSAIS] Reordonnancement ignore: card source ou cible introuvable");
+        return;
+    }
+
+    const reorderedVisible = visibleTests.filter(test => String(test.id) !== draggedTestId);
+    const targetIndex = reorderedVisible.findIndex(test => String(test.id) === String(targetId));
+    reorderedVisible.splice(targetIndex, 0, dragged);
+    const reorderedWithLinks = recalculateOrderLinks(reorderedVisible);
+    const byId = new Map(reorderedWithLinks.map(test => [String(test.id), test]));
+    const merged = tests.map(test => byId.get(String(test.id)) || test);
+
+    setTestsByType(normalizedTargetType, merged);
+    await syncTypeToServer(normalizedTargetType);
+    loadTemplatesList();
+    console.info("[UI][ESSAIS] Ordre manuel mis a jour par glisser-deposer");
 }
 
 function createNewTest() {
@@ -403,7 +508,8 @@ function duplicateTest(testId, type) {
         return;
     }
 
-    const tests = getTestsByType(type);
+    const normalizedType = String(type || 'ru').toLowerCase();
+    const tests = getTestsByType(normalizedType);
     const original = tests.find(t => t.id === testId);
     if (!original) {
         alert('❌ Test introuvable');
@@ -411,14 +517,30 @@ function duplicateTest(testId, type) {
     }
 
     const copy = JSON.parse(JSON.stringify(original));
-    copy.id = generateDuplicateId(type, tests);
+    copy.id = generateDuplicateId(normalizedType, tests);
     copy.name = `${original.name || 'Test'} (copie)`;
-    copy.type = type;
+    copy.type = normalizedType;
+    copy.files = [];
+    copy.linked_tests_ru = [];
+    copy.linked_tests_mvs = [];
+    copy.linked_tests_cvs = [];
     copy.created_at = new Date().toISOString();
     copy.updated_at = copy.created_at;
-    tests.push(copy);
-    setTestsByType(type, tests);
-    syncTypeToServer(type);
+
+    const ordered = sortTestsByManualOrder(tests);
+    const originalIndex = ordered.findIndex(test => String(test.id) === String(original.id));
+    if (originalIndex < 0) {
+        ordered.push(copy);
+    } else {
+        // La copie est insérée immédiatement après l'essai source. Le recalcul
+        // ci-dessous mettra aussi à jour le test suivant pour pointer vers la
+        // copie, ce qui conserve une chaîne d'ordre continue.
+        ordered.splice(originalIndex + 1, 0, copy);
+    }
+
+    const reordered = recalculateOrderLinks(ordered);
+    setTestsByType(normalizedType, reordered);
+    syncTypeToServer(normalizedType);
     loadTemplatesList();
 }
 
@@ -434,7 +556,11 @@ function deleteTest(testId, type) {
         return;
     }
 
-    const updated = tests.filter(t => t.id !== testId);
+    const updated = recalculateOrderLinks(
+        sortTestsByManualOrder(tests.filter(t => t.id !== testId)).map(test => (
+            test.previous_test_id === testId ? { ...test, previous_test_id: '' } : test
+        ))
+    );
     setTestsByType(type, updated);
     syncTypeToServer(type);
     loadTemplatesList();

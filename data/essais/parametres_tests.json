@@ -1,0 +1,1118 @@
+{
+  "version": 1,
+  "source": {
+    "filename": "PMED_3LABAR1.par",
+    "imported_at": "2026-05-11T01:49:58.842040"
+  },
+  "updated_at": "2026-05-11T01:49:58.857839",
+  "functions": [
+    {
+      "id": "param_communs",
+      "name": "PARAM-COMMUNS",
+      "description": "PARAMETRES-COMMUNS",
+      "ied": "",
+      "variant": "",
+      "ld": "",
+      "parameters": [
+        {
+          "id": "param_communs_ang_z_ligne",
+          "name": "ANG-Z-LIGNE",
+          "description": "ANGLE IMPEDANCE DE LA LIAISON",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "param_communs_i_nom",
+          "name": "I-NOM",
+          "description": "COURANT NOMINAL DU SYSTEME",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "param_communs_u_nom",
+          "name": "U-NOM",
+          "description": "TENSION COMPOSEE NOMINALE DU SYSTEME",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "add_ldadd",
+      "name": "ADD_LDADD",
+      "description": "LDADD",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDADD",
+      "parameters": [
+        {
+          "id": "add_ldadd_mes_add",
+          "name": "MES-ADD",
+          "description": "MISE ES/HS DE LA FONCTION ADD",
+          "type_parametre": "ListeDeValeurs"
+        },
+        {
+          "id": "add_ldadd_seuil_i_add",
+          "name": "SEUIL-I-ADD",
+          "description": "SEUIL DE PRESENCE COURANT DE DEFAUT",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "add_ldadd_t_att_ouv_dj",
+          "name": "T-ATT-OUV-DJ",
+          "description": "TEMPORISATION D ATTENTE D OUVERTURE DISJONCTEUR",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "ars_controle_tension_ldcmddj",
+      "name": "ARS - Controle Tension_LDCMDDJ",
+      "description": "LDCMDDJ",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDCMDDJ",
+      "parameters": [
+        {
+          "id": "ars_controle_tension_ldcmddj_seuil_aub_ct",
+          "name": "SEUIL-AUB-CT",
+          "description": "SEUIL D ABSENCE TENSION BARRE",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_controle_tension_ldcmddj_seuil_aul_ct",
+          "name": "SEUIL-AUL-CT",
+          "description": "SEUIL D ABSENCE TENSION LIGNE",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_controle_tension_ldcmddj_seuil_dflb_ct",
+          "name": "SEUIL-DFLB-CT",
+          "description": "SEUIL DE DIFFERENCE DE FREQUENCE DES TENSIONS LIGNE ET BARRE POUR LE CT",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_controle_tension_ldcmddj_seuil_dphilb_ct",
+          "name": "SEUIL-DPHILB-CT",
+          "description": "SEUIL DE DIFFERENCE DE PHASE DES TENSIONS LIGNE ET BARRE POUR LE CT",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_controle_tension_ldcmddj_seuil_dulb_ct",
+          "name": "SEUIL-DULB-CT",
+          "description": "SEUIL DE DIFFERENCE DE MODULE DES TENSIONS LIGNE ET BARRE POUR LE CT",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_controle_tension_ldcmddj_seuil_pub_ct",
+          "name": "SEUIL-PUB-CT",
+          "description": "SEUIL DE PRESENCE TENSION BARRE POUR LE CT",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_controle_tension_ldcmddj_seuil_pul_ct",
+          "name": "SEUIL-PUL-CT",
+          "description": "SEUIL DE PRESENCE TENSION LIGNE POUR LE CT",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_controle_tension_ldcmddj_seuil_ub_rvl_ct",
+          "name": "SEUIL-UB-RVL-CT",
+          "description": "SEUIL MAXIMUM DE TENSION BARRE POUR RENVOI LIGNE",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "ars_dmu_rmu_ldamu",
+      "name": "ARS - DMU RMU_LDAMU",
+      "description": "LDAMU",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDAMU",
+      "parameters": [
+        {
+          "id": "ars_dmu_rmu_ldamu_t_arm_dmu",
+          "name": "T-ARM-DMU",
+          "description": "TEMPORISATION D ARMEMENT DMU",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_dmu_rmu_ldamu_t_dec_dmu",
+          "name": "T-DEC-DMU",
+          "description": "TEMPORISATION DE DECLENCHEMENT PAR DMU",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_dmu_rmu_ldamu_t_reb_rmu",
+          "name": "T-REB-RMU",
+          "description": "TEMPORISATION DE REBOUCLAGE RMU",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_dmu_rmu_ldamu_t_rvb_rmu",
+          "name": "T-RVB-RMU",
+          "description": "TEMPORISATION DE RENVOI BARRE RMU",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_dmu_rmu_ldamu_t_rvl_rmu",
+          "name": "T-RVL-RMU",
+          "description": "TEMPORISATION DE RENVOI LIGNE RMU",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_dmu_rmu_ldamu_t_veil_rmu",
+          "name": "T-VEIL-RMU",
+          "description": "TEMPORISATION DE VEILLE MU",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "ars_ge_ldcmddj",
+      "name": "ARS - GE_LDCMDDJ",
+      "description": "LDCMDDJ",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDCMDDJ",
+      "parameters": [
+        {
+          "id": "ars_ge_ldcmddj_t_ar_impossib",
+          "name": "T-AR-IMPOSSIB",
+          "description": "TEMPORISATION D ATTENTE DE FERMETURE DU DJ AVANT AR-IMPOSSIBLE",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_ge_ldcmddj_t_bloc_b1",
+          "name": "T-BLOC-B1",
+          "description": "TEMPORISATION DE BLOCAGE B1",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_ge_ldcmddj_t_bloc_b2",
+          "name": "T-BLOC-B2",
+          "description": "TEMPORISATION DE BLOCAGE B2",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_ge_ldcmddj_t_recup_dj",
+          "name": "T-RECUP-DJ",
+          "description": "TEMPORISATION DE RECUPERATION DU DISJONCTEUR",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "ars_rse_ldrse",
+      "name": "ARS - RSE_LDRSE",
+      "description": "LDRSE",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDRSE",
+      "parameters": [
+        {
+          "id": "ars_rse_ldrse_t_dec_rse",
+          "name": "T-DEC-RSE",
+          "description": "TEMPORISATION DE DECLENCHEMENT RSE",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "ars_rtr_ldrec",
+      "name": "ARS - RTR_LDREC",
+      "description": "LDREC",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDREC",
+      "parameters": [
+        {
+          "id": "ars_rtr_ldrec_t_main_rvl_rtr",
+          "name": "T-MAIN-RVL-RTR",
+          "description": "TEMPORISATION DE MAINTIEN DE LA DEMANDE DE RENVOI LIGNE",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_rtr_ldrec_t_rtr",
+          "name": "T-RTR",
+          "description": "TEMPORISATION DE CYCLE RTR",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "ars_rts_ldrts",
+      "name": "ARS - RTS_LDRTS",
+      "description": "LDRTS",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDRTS",
+      "parameters": [
+        {
+          "id": "ars_rts_ldrts_t_arm_rts",
+          "name": "T-ARM-RTS",
+          "description": "TEMPORISATION D ARMEMENT RTS",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_rts_ldrts_t_des_rts",
+          "name": "T-DES-RTS",
+          "description": "TEMPORISATION DE DESARMEMENT DU CYCLE RTS",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_rts_ldrts_t_rvb_rts",
+          "name": "T-RVB-RTS",
+          "description": "TEMPORISATION DE RENVOI BARRE RTS",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_rts_ldrts_t_rvl_rts",
+          "name": "T-RVL-RTS",
+          "description": "TEMPORISATION DE RENVOI LIGNE RTS",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "ars_rt_ldrs",
+      "name": "ARS - RT_LDRS",
+      "description": "LDRS",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDRS",
+      "parameters": [
+        {
+          "id": "ars_rt_ldrs_t_des_rt",
+          "name": "T-DES-RT",
+          "description": "TEMPORISATION DE DESARMEMENT DU CYCLE RT",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_rt_ldrs_t_ic_rt",
+          "name": "T-IC-RT",
+          "description": "TEMPORISATION D INVERSION DES CONSIGNES DU CYCLE",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ars_rt_ldrs_t_rt",
+          "name": "T-RT",
+          "description": "TEMPORISATION DE CYCLE RT",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "ars_ldcmddj",
+      "name": "ARS_LDCMDDJ",
+      "description": "LDCMDDJ",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDCMDDJ",
+      "parameters": [
+        {
+          "id": "ars_ldcmddj_t_maint_critenc",
+          "name": "T-MAINT-CRITENC",
+          "description": "TEMPORISATION DE MAINTIEN DU CRITERE ENCLENCHEMENT",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "ars_rt_ldrs_2",
+      "name": "ARS_RT_LDRS",
+      "description": "LDRS",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDRS",
+      "parameters": [
+        {
+          "id": "ars_rt_ldrs_t_att_rt",
+          "name": "T-ATT-RT",
+          "description": "TEMPS MINIMAL DE PRESENCE DES CONDITIONS DE TENSION",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "capteur_ldcap1",
+      "name": "CAPTEUR_LDCAP1",
+      "description": "LDCAP1",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDCAP1",
+      "parameters": [
+        {
+          "id": "capteur_ldcap1_act_inv_i_cap",
+          "name": "ACT-INV-I-CAP",
+          "description": "ACTIVATION/DESACTIVATION INVERSION DU COURANT CAPTEURS",
+          "type_parametre": "ListeDeValeurs"
+        }
+      ]
+    },
+    {
+      "id": "dj_lddj",
+      "name": "DJ_LDDJ",
+      "description": "Circuit Breaker Interface",
+      "ied": "SCU",
+      "variant": "SCU2",
+      "ld": "LDDJ",
+      "parameters": [
+        {
+          "id": "dj_lddj_t_dec",
+          "name": "T-DEC",
+          "description": "TEMPORISATION DE MAINTIEN DES ORDRES DE DECLENCHEMENT",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "dj_lddj_t_enc",
+          "name": "T-ENC",
+          "description": "TEMPORISATION DE MAINTIEN DES ORDRES D ENCLENCHEMENT",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "dj_lddj_2",
+      "name": "DJ_LDDJ",
+      "description": "Circuit Breaker Interface",
+      "ied": "SCU",
+      "variant": "SCU1",
+      "ld": "LDDJ",
+      "parameters": [
+        {
+          "id": "dj_lddj_t_dec",
+          "name": "T-DEC",
+          "description": "TEMPORISATION DE MAINTIEN DES ORDRES DE DECLENCHEMENT",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "dj_lddj_t_enc",
+          "name": "T-ENC",
+          "description": "TEMPORISATION DE MAINTIEN DES ORDRES D ENCLENCHEMENT",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "ep_barre_ldepf",
+      "name": "EP-BARRE_LDEPF",
+      "description": "LDEPF",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDEPF",
+      "parameters": [
+        {
+          "id": "ep_barre_ldepf_mode_mer_epf_continu",
+          "name": "MODE-MER-EPF-CONTINU",
+          "description": "MODE DE MISE EN ROUTE EPF CONTINU",
+          "type_parametre": "ListeDeValeurs"
+        }
+      ]
+    },
+    {
+      "id": "ep_ldepf",
+      "name": "EP_LDEPF",
+      "description": "LDEPF",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDEPF",
+      "parameters": [
+        {
+          "id": "ep_ldepf_t_ep_continu",
+          "name": "T-EP-CONTINU",
+          "description": "DUREE D ENREGISTREMENT EPF SUR INITIALISATION CONTINUE",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ep_ldepf_t_ep_unique",
+          "name": "T-EP-UNIQUE",
+          "description": "DUREE D ENREGISTREMENT EPF SUR INITIALISATION MANUELLE OU FONCTION LENTE",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ep_ldepf_t_postdef_continu",
+          "name": "T-POSTDEF-CONTINU",
+          "description": "POST-TEMPS DE L ENREGISTREMENT EPF CONTINU",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ep_ldepf_t_postdef_unique",
+          "name": "T-POSTDEF-UNIQUE",
+          "description": "POST-TEMPS DE L ENREGISTREMENT EPF UNIQUE",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ep_ldepf_t_predef_continu",
+          "name": "T-PREDEF-CONTINU",
+          "description": "PRE-TEMPS DE L ENREGISTREMENT EPF CONTINU",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ep_ldepf_t_predef_unique",
+          "name": "T-PREDEF-UNIQUE",
+          "description": "PRE-TEMPS DE L ENREGISTREMENT EPF UNIQUE",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "ld_ldlocdef",
+      "name": "LD_LDLOCDEF",
+      "description": "LDLOCDEF",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDLOCDEF",
+      "parameters": [
+        {
+          "id": "ld_ldlocdef_ang_k0",
+          "name": "ANG-K0",
+          "description": "ARGUMENT DU COEFFICIENT DE COMPENSATION HOMOPOLAIRE K0",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ld_ldlocdef_coef_k0",
+          "name": "COEF-K0",
+          "description": "COEFFICIENT DE COMPENSATION HOMOPOLAIRE K0",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ld_ldlocdef_long_li",
+          "name": "LONG-LI",
+          "description": "LONGUEUR DE LA LIAISON SURVEILLEE",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "ld_ldlocdef_x_li",
+          "name": "X-LI",
+          "description": "REACTANCE DE LA LIAISON",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "phaseur_ldphas1",
+      "name": "PHASEUR_LDPHAS1",
+      "description": "LDPHAS1",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDPHAS1",
+      "parameters": [
+        {
+          "id": "phaseur_ldphas1_act_inv_i_phas",
+          "name": "ACT-INV-I-PHAS",
+          "description": "ACTIVATION/DESACTIVATION INVERSION DU COURANT POUR LDPHAS",
+          "type_parametre": "ListeDeValeurs"
+        },
+        {
+          "id": "phaseur_ldphas1_q_si_transitoire_phas",
+          "name": "Q-SI-TRANSITOIRE-PHAS",
+          "description": "PUBLICATION DE QUALITE QUESTIONABLE EN PRESENCE DE TRANSITOIRE",
+          "type_parametre": "ListeDeValeurs"
+        },
+        {
+          "id": "phaseur_ldphas1_seuil_detec_trans_i_dc_phas",
+          "name": "SEUIL-DETEC-TRANS-I-DC-PHAS",
+          "description": "SEUIL DE DETECTION TRANSITOIRE COURANT CONTINU PHASEURS",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "phaseur_ldphas1_seuil_detec_trans_i_h2_phas",
+          "name": "SEUIL-DETEC-TRANS-I-H2-PHAS",
+          "description": "SEUIL DE DETECTION TRANSITOIRE COURANT HARMONIQUE 2 PHASEURS",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "phaseur_ldphas1_seuil_detec_trans_i_h3_phas",
+          "name": "SEUIL-DETEC-TRANS-I-H3-PHAS",
+          "description": "SEUIL DE DETECTION TRANSITOIRE COURANT HARMONIQUE 3 PHASEURS",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "phaseur_ldphas1_seuil_detec_trans_u_dc_phas",
+          "name": "SEUIL-DETEC-TRANS-U-DC-PHAS",
+          "description": "SEUIL DE DETECTION TRANSITOIRE TENSION CONTINUE PHASEURS",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "phaseur_ldphas1_seuil_detec_trans_u_h2_phas",
+          "name": "SEUIL-DETEC-TRANS-U-H2-PHAS",
+          "description": "SEUIL DE DETECTION TRANSITOIRE TENSION HARMONIQUE 2 PHASEURS",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "phaseur_ldphas1_seuil_detec_trans_u_h3_phas",
+          "name": "SEUIL-DETEC-TRANS-U-H3-PHAS",
+          "description": "SEUIL DE DETECTION TRANSITOIRE TENSION HARMONIQUE 3 PHASEURS",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "phaseur_ldphas2",
+      "name": "PHASEUR_LDPHAS2",
+      "description": "LDPHAS2",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDPHAS2",
+      "parameters": [
+        {
+          "id": "phaseur_ldphas2_act_inv_i_phas",
+          "name": "ACT-INV-I-PHAS",
+          "description": "ACTIVATION/DESACTIVATION INVERSION DU COURANT POUR LDPHAS",
+          "type_parametre": "ListeDeValeurs"
+        },
+        {
+          "id": "phaseur_ldphas2_q_si_transitoire_phas",
+          "name": "Q-SI-TRANSITOIRE-PHAS",
+          "description": "PUBLICATION DE QUALITE QUESTIONABLE EN PRESENCE DE TRANSITOIRE",
+          "type_parametre": "ListeDeValeurs"
+        },
+        {
+          "id": "phaseur_ldphas2_seuil_detec_trans_i_dc_phas",
+          "name": "SEUIL-DETEC-TRANS-I-DC-PHAS",
+          "description": "SEUIL DE DETECTION TRANSITOIRE COURANT CONTINU PHASEURS",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "phaseur_ldphas2_seuil_detec_trans_i_h2_phas",
+          "name": "SEUIL-DETEC-TRANS-I-H2-PHAS",
+          "description": "SEUIL DE DETECTION TRANSITOIRE COURANT HARMONIQUE 2 PHASEURS",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "phaseur_ldphas2_seuil_detec_trans_i_h3_phas",
+          "name": "SEUIL-DETEC-TRANS-I-H3-PHAS",
+          "description": "SEUIL DE DETECTION TRANSITOIRE COURANT HARMONIQUE 3 PHASEURS",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "phaseur_ldphas2_seuil_detec_trans_u_dc_phas",
+          "name": "SEUIL-DETEC-TRANS-U-DC-PHAS",
+          "description": "SEUIL DE DETECTION TRANSITOIRE TENSION CONTINUE PHASEURS",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "phaseur_ldphas2_seuil_detec_trans_u_h2_phas",
+          "name": "SEUIL-DETEC-TRANS-U-H2-PHAS",
+          "description": "SEUIL DE DETECTION TRANSITOIRE TENSION HARMONIQUE 2 PHASEURS",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "phaseur_ldphas2_seuil_detec_trans_u_h3_phas",
+          "name": "SEUIL-DETEC-TRANS-U-H3-PHAS",
+          "description": "SEUIL DE DETECTION TRANSITOIRE TENSION HARMONIQUE 3 PHASEURS",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "pw_ldpw",
+      "name": "PW_LDPW",
+      "description": "LDPW",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDPW",
+      "parameters": [
+        {
+          "id": "pw_ldpw_fac_t_k",
+          "name": "FAC-T-K",
+          "description": "FACTEUR DE TEMPS DEPENDANT",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "pw_ldpw_seuil_ir_pw",
+          "name": "SEUIL-IR-PW",
+          "description": "SEUIL COURANT RESIDUEL DE DEMARRAGE PW",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "pw_ldpw_seuil_sr_pw",
+          "name": "SEUIL-SR-PW",
+          "description": "SEUIL DE PUISSANCE RESIDUELLE PW",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "pw_ldpw_sr_ref_pw",
+          "name": "SR-REF-PW",
+          "description": "PUISSANCE RESIDUELLE DE REFERENCE PW",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "pw_ldpw_t_att_mer_pw",
+          "name": "T-ATT-MER-PW",
+          "description": "TEMPORISATION D ATTENTE AVANT MISE EN ROUTE TA",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "pw_ldpw_t_base_pw",
+          "name": "T-BASE-PW",
+          "description": "TEMPORISATION DE BASE PW TB",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "px1_ldpx",
+      "name": "PX1_LDPX",
+      "description": "LDPX",
+      "ied": "BCU",
+      "variant": "",
+      "ld": "LDPX",
+      "parameters": [
+        {
+          "id": "px1_ldpx_ang_kz1",
+          "name": "ANG-KZ1",
+          "description": "ARGUMENT DU COEFFICIENT DE COMPENSATION HOMOPOLAIRE KZ1",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_ang_kz2",
+          "name": "ANG-KZ2",
+          "description": "ARGUMENT DU COEFFICIENT DE COMPENSATION HOMOPOLAIRE KZ2",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_ang_kz3",
+          "name": "ANG-KZ3",
+          "description": "ARGUMENT DU COEFFICIENT DE COMPENSATION HOMOPOLAIRE KZ3",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_ang_kz4",
+          "name": "ANG-KZ4",
+          "description": "ARGUMENT DU COEFFICIENT DE COMPENSATION HOMOPOLAIRE KZ4",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_coef_kz1",
+          "name": "COEF-KZ1",
+          "description": "COEFFICIENT DE COMPENSATION HOMOPOLAIRE KZ1",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_coef_kz2",
+          "name": "COEF-KZ2",
+          "description": "COEFFICIENT DE COMPENSATION HOMOPOLAIRE KZ2",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_coef_kz3",
+          "name": "COEF-KZ3",
+          "description": "COEFFICIENT DE COMPENSATION HOMOPOLAIRE KZ3",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_coef_kz4",
+          "name": "COEF-KZ4",
+          "description": "COEFFICIENT DE COMPENSATION HOMOPOLAIRE KZ4",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_mes_anti_pomp_z1",
+          "name": "MES-ANTI-POMP-Z1",
+          "description": "ACTIVATION D ANTI POMPAGE ZONE 1",
+          "type_parametre": "ListeDeValeurs"
+        },
+        {
+          "id": "px1_ldpx_mes_anti_pomp_z2",
+          "name": "MES-ANTI-POMP-Z2",
+          "description": "ACTIVATION D ANTI POMPAGE ZONE 2",
+          "type_parametre": "ListeDeValeurs"
+        },
+        {
+          "id": "px1_ldpx_mes_anti_pomp_z3",
+          "name": "MES-ANTI-POMP-Z3",
+          "description": "ACTIVATION D ANTI POMPAGE ZONE 3",
+          "type_parametre": "ListeDeValeurs"
+        },
+        {
+          "id": "px1_ldpx_mes_anti_pomp_z4",
+          "name": "MES-ANTI-POMP-Z4",
+          "description": "ACTIVATION D ANTI POMPAGE ZONE 4",
+          "type_parametre": "ListeDeValeurs"
+        },
+        {
+          "id": "px1_ldpx_mode_echo_sf_px",
+          "name": "MODE-ECHO-SF-PX",
+          "description": "MODE SCHEMA ECHO SOURCE FAIBLE",
+          "type_parametre": "ListeDeValeurs"
+        },
+        {
+          "id": "px1_ldpx_r_ph_ph_z1",
+          "name": "R-PH-PH-Z1",
+          "description": "PORTEE RESISTIVE PHASE-PHASE Z1 (OHM/BOUCLE)",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_r_ph_ph_z2",
+          "name": "R-PH-PH-Z2",
+          "description": "PORTEE RESISTIVE PHASE-PHASE Z2 (OHM/BOUCLE)",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_r_ph_ph_z3",
+          "name": "R-PH-PH-Z3",
+          "description": "PORTEE RESISTIVE PHASE-PHASE Z3 (OHM/BOUCLE)",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_r_ph_ph_z4",
+          "name": "R-PH-PH-Z4",
+          "description": "PORTEE RESISTIVE PHASE-PHASE Z4 (OHM/BOUCLE)",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_r_ph_t_z1",
+          "name": "R-PH-T-Z1",
+          "description": "PORTEE RESISTIVE PHASE-TERRE Z1 (OHM/BOUCLE)",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_r_ph_t_z2",
+          "name": "R-PH-T-Z2",
+          "description": "PORTEE RESISTIVE PHASE-TERRE Z2 (OHM/BOUCLE)",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_r_ph_t_z3",
+          "name": "R-PH-T-Z3",
+          "description": "PORTEE RESISTIVE PHASE-TERRE Z3 (OHM/BOUCLE)",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_r_ph_t_z4",
+          "name": "R-PH-T-Z4",
+          "description": "PORTEE RESISTIVE PHASE-TERRE Z4 (OHM/BOUCLE)",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_t_att_verr_tac",
+          "name": "T-ATT-VERR-TAC",
+          "description": "TEMPS D ATTENTE DE RECEPTION SIGNAL TAC VERROUILLAGE",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_t_bloc_inv_dir",
+          "name": "T-BLOC-INV-DIR",
+          "description": "TEMPORISATION DE BLOCAGE INVERSION DIRECTIONNEL",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_t_debloc_antip_z1",
+          "name": "T-DEBLOC-ANTIP-Z1",
+          "description": "TEMPORISATION DE DEBLOCAGE ANTIPOMPAGE ZONE 1",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_t_debloc_antip_z2",
+          "name": "T-DEBLOC-ANTIP-Z2",
+          "description": "TEMPORISATION DE DEBLOCAGE ANTIPOMPAGE ZONE 2",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_t_debloc_antip_z3",
+          "name": "T-DEBLOC-ANTIP-Z3",
+          "description": "TEMPORISATION DE DEBLOCAGE ANTIPOMPAGE ZONE 3",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_t_debloc_antip_z4",
+          "name": "T-DEBLOC-ANTIP-Z4",
+          "description": "TEMPORISATION DE DEBLOCAGE ANTIPOMPAGE ZONE 4",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_t_emi_echo_sf",
+          "name": "T-EMI-ECHO-SF",
+          "description": "TEMPORISATION ENVOI ECHO COTE SOURCE FAIBLE",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_t_prolong_verr_tac",
+          "name": "T-PROLONG-VERR-TAC",
+          "description": "TEMPORISATION DE PROLONGATION DE RECEPTION VERROUILLAGE TAC",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_t_z1",
+          "name": "T-Z1",
+          "description": "TEMPORISATION DE DECLENCHEMENT Z1",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_t_z2",
+          "name": "T-Z2",
+          "description": "TEMPORISATION DE DECLENCHEMENT Z2",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_t_z3",
+          "name": "T-Z3",
+          "description": "TEMPORISATION DE DECLENCHEMENT Z3",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_t_z4",
+          "name": "T-Z4",
+          "description": "TEMPORISATION DE DECLENCHEMENT Z4",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_x_z1",
+          "name": "X-Z1",
+          "description": "PORTEE REACTIVE Z1",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_x_z2",
+          "name": "X-Z2",
+          "description": "PORTEE REACTIVE Z2",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_x_z3",
+          "name": "X-Z3",
+          "description": "PORTEE REACTIVE Z3",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px1_ldpx_x_z4",
+          "name": "X-Z4",
+          "description": "PORTEE REACTIVE Z4",
+          "type_parametre": "Numerique"
+        }
+      ]
+    },
+    {
+      "id": "px2_ldpx",
+      "name": "PX2_LDPX",
+      "description": "LDPX",
+      "ied": "BPU",
+      "variant": "",
+      "ld": "LDPX",
+      "parameters": [
+        {
+          "id": "px2_ldpx_ang_kz1",
+          "name": "ANG-KZ1",
+          "description": "ARGUMENT DU COEFFICIENT DE COMPENSATION HOMOPOLAIRE KZ1",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_ang_kz2",
+          "name": "ANG-KZ2",
+          "description": "ARGUMENT DU COEFFICIENT DE COMPENSATION HOMOPOLAIRE KZ2",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_ang_kz3",
+          "name": "ANG-KZ3",
+          "description": "ARGUMENT DU COEFFICIENT DE COMPENSATION HOMOPOLAIRE KZ3",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_ang_kz4",
+          "name": "ANG-KZ4",
+          "description": "ARGUMENT DU COEFFICIENT DE COMPENSATION HOMOPOLAIRE KZ4",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_coef_kz1",
+          "name": "COEF-KZ1",
+          "description": "COEFFICIENT DE COMPENSATION HOMOPOLAIRE KZ1",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_coef_kz2",
+          "name": "COEF-KZ2",
+          "description": "COEFFICIENT DE COMPENSATION HOMOPOLAIRE KZ2",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_coef_kz3",
+          "name": "COEF-KZ3",
+          "description": "COEFFICIENT DE COMPENSATION HOMOPOLAIRE KZ3",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_coef_kz4",
+          "name": "COEF-KZ4",
+          "description": "COEFFICIENT DE COMPENSATION HOMOPOLAIRE KZ4",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_mes_anti_pomp_z1",
+          "name": "MES-ANTI-POMP-Z1",
+          "description": "ACTIVATION D ANTI POMPAGE ZONE 1",
+          "type_parametre": "ListeDeValeurs"
+        },
+        {
+          "id": "px2_ldpx_mes_anti_pomp_z2",
+          "name": "MES-ANTI-POMP-Z2",
+          "description": "ACTIVATION D ANTI POMPAGE ZONE 2",
+          "type_parametre": "ListeDeValeurs"
+        },
+        {
+          "id": "px2_ldpx_mes_anti_pomp_z3",
+          "name": "MES-ANTI-POMP-Z3",
+          "description": "ACTIVATION D ANTI POMPAGE ZONE 3",
+          "type_parametre": "ListeDeValeurs"
+        },
+        {
+          "id": "px2_ldpx_mes_anti_pomp_z4",
+          "name": "MES-ANTI-POMP-Z4",
+          "description": "ACTIVATION D ANTI POMPAGE ZONE 4",
+          "type_parametre": "ListeDeValeurs"
+        },
+        {
+          "id": "px2_ldpx_mode_echo_sf_px",
+          "name": "MODE-ECHO-SF-PX",
+          "description": "MODE SCHEMA ECHO SOURCE FAIBLE",
+          "type_parametre": "ListeDeValeurs"
+        },
+        {
+          "id": "px2_ldpx_r_ph_ph_z1",
+          "name": "R-PH-PH-Z1",
+          "description": "PORTEE RESISTIVE PHASE-PHASE Z1 (OHM/BOUCLE)",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_r_ph_ph_z2",
+          "name": "R-PH-PH-Z2",
+          "description": "PORTEE RESISTIVE PHASE-PHASE Z2 (OHM/BOUCLE)",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_r_ph_ph_z3",
+          "name": "R-PH-PH-Z3",
+          "description": "PORTEE RESISTIVE PHASE-PHASE Z3 (OHM/BOUCLE)",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_r_ph_ph_z4",
+          "name": "R-PH-PH-Z4",
+          "description": "PORTEE RESISTIVE PHASE-PHASE Z4 (OHM/BOUCLE)",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_r_ph_t_z1",
+          "name": "R-PH-T-Z1",
+          "description": "PORTEE RESISTIVE PHASE-TERRE Z1 (OHM/BOUCLE)",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_r_ph_t_z2",
+          "name": "R-PH-T-Z2",
+          "description": "PORTEE RESISTIVE PHASE-TERRE Z2 (OHM/BOUCLE)",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_r_ph_t_z3",
+          "name": "R-PH-T-Z3",
+          "description": "PORTEE RESISTIVE PHASE-TERRE Z3 (OHM/BOUCLE)",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_r_ph_t_z4",
+          "name": "R-PH-T-Z4",
+          "description": "PORTEE RESISTIVE PHASE-TERRE Z4 (OHM/BOUCLE)",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_t_att_verr_tac",
+          "name": "T-ATT-VERR-TAC",
+          "description": "TEMPS D ATTENTE DE RECEPTION SIGNAL TAC VERROUILLAGE",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_t_bloc_inv_dir",
+          "name": "T-BLOC-INV-DIR",
+          "description": "TEMPORISATION DE BLOCAGE INVERSION DIRECTIONNEL",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_t_debloc_antip_z1",
+          "name": "T-DEBLOC-ANTIP-Z1",
+          "description": "TEMPORISATION DE DEBLOCAGE ANTIPOMPAGE ZONE 1",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_t_debloc_antip_z2",
+          "name": "T-DEBLOC-ANTIP-Z2",
+          "description": "TEMPORISATION DE DEBLOCAGE ANTIPOMPAGE ZONE 2",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_t_debloc_antip_z3",
+          "name": "T-DEBLOC-ANTIP-Z3",
+          "description": "TEMPORISATION DE DEBLOCAGE ANTIPOMPAGE ZONE 3",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_t_debloc_antip_z4",
+          "name": "T-DEBLOC-ANTIP-Z4",
+          "description": "TEMPORISATION DE DEBLOCAGE ANTIPOMPAGE ZONE 4",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_t_emi_echo_sf",
+          "name": "T-EMI-ECHO-SF",
+          "description": "TEMPORISATION ENVOI ECHO COTE SOURCE FAIBLE",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_t_prolong_verr_tac",
+          "name": "T-PROLONG-VERR-TAC",
+          "description": "TEMPORISATION DE PROLONGATION DE RECEPTION VERROUILLAGE TAC",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_t_z1",
+          "name": "T-Z1",
+          "description": "TEMPORISATION DE DECLENCHEMENT Z1",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_t_z2",
+          "name": "T-Z2",
+          "description": "TEMPORISATION DE DECLENCHEMENT Z2",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_t_z3",
+          "name": "T-Z3",
+          "description": "TEMPORISATION DE DECLENCHEMENT Z3",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_t_z4",
+          "name": "T-Z4",
+          "description": "TEMPORISATION DE DECLENCHEMENT Z4",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_x_z1",
+          "name": "X-Z1",
+          "description": "PORTEE REACTIVE Z1",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_x_z2",
+          "name": "X-Z2",
+          "description": "PORTEE REACTIVE Z2",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_x_z3",
+          "name": "X-Z3",
+          "description": "PORTEE REACTIVE Z3",
+          "type_parametre": "Numerique"
+        },
+        {
+          "id": "px2_ldpx_x_z4",
+          "name": "X-Z4",
+          "description": "PORTEE REACTIVE Z4",
+          "type_parametre": "Numerique"
+        }
+      ]
+    }
+  ]
+}

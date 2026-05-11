@@ -11,8 +11,8 @@ Organisation :
   - isa_manager.py         : Gestionnaire fichiers ISA (import, catalogue)
   - mapping_comparator.py  : Comparaison mapping IEC 61850 vs ICD
   - mapping_merger.py      : Fusion automatique ICD → mapping
-  - fcs_manager.py         : Gestionnaire fichiers FCS (import, catalogue)
   - rac_manager.py         : Gestionnaire fichiers RAC (import, catalogue)
+  - test_parameter_manager.py : Parametres d'essais importes depuis PAR
   - isa_parsers/           : Parsers spécialisés (équations, enrichissement)
 """
 
@@ -21,8 +21,8 @@ from .ied_pattern_manager import IEDPatternManager
 from .isa_manager import ISAManager
 from .mapping_comparator import MappingComparator
 from .mapping_merger import MappingMerger
-from .fcs_manager import FCSManager
 from .rac_manager import RACManager
+from .test_parameter_manager import TestParameterManager
 
 __all__ = [
     "ICDParserV2",
@@ -30,6 +30,6 @@ __all__ = [
     "ISAManager",
     "MappingComparator",
     "MappingMerger",
-    "FCSManager",
     "RACManager",
+    "TestParameterManager",
 ]

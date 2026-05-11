@@ -41,13 +41,12 @@ IED_DATA_DIR = DATA_DIR / "ied"                            # Patterns IED
 ISA_DATA_DIR = DATA_DIR / "isa"                            # Fichiers ISA
 ESSAIS_DATA_DIR = DATA_DIR / "essais"                      # Essais RU/CVS/MVS
 TEMPLATES_DATA_DIR = DATA_DIR / "templates"                # Templates
-FCS_DATA_DIR = DATA_DIR / "fcs"                            # Fichiers FCS
 RAC_DATA_DIR = DATA_DIR / "rac"                            # Fichiers RAC
 
 # S'assurer que les répertoires critiques existent
 for _dir in [DATA_DIR, UPLOADS_DIR, ICD_DATA_DIR, IED_DATA_DIR,
              ISA_DATA_DIR, ESSAIS_DATA_DIR, TEMPLATES_DATA_DIR,
-             FCS_DATA_DIR, RAC_DATA_DIR]:
+             RAC_DATA_DIR]:
     _dir.mkdir(parents=True, exist_ok=True)
 
 
@@ -65,8 +64,8 @@ from core.ied_pattern_manager import IEDPatternManager
 from core.isa_manager import ISAManager
 from core.mapping_comparator import MappingComparator
 from core.mapping_merger import MappingMerger
-from core.fcs_manager import FCSManager
 from core.rac_manager import RACManager
+from core.test_parameter_manager import TestParameterManager
 
 
 # ============================================================================
@@ -88,11 +87,15 @@ mapping_comparator = MappingComparator()
 # Fusion automatique ICD → mapping
 mapping_merger = MappingMerger()
 
-# Gestionnaire FCS (Fiches de Configuration Système)
-fcs_manager = FCSManager(data_dir=DATA_DIR, uploads_dir=UPLOADS_DIR)
-
 # Gestionnaire RAC (Raccordements)
 rac_manager = RACManager(data_dir=DATA_DIR, uploads_dir=UPLOADS_DIR)
+
+# Gestionnaire des parametres d'essais importes depuis les fichiers PAR
+test_parameter_manager = TestParameterManager(
+    data_dir=ESSAIS_DATA_DIR,
+    assets_dir=ASSETS_DIR,
+    ied_data_dir=IED_DATA_DIR,
+)
 
 
 # ============================================================================
@@ -120,6 +123,8 @@ class EssaiPayload(BaseModel):
     ld: str = ""
     ln: str = ""
     lninst: str = ""
+    previous_test_id: str = ""
+    order_index: Optional[int] = None
     description: str = ""
     steps: List[Dict[str, Any]] = []
     preconditions: List[Any] = []

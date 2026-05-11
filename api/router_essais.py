@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Set
 
 from fastapi import APIRouter, HTTPException
 
@@ -54,19 +54,137 @@ def _save(essai_type: str, essais: List[Dict[str, Any]]) -> None:
         json.dump(essais, f, indent=2, ensure_ascii=False)
 
 
+def _normalize_test_id(value: Any) -> str:
+    """Retourne un identifiant d'essai normalise pour les comparaisons."""
+    return str(value or "").strip()
+
+
+def _ensure_order_fields(essais: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """
+    Recalcule l'ordre technique d'une liste d'essais.
+
+    La relation previous_test_id reste le champ de saisie principal. order_index
+    est derive de cette chaine afin que les listes API et JSON puissent etre
+    triees sans reconstruire le graphe cote client.
+    """
+    by_id = {
+        _normalize_test_id(essai.get("id")): essai
+        for essai in essais
+        if _normalize_test_id(essai.get("id"))
+    }
+    followers: Dict[str, List[Dict[str, Any]]] = {}
+
+    for essai in essais:
+        previous_id = _normalize_test_id(essai.get("previous_test_id"))
+        if previous_id and previous_id not in by_id:
+            # Le precedent peut avoir ete supprime. L'essai est conserve, mais
+            # la relation invalide est neutralisee pour eviter un ordre fantome.
+            essai["previous_test_id"] = ""
+            previous_id = ""
+        followers.setdefault(previous_id, []).append(essai)
+
+    for bucket in followers.values():
+        bucket.sort(key=lambda item: (
+            item.get("order_index") is None,
+            item.get("order_index") if item.get("order_index") is not None else 10**9,
+            str(item.get("name", "")).lower(),
+            str(item.get("id", "")).lower(),
+        ))
+
+    ordered: List[Dict[str, Any]] = []
+    visited: Set[str] = set()
+
+    def append_chain(previous_id: str) -> None:
+        """Ajoute recursivement les essais suivant un meme precedent."""
+        for item in followers.get(previous_id, []):
+            item_id = _normalize_test_id(item.get("id"))
+            if not item_id or item_id in visited:
+                continue
+            visited.add(item_id)
+            ordered.append(item)
+            append_chain(item_id)
+
+    append_chain("")
+
+    # Les noeuds restants correspondent a des donnees anciennes ou incoherentes.
+    # Ils sont conserves en fin de liste avec un precedent vide.
+    for essai in essais:
+        item_id = _normalize_test_id(essai.get("id"))
+        if item_id and item_id not in visited:
+            essai["previous_test_id"] = ""
+            visited.add(item_id)
+            ordered.append(essai)
+
+    for index, essai in enumerate(ordered, start=1):
+        essai["order_index"] = index * 10
+
+    return ordered
+
+
+def _would_create_cycle(essais: List[Dict[str, Any]], essai_id: str, previous_id: str) -> bool:
+    """
+    Verifie si une relation previous_test_id creerait un cycle.
+
+    Le controle remonte la chaine des precedents depuis previous_id. Si l'essai
+    courant est rencontre, la sauvegarde produirait une boucle A -> B -> A.
+    """
+    normalized_id = _normalize_test_id(essai_id)
+    cursor = _normalize_test_id(previous_id)
+    previous_by_id = {
+        _normalize_test_id(essai.get("id")): _normalize_test_id(essai.get("previous_test_id"))
+        for essai in essais
+        if _normalize_test_id(essai.get("id"))
+    }
+    seen: Set[str] = set()
+
+    while cursor:
+        if cursor == normalized_id:
+            return True
+        if cursor in seen:
+            return True
+        seen.add(cursor)
+        cursor = previous_by_id.get(cursor, "")
+
+    return False
+
+
+def _validate_previous_reference(essais: List[Dict[str, Any]], essai: Dict[str, Any]) -> None:
+    """Controle la coherence minimale du test precedent avant persistance."""
+    essai_id = _normalize_test_id(essai.get("id"))
+    previous_id = _normalize_test_id(essai.get("previous_test_id"))
+    essai["previous_test_id"] = previous_id
+
+    if not previous_id:
+        return
+
+    if previous_id == essai_id:
+        raise HTTPException(status_code=400, detail="Un essai ne peut pas se preceder lui-meme.")
+
+    known_ids = {
+        _normalize_test_id(item.get("id"))
+        for item in essais
+        if _normalize_test_id(item.get("id")) and _normalize_test_id(item.get("id")) != essai_id
+    }
+    if previous_id not in known_ids:
+        raise HTTPException(status_code=400, detail=f"Test precedent introuvable: {previous_id}")
+
+    if _would_create_cycle(essais, essai_id, previous_id):
+        raise HTTPException(status_code=400, detail="Cycle detecte dans l'ordre manuel des essais.")
+
+
 # ---------- endpoints ----------
 
 @router.get("")
 def list_essais(type: str = "ru") -> Dict[str, Any]:
     """Liste les essais d'un type donné."""
-    essais = _load(type)
+    essais = _ensure_order_fields(_load(type))
     return {"type": type, "count": len(essais), "essais": essais}
 
 
 @router.get("/{essai_id}")
 def get_essai(essai_id: str, type: str = "ru") -> Dict[str, Any]:
     """Récupère un essai par son ID."""
-    essais = _load(type)
+    essais = _ensure_order_fields(_load(type))
     for e in essais:
         if e.get("id") == essai_id:
             return e
@@ -81,6 +199,8 @@ def create_or_update_essai(payload: EssaiPayload) -> Dict[str, Any]:
 
     essai_dict = payload.model_dump()
     essai_dict["updated_at"] = datetime.now().isoformat()
+    essai_dict["type"] = essai_type
+    _validate_previous_reference(essais, essai_dict)
 
     # Upsert
     existing_idx = next((i for i, e in enumerate(essais) if e.get("id") == payload.id), None)
@@ -93,8 +213,9 @@ def create_or_update_essai(payload: EssaiPayload) -> Dict[str, Any]:
         essais.append(essai_dict)
         action = "created"
 
+    essais = _ensure_order_fields(essais)
     _save(essai_type, essais)
-    print(f"✅ Essai {action}: {payload.id} (type={essai_type})")
+    logger.info("[API][ESSAIS] Essai %s: %s (type=%s)", action, payload.id, essai_type)
     return {"success": True, "action": action, "id": payload.id}
 
 
@@ -108,8 +229,9 @@ def delete_essai(essai_id: str, type: str = "ru") -> Dict[str, Any]:
     if len(essais) == initial_count:
         raise HTTPException(status_code=404, detail=f"Essai {essai_id} introuvable")
 
+    essais = _ensure_order_fields(essais)
     _save(type, essais)
-    print(f"🗑️ Essai supprimé: {essai_id} (type={type})")
+    logger.info("[API][ESSAIS] Essai supprime: %s (type=%s)", essai_id, type)
     return {"success": True, "deleted": essai_id}
 
 
@@ -155,8 +277,17 @@ def sync_essais(payload: SyncPayload) -> Dict[str, Any]:
 
         filtered_essais.append(essai)
 
+    for essai in filtered_essais:
+        _validate_previous_reference(filtered_essais, essai)
+
+    filtered_essais = _ensure_order_fields(filtered_essais)
     _save(essai_type, filtered_essais)
-    print(f"🔄 Sync {len(filtered_essais)} essais (type={essai_type}, ignorés={skipped_count})")
+    logger.info(
+        "[API][ESSAIS] Sync %s essais (type=%s, ignores=%s)",
+        len(filtered_essais),
+        essai_type,
+        skipped_count,
+    )
     return {
         "success": True,
         "type": essai_type,

@@ -1,0 +1,71 @@
+# ============================================================================
+# docker-compose.yml - R#BD
+#
+# Role :
+#   Orchestration locale / VM de l'application R#BD.
+#
+# Contenu :
+#   - 1 service FastAPI + frontend statique ;
+#   - 2 volumes hote persistants pour data/ et uploads/ ;
+#   - 1 volume hote read-only pour le UI Kit partage ;
+#   - 1 reseau Docker externe partage a l'echelle R-CONTROL.
+#
+# Notes d'exploitation :
+#   - le healthcheck est porte par l'image Docker ;
+#   - le reseau rcontrol_shared doit exister avant le demarrage ;
+#   - /opt/_ui_kit doit etre present cote hote.
+# ============================================================================
+
+services:
+  r-bd:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    image: rcontrol/r_bd:latest
+    container_name: r-bd
+    init: true
+    restart: unless-stopped
+
+    ports:
+      # Port expose : host:container
+      - "8551:8551"
+
+    environment:
+      # Port coherent avec config.py
+      WEB_PORT: ${WEB_PORT:-8551}
+
+      # Compatibilite avec l'ancienne convention Docker racine.
+      PORT_WEB: ${PORT_WEB:-8551}
+      PORT_API: ${PORT_API:-8651}
+
+      # En conteneur, le rechargement automatique doit rester desactive.
+      RBD_RELOAD: ${RBD_RELOAD:-0}
+
+    volumes:
+      # Persistance principale : catalogues ICD/IED/ISA/RAC, templates, essais.
+      - /opt/R_BD/data:/app/data
+
+      # Persistance secondaire : fichiers importes par l'utilisateur.
+      - /opt/R_BD/uploads:/app/uploads
+
+      # UI Kit partage R-CONTROL monte en lecture seule.
+      - /opt/_ui_kit:/_ui_kit:ro
+
+    networks:
+      rcontrol_shared:
+        aliases:
+          - r-bd
+          - r_bd
+
+    logging:
+      # Rotation des logs conteneur pour eviter une croissance non bornee.
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  rcontrol_shared:
+    name: rcontrol_shared
+    external: true

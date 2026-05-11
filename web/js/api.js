@@ -9,8 +9,8 @@
  *   - apiIcd    → endpoints ICD (import, catalogue, patterns)
  *   - apiIsa    → endpoints ISA (import, types, fichiers)
  *   - apiEssais → endpoints Essais (CRUD RU/CVS/MVS)
+ *   - apiTestParameters → endpoints parametres d'essais PAR
  *   - apiTemplates → endpoints Templates (CRUD)
- *   - apiFcs    → endpoints FCS (import, catalogue)
  *   - apiRac    → endpoints RAC (import, catalogue)
  */
 
@@ -239,6 +239,17 @@ const apiEssais = {
     sync: (type, essais) => api.post("/essais/sync", { type, essais }),
 };
 
+const apiTestParameters = {
+    /** Charger le catalogue Injections utilise par les essais */
+    list: () => api.get("/essais/parameters"),
+
+    /** Sauvegarder les fonctions et parametres modifies dans l'application */
+    save: (catalog) => api.put("/essais/parameters", catalog),
+
+    /** Importer un fichier .par pour remplacer le catalogue courant */
+    importPar: (file) => api.upload("/essais/parameters/import", file),
+};
+
 
 // ============================================================================
 // API TEMPLATES — CRUD templates RU/CVS/MVS
@@ -256,25 +267,6 @@ const apiTemplates = {
 
     /** Mettre à jour un template */
     update: (type, templateId, data) => api.put(`/v1/templates/${encodeURIComponent(type)}/${encodeURIComponent(templateId)}`, data),
-};
-
-
-// ============================================================================
-// API FCS — Import et consultation FCS
-// ============================================================================
-
-const apiFcs = {
-    /** Lister les FCS importés */
-    list: () => api.get("/fcs/list"),
-
-    /** Importer un fichier FCS */
-    upload: (file) => api.upload("/fcs/import", file),
-
-    /** Récupérer les détails d'un FCS */
-    getDetails: (fcsId) => api.get(`/fcs/${encodeURIComponent(fcsId)}`),
-
-    /** Supprimer un FCS */
-    remove: (fcsId) => api.delete(`/fcs/${encodeURIComponent(fcsId)}`),
 };
 
 
