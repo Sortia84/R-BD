@@ -389,20 +389,11 @@ textarea.form-input {
     min-width: 0;
 }
 
-/* Libelle inline utilise dans la temporisation manuelle pour clarifier la
-   signification du select d'unite sans agrandir excessivement la ligne. */
-.step-inline-caption {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--muted);
-    white-space: nowrap;
-}
-
 /* Sous-blocs de la temporisation (manuel / auto) : largeur compacte stricte
    pour eviter toute projection visuelle sur le champ Etat voisin. */
 .step-duration-fields {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     flex: 0 0 auto;
     gap: 8px;
     width: max-content;
@@ -415,17 +406,38 @@ textarea.form-input {
     min-width: 0;
 }
 
-/* Champ valeur du mode Manuel : prevu pour 5 chiffres maximum. */
+/* Champ Valeur : largeur minimale confortable pour 5 chiffres. */
+.step-value-field {
+    flex: 0 0 96px;
+    width: 96px;
+    min-width: 96px;
+}
+
 .step-duration-input {
-    flex: 0 0 72px;
-    width: 72px;
+    width: 100%;
+    min-width: 96px;
+}
+
+/* Champ Unite : label au-dessus du select, meme couleur que les autres labels
+   et largeur strictement adaptee au contenu du libelle/selecteur. */
+.step-unit-field {
+    flex: 0 0 auto;
+    width: max-content;
+    min-width: max-content;
+}
+
+.step-unit-field label {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
 }
 
 /* Selecteur d'unite : largeur sur contenu (ms / s / min). */
 .step-unit-select {
     flex: 0 0 auto;
     width: auto;
-    min-width: 0;
+    min-width: max-content;
 }
 
 /* Selecteur du parametre de temporisation (mode Auto) :

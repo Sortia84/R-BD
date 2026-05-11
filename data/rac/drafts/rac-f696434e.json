@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "rac_id": "rac-f696434e",
-  "updated_at": "2026-05-08T02:26:58.053397",
+  "updated_at": "2026-05-11T02:28:45.803739",
   "drafts_by_track_id": {
     "row-3": {
       "trackId": "row-3",
@@ -125,6 +125,211 @@
       "layoutLocked": true,
       "layoutWidth": 2018.0,
       "layoutHeight": 256.0
+    },
+    "row-178": {
+      "trackId": "row-178",
+      "nodes": [
+        {
+          "id": "node-t6l6jt9",
+          "title": "Bornier",
+          "x": 44.0,
+          "y": 238.0,
+          "width": 323.0,
+          "fields": [
+            {
+              "label": "Nom bornier",
+              "value": "BRM-V"
+            },
+            {
+              "label": "Borne",
+              "value": "1"
+            },
+            {
+              "label": "Signal",
+              "value": "TENSION NEUTRE S2"
+            },
+            {
+              "label": "Type",
+              "value": "Analogique"
+            },
+            {
+              "label": "Polarite",
+              "value": ""
+            }
+          ],
+          "collapsed": false,
+          "isParallelPath": false,
+          "stage": 0
+        },
+        {
+          "id": "node-hyqmkke",
+          "title": "Connecteur intermediaire",
+          "x": 497.0,
+          "y": 259.0,
+          "width": 410.0,
+          "fields": [
+            {
+              "label": "Source",
+              "value": ""
+            },
+            {
+              "label": "Connecteur brut",
+              "value": "V-PIUx (1-01)"
+            },
+            {
+              "label": "Index",
+              "value": ""
+            },
+            {
+              "label": "Borne connecteur",
+              "value": "01"
+            }
+          ],
+          "collapsed": false,
+          "isParallelPath": false,
+          "stage": 1
+        },
+        {
+          "id": "node-4t44fac",
+          "title": "Connecteur resolu 1",
+          "x": 1037.0,
+          "y": 48.0,
+          "width": 368.0,
+          "fields": [
+            {
+              "label": "Nom resolu",
+              "value": "V-PIUx (1-01) • pos. 1"
+            },
+            {
+              "label": "Equipement cible",
+              "value": "PIU1"
+            }
+          ],
+          "collapsed": false,
+          "isParallelPath": true,
+          "stage": 2,
+          "lane": 0
+        },
+        {
+          "id": "node-jsda2cu",
+          "title": "Connecteur resolu 2",
+          "x": 1041.0,
+          "y": 428.0,
+          "width": 360.0,
+          "fields": [
+            {
+              "label": "Nom resolu",
+              "value": ""
+            },
+            {
+              "label": "Equipement cible",
+              "value": "PIU2"
+            }
+          ],
+          "collapsed": false,
+          "isParallelPath": true,
+          "stage": 2,
+          "lane": 1
+        },
+        {
+          "id": "node-4d936u5",
+          "title": "PIU1",
+          "x": 1535.0,
+          "y": 48.0,
+          "width": 320.0,
+          "fields": [
+            {
+              "label": "Equipement",
+              "value": "PIU1"
+            },
+            {
+              "label": "Constructeur",
+              "value": "EFACEC"
+            },
+            {
+              "label": "Type carte",
+              "value": "MAP8282 Op3"
+            },
+            {
+              "label": "Carte",
+              "value": "Slot9"
+            },
+            {
+              "label": "Borne carte",
+              "value": "2-4-6"
+            }
+          ],
+          "collapsed": false,
+          "isParallelPath": true,
+          "stage": 3,
+          "lane": 0
+        },
+        {
+          "id": "node-2qrymx9",
+          "title": "PIU2",
+          "x": 1535.0,
+          "y": 428.0,
+          "width": 320.0,
+          "fields": [
+            {
+              "label": "Equipement",
+              "value": "PIU2"
+            },
+            {
+              "label": "Constructeur",
+              "value": "EFACEC"
+            },
+            {
+              "label": "Type carte",
+              "value": "MAP8282 Op3"
+            },
+            {
+              "label": "Carte",
+              "value": "Slot9"
+            },
+            {
+              "label": "Borne carte",
+              "value": "2-4-6"
+            }
+          ],
+          "collapsed": false,
+          "isParallelPath": true,
+          "stage": 3,
+          "lane": 1
+        }
+      ],
+      "edges": [
+        {
+          "id": "edge-9tbzk6a",
+          "sourceNodeId": "node-t6l6jt9",
+          "targetNodeId": "node-hyqmkke"
+        },
+        {
+          "id": "edge-t593b6l",
+          "sourceNodeId": "node-hyqmkke",
+          "targetNodeId": "node-4t44fac"
+        },
+        {
+          "id": "edge-gkjyn7a",
+          "sourceNodeId": "node-hyqmkke",
+          "targetNodeId": "node-jsda2cu"
+        },
+        {
+          "id": "edge-fvjylna",
+          "sourceNodeId": "node-4t44fac",
+          "targetNodeId": "node-4d936u5"
+        },
+        {
+          "id": "edge-660k4zs",
+          "sourceNodeId": "node-jsda2cu",
+          "targetNodeId": "node-2qrymx9"
+        }
+      ],
+      "parallelLaneCount": 2,
+      "hasParallelPaths": true,
+      "layoutLocked": true,
+      "layoutWidth": 2029.0,
+      "layoutHeight": 760.0
     }
   }
 }

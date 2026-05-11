@@ -2047,17 +2047,21 @@ function renderStepItemHtml(step, stepNum) {
                     </div>
 
                     <div class="form-group step-field-duration ${temporisationMode === 'Manuel' ? '' : 'inline-hidden'}" id="${stepId}_duration">
-                        <label>Valeur</label>
                         <div class="step-inline step-duration-fields">
-                            <input type="number" class="form-input step-duration-input" placeholder="0" min="0" max="99999" maxlength="5"
-                                value="${Number(step.duration) || 0}"
-                                onchange="updateStep('${stepId}', 'duration', this.value)">
-                            <span class="step-inline-caption">Unite</span>
-                            <select class="form-input step-unit-select" onchange="updateStep('${stepId}', 'unit', this.value)">
-                                <option value="ms" ${step.unit === 'ms' || !step.unit ? 'selected' : ''}>ms</option>
-                                <option value="s" ${step.unit === 's' ? 'selected' : ''}>s</option>
-                                <option value="min" ${step.unit === 'min' ? 'selected' : ''}>min</option>
-                            </select>
+                            <div class="form-group step-value-field">
+                                <label>Valeur</label>
+                                <input type="number" class="form-input step-duration-input" placeholder="0" min="0" max="99999" maxlength="5"
+                                    value="${Number(step.duration) || 0}"
+                                    onchange="updateStep('${stepId}', 'duration', this.value)">
+                            </div>
+                            <div class="form-group step-unit-field">
+                                <label>Unité</label>
+                                <select class="form-input step-unit-select" onchange="updateStep('${stepId}', 'unit', this.value)">
+                                    <option value="ms" ${step.unit === 'ms' || !step.unit ? 'selected' : ''}>ms</option>
+                                    <option value="s" ${step.unit === 's' ? 'selected' : ''}>s</option>
+                                    <option value="min" ${step.unit === 'min' ? 'selected' : ''}>min</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
