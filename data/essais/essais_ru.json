@@ -231,7 +231,17 @@
       }
     ],
     "created_at": "2026-05-11T13:36:13.824Z",
-    "updated_at": "2026-05-11T13:36:13.824Z"
+    "updated_at": "2026-05-11T13:36:13.824Z",
+    "order_type_number": 1,
+    "order_ied_number": 1,
+    "order_ld_number": 1,
+    "order_scope": {
+      "type": "ru",
+      "ied": "BCU",
+      "ld": "LDCMDDJ"
+    },
+    "scope": "function",
+    "attachments": []
   },
   {
     "id": "RU-4XSBPX",
@@ -465,7 +475,17 @@
       }
     ],
     "created_at": "2026-05-11T13:52:00.282Z",
-    "updated_at": "2026-05-11T13:52:00.282Z"
+    "updated_at": "2026-05-11T13:52:00.282Z",
+    "order_type_number": 2,
+    "order_ied_number": 2,
+    "order_ld_number": 2,
+    "order_scope": {
+      "type": "ru",
+      "ied": "BCU",
+      "ld": "LDCMDDJ"
+    },
+    "scope": "function",
+    "attachments": []
   },
   {
     "id": "RU-46POQ4",
@@ -698,8 +718,18 @@
         "state_source": "ISA.DEB"
       }
     ],
-    "updated_at": "2026-05-11T22:51:21.454668",
-    "created_at": "2026-05-11T22:51:21.454668"
+    "updated_at": "2026-05-11T23:26:43.625509",
+    "created_at": "2026-05-11T23:26:43.625509",
+    "order_type_number": 3,
+    "order_ied_number": 3,
+    "order_ld_number": 3,
+    "order_scope": {
+      "type": "ru",
+      "ied": "BCU",
+      "ld": "LDCMDDJ"
+    },
+    "scope": "function",
+    "attachments": []
   },
   {
     "id": "RU-7RK4JM",
@@ -933,7 +963,17 @@
       }
     ],
     "created_at": "2026-05-11T20:50:19.054Z",
-    "updated_at": "2026-05-11T20:50:19.054Z"
+    "updated_at": "2026-05-11T20:50:19.054Z",
+    "order_type_number": 4,
+    "order_ied_number": 4,
+    "order_ld_number": 1,
+    "order_scope": {
+      "type": "ru",
+      "ied": "BCU",
+      "ld": "LDCAP1"
+    },
+    "scope": "function",
+    "attachments": []
   },
   {
     "id": "RU-GCQM9D",
@@ -1167,6 +1207,16 @@
       }
     ],
     "created_at": "2026-05-11T20:50:57.687Z",
-    "updated_at": "2026-05-11T20:50:57.687Z"
+    "updated_at": "2026-05-12T01:02:58.668806",
+    "order_type_number": 5,
+    "order_ied_number": 1,
+    "order_ld_number": 1,
+    "order_scope": {
+      "type": "ru",
+      "ied": "SCU",
+      "ld": "LDSUIED"
+    },
+    "scope": "function",
+    "attachments": []
   }
 ]

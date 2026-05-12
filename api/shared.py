@@ -121,6 +121,7 @@ class EssaiPayload(BaseModel):
     id: str = ""
     name: str = ""
     type: str = "ru"
+    scope: str = "function"
     ied: str = ""
     variant: str = ""
     ld: str = ""
@@ -135,6 +136,7 @@ class EssaiPayload(BaseModel):
     description: str = ""
     steps: List[Dict[str, Any]] = []
     preconditions: List[Any] = []
+    attachments: List[Any] = []
     files: List[Any] = []
     linked_tests_ru: List[Any] = []
     linked_tests_cvs: List[Any] = []

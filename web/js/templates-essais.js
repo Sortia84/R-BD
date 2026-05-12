@@ -22,6 +22,18 @@ function setTestsByType(type, tests) {
     localStorage.setItem(`tests_${type}`, JSON.stringify(tests));
 }
 
+function normaliseTestScope(value) {
+    const text = String(value || 'function').trim().toLowerCase();
+    return ['generic', 'generique', 'global', 'general'].includes(text) ? 'generic' : 'function';
+}
+
+function normaliseTestAttachments(test) {
+    const attachments = Array.isArray(test?.attachments)
+        ? test.attachments
+        : (Array.isArray(test?.files) ? test.files : []);
+    return attachments.filter(item => item && typeof item === 'object');
+}
+
 let draggedTestId = '';
 let draggedTestType = '';
 
@@ -54,6 +66,9 @@ function normalizeTests() {
         return tests.map(test => ({
             ...test,
             type: (test.type || type).toLowerCase(),
+            scope: normaliseTestScope(test.scope),
+            attachments: normaliseTestAttachments(test),
+            files: normaliseTestAttachments(test),
             previous_test_id: test.previous_test_id || '',
             order_index: test.order_index ?? null
         }));
@@ -164,9 +179,10 @@ function renderEssaisLayout() {
 // Initialisation
 // ============================================================
 
-function initTemplatesPage() {
+async function initTemplatesPage() {
     // Générer le layout HTML complet (liste + éditeur)
     renderEssaisLayout();
+    await hydrateTestsFromServer();
     loadEssaisReferenceLists();
     bindFilters();
     loadTemplatesList();
@@ -175,6 +191,32 @@ function initTemplatesPage() {
     }
     // Synchroniser automatiquement le localStorage vers le serveur
     syncAllToServer();
+}
+
+async function hydrateTestsFromServer() {
+    const types = ['ru', 'cvs', 'mvs', 'mvc'];
+    await Promise.all(types.map(async (type) => {
+        try {
+            const response = await fetch(`/api/essais?type=${encodeURIComponent(type)}`);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            const payload = await response.json();
+            if (!Array.isArray(payload?.essais)) {
+                return;
+            }
+            const tests = payload.essais.map(test => ({
+                ...test,
+                type,
+                scope: normaliseTestScope(test.scope),
+                attachments: normaliseTestAttachments(test),
+                files: normaliseTestAttachments(test)
+            }));
+            setTestsByType(type, tests);
+        } catch (error) {
+            console.warn(`[UI][ESSAIS] Chargement serveur ${type} indisponible`, error);
+        }
+    }));
 }
 
 function bindFilters() {
@@ -328,12 +370,17 @@ function matchesType(test, typeFilter) {
 }
 
 function applyFilters(tests, filters) {
-    return tests.filter(test => (
-        matchesType(test, filters.type)
-        && matchesValue(test.ied, filters.ied)
-        && matchesValue(test.ld, filters.ld)
-        && matchesValue(test.ln, filters.ln)
-    ));
+    return tests.filter(test => {
+        if (!matchesType(test, filters.type)) {
+            return false;
+        }
+        if (normaliseTestScope(test.scope) === 'generic') {
+            return true;
+        }
+        return matchesValue(test.ied, filters.ied)
+            && matchesValue(test.ld, filters.ld)
+            && matchesValue(test.ln, filters.ln);
+    });
 }
 
 function loadTemplatesList() {
@@ -359,7 +406,9 @@ function loadTemplatesList() {
 function renderTestCard(test) {
     const stepCount = (test.steps || []).length;
     const preconCount = (test.preconditions || []).length;
-    const identifier = [test.ied, test.ld, test.ln, test.lninst].filter(Boolean).join(' / ');
+    const isGeneric = normaliseTestScope(test.scope) === 'generic';
+    const attachmentsCount = normaliseTestAttachments(test).length;
+    const identifier = isGeneric ? 'Essai generique' : [test.ied, test.ld, test.ln, test.lninst].filter(Boolean).join(' / ');
     const normalizedType = (test.type || 'ru').toLowerCase();
     const typeLabel = TYPE_LABELS[normalizedType] || 'Essai';
     const typeIcon = TYPE_ICONS[normalizedType] || '•';
@@ -392,6 +441,7 @@ function renderTestCard(test) {
 
             <div class="template-tags">
                 <span class="template-tag">${escapeHtml(typeLabel)}</span>
+                ${isGeneric ? '<span class="template-tag template-tag-generic">Generique</span>' : ''}
                 ${test.ied ? `<span class="template-tag">${escapeHtml(test.ied)}</span>` : ''}
                 ${test.ld ? `<span class="template-tag">${escapeHtml(test.ld)}</span>` : ''}
                 ${test.ln ? `<span class="template-tag">${escapeHtml(test.ln)}</span>` : ''}
@@ -405,6 +455,10 @@ function renderTestCard(test) {
                 <div class="template-stat">
                     <span class="template-stat-label">Préconditions</span>
                     <span class="template-stat-value">${preconCount}</span>
+                </div>
+                <div class="template-stat">
+                    <span class="template-stat-label">Pieces jointes</span>
+                    <span class="template-stat-value">${attachmentsCount}</span>
                 </div>
             </div>
 
@@ -519,6 +573,7 @@ function duplicateTest(testId, type) {
     copy.id = generateDuplicateId(normalizedType, tests);
     copy.name = `${original.name || 'Test'} (copie)`;
     copy.type = normalizedType;
+    copy.attachments = [];
     copy.files = [];
     copy.linked_tests_ru = [];
     copy.linked_tests_mvs = [];
@@ -543,7 +598,7 @@ function duplicateTest(testId, type) {
     loadTemplatesList();
 }
 
-function deleteTest(testId, type) {
+async function deleteTest(testId, type) {
     const tests = getTestsByType(type);
     const test = tests.find(t => t.id === testId);
     if (!test) {
@@ -555,13 +610,24 @@ function deleteTest(testId, type) {
         return;
     }
 
+    try {
+        const response = await fetch(`/api/essais/${encodeURIComponent(testId)}?type=${encodeURIComponent(type)}`, {
+            method: 'DELETE'
+        });
+        if (!response.ok && response.status !== 404) {
+            console.warn(`[UI][ESSAIS] Suppression serveur ${testId} echouee: ${response.status}`);
+        }
+    } catch (error) {
+        console.warn(`[UI][ESSAIS] Suppression serveur ${testId} indisponible`, error);
+    }
+
     const updated = recalculateOrderLinks(
         sortTestsByManualOrder(tests.filter(t => t.id !== testId)).map(test => (
             test.previous_test_id === testId ? { ...test, previous_test_id: '' } : test
         ))
     );
     setTestsByType(type, updated);
-    syncTypeToServer(type);
+    await syncTypeToServer(type);
     loadTemplatesList();
 }
 

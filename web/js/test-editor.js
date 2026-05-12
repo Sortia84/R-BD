@@ -6,6 +6,7 @@
 
 let currentTest = {
     id: '',
+    scope: 'function',
     name: '',
     ied: '',
     ld: '',
@@ -15,6 +16,7 @@ let currentTest = {
     order_index: null,
     description: '',
     preconditions: [],
+    attachments: [],
     files: [],
     linked_tests_ru: [],
     linked_tests_mvs: [],
@@ -73,6 +75,7 @@ function buildEmptyTest(type = 'ru') {
     return {
         id: '',
         type: String(type || 'ru').toLowerCase(),
+        scope: 'function',
         name: '',
         ied: '',
         variant: '',
@@ -83,6 +86,7 @@ function buildEmptyTest(type = 'ru') {
         order_index: null,
         description: '',
         preconditions: [],
+        attachments: [],
         files: [],
         linked_tests_ru: [],
         linked_tests_mvs: [],
@@ -92,6 +96,110 @@ function buildEmptyTest(type = 'ru') {
         alarmes: [],
         tcd: []
     };
+}
+
+function normaliseScope(value) {
+    const text = String(value || 'function').trim().toLowerCase();
+    return ['generic', 'generique', 'global', 'general'].includes(text) ? 'generic' : 'function';
+}
+
+function isGenericTest(test = currentTest) {
+    return normaliseScope(test?.scope) === 'generic';
+}
+
+function getCurrentAttachments() {
+    const source = Array.isArray(currentTest.attachments)
+        ? currentTest.attachments
+        : (Array.isArray(currentTest.files) ? currentTest.files : []);
+    return source.filter(file => file && typeof file === 'object');
+}
+
+function setCurrentAttachments(files) {
+    const attachments = Array.isArray(files)
+        ? files.filter(file => file && typeof file === 'object')
+        : [];
+    currentTest.attachments = attachments;
+    currentTest.files = attachments;
+}
+
+function buildAttachmentDownloadUrl(file) {
+    if (file?.download_url) {
+        return file.download_url;
+    }
+    const essaiId = currentTest.id || document.getElementById('test-id')?.value || '';
+    const attachmentId = file?.id || '';
+    if (!essaiId || !attachmentId) {
+        return '';
+    }
+    return `/api/essais/${encodeURIComponent(essaiId)}/attachments/${encodeURIComponent(attachmentId)}?type=${encodeURIComponent(selectedType)}`;
+}
+
+function ensureCurrentTestIdForUpload() {
+    selectedType = (document.getElementById('test-type')?.value || selectedType || 'ru').toLowerCase();
+    if (!currentTest.id || !idHasExpectedPrefix(currentTest.id, selectedType)) {
+        setEditorIdValue(generateTypeCoherentId(selectedType));
+    }
+    return currentTest.id;
+}
+
+function clearFunctionSelectorsForGeneric() {
+    currentTest.ied = '';
+    currentTest.variant = '';
+    currentTest.ld = '';
+    currentTest.ln = '';
+    currentTest.lninst = '';
+    currentTest.previous_test_id = '';
+
+    const iedSelect = document.getElementById('test-ied');
+    const variantSelect = document.getElementById('test-variant');
+    const ldSelect = document.getElementById('test-ld');
+    const lnSelect = document.getElementById('test-ln');
+    const lninstSelect = document.getElementById('test-lninst');
+    const previousSelect = document.getElementById('test-previous');
+
+    if (iedSelect) iedSelect.value = '';
+    if (variantSelect) resetSelect(variantSelect, 'Aucun');
+    if (ldSelect) resetSelect(ldSelect, 'Aucun LD');
+    if (lnSelect) resetSelect(lnSelect, 'Aucun LN');
+    if (lninstSelect) resetSelect(lninstSelect, 'Aucun LNinst');
+    if (previousSelect) {
+        previousSelect.innerHTML = '<option value="">Aucun test precedent / premier test</option>';
+        previousSelect.value = '';
+    }
+}
+
+function refreshScopeControls() {
+    const scopeSelect = document.getElementById('test-scope');
+    const generic = isGenericTest();
+    if (scopeSelect) {
+        scopeSelect.value = generic ? 'generic' : 'function';
+    }
+
+    if (generic) {
+        clearFunctionSelectorsForGeneric();
+    }
+
+    ['test-ied', 'test-variant', 'test-ld', 'test-ln', 'test-lninst', 'test-previous'].forEach(id => {
+        const element = document.getElementById(id);
+        if (!element) return;
+        element.disabled = generic;
+        element.closest('.form-group')?.classList.toggle('is-disabled', generic);
+    });
+
+    refreshPreviousTestSelect();
+}
+
+function setupScopeSelector() {
+    const scopeSelect = document.getElementById('test-scope');
+    if (!scopeSelect) {
+        return;
+    }
+
+    scopeSelect.value = normaliseScope(currentTest.scope);
+    scopeSelect.addEventListener('change', (event) => {
+        currentTest.scope = normaliseScope(event.target.value);
+        refreshScopeControls();
+    });
 }
 
 
@@ -149,6 +257,14 @@ function renderEditorLayout() {
                     <input type="text" id="test-name" class="form-input" placeholder="Nom du test">
                 </div>
                 <div class="form-group">
+                    <label>Portee</label>
+                    <select id="test-scope" class="form-input">
+                        <option value="function">Fonctionnel</option>
+                        <option value="generic">Generique</option>
+                    </select>
+                    <div class="field-hint">Generique = hors IED / LD / LN.</div>
+                </div>
+                <div class="form-group">
                     <label>IED</label>
                     <select id="test-ied" class="form-input"><option value="">Sélectionner un IED</option></select>
                 </div>
@@ -195,6 +311,19 @@ function renderEditorLayout() {
                     </div>
                     <div id="preconditions-container" class="compact-list">
                         <p class="text-muted precondition-empty" id="no-preconditions">Aucune précondition</p>
+                    </div>
+                </div>
+                <div class="compact-col">
+                    <label class="form-label">Pieces jointes</label>
+                    <div class="file-upload-zone compact-upload" onclick="document.getElementById('file-input')?.click()">
+                        <div class="compact-upload-content">
+                            <span class="compact-upload-icon">PJ</span>
+                            <span>Ajouter un fichier</span>
+                        </div>
+                    </div>
+                    <input type="file" id="file-input" multiple style="display: none;" onchange="handleFileUpload(event)">
+                    <div id="files-list" class="compact-list">
+                        <p class="text-muted-small">Aucune piece jointe</p>
                     </div>
                 </div>
             </div>
@@ -327,6 +456,12 @@ function refreshPreviousTestSelect() {
         return;
     }
 
+    if (isGenericTest()) {
+        select.innerHTML = '<option value="">Aucun test precedent / premier test</option>';
+        select.value = '';
+        return;
+    }
+
     const currentId = normalizePreviousTestId(document.getElementById('test-id')?.value || currentTest.id);
     const currentPrevious = normalizePreviousTestId(currentTest.previous_test_id);
     const selection = getPreviousTestSelection();
@@ -412,6 +547,7 @@ function resetEditorFormForNewTest() {
     const lninstSelect = document.getElementById('test-lninst');
     const previousSelect = document.getElementById('test-previous');
     const fileInput = document.getElementById('file-input');
+    const scopeSelect = document.getElementById('test-scope');
 
     if (typeSelect) typeSelect.value = selectedType;
     if (idInput) idInput.value = currentTest.id;
@@ -419,6 +555,7 @@ function resetEditorFormForNewTest() {
     if (descriptionInput) descriptionInput.value = '';
     if (iedSelect) iedSelect.value = '';
     if (fileInput) fileInput.value = '';
+    if (scopeSelect) scopeSelect.value = 'function';
 
     resetSelect(variantSelect, '— Aucun —');
     resetSelect(ldSelect, 'Sélectionner un LD');
@@ -430,7 +567,9 @@ function resetEditorFormForNewTest() {
         previousSelect.value = '';
     }
 
-    refreshPreviousTestSelect();
+    setCurrentAttachments([]);
+    renderFiles();
+    refreshScopeControls();
     renderPreconditions();
     renderSteps();
     renderComplementaryInfos();
@@ -451,6 +590,7 @@ async function initEditor() {
     await loadEditorReferenceLists();
 
     setupTypeSelector();
+    setupScopeSelector();
     ensureRandomId();
     refreshTypeLabels();
     refreshPreviousTestSelect();
@@ -476,6 +616,11 @@ function setupTypeSelector() {
         if (newType === selectedType) {
             return;
         }
+        if (getCurrentAttachments().length > 0) {
+            alert('Veuillez supprimer les pieces jointes avant de changer le type du test.');
+            event.target.value = selectedType;
+            return;
+        }
         selectedType = newType;
         currentTest.type = selectedType;
         currentTest.previous_test_id = '';
@@ -486,7 +631,7 @@ function setupTypeSelector() {
             ensureTypeCoherentIdOnTypeChange();
         }
         refreshTypeLabels();
-        refreshPreviousTestSelect();
+        refreshScopeControls();
     });
 }
 
@@ -1118,11 +1263,10 @@ async function loadTest(testId) {
         ...currentTest,
         ...test,
         type: selectedType,
+        scope: normaliseScope(test.scope),
         preconditions: test.preconditions || [],
-        // Les fichiers et anciens liens inter-essais ne font plus partie du
-        // formulaire R_BD. Ils sont volontairement remis à zéro à l'ouverture
-        // pour que la prochaine sauvegarde nettoie aussi les anciens essais.
-        files: [],
+        attachments: Array.isArray(test.attachments) ? test.attachments : (Array.isArray(test.files) ? test.files : []),
+        files: Array.isArray(test.attachments) ? test.attachments : (Array.isArray(test.files) ? test.files : []),
         linked_tests_ru: [],
         linked_tests_mvs: [],
         linked_tests_cvs: [],
@@ -1137,14 +1281,19 @@ async function loadTest(testId) {
     document.getElementById('test-id').value = currentTest.id || '';
     document.getElementById('test-name').value = currentTest.name || '';
     document.getElementById('test-description').value = currentTest.description || '';
+    const scopeSelect = document.getElementById('test-scope');
+    if (scopeSelect) {
+        scopeSelect.value = currentTest.scope;
+    }
 
     // Restaurer les sélecteurs liés (IED → Variant → LD → LN → LNinst)
     await restoreLinkedSelectors(test.ied, test.variant, test.ld, test.ln, test.lninst);
-    refreshPreviousTestSelect();
+    refreshScopeControls();
 
     refreshTypeLabels();
 
     renderPreconditions();
+    renderFiles();
     renderSteps();
     renderInfo('cde', currentTest.cde, 'CDE');
     renderInfo('alarmes', currentTest.alarmes, 'alarme');
@@ -1180,19 +1329,31 @@ function renderPreconditions() {
 
 function renderFiles() {
     const listContainer = document.getElementById('files-list');
+    if (!listContainer) {
+        return;
+    }
     listContainer.innerHTML = '';
 
-    currentTest.files.forEach(file => {
+    const files = getCurrentAttachments();
+    if (!files.length) {
+        listContainer.innerHTML = '<p class="text-muted-small">Aucune piece jointe</p>';
+        return;
+    }
+
+    files.forEach(file => {
+        const downloadUrl = buildAttachmentDownloadUrl(file);
         const fileHtml = `
             <div class="file-item" id="${file.id}">
                 <div class="file-item-name">
-                    <span>📄</span>
-                    <span>${escapeHtml(file.name || '')}</span>
+                    <span>PJ</span>
+                    ${downloadUrl
+                        ? `<a class="file-item-link" href="${escapeHtmlAttribute(downloadUrl)}" download onclick="event.stopPropagation()">${escapeHtml(file.name || file.filename || 'Piece jointe')}</a>`
+                        : `<span>${escapeHtml(file.name || file.filename || 'Piece jointe')}</span>`}
                 </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="file-item-actions">
                     <span class="file-item-size">${formatFileSize(file.size || 0)}</span>
                     <button class="btn-icon-small" style="width: 24px; height: 24px; background: var(--danger);"
-                        onclick="removeFile('${file.id}')">✕</button>
+                        onclick="removeFile('${file.id}')">x</button>
                 </div>
             </div>
         `;
@@ -2310,39 +2471,62 @@ function removePrecondition(id) {
     }
 }
 
+async function uploadAttachmentToServer(file) {
+    const essaiId = ensureCurrentTestIdForUpload();
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`/api/essais/${encodeURIComponent(essaiId)}/attachments?type=${encodeURIComponent(selectedType)}`, {
+        method: 'POST',
+        body: formData
+    });
+    if (!response.ok) {
+        const message = await response.text();
+        throw new Error(message || `Upload impossible (${response.status})`);
+    }
+    const payload = await response.json();
+    return payload.attachment;
+}
+
+async function deleteAttachmentFromServer(fileId) {
+    if (!currentTest.id || !fileId) {
+        return;
+    }
+
+    const response = await fetch(`/api/essais/${encodeURIComponent(currentTest.id)}/attachments/${encodeURIComponent(fileId)}?type=${encodeURIComponent(selectedType)}`, {
+        method: 'DELETE'
+    });
+    if (!response.ok && response.status !== 404) {
+        const message = await response.text();
+        throw new Error(message || `Suppression impossible (${response.status})`);
+    }
+}
+
 /**
  * Gestion de l'upload de fichiers
  */
-function handleFileUpload(event) {
-    const files = Array.from(event.target.files);
-    const listContainer = document.getElementById('files-list');
+async function handleFileUpload(event) {
+    const input = event.target;
+    const files = Array.from(input.files || []);
+    if (!files.length) {
+        return;
+    }
 
-    files.forEach(file => {
-        const fileId = `file_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-        const fileHtml = `
-            <div class="file-item" id="${fileId}">
-                <div class="file-item-name">
-                    <span>📄</span>
-                    <span>${file.name}</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span class="file-item-size">${formatFileSize(file.size)}</span>
-                    <button class="btn-icon-small" style="width: 24px; height: 24px; background: var(--danger);"
-                        onclick="removeFile('${fileId}')">✕</button>
-                </div>
-            </div>
-        `;
-
-        listContainer.insertAdjacentHTML('beforeend', fileHtml);
-
-        currentTest.files.push({
-            id: fileId,
-            name: file.name,
-            size: file.size,
-            type: file.type
-        });
-    });
+    const attachments = getCurrentAttachments();
+    try {
+        for (const file of files) {
+            const metadata = await uploadAttachmentToServer(file);
+            attachments.push(metadata);
+        }
+        setCurrentAttachments(attachments);
+        renderFiles();
+        console.info(`[UI][ESSAIS] ${files.length} piece(s) jointe(s) ajoutee(s)`);
+    } catch (error) {
+        console.error('[UI][ESSAIS] Upload piece jointe impossible', error);
+        alert(`Impossible d'ajouter la piece jointe: ${error.message}`);
+    } finally {
+        input.value = '';
+    }
 }
 
 /**
@@ -2359,9 +2543,17 @@ function formatFileSize(bytes) {
 /**
  * Supprime un fichier
  */
-function removeFile(fileId) {
-    document.getElementById(fileId).remove();
-    currentTest.files = currentTest.files.filter(f => f.id !== fileId);
+async function removeFile(fileId) {
+    try {
+        await deleteAttachmentFromServer(fileId);
+    } catch (error) {
+        console.error('[UI][ESSAIS] Suppression piece jointe impossible', error);
+        alert(`Impossible de supprimer la piece jointe: ${error.message}`);
+        return;
+    }
+
+    setCurrentAttachments(getCurrentAttachments().filter(f => String(f.id || '') !== String(fileId)));
+    renderFiles();
 }
 
 /**
@@ -2865,6 +3057,7 @@ function previewTest() {
 function collectFormData() {
     currentTest.id = document.getElementById('test-id').value;
     currentTest.type = (document.getElementById('test-type')?.value || selectedType).toLowerCase();
+    currentTest.scope = normaliseScope(document.getElementById('test-scope')?.value);
     currentTest.name = document.getElementById('test-name').value;
     currentTest.ied = document.getElementById('test-ied').value;
     currentTest.variant = document.getElementById('test-variant').value;
@@ -2873,6 +3066,16 @@ function collectFormData() {
     currentTest.lninst = document.getElementById('test-lninst').value;
     currentTest.previous_test_id = normalizePreviousTestId(document.getElementById('test-previous')?.value);
     currentTest.description = document.getElementById('test-description').value;
+    setCurrentAttachments(getCurrentAttachments());
+
+    if (isGenericTest()) {
+        currentTest.ied = '';
+        currentTest.variant = '';
+        currentTest.ld = '';
+        currentTest.ln = '';
+        currentTest.lninst = '';
+        currentTest.previous_test_id = '';
+    }
 }
 
 /**
@@ -2916,10 +3119,7 @@ async function saveTest() {
 
     collectFormData();
     currentTest.type = selectedType;
-    // R_BD ne porte plus les pièces jointes et liens inter-essais.
-    // On neutralise explicitement ces champs pour éviter de conserver une
-    // donnée historique invisible dans l'interface.
-    currentTest.files = [];
+    setCurrentAttachments(getCurrentAttachments());
     currentTest.linked_tests_ru = [];
     currentTest.linked_tests_mvs = [];
     currentTest.linked_tests_cvs = [];

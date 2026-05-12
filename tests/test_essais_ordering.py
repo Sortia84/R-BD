@@ -20,6 +20,7 @@ if str(APP_DIR) not in sys.path:
 
 from api.router_essais import (  # noqa: E402
     _ensure_order_fields,
+    _normalise_essai_for_storage,
     _file_for_type,
     _validate_previous_reference,
     _would_create_cycle,
@@ -87,6 +88,30 @@ class EssaisOrderingTests(unittest.TestCase):
     def test_mvc_type_is_supported_by_essais_api(self) -> None:
         """R_BD expose le type MVC attendu par les flux SCD de R#GUIDE."""
         self.assertEqual(_file_for_type("mvc").name, "essais_mvc.json")
+
+    def test_generic_essai_is_detached_from_function_fields(self) -> None:
+        """Un essai generique ne conserve pas de rattachement IED / LD / LN."""
+        essai = _normalise_essai_for_storage(
+            {
+                "id": "RU-GEN",
+                "type": "ru",
+                "scope": "generique",
+                "ied": "BCU",
+                "variant": "BCU_V1",
+                "ld": "LDCTRL",
+                "ln": "LLN0",
+                "lninst": "0",
+                "files": [{"id": "att_1", "name": "checklist.pdf"}],
+            },
+            "ru",
+        )
+
+        self.assertEqual(essai["scope"], "generic")
+        self.assertEqual(essai["ied"], "")
+        self.assertEqual(essai["ld"], "")
+        self.assertEqual(essai["ln"], "")
+        self.assertEqual(essai["attachments"][0]["name"], "checklist.pdf")
+        self.assertEqual(essai["files"], essai["attachments"])
 
 
 if __name__ == "__main__":
