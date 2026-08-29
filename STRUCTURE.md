@@ -130,7 +130,7 @@ middleware CORS, l'endpoint `/health` et les montages statiques `/assets`,
 | `CACHE_EXPIRY_DAYS` | `30` |
 
 `api/shared.py` redéfinit les chemins utilisés par les routeurs, crée les
-dossiers critiques manquants et monte le kit UI commun depuis `apps/_ui_kit`.
+dossiers critiques manquants et monte le kit UI commun depuis le résolveur partagé.
 
 ### 3. Couche API : api/
 
@@ -269,7 +269,7 @@ Seuils projet : > 400 lignes à surveiller, > 800 problématique, > 1200 urgent.
   Docker. Ne pas les réinitialiser lors d'une correction documentaire ou UI.
 - Le port `8651` existe comme convention réservée, mais le fonctionnement actuel
   est mono-port sur `8551`.
-- Le frontend dépend du montage `/ui-kit` vers `apps/_ui_kit`; une exécution
+- Le frontend dépend du montage `/ui-kit` vers un kit valide (`RCONTROL_UI_KIT_DIR`, kit embarqué, `/_ui_kit` ou `shared/ui_kit`); une exécution
   isolée de `apps/r_bd` doit conserver ce dossier parent.
 - Le Dockerfile installe un sous-ensemble de dépendances depuis le
   `requirements.txt` racine. Les imports réels utilisent aussi `lxml` et les

@@ -223,7 +223,7 @@ le `requirements.txt` racine ou utilise un fallback FastAPI/Uvicorn/Pydantic.
 |---|---|
 | Données persistantes | Ne pas supprimer ni régénérer `data/` ou `uploads/` sans sauvegarde. |
 | Mono-port actuel | `API_PORT=8651` est réservé mais l'app sert API et frontend sur `8551`. |
-| UI Kit partagé | Le frontend monte `/ui-kit` depuis `apps/_ui_kit` via `api/shared.py`. |
+| UI Kit partagé | Le frontend monte `/ui-kit` depuis le résolveur commun (`RCONTROL_UI_KIT_DIR`, kit embarqué, `/_ui_kit` ou `shared/ui_kit`). |
 | Routeur templates | Le healthcheck Docker utilise `/api/v1/templates/health`. |
 | Fichiers volumineux | Les imports ICD/RAC peuvent dépendre de la taille des fichiers et des permissions. |
 | Dépendances Docker | Vérifier `lxml` et `python-multipart` avant un build Docker isolé/offline. |
@@ -237,7 +237,7 @@ le `requirements.txt` racine ou utilise un fallback FastAPI/Uvicorn/Pydantic.
 |---|---|
 | L'application ne démarre pas | Lancer `python main.py` depuis `apps/r_bd` et lire les logs `[MAIN]` / `[API]`. |
 | Port occupé | Vérifier l'usage local du port `8551`. |
-| UI sans styles communs | Vérifier l'existence de `apps/_ui_kit/css/tokens.css` et `base.css`. |
+| UI sans styles communs | Vérifier `RCONTROL_UI_KIT_DIR` ou l'existence de `shared/ui_kit/css/tokens.css` et `base.css`. |
 | Upload refusé | Vérifier les permissions de `uploads/` et la présence de `python-multipart`. |
 | ICD non analysé | Vérifier le XML source, `lxml` et les logs du routeur ICD. |
 | Docker unhealthy | Tester `curl http://localhost:8551/api/v1/templates/health`. |
