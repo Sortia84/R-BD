@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -28,10 +29,31 @@ from pydantic import BaseModel, Field
 # Répertoire racine de l'application R#BD
 BASE_DIR = Path(__file__).resolve().parent.parent          # → apps/r_bd/
 
+
+def resolve_ui_kit_dir(base_dir: Path = BASE_DIR) -> Path:
+    """Résoudre le UI Kit partagé selon le contrat R-CONTROL."""
+    candidates = []
+    env_value = os.getenv("RCONTROL_UI_KIT_DIR")
+    if env_value:
+        candidates.append(Path(env_value))
+    candidates.extend([base_dir / "ui_kit", Path("/_ui_kit")])
+
+    for parent in [base_dir, *base_dir.parents]:
+        shared_candidate = parent / "shared" / "ui_kit"
+        if (parent / ".gitmodules").exists() and shared_candidate.exists():
+            candidates.append(shared_candidate)
+            break
+
+    for candidate in candidates:
+        if (candidate / "css" / "tokens.css").exists():
+            return candidate
+
+    raise RuntimeError("UI Kit introuvable: définissez RCONTROL_UI_KIT_DIR ou montez shared/ui_kit.")
+
 # Répertoires de travail
 WEB_DIR = BASE_DIR / "web"                                 # Interface SPA
 ASSETS_DIR = BASE_DIR / "assets"                           # Logo et ressources
-UI_KIT_DIR = BASE_DIR.parent / "_ui_kit"                   # → apps/_ui_kit/
+UI_KIT_DIR = resolve_ui_kit_dir()
 DATA_DIR = BASE_DIR / "data"                               # Persistance JSON
 UPLOADS_DIR = BASE_DIR / "uploads"                         # Fichiers importés
 
