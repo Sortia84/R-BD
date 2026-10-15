@@ -1,0 +1,2874 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- édité avec XMLSpy v2017 rel. 3 sp1 (x64) (http://www.altova.com) par SAMOS (RTE) -->
+<equationsregroupements xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<date_modification>2025-11-07</date_modification>
+	<numero_version>1.5.47</numero_version>
+	<regroupement id="ID012942" libellecourt="ESS.AUT1" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="b4101092-4f6a-4ad3-9850-552d6770683c" libellecourt="ESS.AUT1" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000183" libellecourt="FCT.AUT1" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="f4cb40f9-5675-4a74-b816-65afa0a9e11f" libellecourt="FCT.AUT1" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000184" libellecourt="FCT.AUT2" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="7b725e17-51dd-4d6d-ab8c-f375dbb37c10" libellecourt="FCT.AUT2" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000185" libellecourt="FCT.AUT3" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="c2c3017d-e869-4537-b779-473a9254fe8a" libellecourt="FCT.AUT3" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000186" libellecourt="FCT.AUT4" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="e63ad6ce-d9b5-4611-aac8-25210d6ea66d" libellecourt="FCT.AUT4" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000187" libellecourt="FCT.AUT5" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="35587379-4819-4698-824d-4598b9d748c5" libellecourt="FCT.AUT5" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000188" libellecourt="FCT.AUT6" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="86447f70-5353-4cc7-bfa3-3c7423855397" libellecourt="FCT.AUT6" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000037" libellecourt="DF.DIE" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="87782871-60e5-4252-924a-2bb542214391" libellecourt="DF.DIE" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000038" libellecourt="DF.DIE1" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="87782871-60e5-4252-924a-2bb542214391" libellecourt="DF.DIE1" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000048" libellecourt="FCT.DIE1" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="20e7af75-a592-48a1-a7b7-62dcc62e1782" libellecourt="FCT.DIE1" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000057" libellecourt="FCT.DIES" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="20e7af75-a592-48a1-a7b7-62dcc62e1782" libellecourt="FCT.DIES" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000179" libellecourt="AUT.EXT" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr250" value="f7eaf052-f091-4b61-a4cb-221dfd76c058" libellecourt="LDAGSA/LI0000001PTRC0" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr251" value="ff0ec8ac-66b6-4e28-88d8-fff445f683a8" libellecourt="LDAGSA/LI0000002PTRC0" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr252" value="ede90fb1-d066-403f-a49a-cc2199d8a44c" libellecourt="LDAGSA/LI0000003PTRC0" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr253" value="765fb5a7-5743-4e72-878e-c96cb748dd2b" libellecourt="LDAGSA/LI0000004PTRC0" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr254" value="5b7ac05d-e877-4c7c-b010-18478de83093" libellecourt="LDAGSA/LI0000005PTRC0" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr255" value="cd9636a5-4988-4306-a2dc-c64299d261e4" libellecourt="LDAGSA/LI0000006PTRC0" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr250 OR Expr251 OR Expr252 OR Expr253 OR Expr254 OR Expr255</equation>
+	</regroupement>
+	<regroupement id="ID000169" libellecourt="AUT1.ANO" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="491d370f-1268-4214-846e-5c7170f678b0" libellecourt="AUT1.ANO" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="c9185440-f865-4288-9ce3-43edc1135062" libellecourt="LDAGSA/COMPADAGAPC1x.Ind1" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr150" value="b9cdbe15-5188-4f2e-a7c3-0cef03a60223" libellecourt="LDAGSA/COMPADAGAPC11.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr151" value="b81342b6-5fe5-4cce-96da-b45b3359a4c8" libellecourt="LDAGSA/COMPADAGAPC12.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr152" value="f0ea0c1f-e71d-4e75-91dc-7b0ad4275cd5" libellecourt="LDAGSA/COMPADAGAPC13.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr153" value="adc524c0-0ae7-4113-882a-fec37075bee1" libellecourt="LDAGSA/COMPADAGAPC14.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr154" value="6086050a-08e6-4b0f-a436-6f7683971ff9" libellecourt="LDAGSA/COMPADAGAPC15.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr155" value="3dc06765-56fb-4a40-bf4f-7660419ab12a" libellecourt="LDAGSA/COMPADAGAPC16.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr150 OR Expr151 OR Expr152 OR Expr153 OR Expr154 OR Expr155</equation>
+	</regroupement>
+	<regroupement id="a25c8c4e-978c-4597-b760-2ab3b9007494" libellecourt="LDAGSA/COMPADAGAPC2x.Ind1" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr160" value="24ec41ba-fd74-4f7e-9d9f-a8b667a272e9" libellecourt="LDAGSA/COMPADAGAPC21.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr161" value="5b59baf5-58fe-4575-852f-dc1c464f8277" libellecourt="LDAGSA/COMPADAGAPC22.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr162" value="0e008c30-452f-4092-944e-52805417e8b2" libellecourt="LDAGSA/COMPADAGAPC23.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr163" value="5faac3c1-28e1-43f3-9e19-da061cfc8627" libellecourt="LDAGSA/COMPADAGAPC24.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr164" value="c58e3dea-6296-4262-abb0-3f052652af68" libellecourt="LDAGSA/COMPADAGAPC25.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr165" value="f5506672-3fd4-423c-ae51-93095486aac5" libellecourt="LDAGSA/COMPADAGAPC26.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr160 OR Expr161 OR Expr162 OR Expr163 OR Expr164 OR Expr165</equation>
+	</regroupement>
+	<regroupement id="030abc30-010a-4655-b5c9-3912219715a8" libellecourt="LDAGSA/COMPADAGAPC3x.Ind1" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr170" value="43ee1e39-6b07-4033-8d3e-847f1fbfbeb3" libellecourt="LDAGSA/COMPADAGAPC31.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr171" value="d0212c7e-3221-476b-a667-28684bcf73cf" libellecourt="LDAGSA/COMPADAGAPC32.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr172" value="44c37bf5-c067-4501-803f-6a9d3e8e841e" libellecourt="LDAGSA/COMPADAGAPC33.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr173" value="f5111e17-12d2-4ff2-96c0-7a87a9508c94" libellecourt="LDAGSA/COMPADAGAPC34.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr174" value="23ed4626-4f2c-4fff-8f4c-b13c1786ed72" libellecourt="LDAGSA/COMPADAGAPC35.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr175" value="eddc09f0-9c57-418d-95af-e70826c44982" libellecourt="LDAGSA/COMPADAGAPC36.Ind1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr170 OR Expr171 OR Expr172 OR Expr173 OR Expr174 OR Expr175</equation>
+	</regroupement>
+	<regroupement id="ID000116" libellecourt="DF.CONTI" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr114" value="ID000110" libellecourt="DF.CHA" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr115" value="ID002892" libellecourt="DFCONT.P" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr116" value="ID002893" libellecourt="DFCONT.T" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr117" value="ID000087" libellecourt="U=B.ANO" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr118" value="ID000136" libellecourt="MQ.+-P1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr119" value="ID000129" libellecourt="MQ.+-P2" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr121" value="ID000122" libellecourt="MQ.+-T" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr122" value="ID001661" libellecourt="MQ.+-T13" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr114 OR Expr115 OR Expr116 OR Expr117 OR Expr118 OR Expr119 OR Expr121 OR Expr122</equation>
+	</regroupement>
+	<regroupement id="ID000122" libellecourt="MQ.+-T" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="d94bc85f-120b-404a-9f3f-dec7d00875db" libellecourt="MQ.+-T" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000129" libellecourt="MQ.+-P2" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="6df257d4-07ca-4683-846e-c5ac3e07dcb9" libellecourt="MQ.+-P2" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000152" libellecourt="DF.ADD" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="d0e43dc6-17e5-4ddf-8700-812a66ba5e5d" libellecourt="DF.ADD" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000159" libellecourt="AIVO.REF" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr338" value="cf07e6d2-5ee4-41bc-92af-f614c4d7911c" libellecourt="LDCMDSS1.GAPC0.Op0_AIVO.REF" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr339" value="b4b56f75-9ace-4e3c-b9e8-a70f677057a1" libellecourt="LDCMDSS2.GAPC0.Op0_AIVO.REF" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr340" value="f4022e78-5037-4931-a265-a2cf414d40a1" libellecourt="LDCMDSS3.GAPC0.Op0_AIVO.REF" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr344" value="e622605e-b3ac-4942-8262-e6406a0ea4f5" libellecourt="LDCMDSI.GAPC0.Op0_AIVO.REF" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr345" value="f0913f5a-4403-4e0e-bf2b-107e05cd47bf" libellecourt="LDCMDSL.GAPC0.Op0_AIVO.REF" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr346" value="83d008e5-6659-440f-ad0d-fe9c95421060" libellecourt="LDCMDST.GAPC0.Op0_AIVO.REF" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr347" value="c2c68132-6ba3-4acf-8607-a2b78f2cef77" libellecourt="LDCMDDJ.GAPC0.op0_AIVO.REF" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr348" value="8dffb9fd-d8c8-43cc-b6d2-a1219f796363" libellecourt="LDCMDSA1.GAPC0.Op_AIVO.REF" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr338 OR Expr339 OR Expr340 OR Expr344 OR Expr345 OR Expr346 OR Expr347 OR Expr348</equation>
+	</regroupement>
+	<regroupement id="ID000160" libellecourt="AIVO.INV" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="30000">
+		<entrees>
+			<entree id="Expr325" value="b274f2d2-31e5-498b-b074-0084e72bc997" libellecourt="LDCMDSS1.GAPC0.Ind1_AIVO.INV" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr326" value="dcf5fc0c-713a-4985-b7bc-f15bb1625bc9" libellecourt="LDCMDSS2.GAPC0.Ind1_AIVO.INV" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr327" value="eded2eb0-4876-4aa4-a148-e7fcad890dd7" libellecourt="LDCMDSS3.GAPC0.Ind1_AIVO.INV" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr331" value="317c7538-b36d-433f-809f-a2bad4dc4f03" libellecourt="LDCMDSI.GAPC0.Ind1_AIVO.INV" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr332" value="f38574cd-2535-4fee-b302-890c9b92b2f4" libellecourt="LDCMDSL.GAPC0.Ind1_AIVO.INV" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr333" value="f9f22e6e-885a-436d-a7a0-b9cea7176040" libellecourt="LDCMDST.GAPC0.Ind1_AIVO.INV" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr334" value="e731b07a-a7ba-4a40-8c79-daa18470aca2" libellecourt="LDCMDDJ.GAPC0.Ind1_AIVO.INV" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr335" value="ab015806-03b8-4bdb-a74b-370076ea5dc3" libellecourt="LDCMDSA1.GAPC0.Ind_AIVO.INV" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr325 OR Expr326 OR Expr327 OR Expr331 OR Expr332 OR Expr333 OR Expr334 OR Expr335</equation>
+	</regroupement>
+	<regroupement id="ID000161" libellecourt="DF.AIVO" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr312" value="16828e57-e20a-4c15-8229-2a779c9cd607" libellecourt="LDCMDDJ.CILO0.Health_DF.AIVO" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr313" value="80b50abd-ba5a-41d5-a7a0-be90471fd7a5" libellecourt="LDCMDSA1.CILO0.Health_DF.AIVO" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr316" value="69fa414e-d790-4286-982a-bbebdedf43ba" libellecourt="LDCMDSS1.CILO0.Health_DF.AIVO" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr317" value="bb118baa-331b-4b54-955b-c01b465d2f23" libellecourt="LDCMDSS2.CILO0.Health_DF.AIVO" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr318" value="4c1de4b1-4267-42af-819d-be66b2818bd5" libellecourt="LDCMDSS3.CILO0.Health_DF.AIVO" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr322" value="05e874ad-9924-4a3e-87fc-bff1fec3c657" libellecourt="LDCDMSL.CILO0.Health_DF.AIVO" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr323" value="ef30c0ef-d245-48b9-83bf-48cfa5d5ba5d" libellecourt="LDCMDST.CILO0.Health_DF.AIVO" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr324" value="ede1735c-da97-4532-9e07-50961665150c" libellecourt="LDCMDSI.CILO0.Health_DF.AIVO" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr312 OR Expr313 OR Expr316 OR Expr317 OR Expr318 OR Expr322 OR Expr323 OR Expr324</equation>
+	</regroupement>
+	<regroupement id="ID000214" libellecourt="4VEIL.MU" niveauregroupement="TG" ldgrp="Site" filtremodexp="1" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr301" value="cbebbd2c-c1b2-4c1a-9f30-a3cc714fda36" libellecourt="4VEIL.MU" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr301</equation>
+	</regroupement>
+	<regroupement id="ID000216" libellecourt="3VEIL.MU" niveauregroupement="TG" ldgrp="Site" filtremodexp="1" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr299" value="7ab1ae7b-2ea0-44dd-b7f0-faa7bca0f172" libellecourt="3VEIL.MU" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr299</equation>
+	</regroupement>
+	<regroupement id="ID000222" libellecourt="DF.ARS" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="200">
+		<entrees>
+			<entree id="Expr43" value="0ccb1a2c-b15f-4ee8-8d48-afb142f40a9a" libellecourt="LDRS.Health" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr44" value="d4690300-cdba-4ed7-b2c6-41ed34f19f91" libellecourt="LDRTS.Health" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr45" value="e54a608f-cae1-444b-be33-c06dcee020c9" libellecourt="LDRSE.Health" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr46" value="4a5d750d-741e-4887-82cd-f50df9be1d5f" libellecourt="LDREC.Health" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr47" value="d76339e6-c741-4cb0-b439-dc9d8a559b9d" libellecourt="LDCMDDJ.Health" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr48" value="32cbfc5f-b8af-45dd-bec0-e7ca39969434" libellecourt="LDAMU.Health" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr43 OR Expr44 OR Expr45 OR Expr46 OR Expr47 OR Expr48</equation>
+	</regroupement>
+	<regroupement id="ID000266" libellecourt="DF.CCN.U" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="ID000267" libellecourt="DF.CT.U" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E2" value="ID000310" libellecourt="DF.TGN1" Status="M" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E3" value="0d0b79ac-375c-4c8f-9fc0-9641c2859c62" libellecourt="SCU-TG_LDSUIED/LLN0.phyHealth" Status="M" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>AND</operateur>
+			</entree>
+			<entree id="E4" value="790f2732-66a4-11ee-8c99-0242ac120002" libellecourt="DF.IV.TCD" Status="M" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>2</valeur>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1 OR E2 OR E3 OR E4</equation>
+	</regroupement>
+	<regroupement id="ID000267" libellecourt="DF.CT.U" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="0023efb8-3efe-4e64-9538-16bda2151884" libellecourt="LDSUIED.PHYHEALTH" Status="M" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E2" value="181d6171-01d3-4e75-a8bb-5e74b83170ae" libellecourt="SAMU_LDSUIED/LLN0.phyHealth" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>AND</operateur>
+			</entree>
+			<entree id="E3" value="17d04d6b-0bce-4624-8e81-2dfaedac30fd" libellecourt="SCU_LDSUIED/LLN0.phyHealth" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>AND</operateur>
+			</entree>
+			<entree id="E4" value="783987c4-9bed-44fa-a4be-757d237278a9" libellecourt="SCU-ORG_LDSUIED/LLN0.phyHealth" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>AND</operateur>
+			</entree>
+		</entrees>
+		<equation>E1 OR E2 OR E3 OR E4</equation>
+	</regroupement>
+	<regroupement id="ID000268" libellecourt="DF.CCN" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="ID000269" libellecourt="DF.CT" Status="M" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E2" value="4acf419c-d1db-423f-9b95-8259543eb5fb" libellecourt="DF.SWITCH C" Status="M" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>2</valeur>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E3" value="3e3e8c4c-0d58-431f-98cb-5dfa30399401" libellecourt="DF.IV.POST.OPER" Status="M" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>2</valeur>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E4" value="1ea586cc-66a1-11ee-8c99-0242ac120002" libellecourt="DF.IV.SERVEUR.NU" Status="M" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>2</valeur>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E5" value="730d27b0-66a1-11ee-8c99-0242ac120002" libellecourt="DF.IV.VM.NU" Status="M" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>2</valeur>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E6" value="604fdcb0-66a8-11ee-8c99-0242ac120002" libellecourt="DF.SWITCH" Status="M" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>2</valeur>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E7" value="0d0b79ac-375c-4c8f-9fc0-9641c2859c62" libellecourt="SCU-TG_LDSUIED/LLN0.phyHealth" Status="M" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>XOR</operateur>
+			</entree>
+			<entree id="E8" value="19319e4f-6c2d-4e55-9ae4-e2e8745c24e4" libellecourt="SCU-MCB_LDSUIED/LLN0.phyHealth" Status="M" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1 OR E2 OR E3 OR E4 OR E5 OR E6 OR E7 OR E8</equation>
+	</regroupement>
+	<regroupement id="ID000269" libellecourt="DF.CT" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="0023efb8-3efe-4e64-9538-16bda2151884" libellecourt="LDSUIED.PHYHEALTH" Status="M" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E2" value="181d6171-01d3-4e75-a8bb-5e74b83170ae" libellecourt="SAMU_LDSUIED/LLN0.phyHealth" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>XOR</operateur>
+			</entree>
+			<entree id="E3" value="17d04d6b-0bce-4624-8e81-2dfaedac30fd" libellecourt="SCU_LDSUIED/LLN0.phyHealth" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>XOR</operateur>
+			</entree>
+			<entree id="E4" value="783987c4-9bed-44fa-a4be-757d237278a9" libellecourt="SCU-ORG_LDSUIED/LLN0.phyHealth" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>XOR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1 OR E2 OR E3 OR E4</equation>
+	</regroupement>
+	<regroupement id="ID000310" libellecourt="DF.TGN1" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="edfaef00-d8e8-423d-af35-ce856b3bc88d" libellecourt="LDSONKLAX.LLN0.Health_DF.EQ.TG" Status="M" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E2" value="13c45d77-c340-46fc-918b-70e96ff5ee96" libellecourt="LDTGSEC.LLN0.Health_DF.EQ.TG" Status="M" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E3" value="991921ab-1d01-42ee-acf1-8d664d4c88af" libellecourt="LDMODEXPS.LLN0.Health_DF.EQ.TG" Status="M" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E4" value="ec2f146e-eb72-44d8-bdc2-4665543457bf" libellecourt="LDTGINFRA.LLN0.Health_DF.EQ.TG" Status="M" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E5" value="6fc91a74-9dc9-4098-b7a5-0c61eba5dbff" libellecourt="LDGRPSITE.LLN0.Health" Status="M" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1 OR E2 OR E3 OR E4 OR E5</equation>
+	</regroupement>
+	<regroupement id="ID000311" libellecourt="DF.URG.1" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr269" value="ID001867" libellecourt="U127.ANO" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr270" value="ID000319" libellecourt="DF.CHA.P" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr271" value="ID000317" libellecourt="DF.CHA.S" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr273" value="ID001856" libellecourt="DFCHA127" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr275" value="ID001609" libellecourt="DF.URG.1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr276" value="ID001865" libellecourt="OU.DJ127" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr277" value="ID001862" libellecourt="DT.PRGET" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr278" value="ID001863" libellecourt="DT.U=GET" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr285" value="ID000313" libellecourt="MQ.+-GC" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr286" value="ID001699" libellecourt="MQ.+-P2D" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr287" value="ID002278" libellecourt="MQ.+-S" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr288" value="ID002240" libellecourt="MQ.+-SR" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr289" value="ID000312" libellecourt="MQ.+-TC" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr290" value="ID001864" libellecourt="MQ.ALT" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr291" value="ID000320" libellecourt="OU.DJ.BP" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr292" value="ID000318" libellecourt="OU.DJ.BS" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr293" value="ID000316" libellecourt="U=BP.ANO" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr294" value="ID000315" libellecourt="U=BS.ANO" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr297" value="ID000035" libellecourt="DFSAURG1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr269 OR Expr270 OR Expr271 OR Expr273 OR Expr276 OR Expr277 OR Expr278 OR Expr285 OR Expr286 OR Expr287 OR Expr288 OR Expr289 OR Expr290 OR Expr291 OR Expr292 OR Expr293 OR Expr294 OR Expr297</equation>
+	</regroupement>
+	<regroupement id="ID000035" libellecourt="DFSAURG1" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr296" value="ID000036" libellecourt="DF.DIE*" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr296</equation>
+	</regroupement>
+	<regroupement id="ID000315" libellecourt="U=BS.ANO" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="262623bb-ad28-4368-872f-eff46f6f72a0" libellecourt="U=BS.ANO" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000316" libellecourt="U=BP.ANO" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="da9db1a5-7291-4a37-b42b-db589d005045" libellecourt="U=BP.ANO" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000317" libellecourt="DF.CHA.S" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="84cbb160-800d-4ddd-9df2-ce53aff56367" libellecourt="DF.CHA.S" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000318" libellecourt="OU.DJ.BS" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="c0d27569-404b-4847-b884-dc464e202a55" libellecourt="OU.DJ.BS" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000319" libellecourt="DF.CHA.P" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="5e6af57b-6691-454c-bdb7-28f30b8987a4" libellecourt="DF.CHA.P" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000320" libellecourt="OU.DJ.BP" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="5a202d7e-1037-4243-87f5-603731173395" libellecourt="OU.DJ.BP" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000322" libellecourt="DF.CDE.U" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="3e3e8c4c-0d58-431f-98cb-5dfa30399401" libellecourt="DF.IV.POST.OPER" Status="M" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000323" libellecourt="TER.BATP" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="f5fb5074-1512-49a9-ad41-3185e6b88327" libellecourt="TER.BATP" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000325" libellecourt="DF.URG.2" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr259" value="ID000322" libellecourt="DF.CDE.U" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr261" value="ID001610" libellecourt="DF.URG.2" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr262" value="ID001861" libellecourt="DT.NPGET" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr263" value="ID000137" libellecourt="MQ.+-GR" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr264" value="ID000321" libellecourt="MQ.GC12V" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr265" value="ID000324" libellecourt="MQ.TC12V" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr266" value="ID000323" libellecourt="TER.BATP" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr267" value="ID001866" libellecourt="T.BAT127" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr268" value="ID000101" libellecourt="TER.BAT" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr259 OR Expr261 OR Expr262 OR Expr263 OR Expr264 OR Expr265 OR Expr266 OR Expr267 OR Expr268</equation>
+	</regroupement>
+	<regroupement id="ID000327" libellecourt="DF.HEURE" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="4acf419c-d1db-423f-9b95-8259543eb5fb" libellecourt="DF.SWITCH C" Status="M" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E2" value="6dc0ad48-66a8-11ee-8c99-0242ac120002" libellecourt="DF.HEURE" Status="M" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1 OR E2</equation>
+	</regroupement>
+	<regroupement id="ID000328" libellecourt="DF.URG.3" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr90" value="ID000544" libellecourt="DF.EP" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr91" value="ID000491" libellecourt="DF.LOCDF" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr92" value="ID002894" libellecourt="DFCONVNU" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr93" value="ID000330" libellecourt="DF.CDE" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr94" value="ID000327" libellecourt="DF.HEURE" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr95" value="ID001611" libellecourt="DF.URG.3" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr96" value="ID000456" libellecourt="AL.TECHN" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr97" value="ID000830" libellecourt="ANO.FOSS" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr102" value="ID000556" libellecourt="DF.ASSEC" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr103" value="ID000332" libellecourt="DF.CBI" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr104" value="ID000336" libellecourt="DF.EPT" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr105" value="ID002906" libellecourt="DF.EPT1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr106" value="ID002907" libellecourt="DF.EPT2" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr90 OR Expr91 OR Expr92 OR Expr93 OR Expr94 OR Expr95 OR Expr96 OR Expr97 OR Expr102 OR Expr103 OR Expr104 OR Expr105 OR Expr106</equation>
+	</regroupement>
+	<regroupement id="ID000396" libellecourt="DJ+SF6.8" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="ede652bb-6f1e-40e6-99f1-b99d1776fdf8" libellecourt="DJ+SF6.8" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000397" libellecourt="DJ+SF6.4" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="25ae1c8a-7b34-4ea4-8751-4ecb49279798" libellecourt="DJ+SF6.4" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000398" libellecourt="DJ+SF6.0" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="5f6af916-c76c-4e3d-987f-a09551bc8d8e" libellecourt="DJ+SF6.0" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000399" libellecourt="ISOL.DJ" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr112" value="ID001664" libellecourt="ISOL.DJ" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr113" value="ID000341" libellecourt="DJPREGON" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr112 OR Expr113</equation>
+	</regroupement>
+	<regroupement id="ID000402" libellecourt="DF.DJ" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="ea82e6c8-d123-4a43-ab72-e4abfb2a8f73" libellecourt="DF.DJ" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000416" libellecourt="DF.CABL" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr141" value="ID003719" libellecourt="DF.CABL" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr142" value="ID000801" libellecourt="DT.DIFC" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr143" value="ID000840" libellecourt="DT.MCAB" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr144" value="ID010468" libellecourt="DT.MCAB1" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr227" value="ID010469" libellecourt="DT.MCAB2" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr146" value="ID005112" libellecourt="DT.PDC" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr141 OR Expr142 OR Expr143 OR Expr144 OR Expr227 OR Expr146</equation>
+	</regroupement>
+	<regroupement id="ID000419" libellecourt="EXP.PART" niveauregroupement="Tranche" ldgrp="Site" filtremodexp="1" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr87" value="ID000434" libellecourt="ICT.OUV" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr88" value="ID000465" libellecourt="TR.LOCAL" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr87 OR Expr88</equation>
+	</regroupement>
+	<regroupement id="ID000422" libellecourt="DF.TRAN" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr1" value="ID000426" libellecourt="MQ.U.I" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr2" value="ID000267" libellecourt="DF.CT.U" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr3" value="ID000116" libellecourt="DF.CONTI" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr4" value="ID000402" libellecourt="DF.IN.COM.DJ" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr5" value="ID000436" libellecourt="FU.TTbts" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr1 OR Expr2 OR Expr3 OR Expr4 OR Expr5</equation>
+	</regroupement>
+	<regroupement id="ID000424" libellecourt="ECLAIRAG" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="cb2656ad-f1d1-4f14-90aa-9ce4a8195ada" libellecourt="ECLAIRAG" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000425" libellecourt="P.INONDE" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="dfbb550d-2e63-48d3-bec1-49a8d91079df" libellecourt="P.INONDE" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000426" libellecourt="MQ.U.I" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr80" value="230571b3-793b-4517-be1a-3309f659223c" libellecourt="LDTM_MQ.U.I" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr82" value="c97faaff-cdbc-48d6-8c5b-5bde34190eb2" libellecourt="LDTM_MQ.U.I" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr83" value="5d09bde1-dd7d-4d6a-ba2f-b2d711d8687b" libellecourt="LDTM_MQ.U.I" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr84" value="3e5fc55d-aa6d-47c6-91cc-5c35d575c7a7" libellecourt="LDTM_MQ.U.I" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr85" value="f6ab8a2f-6206-42d5-b9f7-66f46ccedc5e" libellecourt="LDTM_MQ.U.I" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr80 OR Expr82 OR Expr83 OR Expr84 OR Expr85</equation>
+	</regroupement>
+	<regroupement id="ID000434" libellecourt="ICT.OUV" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="ceb6f00c-2c32-4de0-b8af-3566a4bbe435" libellecourt="ICT.OUV" Status="M" BAPIgnoredValue="2" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>AND</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000446" libellecourt="DF.EQUIP" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="ID000447" libellecourt="DF.EQUIP" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000447" libellecourt="DF.EQUIP" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="7e53bce9-2215-4391-a43b-33169f06ecdb" libellecourt="DF.ATB" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr8" value="ID000151" libellecourt="DF.ADD*" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr9" value="ID000161" libellecourt="DF.AIVO" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr12" value="ID000222" libellecourt="DF.ARS" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr14" value="ID000710" libellecourt="DF.AUTD" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr15" value="ID000178" libellecourt="DF.AP" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr16" value="ID000269" libellecourt="DF.CT" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr18" value="ID000799" libellecourt="DF.DIFC" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr21" value="ID003112" libellecourt="DF.DIFL*" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr23" value="ID002910" libellecourt="DF.EQUIP" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr24" value="ID005122" libellecourt="DF.PCDH" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr25" value="ID000861" libellecourt="DF.MAXI*" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr33" value="ID005110" libellecourt="DF.PDC" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr241" value="ID000832" libellecourt="DF.PMC*" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr247" value="ID000946" libellecourt="DF.PSL" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr251" value="ID000605" libellecourt="DF.PW" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr252" value="ID000615" libellecourt="DF.PX*" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr256" value="ID000567" libellecourt="DF.TEST" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1 OR Expr8 OR Expr9 OR Expr12 OR Expr14 OR Expr15 OR Expr16 OR Expr18 OR Expr21 OR Expr23 OR Expr24 OR Expr25 OR Expr33 OR Expr241 OR Expr247 OR Expr251 OR Expr252 OR Expr256</equation>
+	</regroupement>
+	<regroupement id="ID000461" libellecourt="PRESENC1" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="2424dc10-8626-4a4a-8c4b-3c7d59b25638" libellecourt="PRESENC1" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000491" libellecourt="DF.LOCDF" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="2c8b1813-60a9-4f1b-9908-3fbe073175d1" libellecourt="DF.LOCDF" Status="M" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>AND</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000544" libellecourt="DF.EP" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="00e52a05-951c-4cf1-b483-0b44a342d0f1" libellecourt="DF.EP" Status="M" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>AND</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000555" libellecourt="SF6.DEBR" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="8f028bfa-efc0-4a86-b42e-c5ac87f797a1" libellecourt="SF6.DEBR" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000556" libellecourt="DF.ASSEC" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="ff704cd5-3a86-4f55-ae32-905f0b741d6d" libellecourt="DF.ASSEC" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000605" libellecourt="DF.PW" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="0063f3db-1e36-4d97-92f2-e71342b9ebf9" libellecourt="DF.PW" Status="M" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>AND</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000616" libellecourt="DF.PX" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="8b8ff23c-1847-4687-baa2-f6fc84c7b3f8" libellecourt="DF.PX1" Status="M" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>AND</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000617" libellecourt="DF.PX1" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="8b8ff23c-1847-4687-baa2-f6fc84c7b3f8" libellecourt="DF.PX1" Status="M" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>AND</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000618" libellecourt="DF.PX2" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="5a6adde2-b87d-493d-a3d1-6221ebad16af" libellecourt="DF.PX2" Status="M" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>AND</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000710" libellecourt="DF.AUTD" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="200">
+		<entrees>
+			<entree id="E1" value="3a8848f7-8440-449d-9db9-5bad08e64e54" libellecourt="DF.AUTD" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000827" libellecourt="INC.HS" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="af039353-024a-4b16-8e07-281a70879d8e" libellecourt="INC.HS" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001094" libellecourt="COMP.SF6" niveauregroupement="TG" ldgrp="Site" filtremodexp="1" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr69" value="ID001805" libellecourt="COMP.SF6" Status="M" BAPIgnoredValue="0" BAPVariant="8" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr69 </equation>
+	</regroupement>
+	<regroupement id="ID001162" libellecourt="TCM.URG" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="ID001612" libellecourt="TCM.URG" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E2" value="ID001165" libellecourt="DF.UA.FH" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1 OR E2</equation>
+	</regroupement>
+	<regroupement id="ID001163" libellecourt="TCM.NURG" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="8607fd81-740c-49b3-bb67-e6017a4a1da7" libellecourt="TCM.NURG" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001169" libellecourt="DF.SYNCH" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="5000">
+		<entrees>
+			<entree id="E1" value="137984cd-79e1-4d81-8c4b-3f771e6d7c6d" libellecourt="LDSUIED.LTMS.TmChSt_DF.SYNCHRO" Status="M" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>0</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001201" libellecourt="E.VE1V1" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="86948911-1c38-4caf-a1fd-a2a6244a3a96" libellecourt="E.VE1V1" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001204" libellecourt="E.VE2V2" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="86948911-1c38-4caf-a1fd-a2a6244a3a96" libellecourt="E.VE2V2" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001217" libellecourt="DF.VER" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="bfbf3181-b772-4dc7-be65-4dcf04027265" libellecourt="DF.VER" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001270" libellecourt="R.DS.ARS" niveauregroupement="Tranche" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr200" value="ID001271" libellecourt="R.DS.ARv" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr201" value="ID012405" libellecourt="R.DAR*Vv" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr200 OR Expr201</equation>
+	</regroupement>
+	<regroupement id="ID001306" libellecourt="E.AC1V1" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="f6066fae-baa2-45fc-a161-11fabf6b22f4" libellecourt="E.AC1V1" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001309" libellecourt="E.AC2V2" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="f6066fae-baa2-45fc-a161-11fabf6b22f4" libellecourt="E.AC2V2" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001314" libellecourt="DF.TAC" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="ID001315" libellecourt="DF.TAC.T" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001315" libellecourt="DF.TAC.T" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr205" value="ID001256" libellecourt="DF.ACY*v" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr206" value="ID003788" libellecourt="DF.AUY*v" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr207" value="ID001253" libellecourt="DF.DSY*v" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr208" value="ID002941" libellecourt="DF.TDMT*" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr209" value="ID011420" libellecourt="DF.TDCL*" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr210" value="ID011416" libellecourt="DF.TCPT*" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr211" value="ID011448" libellecourt="DF.TDDJy*" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr212" value="ID011428" libellecourt="DFT1DJ" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr213" value="ID012225" libellecourt="DFTDPC**" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr214" value="ID011438" libellecourt="DT.TDPR*" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr215" value="ID011444" libellecourt="DF.TPTP" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr216" value="ID011486" libellecourt="DFTPAPy*" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr217" value="ID002920" libellecourt="DF.TD*C*" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr218" value="ID002947" libellecourt="DF.TD.PR" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr219" value="ID001218" libellecourt="DF.TDY*v" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr220" value="ID001239" libellecourt="DF.TEY*v" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr221" value="ID001191" libellecourt="DF.VEY*v" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr222" value="ID012158" libellecourt="DF.APCDH" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr205 OR Expr206 OR Expr207 OR Expr208 OR Expr209 OR Expr210 OR Expr211 OR Expr212 OR Expr213 OR Expr214 OR Expr215 OR Expr216 OR Expr217 OR Expr218 OR Expr219 OR Expr220 OR Expr221 OR Expr222</equation>
+	</regroupement>
+	<regroupement id="ID001612" libellecourt="TCM.URG" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="3221af7b-5ab0-4fbb-829d-977d41762ccd" libellecourt="TCM.URG" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001646" libellecourt="PORT.OUV" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="5bd12ed2-8ab9-4fca-b44f-ca6ef196b12b" libellecourt="PORT.OUV" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="E2" value="128c0f1a-fd5b-43bd-baaf-0f39226823d5" libellecourt="PORT.OUV" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1 OR E2</equation>
+	</regroupement>
+	<regroupement id="ID001647" libellecourt="DF.TGN2" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="0d0b79ac-375c-4c8f-9fc0-9641c2859c62" libellecourt="SCU-TG_LDSUIED/LLN0.phyHealth" Status="M" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001649" libellecourt="DJ+SF611" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="d4b09e4b-8dfd-409e-a818-9064419937ea" libellecourt="DJ+SF611" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001650" libellecourt="DJ+SF6.3" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="d59df818-cbca-4fb3-a4ff-45c5c616b09c" libellecourt="DJ+SF6.3" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001651" libellecourt="DJ+SF6.7" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="97e43f63-ee0a-4036-9d34-58ef6d4a8478" libellecourt="DJ+SF6.7" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001661" libellecourt="MQ.+-T13" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="92ed8099-da4b-4f5b-b763-3e741956beb6" libellecourt="MQ.+-T13" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001664" libellecourt="ISOL.DJ" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="14f421e5-5422-4d72-8fe4-3dde8d6d882c" libellecourt="ISOL.DJ" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001776" libellecourt="DF.EQ.TG" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr351" value="ID000310" libellecourt="DF.TGN1" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr352" value="ID001647" libellecourt="DF.TGN2" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr351 OR Expr352</equation>
+	</regroupement>
+	<regroupement id="ID001805" libellecourt="COMP.SF6" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr77" value="e25374ef-cc15-41d4-8702-76b3b13ad88c" libellecourt="COMP.SF6" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr76" value="ID002303" libellecourt="DJ+SF6**" Status="O" BAPIgnoredValue="0" BAPVariant="8" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr70" value="ID000398" libellecourt="DJ+SF6.0" Status="O" BAPIgnoredValue="0" BAPVariant="8" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr71" value="ID000397" libellecourt="DJ+SF6.4" Status="O" BAPIgnoredValue="0" BAPVariant="8" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr72" value="ID000396" libellecourt="DJ+SF6.8" Status="O" BAPIgnoredValue="0" BAPVariant="8" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr73" value="ID001649" libellecourt="DJ+SF6.11" Status="O" BAPIgnoredValue="0" BAPVariant="8" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr74" value="ID001650" libellecourt="DJ+SF6.3" Status="O" BAPIgnoredValue="0" BAPVariant="8" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr75" value="ID001651" libellecourt="DJ+SF6.7" Status="O" BAPIgnoredValue="0" BAPVariant="8" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr77 OR Expr76 OR Expr70 OR Expr71 OR Expr72 OR Expr73 OR Expr74 OR Expr75</equation>
+	</regroupement>
+	<regroupement id="ID001856" libellecourt="DFCHA127" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="bdf049a2-aacb-4bfe-8282-d6b596582b48" libellecourt="DFCHA127" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001858" libellecourt="DF.RPD" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="4ab1f0e8-f10d-4e74-8f45-dccd6f2f2594" libellecourt="DF.RPD" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001859" libellecourt="DT.PVH.E" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="aa63dbd6-5351-45b6-836d-f83828e5eef6" libellecourt="DT.PVH.E" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001861" libellecourt="DT.NPGET" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="ec4e21b0-da4b-4c04-87e0-310647d83498" libellecourt="DT.NPGET" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001862" libellecourt="DT.PRGET" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="25d581fd-8bfc-4f45-a232-e5835bd4edbe" libellecourt="DT.PRGET" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001863" libellecourt="DT.U=GET" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="83cb43ed-4fb3-47fb-bd9c-be47573d2975" libellecourt="DT.U=GET" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001864" libellecourt="MQ.ALT" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="4e4f3520-c2c1-44be-966e-a957ee3ea304" libellecourt="MQ.ALT" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001865" libellecourt="OU.DJ127" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="b52ba426-a95c-4ba2-b66a-c493800a9530" libellecourt="OU.DJ127" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001866" libellecourt="T.BAT127" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="ffad7d52-1829-4bee-a0a2-c6ee9bb416b6" libellecourt="T.BAT127" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001867" libellecourt="U127.ANO" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="b11740da-5978-4cf5-97a5-bfa21e199f7f" libellecourt="U127.ANO" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001868" libellecourt="RPDALSEC" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="09203502-0fdc-40b8-95ad-739915267804" libellecourt="RPDALSEC" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001875" libellecourt="ES.EQUIP" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="fa670ac9-c6d4-4940-911e-726421b9e588" libellecourt="LD.LN0.Beh" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>4</valeur>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID002423" libellecourt="ADD.HS" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="8d22ec1f-80a6-49ce-843b-fc6f11da865d" libellecourt="ADD.HS" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>5</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID002894" libellecourt="DFCONVNU" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="028ef999-cc53-429c-b66a-48a18bb0d843" libellecourt="DFCONVNU" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID003244" libellecourt="AL.BU" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="87665278-bc7d-4db1-bd74-7bcb994fe18f" libellecourt="AL.BU" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID004292" libellecourt="E.AUT1V1" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="ad61895d-1d0a-40fb-a7ae-cdf7e2738f7e" libellecourt="E.AUT1V1" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID005467" libellecourt="TR.MAIN" niveauregroupement="TG" ldgrp="Site" filtremodexp="1" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr140" value="ID005468" libellecourt="TR.MAINT" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr140</equation>
+	</regroupement>
+	<regroupement id="ID005468" libellecourt="TR.MAINT" niveauregroupement="Tranche" ldgrp="Site" filtremodexp="1" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr49" value="ID000465" libellecourt="TR.LOCAL" Status="O" BAPIgnoredValue="1" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr50" value="fa670ac9-c6d4-4940-911e-726421b9e588" libellecourt="LD.BEH" Status="O" BAPIgnoredValue="3" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>4</valeur>
+					<valeur>5</valeur>
+				</valeurs>
+				<operateur>AND</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr49 AND Expr50</equation>
+	</regroupement>
+	<regroupement id="ID012329" libellecourt="E.ACAV1" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="f6066fae-baa2-45fc-a161-11fabf6b22f4" libellecourt="E.ACAV1" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID012331" libellecourt="E.ACBV1" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="f6066fae-baa2-45fc-a161-11fabf6b22f4" libellecourt="E.ACBV1" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID012333" libellecourt="E.VEAV1" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="86948911-1c38-4caf-a1fd-a2a6244a3a96" libellecourt="E.VEAV1" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID012335" libellecourt="E.VEBV1" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="86948911-1c38-4caf-a1fd-a2a6244a3a96" libellecourt="E.VEBV1" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID012469" libellecourt="ESS.ASLD" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="ed1c35be-6f6a-43e8-9676-ac2602b61176" libellecourt="ASLD.BEH" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID000178" libellecourt="DF.AP" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="a065a516-7839-4c4b-bf31-6f35f12d5163" libellecourt="DF.AP" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID001310" libellecourt="DF.ACC" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="2935a1b8-2cde-4fcd-9c74-c32c73f6959f" libellecourt="DF.ACC" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="ID004439" libellecourt="DF.AUT" niveauregroupement="Tranche" ldgrp="Tranche" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="E1" value="3c981c1a-e202-4612-a1ca-0ca6b087c336" libellecourt="DF.AUT" Status="M" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>3</valeur>
+					<valeur>2</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>E1</equation>
+	</regroupement>
+	<regroupement id="3e4f1bd1-c7ea-47c2-972a-d0202e00f2b8" libellecourt="URG1.RPD" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr1" value="ID000320" libellecourt="OU.DJ.BP" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr2" value="ID000316" libellecourt="U=BP.ANO" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr3" value="ID000319" libellecourt="DF.CHA.P" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr4" value="ID000315" libellecourt="U=BS.ANO" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr5" value="ID000317" libellecourt="DF.CHA.S" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr6" value="ID000318" libellecourt="OU.DJ.BS" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr7" value="ID001865" libellecourt="OU.DJ127" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr8" value="ID001867" libellecourt="U127.ANO" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr9" value="ID001856" libellecourt="DFCHA127" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr10" value="ID001862" libellecourt="DT.PRGET" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr11" value="3c5741fb-d151-48a0-a1c3-b07eb59f13cb" libellecourt="DT.ANT.RPD" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr1 OR Expr2 OR Expr3 OR Expr4 OR Expr5 OR Expr6 OR Expr7 OR Expr8 OR Expr9 OR Expr10 OR Expr11</equation>
+	</regroupement>
+	<regroupement id="11ad3289-12f7-4378-b347-133fe93d3ed5" libellecourt="URG2.RPD" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr12" value="609f015a-fb17-402b-9043-66dd59c2c0ce" libellecourt="DT.NP.RPD" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr13" value="ID001866" libellecourt="T.BAT127" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr14" value="ID000323" libellecourt="TER.BATP" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr12 OR Expr13 OR Expr14</equation>
+	</regroupement>
+	<regroupement id="19fb9660-4af7-4faf-8048-58f0cb9f09dc" libellecourt="ANO.UA" niveauregroupement="TG" ldgrp="Site" filtremodexp="0" temporisationregroupement="0">
+		<entrees>
+			<entree id="Expr15" value="ID002240" libellecourt="MQ.+-SR" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr16" value="ID000312" libellecourt="MQ.+-TC" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr17" value="ID000320" libellecourt="OU.DJ.BP" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr18" value="ID000316" libellecourt="U=BP.ANO" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr19" value="ID000319" libellecourt="DF.CHA.P" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr20" value="ID000323" libellecourt="TER.BATP" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr21" value="ID000315" libellecourt="U=BS.ANO" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr22" value="ID000317" libellecourt="DF.CHA.S" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr23" value="ID000318" libellecourt="OU.DJ.BS" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr24" value="ID001865" libellecourt="OU.DJ127" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr25" value="ID001867" libellecourt="U127.ANO" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr26" value="ID001856" libellecourt="DFCHA127" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr27" value="ID001866" libellecourt="T.BAT127" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+			<entree id="Expr28" value="ID001864" libellecourt="MQ.ALT" Status="O" BAPIgnoredValue="0" BAPVariant="1" FIPValeur="0" FIPObligatoire="1">
+				<DAop>DAop</DAop>
+				<valeurs>
+					<valeur>1</valeur>
+				</valeurs>
+				<operateur>OR</operateur>
+			</entree>
+		</entrees>
+		<equation>Expr15 OR Expr16 OR Expr17 OR Expr18 OR Expr19 OR Expr20 OR Expr21 OR Expr22 OR Expr23 OR Expr24 OR Expr25 OR Expr26 OR Expr27 OR Expr28</equation>
+	</regroupement>
+</equationsregroupements>

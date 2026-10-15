@@ -45,6 +45,7 @@ apps/r_bd/
 │   ├── shared.py                   # Chemins, managers singletons, modèles Pydantic, helpers JSON
 │   ├── router_icd.py               # Endpoints ICD, patterns IED et ICD par défaut
 │   ├── router_isa.py               # Endpoints ISA, types, fichiers, analyse et orphelins
+│   ├── router_equation_integration.py # Référentiels GRP par version exacte, lecture seule
 │   ├── router_mapping.py           # Endpoints mapping IEC 61850, comparaison et merge
 │   ├── router_essais.py            # Endpoints essais RU/CVS/MVS/MVC et ordres dérivés
 │   ├── router_essais_parameters.py # Endpoints parametres d'essais PAR
@@ -56,6 +57,7 @@ apps/r_bd/
 │   ├── icd_parser.py               # Parsing ICD XML IEC 61850
 │   ├── ied_pattern_manager.py      # Patterns IED et associations IED -> ICD
 │   ├── isa_manager.py              # Catalogue ISA, types, fichiers et analyse
+│   ├── equation_catalog.py         # Provenance, fraîcheur et sélection stricte des équations
 │   ├── mapping_comparator.py       # Comparaison mapping attendu vs ICD
 │   ├── mapping_merger.py           # Fusion automatique ICD -> mapping
 │   ├── rac_manager.py              # Catalogue RAC, import et index
@@ -64,6 +66,8 @@ apps/r_bd/
 │   └── isa_parsers/                # Parseurs ISA spécialisés
 │       ├── __init__.py             # Exports des helpers de parsing ISA
 │       ├── equation_parser.py      # Parsing XML d'équations ISA
+│       ├── equation_syntax.py      # AST sûr des expressions AND/OR/XOR
+│       ├── equation_validation.py  # Diagnostics et utilisabilité du référentiel
 │       └── risa_enricher.py        # Enrichissement à partir de données RISA
 │
 ├── web/                            # Interface web SPA

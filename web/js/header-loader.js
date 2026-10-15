@@ -47,6 +47,7 @@ async function loadHeader(config = {}) {
 
         // Injecter le header au tout début du body
         document.body.insertBefore(header, document.body.firstChild);
+        await initPortalLogo(header);
 
         // Appliquer les textes dynamiques configurables
         const titleElement = document.getElementById("rscd-header-title");
@@ -72,5 +73,27 @@ async function loadHeader(config = {}) {
     } catch (error) {
         console.error("[Header] ❌ Erreur chargement header:", error);
         throw error;
+    }
+}
+
+/**
+ * Branche le logo R_CONTROL vers le portail central via le UI Kit partagé.
+ *
+ * @param {HTMLElement} header Header injecté.
+ */
+async function initPortalLogo(header) {
+    try {
+        const shell = await import("/ui-kit/js/shell.js");
+        const context = await shell.refreshRcIdentityActions({
+            slot: header.querySelector("[data-rc-user-actions]"),
+        });
+        shell.initRcPortalLogo({
+            logoNode: header.querySelector("[data-rc-logo]"),
+            portalUrl: context.portalUrl,
+            context,
+        });
+        console.info("[UI][Header] Identité et retour R_CONTROL initialisés");
+    } catch (error) {
+        console.warn("[UI][Header] Liaison du logo R_CONTROL impossible :", error);
     }
 }

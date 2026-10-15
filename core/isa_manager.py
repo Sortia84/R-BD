@@ -8,12 +8,38 @@ Gère les fichiers ISA (xlsx, xml, csv, json...) :
 """
 
 import json
+import logging
 import os
+from copy import deepcopy
 import shutil
+import tempfile
 import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+
+
+LOGGER = logging.getLogger(__name__)
+
+
+def _publish_json_atomically(path: Path, data: dict) -> None:
+    """Publie un JSON complet par remplacement atomique dans le même dossier.
+
+    Les lecteurs API voient l'ancien document ou le nouveau, jamais un fichier
+    partiellement écrit. En cas d'échec, l'analyse précédente reste disponible.
+    """
+    temporary_path = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
+                                         prefix=f".{path.name}.", suffix=".tmp", delete=False) as handle:
+            temporary_path = Path(handle.name)
+            json.dump(data, handle, indent=2, ensure_ascii=False)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary_path, path)
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
 
 
 class ISAManager:
@@ -593,6 +619,9 @@ class ISAManager:
         try:
             if type_id == "isa_alarmes" and file_format == "xml":
                 result["analysis"] = self._analyze_equation_xml(file_path, file_id, enrich=enrich)
+                if not result["analysis"].get("usable", False):
+                    result["status"] = "invalid"
+                    result["validation"] = result["analysis"]["validation"]
             elif type_id == "risa" and file_format == "json":
                 result["analysis"] = {"type": "risa", "status": "stored", "message": "Fichier RISA stocké"}
             else:
@@ -621,6 +650,14 @@ class ISAManager:
 
         # 1. Parser le XML
         equation_data = parse_equation_xml(file_path)
+        equation_data["metadata"].update({
+            "enriched": False, "risa_source": None, "analysis_mode": "raw",
+        })
+        # Toujours conserver le brut indépendant de RISA pour l'intégration.
+        # La copie protège cette source de vérité des mutations de l'enrichisseur.
+        raw_data = deepcopy(equation_data)
+        raw_path = file_path.with_suffix(".analyzed.raw.json")
+        _publish_json_atomically(raw_path, raw_data)
 
         # 2. Enrichissement RISA uniquement si demandé
         if enrich:
@@ -658,8 +695,16 @@ class ISAManager:
         else:
             output_path = file_path.with_suffix(".analyzed.raw.json")
 
-        with open(output_path, "w", encoding="utf-8") as f:
-            json.dump(equation_data, f, indent=2, ensure_ascii=False)
+        if enrich:
+            equation_data["metadata"]["analysis_mode"] = "enriched"
+            _publish_json_atomically(output_path, equation_data)
+
+        validation = equation_data["validation"]
+        LOGGER.info(
+            "[JSON][EQUATION] Analyse %s version=%s usable=%s erreurs=%s avertissements=%s",
+            file_id, equation_data["metadata"].get("equation_version"),
+            validation["usable"], validation["error_count"], validation["warning_count"],
+        )
 
         return {
             "type": "equation_xml",
@@ -670,7 +715,14 @@ class ISAManager:
             "enriched": equation_data["metadata"].get("enriched", False),
             "risa_source": equation_data["metadata"].get("risa_source"),
             "enrichment_stats": equation_data["metadata"].get("enrichment_stats", {}),
-            "analysis_mode": "enriched" if enrich else "raw"
+            "analysis_mode": "enriched" if enrich else "raw",
+            "equation_version": equation_data["metadata"].get("equation_version"),
+            "source_sha256": equation_data["metadata"].get("source_sha256"),
+            "parser_version": equation_data["metadata"].get("parser_version"),
+            "schema_version": equation_data["metadata"].get("schema_version"),
+            "validation": validation,
+            "validation_status": "valid" if validation["valid"] else "invalid",
+            "usable": validation["usable"],
         }
 
     def get_analyzed_data(self, file_id: str) -> dict | list | None:
@@ -699,6 +751,21 @@ class ISAManager:
         # Pour les fichiers XML, chercher le .analyzed.json
         if file_format == "xml":
             analyzed_path = file_path.with_suffix(".analyzed.json")
+            raw_path = file_path.with_suffix(".analyzed.raw.json")
+            # Une analyse brute fraîche doit aussi être consultable dans l'IHM.
+            # Ne pas afficher un enrichi ancien lorsque seul le brut a été relancé.
+            if raw_path.exists():
+                with open(raw_path, "r", encoding="utf-8") as f:
+                    raw_data = json.load(f)
+                if not analyzed_path.exists():
+                    return raw_data
+                with open(analyzed_path, "r", encoding="utf-8") as f:
+                    enriched_data = json.load(f)
+                provenance_fields = ("source_sha256", "parser_version", "schema_version")
+                if any(raw_data.get("metadata", {}).get(key) !=
+                       enriched_data.get("metadata", {}).get(key) for key in provenance_fields):
+                    return raw_data
+                return enriched_data
             if analyzed_path.exists():
                 with open(analyzed_path, "r", encoding="utf-8") as f:
                     return json.load(f)

@@ -20,6 +20,7 @@ from .router_essais_parameters import router as essais_parameters_router
 from .router_essais import router as essais_router
 from .router_templates import router as templates_router
 from .router_rac import router as rac_router
+from .router_equation_integration import router as equation_integration_router
 
 __all__ = [
     "icd_router",
@@ -29,4 +30,5 @@ __all__ = [
     "essais_router",
     "templates_router",
     "rac_router",
+    "equation_integration_router",
 ]

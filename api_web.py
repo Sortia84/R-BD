@@ -21,7 +21,9 @@
 from __future__ import annotations
 
 import logging
+import sys
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -38,8 +40,16 @@ from api import (
     essais_router,
     templates_router,
     rac_router,
+    equation_integration_router,
 )
 from api.shared import WEB_DIR, ASSETS_DIR, UI_KIT_DIR, DATA_DIR, UPLOADS_DIR
+
+for parent in Path(__file__).resolve().parents:
+    if (parent / "shared" / "rcontrol_auth").exists():
+        sys.path.insert(0, str(parent))
+        break
+
+from shared.rcontrol_auth import install_rcontrol_auth  # noqa: E402
 
 
 # ============================================================================
@@ -105,6 +115,9 @@ app.include_router(essais_parameters_router)
 app.include_router(essais_router)
 app.include_router(templates_router)
 app.include_router(rac_router)
+app.include_router(equation_integration_router)
+
+install_rcontrol_auth(app, app_id="r_bd", app_name="R#BD", version="2.0.0", health_path="/health")
 
 
 # ============================================================================

@@ -1,0 +1,1984 @@
+{
+  "date": "2026-10-15",
+  "files": [
+    {
+      "file_id": "56270aeefe42",
+      "filename": "56270aeefe42_GRP_1.5.47_modif.xml",
+      "equation_version": "1.5.47",
+      "source_sha256": "2ad3bbe41f2c3d67a57e55aa88a9d71b5d8f9fa6ce5ce40febe45473316cb1cc",
+      "source_unchanged": true,
+      "regroupements": 120,
+      "entrees": 318,
+      "validation": {
+        "valid": true,
+        "usable": true,
+        "error_count": 0,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Expr275",
+            "regroupement_id": "ID000311",
+            "regroupement_index": 31
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/56270aeefe42_GRP_1.5.47_modif.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/56270aeefe42_GRP_1.5.47_modif.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "0feb00a3d792",
+      "filename": "0feb00a3d792_GRP_1.5.53.xml",
+      "equation_version": "1.5.53",
+      "source_sha256": "0c092331806feb8c51a63e77215919b6468b991a6913d4733fd62daaba941405",
+      "source_unchanged": true,
+      "regroupements": 123,
+      "entrees": 323,
+      "validation": {
+        "valid": true,
+        "usable": true,
+        "error_count": 0,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Expr275",
+            "regroupement_id": "ID000311",
+            "regroupement_index": 51
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/0feb00a3d792_GRP_1.5.53.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/0feb00a3d792_GRP_1.5.53.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "3825ece6f4f8",
+      "filename": "3825ece6f4f8_GRP_1.5.52.xml",
+      "equation_version": "1.5.52",
+      "source_sha256": "18265a7f9e3431d61ad65af78bc90b7319764a5e53a24f4d5a382a7daab6b7de",
+      "source_unchanged": true,
+      "regroupements": 122,
+      "entrees": 322,
+      "validation": {
+        "valid": true,
+        "usable": true,
+        "error_count": 0,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Expr275",
+            "regroupement_id": "ID000311",
+            "regroupement_index": 50
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/3825ece6f4f8_GRP_1.5.52.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/3825ece6f4f8_GRP_1.5.52.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "f846832fee62",
+      "filename": "f846832fee62_GRP_1.5.51.xml",
+      "equation_version": "1.5.51",
+      "source_sha256": "bd88711ff0b08f9276bb654796884c1036b746f8a0d218fa6e73f07b407d252e",
+      "source_unchanged": true,
+      "regroupements": 121,
+      "entrees": 321,
+      "validation": {
+        "valid": true,
+        "usable": true,
+        "error_count": 0,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Expr275",
+            "regroupement_id": "ID000311",
+            "regroupement_index": 49
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/f846832fee62_GRP_1.5.51.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/f846832fee62_GRP_1.5.51.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "3cf322e9ac25",
+      "filename": "3cf322e9ac25_GRP_1.5.50.xml",
+      "equation_version": "1.5.50",
+      "source_sha256": "7b37417eafee6156e26ec36d1048c1413284bbd7478007e87c98c477490b191d",
+      "source_unchanged": true,
+      "regroupements": 121,
+      "entrees": 321,
+      "validation": {
+        "valid": true,
+        "usable": true,
+        "error_count": 0,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Expr275",
+            "regroupement_id": "ID000311",
+            "regroupement_index": 31
+          }
+        ]
+      },
+      "backups": []
+    },
+    {
+      "file_id": "f4e7782d03a2",
+      "filename": "f4e7782d03a2_GRP_1.5.49.xml",
+      "equation_version": "1.5.49",
+      "source_sha256": "ab8677125886c110c8ae183d22c2dc5d9a6f70c0596ebd4831287afa552335d5",
+      "source_unchanged": true,
+      "regroupements": 121,
+      "entrees": 321,
+      "validation": {
+        "valid": true,
+        "usable": true,
+        "error_count": 0,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Expr275",
+            "regroupement_id": "ID000311",
+            "regroupement_index": 31
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/f4e7782d03a2_GRP_1.5.49.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/f4e7782d03a2_GRP_1.5.49.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "beb1de6cd16a",
+      "filename": "beb1de6cd16a_GRP_1.5.48.xml",
+      "equation_version": "1.5.48",
+      "source_sha256": "2eebd204dce6a22e5766920509a3d3660ee643f1b4b5d845e13fcfd9b6d4f8db",
+      "source_unchanged": true,
+      "regroupements": 120,
+      "entrees": 319,
+      "validation": {
+        "valid": true,
+        "usable": true,
+        "error_count": 0,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Expr275",
+            "regroupement_id": "ID000311",
+            "regroupement_index": 31
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/beb1de6cd16a_GRP_1.5.48.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/beb1de6cd16a_GRP_1.5.48.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "a18d8fafcfa5",
+      "filename": "a18d8fafcfa5_GRP_1.5.47.xml",
+      "equation_version": "1.5.47",
+      "source_sha256": "977d8020599f0943fd68afdaa30b791ad2cc7e3b1cdc94bfcf8510b7fce035b1",
+      "source_unchanged": true,
+      "regroupements": 120,
+      "entrees": 318,
+      "validation": {
+        "valid": true,
+        "usable": true,
+        "error_count": 0,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Expr275",
+            "regroupement_id": "ID000311",
+            "regroupement_index": 31
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/a18d8fafcfa5_GRP_1.5.47.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/a18d8fafcfa5_GRP_1.5.47.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "e60500f23055",
+      "filename": "e60500f23055_GRP_1.5.21.xml",
+      "equation_version": "1.5.21",
+      "source_sha256": "83bae5fd7d3382c4b02719499bcd82333edd08e9820b33ea40a567a896ac7db5",
+      "source_unchanged": true,
+      "regroupements": 134,
+      "entrees": 406,
+      "validation": {
+        "valid": false,
+        "usable": false,
+        "error_count": 8,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'Expr233' absente des entrées du regroupement.",
+            "reference": "Expr233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 17
+          },
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Exp233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 17
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 27
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000327",
+            "regroupement_index": 37
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000327",
+            "regroupement_index": 38
+          },
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'E2' absente des entrées du regroupement.",
+            "reference": "E2",
+            "regroupement_id": "ID000327",
+            "regroupement_index": 38
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 48
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000042",
+            "regroupement_index": 71
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000042",
+            "regroupement_index": 78
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/e60500f23055_GRP_1.5.21.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/e60500f23055_GRP_1.5.21.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "234623edbbbf",
+      "filename": "234623edbbbf_GRP_1.5.23.xml",
+      "equation_version": "1.5.23",
+      "source_sha256": "c1d9be5dbb79a8b72d0b1e5e2c7b8f72e29593b1d78222ecf573c962175af109",
+      "source_unchanged": true,
+      "regroupements": 136,
+      "entrees": 424,
+      "validation": {
+        "valid": false,
+        "usable": false,
+        "error_count": 8,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'Expr233' absente des entrées du regroupement.",
+            "reference": "Expr233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 19
+          },
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Exp233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 19
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 29
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000327",
+            "regroupement_index": 39
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000327",
+            "regroupement_index": 40
+          },
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'E2' absente des entrées du regroupement.",
+            "reference": "E2",
+            "regroupement_id": "ID000327",
+            "regroupement_index": 40
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 50
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000042",
+            "regroupement_index": 72
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000042",
+            "regroupement_index": 79
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/234623edbbbf_GRP_1.5.23.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/234623edbbbf_GRP_1.5.23.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "a35d85839629",
+      "filename": "a35d85839629_GRP_1.5.24.xml",
+      "equation_version": "1.5.24",
+      "source_sha256": "22b0c81f70bb3c7ac62887c067c0d7e3a8649ac4fa93706c1a6e4bf8fa53d23c",
+      "source_unchanged": true,
+      "regroupements": 144,
+      "entrees": 416,
+      "validation": {
+        "valid": false,
+        "usable": false,
+        "error_count": 8,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'Expr233' absente des entrées du regroupement.",
+            "reference": "Expr233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 17
+          },
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Exp233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 17
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 27
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000327",
+            "regroupement_index": 37
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000327",
+            "regroupement_index": 38
+          },
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'E2' absente des entrées du regroupement.",
+            "reference": "E2",
+            "regroupement_id": "ID000327",
+            "regroupement_index": 38
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 48
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000042",
+            "regroupement_index": 70
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000042",
+            "regroupement_index": 77
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/a35d85839629_GRP_1.5.24.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/a35d85839629_GRP_1.5.24.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "ee5f6f962f28",
+      "filename": "ee5f6f962f28_GRP_1.5.26.xml",
+      "equation_version": "1.5.26",
+      "source_sha256": "8a67eeb80426adad248b8798b70dce77aba972dc6bd17bf13d507a1136002423",
+      "source_unchanged": true,
+      "regroupements": 143,
+      "entrees": 415,
+      "validation": {
+        "valid": false,
+        "usable": false,
+        "error_count": 8,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'Expr233' absente des entrées du regroupement.",
+            "reference": "Expr233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 17
+          },
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Exp233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 17
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 25
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000327",
+            "regroupement_index": 35
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000327",
+            "regroupement_index": 36
+          },
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'E2' absente des entrées du regroupement.",
+            "reference": "E2",
+            "regroupement_id": "ID000327",
+            "regroupement_index": 36
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 47
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000042",
+            "regroupement_index": 69
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000042",
+            "regroupement_index": 76
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/ee5f6f962f28_GRP_1.5.26.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/ee5f6f962f28_GRP_1.5.26.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "fa7f0981dff0",
+      "filename": "fa7f0981dff0_GRP_1.5.28.xml",
+      "equation_version": "1.5.28",
+      "source_sha256": "22086c41be75a348a1b5990718c4300b1fc2fa33629109bd2a2f136443cf1f36",
+      "source_unchanged": true,
+      "regroupements": 152,
+      "entrees": 425,
+      "validation": {
+        "valid": false,
+        "usable": false,
+        "error_count": 8,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'Expr233' absente des entrées du regroupement.",
+            "reference": "Expr233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 17
+          },
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Exp233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 17
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 26
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000327",
+            "regroupement_index": 36
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000327",
+            "regroupement_index": 37
+          },
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'E2' absente des entrées du regroupement.",
+            "reference": "E2",
+            "regroupement_id": "ID000327",
+            "regroupement_index": 37
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 48
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000042",
+            "regroupement_index": 70
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID000042",
+            "regroupement_index": 77
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/fa7f0981dff0_GRP_1.5.28.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/fa7f0981dff0_GRP_1.5.28.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "c26080ac9300",
+      "filename": "c26080ac9300_GRP_1.5.29.xml",
+      "equation_version": "1.5.29",
+      "source_sha256": "6a216640cead55cfee6db57f357d53ea8e91071e78b218ac4099d30c0b4b8e7a",
+      "source_unchanged": true,
+      "regroupements": 154,
+      "entrees": 452,
+      "validation": {
+        "valid": false,
+        "usable": false,
+        "error_count": 3,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'Expr233' absente des entrées du regroupement.",
+            "reference": "Expr233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 61
+          },
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Exp233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 61
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 99
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 100
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/c26080ac9300_GRP_1.5.29.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/c26080ac9300_GRP_1.5.29.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "dc03290802d1",
+      "filename": "dc03290802d1_GRP_1.5.30.xml",
+      "equation_version": "1.5.30",
+      "source_sha256": "d7c130d217cfc49ee2e0b1fa02b9c8b87d1ad6ef5c98f4cf4ccee9d0144af59a",
+      "source_unchanged": true,
+      "regroupements": 157,
+      "entrees": 452,
+      "validation": {
+        "valid": false,
+        "usable": false,
+        "error_count": 3,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'Expr233' absente des entrées du regroupement.",
+            "reference": "Expr233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 61
+          },
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Exp233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 61
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 99
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 100
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/dc03290802d1_GRP_1.5.30.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/dc03290802d1_GRP_1.5.30.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "2a066dab818e",
+      "filename": "2a066dab818e_GRP_1.5.30_modif.xml",
+      "equation_version": "1.5.30",
+      "source_sha256": "09325fd3a46d021257f04ecbe1011335dd57e3c9dc26eac74587d4d1655ffce5",
+      "source_unchanged": true,
+      "regroupements": 157,
+      "entrees": 452,
+      "validation": {
+        "valid": false,
+        "usable": false,
+        "error_count": 5,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'Expr233' absente des entrées du regroupement.",
+            "reference": "Expr233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 61
+          },
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Exp233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 61
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 99
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 100
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_entry_id",
+            "message": "Identifiant d'entrée dupliqué dans ce regroupement.",
+            "regroupement_id": "ID001805",
+            "regroupement_index": 109,
+            "entree_id": "Expr76",
+            "entree_index": 0
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_entry_id",
+            "message": "Identifiant d'entrée dupliqué dans ce regroupement.",
+            "regroupement_id": "ID001805",
+            "regroupement_index": 109,
+            "entree_id": "Expr76",
+            "entree_index": 7
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/2a066dab818e_GRP_1.5.30_modif.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/2a066dab818e_GRP_1.5.30_modif.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "232ed4c1048e",
+      "filename": "232ed4c1048e_GRP_1.5.31.xml",
+      "equation_version": "1.5.31",
+      "source_sha256": "4cd4083091ad2d180c392a173afbc41c795f95440750333662b9c3d4c070daf6",
+      "source_unchanged": true,
+      "regroupements": 159,
+      "entrees": 454,
+      "validation": {
+        "valid": false,
+        "usable": false,
+        "error_count": 3,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'Expr233' absente des entrées du regroupement.",
+            "reference": "Expr233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 61
+          },
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Exp233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 61
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 99
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 100
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/232ed4c1048e_GRP_1.5.31.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/232ed4c1048e_GRP_1.5.31.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "aa86ad0e79e2",
+      "filename": "aa86ad0e79e2_GRP_1.5.32.xml",
+      "equation_version": "1.5.32",
+      "source_sha256": "e7020958d10c66b46356c86086069138bdfa53092a4969ea9f8bef85e0954ece",
+      "source_unchanged": true,
+      "regroupements": 179,
+      "entrees": 468,
+      "validation": {
+        "valid": false,
+        "usable": false,
+        "error_count": 3,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'Expr233' absente des entrées du regroupement.",
+            "reference": "Expr233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 81
+          },
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Exp233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 81
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 119
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 120
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/aa86ad0e79e2_GRP_1.5.32.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/aa86ad0e79e2_GRP_1.5.32.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "6f034f47dd6e",
+      "filename": "6f034f47dd6e_GRP_1.5.33.xml",
+      "equation_version": "1.5.33",
+      "source_sha256": "793f51bf6544475b29f422fd28c9feaa7d942bbfc48ee8c31db267c8a47f47cc",
+      "source_unchanged": true,
+      "regroupements": 125,
+      "entrees": 406,
+      "validation": {
+        "valid": false,
+        "usable": false,
+        "error_count": 3,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'Expr233' absente des entrées du regroupement.",
+            "reference": "Expr233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 51
+          },
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Exp233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 51
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 85
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 86
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/6f034f47dd6e_GRP_1.5.33.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/6f034f47dd6e_GRP_1.5.33.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "fd042a3d0a12",
+      "filename": "fd042a3d0a12_GRP_1.5.34.xml",
+      "equation_version": "1.5.34",
+      "source_sha256": "3aacd4ca0798d012ef4e50e3e9394c53047df22067e6fdd5b85aed611e4de1fa",
+      "source_unchanged": true,
+      "regroupements": 130,
+      "entrees": 411,
+      "validation": {
+        "valid": false,
+        "usable": false,
+        "error_count": 3,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'Expr233' absente des entrées du regroupement.",
+            "reference": "Expr233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 56
+          },
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Exp233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 56
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 90
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 91
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/fd042a3d0a12_GRP_1.5.34.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/fd042a3d0a12_GRP_1.5.34.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "e90267f3f127",
+      "filename": "e90267f3f127_GRP_1.5.35.xml",
+      "equation_version": "1.5.35",
+      "source_sha256": "b8cfb20b66fd4f28ac926b56c1b0a78f44ca3478cf84e1c4f06a0975f71806de",
+      "source_unchanged": true,
+      "regroupements": 131,
+      "entrees": 420,
+      "validation": {
+        "valid": false,
+        "usable": false,
+        "error_count": 3,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'Expr233' absente des entrées du regroupement.",
+            "reference": "Expr233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 57
+          },
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Exp233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 57
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 91
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 92
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/e90267f3f127_GRP_1.5.35.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/e90267f3f127_GRP_1.5.35.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "8d46a6dfca4f",
+      "filename": "8d46a6dfca4f_GRP_1.5.36.xml",
+      "equation_version": "1.5.36",
+      "source_sha256": "3c6009ada1a561795b859e895ef65121a96b9a7d791239d622cd24b1b4b2fbf7",
+      "source_unchanged": true,
+      "regroupements": 131,
+      "entrees": 420,
+      "validation": {
+        "valid": false,
+        "usable": false,
+        "error_count": 3,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'Expr233' absente des entrées du regroupement.",
+            "reference": "Expr233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 57
+          },
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Exp233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 57
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 91
+          },
+          {
+            "severity": "error",
+            "code": "duplicate_group_id",
+            "message": "Identifiant de regroupement dupliqué.",
+            "regroupement_id": "ID001646",
+            "regroupement_index": 92
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/8d46a6dfca4f_GRP_1.5.36.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/8d46a6dfca4f_GRP_1.5.36.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "b90df349bcf7",
+      "filename": "b90df349bcf7_GRP_1.5.37.xml",
+      "equation_version": "1.5.37",
+      "source_sha256": "7d8057c5105e076db1a31675f8713df02273b36c86fab34eafe708ccf9905c2b",
+      "source_unchanged": true,
+      "regroupements": 128,
+      "entrees": 418,
+      "validation": {
+        "valid": false,
+        "usable": false,
+        "error_count": 1,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'Expr233' absente des entrées du regroupement.",
+            "reference": "Expr233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 58
+          },
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Exp233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 58
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/b90df349bcf7_GRP_1.5.37.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/b90df349bcf7_GRP_1.5.37.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "de5671e218ac",
+      "filename": "de5671e218ac_GRP_1.5.38.xml",
+      "equation_version": "1.5.38",
+      "source_sha256": "0c8689c33046a20e41f9043a23ded63d58579e5d1574d39ca300054b2fe48423",
+      "source_unchanged": true,
+      "regroupements": 131,
+      "entrees": 421,
+      "validation": {
+        "valid": false,
+        "usable": false,
+        "error_count": 1,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unknown_equation_reference",
+            "message": "Référence 'Expr233' absente des entrées du regroupement.",
+            "reference": "Expr233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 58
+          },
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Exp233",
+            "regroupement_id": "ID000416",
+            "regroupement_index": 58
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/de5671e218ac_GRP_1.5.38.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/de5671e218ac_GRP_1.5.38.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "620001de916a",
+      "filename": "620001de916a_GRP_1.5.39.xml",
+      "equation_version": "1.5.39",
+      "source_sha256": "b6119317d87786ab3779ebc2d151897a5180a46c8fcba0b31d556f0c6bf9ca11",
+      "source_unchanged": true,
+      "regroupements": 113,
+      "entrees": 305,
+      "validation": {
+        "valid": true,
+        "usable": true,
+        "error_count": 0,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Expr275",
+            "regroupement_id": "ID000311",
+            "regroupement_index": 23
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/620001de916a_GRP_1.5.39.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/620001de916a_GRP_1.5.39.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "ddd87136918c",
+      "filename": "ddd87136918c_GRP_1.5.40.xml",
+      "equation_version": "1.5.40",
+      "source_sha256": "d129be10241c86df4f3a0c91e1e1f226eb732c7d02f027e2738dc7ff72dd0080",
+      "source_unchanged": true,
+      "regroupements": 113,
+      "entrees": 305,
+      "validation": {
+        "valid": true,
+        "usable": true,
+        "error_count": 0,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Expr275",
+            "regroupement_id": "ID000311",
+            "regroupement_index": 23
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/ddd87136918c_GRP_1.5.40.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/ddd87136918c_GRP_1.5.40.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "c88458ab1852",
+      "filename": "c88458ab1852_GRP_1.5.41.xml",
+      "equation_version": "1.5.41",
+      "source_sha256": "3657f4d7289795e73e3b4b6b8b6b992ce811d710744ada53418ddd1858e38577",
+      "source_unchanged": true,
+      "regroupements": 118,
+      "entrees": 317,
+      "validation": {
+        "valid": true,
+        "usable": true,
+        "error_count": 0,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Expr275",
+            "regroupement_id": "ID000311",
+            "regroupement_index": 28
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/c88458ab1852_GRP_1.5.41.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/c88458ab1852_GRP_1.5.41.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "1d9b3170a9e5",
+      "filename": "1d9b3170a9e5_GRP_1.5.42.xml",
+      "equation_version": "1.5.42",
+      "source_sha256": "9233c30c8ea6796350f66eb27445682594d9dd581a0c8990bc9459d4aa9f2e58",
+      "source_unchanged": true,
+      "regroupements": 124,
+      "entrees": 323,
+      "validation": {
+        "valid": true,
+        "usable": true,
+        "error_count": 0,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Expr275",
+            "regroupement_id": "ID000311",
+            "regroupement_index": 34
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/1d9b3170a9e5_GRP_1.5.42.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/1d9b3170a9e5_GRP_1.5.42.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "6ef34a4502f0",
+      "filename": "6ef34a4502f0_GRP_1.5.43.xml",
+      "equation_version": "1.5.43",
+      "source_sha256": "6d589eadc901cc841d9a1ffc5adf1121d4f8f1da6234a397534ac2acf8ef9509",
+      "source_unchanged": true,
+      "regroupements": 124,
+      "entrees": 322,
+      "validation": {
+        "valid": true,
+        "usable": true,
+        "error_count": 0,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Expr275",
+            "regroupement_id": "ID000311",
+            "regroupement_index": 33
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/6ef34a4502f0_GRP_1.5.43.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/6ef34a4502f0_GRP_1.5.43.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "fa8f70894572",
+      "filename": "fa8f70894572_GRP_1.5.44.xml",
+      "equation_version": "1.5.44",
+      "source_sha256": "7cdff9d3571b6ee3a50017504c91c383fd28620d15f00ec7e1fa9ac7b30702f4",
+      "source_unchanged": true,
+      "regroupements": 123,
+      "entrees": 321,
+      "validation": {
+        "valid": true,
+        "usable": true,
+        "error_count": 0,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Expr275",
+            "regroupement_id": "ID000311",
+            "regroupement_index": 32
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/fa8f70894572_GRP_1.5.44.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/fa8f70894572_GRP_1.5.44.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "19da947b22ab",
+      "filename": "19da947b22ab_GRP_1.5.45.xml",
+      "equation_version": "1.5.45",
+      "source_sha256": "45a330f9d2f367bf8e743efe535853309a02cf8d50dfbc9513ff609c1dec8bc5",
+      "source_unchanged": true,
+      "regroupements": 122,
+      "entrees": 320,
+      "validation": {
+        "valid": true,
+        "usable": true,
+        "error_count": 0,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Expr275",
+            "regroupement_id": "ID000311",
+            "regroupement_index": 31
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/19da947b22ab_GRP_1.5.45.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/19da947b22ab_GRP_1.5.45.analyzed.json"
+      ]
+    },
+    {
+      "file_id": "08a0e483741d",
+      "filename": "08a0e483741d_GRP_1.5.46.xml",
+      "equation_version": "1.5.46",
+      "source_sha256": "e58a355a7095d1943041cd3a7051dd2861dfd73cd0f15c8906bf668345025f8d",
+      "source_unchanged": true,
+      "regroupements": 121,
+      "entrees": 319,
+      "validation": {
+        "valid": true,
+        "usable": true,
+        "error_count": 0,
+        "warning_count": 1,
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "code": "unused_entry",
+            "message": "Entrée déclarée mais non utilisée dans l'équation.",
+            "entree_id": "Expr275",
+            "regroupement_id": "ID000311",
+            "regroupement_index": 31
+          }
+        ]
+      },
+      "backups": [
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/08a0e483741d_GRP_1.5.46.analyzed.raw.json",
+        "data/isa/equation_analysis_backups/20261015T193240883302Z/08a0e483741d_GRP_1.5.46.analyzed.json"
+      ]
+    }
+  ],
+  "missing_sources": [],
+  "errors": [],
+  "orphan_analyses": [],
+  "catalogue": {
+    "schema_version": "1.0",
+    "files": [
+      {
+        "id": "08a0e483741d",
+        "original_name": "GRP_1.5.46.xml",
+        "equation_version": "1.5.46",
+        "date_modification": "2025-11-06",
+        "source_sha256": "e58a355a7095d1943041cd3a7051dd2861dfd73cd0f15c8906bf668345025f8d",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "ready",
+        "validation": {
+          "valid": true,
+          "usable": true,
+          "error_count": 0,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "0feb00a3d792",
+        "original_name": "GRP_1.5.53.xml",
+        "equation_version": "1.5.53",
+        "date_modification": "2026-09-18",
+        "source_sha256": "0c092331806feb8c51a63e77215919b6468b991a6913d4733fd62daaba941405",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "ready",
+        "validation": {
+          "valid": true,
+          "usable": true,
+          "error_count": 0,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "19da947b22ab",
+        "original_name": "GRP_1.5.45.xml",
+        "equation_version": "1.5.45",
+        "date_modification": "2025-10-30",
+        "source_sha256": "45a330f9d2f367bf8e743efe535853309a02cf8d50dfbc9513ff609c1dec8bc5",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "ready",
+        "validation": {
+          "valid": true,
+          "usable": true,
+          "error_count": 0,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "1d9b3170a9e5",
+        "original_name": "GRP_1.5.42.xml",
+        "equation_version": "1.5.42",
+        "date_modification": "2025-09-23",
+        "source_sha256": "9233c30c8ea6796350f66eb27445682594d9dd581a0c8990bc9459d4aa9f2e58",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "ready",
+        "validation": {
+          "valid": true,
+          "usable": true,
+          "error_count": 0,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "232ed4c1048e",
+        "original_name": "GRP_1.5.31.xml",
+        "equation_version": "1.5.31",
+        "date_modification": "2025-03-14",
+        "source_sha256": "4cd4083091ad2d180c392a173afbc41c795f95440750333662b9c3d4c070daf6",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "invalid",
+        "validation": {
+          "valid": false,
+          "usable": false,
+          "error_count": 3,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "234623edbbbf",
+        "original_name": "GRP_1.5.23.xml",
+        "equation_version": "1.5.23",
+        "date_modification": "2024-09-27",
+        "source_sha256": "c1d9be5dbb79a8b72d0b1e5e2c7b8f72e29593b1d78222ecf573c962175af109",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "invalid",
+        "validation": {
+          "valid": false,
+          "usable": false,
+          "error_count": 8,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "2a066dab818e",
+        "original_name": "GRP_1.5.30_modif.xml",
+        "equation_version": "1.5.30",
+        "date_modification": "2025-02-21",
+        "source_sha256": "09325fd3a46d021257f04ecbe1011335dd57e3c9dc26eac74587d4d1655ffce5",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "invalid",
+        "validation": {
+          "valid": false,
+          "usable": false,
+          "error_count": 5,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "3825ece6f4f8",
+        "original_name": "GRP_1.5.52.xml",
+        "equation_version": "1.5.52",
+        "date_modification": "2026-09-09",
+        "source_sha256": "18265a7f9e3431d61ad65af78bc90b7319764a5e53a24f4d5a382a7daab6b7de",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "ready",
+        "validation": {
+          "valid": true,
+          "usable": true,
+          "error_count": 0,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "3cf322e9ac25",
+        "original_name": "GRP_1.5.50.xml",
+        "equation_version": "1.5.50",
+        "date_modification": "2026-06-01",
+        "source_sha256": "7b37417eafee6156e26ec36d1048c1413284bbd7478007e87c98c477490b191d",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "ready",
+        "validation": {
+          "valid": true,
+          "usable": true,
+          "error_count": 0,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "56270aeefe42",
+        "original_name": "GRP_1.5.47_modif.xml",
+        "equation_version": "1.5.47",
+        "date_modification": "2025-11-07",
+        "source_sha256": "2ad3bbe41f2c3d67a57e55aa88a9d71b5d8f9fa6ce5ce40febe45473316cb1cc",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "ready",
+        "validation": {
+          "valid": true,
+          "usable": true,
+          "error_count": 0,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "620001de916a",
+        "original_name": "GRP_1.5.39.xml",
+        "equation_version": "1.5.39",
+        "date_modification": "2025-06-17",
+        "source_sha256": "b6119317d87786ab3779ebc2d151897a5180a46c8fcba0b31d556f0c6bf9ca11",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "ready",
+        "validation": {
+          "valid": true,
+          "usable": true,
+          "error_count": 0,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "6ef34a4502f0",
+        "original_name": "GRP_1.5.43.xml",
+        "equation_version": "1.5.43",
+        "date_modification": "2025-10-10",
+        "source_sha256": "6d589eadc901cc841d9a1ffc5adf1121d4f8f1da6234a397534ac2acf8ef9509",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "ready",
+        "validation": {
+          "valid": true,
+          "usable": true,
+          "error_count": 0,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "6f034f47dd6e",
+        "original_name": "GRP_1.5.33.xml",
+        "equation_version": "1.5.33",
+        "date_modification": "2025-05-07",
+        "source_sha256": "793f51bf6544475b29f422fd28c9feaa7d942bbfc48ee8c31db267c8a47f47cc",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "invalid",
+        "validation": {
+          "valid": false,
+          "usable": false,
+          "error_count": 3,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "8d46a6dfca4f",
+        "original_name": "GRP_1.5.36.xml",
+        "equation_version": "1.5.36",
+        "date_modification": "2025-05-27",
+        "source_sha256": "3c6009ada1a561795b859e895ef65121a96b9a7d791239d622cd24b1b4b2fbf7",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "invalid",
+        "validation": {
+          "valid": false,
+          "usable": false,
+          "error_count": 3,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "a18d8fafcfa5",
+        "original_name": "GRP_1.5.47.xml",
+        "equation_version": "1.5.47",
+        "date_modification": "2025-11-07",
+        "source_sha256": "977d8020599f0943fd68afdaa30b791ad2cc7e3b1cdc94bfcf8510b7fce035b1",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "ready",
+        "validation": {
+          "valid": true,
+          "usable": true,
+          "error_count": 0,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "a35d85839629",
+        "original_name": "GRP_1.5.24.xml",
+        "equation_version": "1.5.24",
+        "date_modification": "2024-12-05",
+        "source_sha256": "22b0c81f70bb3c7ac62887c067c0d7e3a8649ac4fa93706c1a6e4bf8fa53d23c",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "invalid",
+        "validation": {
+          "valid": false,
+          "usable": false,
+          "error_count": 8,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "aa86ad0e79e2",
+        "original_name": "GRP_1.5.32.xml",
+        "equation_version": "1.5.32",
+        "date_modification": "2025-05-06",
+        "source_sha256": "e7020958d10c66b46356c86086069138bdfa53092a4969ea9f8bef85e0954ece",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "invalid",
+        "validation": {
+          "valid": false,
+          "usable": false,
+          "error_count": 3,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "b90df349bcf7",
+        "original_name": "GRP_1.5.37.xml",
+        "equation_version": "1.5.37",
+        "date_modification": "2025-06-04",
+        "source_sha256": "7d8057c5105e076db1a31675f8713df02273b36c86fab34eafe708ccf9905c2b",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "invalid",
+        "validation": {
+          "valid": false,
+          "usable": false,
+          "error_count": 1,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "beb1de6cd16a",
+        "original_name": "GRP_1.5.48.xml",
+        "equation_version": "1.5.48",
+        "date_modification": "2026-02-26",
+        "source_sha256": "2eebd204dce6a22e5766920509a3d3660ee643f1b4b5d845e13fcfd9b6d4f8db",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "ready",
+        "validation": {
+          "valid": true,
+          "usable": true,
+          "error_count": 0,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "c26080ac9300",
+        "original_name": "GRP_1.5.29.xml",
+        "equation_version": "1.5.29",
+        "date_modification": "2025-02-20",
+        "source_sha256": "6a216640cead55cfee6db57f357d53ea8e91071e78b218ac4099d30c0b4b8e7a",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "invalid",
+        "validation": {
+          "valid": false,
+          "usable": false,
+          "error_count": 3,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "c88458ab1852",
+        "original_name": "GRP_1.5.41.xml",
+        "equation_version": "1.5.41",
+        "date_modification": "2025-09-16",
+        "source_sha256": "3657f4d7289795e73e3b4b6b8b6b992ce811d710744ada53418ddd1858e38577",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "ready",
+        "validation": {
+          "valid": true,
+          "usable": true,
+          "error_count": 0,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "dc03290802d1",
+        "original_name": "GRP_1.5.30.xml",
+        "equation_version": "1.5.30",
+        "date_modification": "2025-02-21",
+        "source_sha256": "d7c130d217cfc49ee2e0b1fa02b9c8b87d1ad6ef5c98f4cf4ccee9d0144af59a",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "invalid",
+        "validation": {
+          "valid": false,
+          "usable": false,
+          "error_count": 3,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "ddd87136918c",
+        "original_name": "GRP_1.5.40.xml",
+        "equation_version": "1.5.40",
+        "date_modification": "2025-07-11",
+        "source_sha256": "d129be10241c86df4f3a0c91e1e1f226eb732c7d02f027e2738dc7ff72dd0080",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "ready",
+        "validation": {
+          "valid": true,
+          "usable": true,
+          "error_count": 0,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "de5671e218ac",
+        "original_name": "GRP_1.5.38.xml",
+        "equation_version": "1.5.38",
+        "date_modification": "2025-06-19",
+        "source_sha256": "0c8689c33046a20e41f9043a23ded63d58579e5d1574d39ca300054b2fe48423",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "invalid",
+        "validation": {
+          "valid": false,
+          "usable": false,
+          "error_count": 1,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "e60500f23055",
+        "original_name": "GRP_1.5.21.xml",
+        "equation_version": "1.5.21",
+        "date_modification": "2024-08-21",
+        "source_sha256": "83bae5fd7d3382c4b02719499bcd82333edd08e9820b33ea40a567a896ac7db5",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "invalid",
+        "validation": {
+          "valid": false,
+          "usable": false,
+          "error_count": 8,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "e90267f3f127",
+        "original_name": "GRP_1.5.35.xml",
+        "equation_version": "1.5.35",
+        "date_modification": "2025-05-14",
+        "source_sha256": "b8cfb20b66fd4f28ac926b56c1b0a78f44ca3478cf84e1c4f06a0975f71806de",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "invalid",
+        "validation": {
+          "valid": false,
+          "usable": false,
+          "error_count": 3,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "ee5f6f962f28",
+        "original_name": "GRP_1.5.26.xml",
+        "equation_version": "1.5.26",
+        "date_modification": "2025-01-07",
+        "source_sha256": "8a67eeb80426adad248b8798b70dce77aba972dc6bd17bf13d507a1136002423",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "invalid",
+        "validation": {
+          "valid": false,
+          "usable": false,
+          "error_count": 8,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "f4e7782d03a2",
+        "original_name": "GRP_1.5.49.xml",
+        "equation_version": "1.5.49",
+        "date_modification": "2026-03-23",
+        "source_sha256": "ab8677125886c110c8ae183d22c2dc5d9a6f70c0596ebd4831287afa552335d5",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "ready",
+        "validation": {
+          "valid": true,
+          "usable": true,
+          "error_count": 0,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "f846832fee62",
+        "original_name": "GRP_1.5.51.xml",
+        "equation_version": "1.5.51",
+        "date_modification": "2026-07-06",
+        "source_sha256": "bd88711ff0b08f9276bb654796884c1036b746f8a0d218fa6e73f07b407d252e",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "ready",
+        "validation": {
+          "valid": true,
+          "usable": true,
+          "error_count": 0,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "fa7f0981dff0",
+        "original_name": "GRP_1.5.28.xml",
+        "equation_version": "1.5.28",
+        "date_modification": "2025-02-03",
+        "source_sha256": "22086c41be75a348a1b5990718c4300b1fc2fa33629109bd2a2f136443cf1f36",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "invalid",
+        "validation": {
+          "valid": false,
+          "usable": false,
+          "error_count": 8,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "fa8f70894572",
+        "original_name": "GRP_1.5.44.xml",
+        "equation_version": "1.5.44",
+        "date_modification": "2025-10-17",
+        "source_sha256": "7cdff9d3571b6ee3a50017504c91c383fd28620d15f00ec7e1fa9ac7b30702f4",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "ready",
+        "validation": {
+          "valid": true,
+          "usable": true,
+          "error_count": 0,
+          "warning_count": 1
+        }
+      },
+      {
+        "id": "fd042a3d0a12",
+        "original_name": "GRP_1.5.34.xml",
+        "equation_version": "1.5.34",
+        "date_modification": "2025-05-12",
+        "source_sha256": "3aacd4ca0798d012ef4e50e3e9394c53047df22067e6fdd5b85aed611e4de1fa",
+        "parser_version": "2.0.0",
+        "analysis_schema_version": "2.0",
+        "state": "invalid",
+        "validation": {
+          "valid": false,
+          "usable": false,
+          "error_count": 3,
+          "warning_count": 1
+        }
+      }
+    ]
+  },
+  "version_1_5_53": {
+    "status": "ready",
+    "file": {
+      "id": "0feb00a3d792",
+      "original_name": "GRP_1.5.53.xml",
+      "equation_version": "1.5.53",
+      "date_modification": "2026-09-18",
+      "source_sha256": "0c092331806feb8c51a63e77215919b6468b991a6913d4733fd62daaba941405",
+      "parser_version": "2.0.0",
+      "analysis_schema_version": "2.0"
+    }
+  }
+}

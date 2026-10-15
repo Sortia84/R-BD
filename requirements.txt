@@ -12,3 +12,4 @@ pydantic>=2.4.0
 python-multipart>=0.0.9
 # Parsing XML IEC 61850 des fichiers ICD.
 lxml>=5.0.0
+cryptography>=42.0.0

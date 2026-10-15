@@ -44,6 +44,7 @@ de guides opérationnels.
 - Gestion des types ISA et fichiers référents.
 - Analyse de fichiers via les parseurs spécialisés dans `core/isa_parsers/`.
 - Détection de fichiers orphelins et liaison/déliaison avec les types ISA.
+- Équations GRP complètes, validation et API de sélection par version exacte pour R#SCD : [contrat et réanalyse](EQUATIONS_GRP_API.md).
 
 ### Mapping IEC 61850
 - Consultation des types, CDC, DA et énumérations issus des mappings locaux.
@@ -52,6 +53,8 @@ de guides opérationnels.
 
 ### Essais et templates
 - CRUD des essais `ru`, `cvs`, `mvs` et `mvc` via `/api/essais`.
+
+
 - Synchronisation des essais entre frontend et persistance JSON.
 - Calcul automatique des numéros d'ordre par type, IED et LD à partir de l'ordre global R#BD.
 - Parametrage des injections d'essais via import de fichiers `.par`.

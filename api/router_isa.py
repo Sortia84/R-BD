@@ -8,6 +8,7 @@ Structure de stockage :
 """
 
 from typing import Any
+from pathlib import Path
 import uuid
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
@@ -45,9 +46,13 @@ async def upload_isa(
     """
     if not file.filename:
         raise HTTPException(status_code=400, detail="Nom de fichier manquant")
+    if type_id and not manager.get_type_by_id(type_id):
+        raise HTTPException(status_code=400, detail="Type ISA inconnu")
 
     # Vérifier l'extension
-    ext = Path(file.filename).suffix.lower()
+    # Certains navigateurs transmettent un chemin Windows ; seul le nom est stocké.
+    original_name = Path(file.filename.replace("\\", "/")).name
+    ext = Path(original_name).suffix.lower()
     if ext not in manager.SUPPORTED_FORMATS:
         raise HTTPException(
             status_code=400,
@@ -58,7 +63,7 @@ async def upload_isa(
     temp_id = uuid.uuid4().hex[:8]
     temp_dir = UPLOADS_DIR / "temp"
     temp_dir.mkdir(parents=True, exist_ok=True)
-    temp_path = temp_dir / f"{temp_id}_{file.filename}"
+    temp_path = temp_dir / f"{temp_id}_{original_name}"
 
     try:
         with open(temp_path, "wb") as f:
@@ -66,7 +71,7 @@ async def upload_isa(
             f.write(content)
 
         # Importer via le manager
-        file_entry = manager.import_file(temp_path, file.filename, type_id)
+        file_entry = manager.import_file(temp_path, original_name, type_id)
 
         return {
             "success": True,
@@ -235,7 +240,7 @@ async def analyze_file(file_id: str, type_id: str, enrich: bool = True) -> dict[
     try:
         result = manager.analyze_file(file_id, type_id, enrich=enrich)
         return {
-            "success": True,
+            "success": result.get("status") == "success",
             "result": result
         }
     except ValueError as e:
@@ -251,12 +256,14 @@ async def reanalyze_all() -> dict[str, Any]:
 
     success_count = len([r for r in results if r.get("status") == "success"])
     error_count = len([r for r in results if r.get("status") == "error"])
+    invalid_count = len([r for r in results if r.get("status") == "invalid"])
 
     return {
         "success": True,
         "total": len(results),
         "success_count": success_count,
         "error_count": error_count,
+        "invalid_count": invalid_count,
         "results": results
     }
 
